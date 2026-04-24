@@ -1,17 +1,30 @@
 export const colors = {
-  // Brand Core
-  primary: '#E85C7A',      // Coral Pink (Main Accent)
-  dark: '#1C1B2E',         // Midnight Navy (Text & Contrast)
-  light: '#FAF0F4',        // Soft Blush (Surface/Secondary BG)
+  // Brand Core - Premium & Elegant
+  primary: '#7B5BA8',      // Rich Purple
+  secondary: '#9B7BC8',    // Soft Lavender
+  accent: '#B8A0D6',       // Light Purple
+  
+  // Backgrounds
+  dark: '#2D1B4E',         // Deep Purple (for dark sections)
+  light: '#F8F6FB',        // Soft Lavender White
   white: '#FFFFFF',
-  grey: '#888888',         // Supporting info / Progress off-state
+  
+  // Gradients - Premium Purple Palette
+  gradientStart: '#4A2C6F',   // Deep Royal Purple
+  gradientMid: '#7B5BA8',     // Rich Purple
+  gradientEnd: '#A88FCC',     // Soft Lavender
+  
+  // Supporting
+  grey: '#888888',
+  textDark: '#2D1B4E',
+  textLight: '#FFFFFF',
 
-  // Day Accent Colors — PRD spec
-  day1: '#E85C7A',         // Day 1: Bold & Fun — Coral Pink
-  day2: '#9B8EC4',         // Day 2: Calm & Warm — Lavender
-  day3: '#4FBFA5',         // Day 3: Reflective — Mint Green
-  day4: '#F0A057',         // Day 4: Warm & Emotional — Amber
-  day5: '#D4A843',         // Day 5: Bold & Emotional — Gold
+  // Day Accent Colors — Premium & Harmonious
+  day1: '#7B5BA8',         // Day 1: Rich Purple
+  day2: '#9B7BC8',         // Day 2: Soft Lavender
+  day3: '#B8A0D6',         // Day 3: Light Purple
+  day4: '#D4C4E8',         // Day 4: Pale Lavender
+  day5: '#E8DFF5',         // Day 5: Very Light Purple
 
   // Feedback
   error: '#EF4444',

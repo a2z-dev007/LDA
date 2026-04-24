@@ -1,18 +1,16 @@
 import React from 'react';
-import { StatusBar, Platform, View, StyleSheet } from 'react-native';
+import { StatusBar, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 
 function AppContent() {
-  const insets = useSafeAreaInsets();
-  
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <StatusBar 
-        barStyle="light-content" 
-        backgroundColor="transparent" 
-        translucent={Platform.OS === 'android'} 
+    <View style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#1A0B2E"
+        translucent={false}
       />
       <NavigationContainer>
         <RootNavigator />

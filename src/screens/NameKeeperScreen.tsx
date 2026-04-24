@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -19,6 +20,15 @@ export const NameKeeperScreen: React.FC = () => {
 
   const [userName, setUserNameInput] = useState('');
   const shake = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const triggerShake = () => {
     Animated.sequence([
@@ -40,53 +50,86 @@ export const NameKeeperScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
-      <KeyboardAvoidingView style={styles.inner} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={styles.content}>
-          <Text style={styles.eyebrow}>Before we begin</Text>
-          <Text style={styles.title}>What's your name?</Text>
-          <Text style={styles.subtitle}>
-            Your name stays only on your phone.{'\n'}Private. Always.
-          </Text>
+    <LinearGradient
+      colors={[colors.light, '#FFFFFF']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={styles.gradient}
+    >
+      <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
+        <KeyboardAvoidingView style={styles.inner} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+            <View style={styles.content}>
+              <Text style={styles.eyebrow}>One last thing</Text>
 
-          <Animated.View style={[styles.inputWrapper, { transform: [{ translateX: shake }] }]}>
-            <TextInput
-              style={styles.input}
-              placeholder="Your name…"
-              placeholderTextColor="rgba(255,255,255,0.3)"
-              value={userName}
-              onChangeText={setUserNameInput}
-              autoFocus
-              returnKeyType="done"
-              onSubmitEditing={handleContinue}
-              maxLength={30}
-            />
+              <Text style={styles.title}>What should we call you?</Text>
+
+              <Text style={styles.subtitle}>
+                Just your first name. That's all we'll ever ask.
+              </Text>
+
+              <Animated.View style={[styles.inputWrapper, { transform: [{ translateX: shake }] }]}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your name here..."
+                  placeholderTextColor="rgba(45, 27, 105, 0.3)"
+                  value={userName}
+                  onChangeText={setUserNameInput}
+                  autoFocus
+                  returnKeyType="done"
+                  onSubmitEditing={handleContinue}
+                  maxLength={30}
+                />
+              </Animated.View>
+
+              <View style={styles.privacyNote}>
+                <Text style={styles.privacyText}>
+                  We don't create accounts. Your name stays on your device only.
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.footer}>
+              <TouchableOpacity
+                style={[styles.button, !userName.trim() && styles.buttonDisabled]}
+                activeOpacity={0.85}
+                onPress={handleContinue}
+              >
+                <Text style={styles.buttonText}>That's me → Start Day 1</Text>
+              </TouchableOpacity>
+
+              {/* Progress dots */}
+              <View style={styles.progressDots}>
+                <View style={[styles.dot, styles.dotInactive]} />
+                <View style={[styles.dot, styles.dotInactive]} />
+                <View style={[styles.dot, styles.dotActive]} />
+              </View>
+
+              <Text style={styles.footerNote}>no right answer - only your truth</Text>
+            </View>
           </Animated.View>
-
-          <Text style={styles.hint}>This is the name that will appear in your rituals.</Text>
-        </View>
-
-        <TouchableOpacity
-          style={[styles.button, !userName.trim() && styles.buttonDim]}
-          activeOpacity={0.85}
-          onPress={handleContinue}
-        >
-          <Text style={styles.buttonLabel}>Begin the ritual →</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   root: {
     flex: 1,
-    backgroundColor: colors.dark,
   },
-inner: {
+  inner: {
+    flex: 1,
+  },
+  container: {
     flex: 1,
     paddingHorizontal: 32,
     justifyContent: 'space-between',
+    paddingTop: 60,
+    paddingBottom: 20,
   },
   content: {
     flex: 1,
@@ -94,56 +137,113 @@ inner: {
   },
   eyebrow: {
     color: colors.primary,
-    fontSize: 13,
-    fontFamily: 'Inter-SemiBold',
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-    marginBottom: 16,
+    fontSize: 11,
+    fontFamily: 'DMSans-Medium',
+    fontWeight: '500',
+    letterSpacing: 1.5,
+    marginBottom: 24,
   },
   title: {
-    fontSize: 30,
-    color: '#FFFFFF',
-    fontFamily: 'PlayfairDisplay-Bold',
-    lineHeight: 40,
-    marginBottom: 14,
+    fontSize: 36,
+    color: colors.textDark,
+    fontFamily: 'PlayfairDisplay-Italic',
+    fontWeight: '400',
+    fontStyle: 'italic',
+    lineHeight: 46,
+    marginBottom: 16,
   },
   subtitle: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.45)',
-    fontFamily: 'Inter-Regular',
-    lineHeight: 22,
+    fontSize: 16,
+    color: 'rgba(45, 27, 105, 0.6)',
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400',
+    lineHeight: 24,
     marginBottom: 40,
   },
   inputWrapper: {
-    borderBottomWidth: 1.5,
-    borderBottomColor: colors.primary,
-    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 4,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 107, 157, 0.2)',
   },
   input: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    fontFamily: 'PlayfairDisplay-Regular',
-    paddingVertical: 12,
+    fontSize: 18,
+    color: colors.textDark,
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400',
+    paddingVertical: 16,
   },
-  hint: {
-    color: 'rgba(255,255,255,0.3)',
+  privacyNote: {
+    backgroundColor: 'rgba(255, 107, 157, 0.1)',
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 157, 0.2)',
+  },
+  privacyText: {
+    color: colors.primary,
     fontSize: 13,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400',
     lineHeight: 20,
+  },
+  footer: {
+    alignItems: 'center',
   },
   button: {
     backgroundColor: colors.primary,
     paddingVertical: 18,
     borderRadius: 100,
     alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  buttonDim: {
-    backgroundColor: '#6B3D55',
+  buttonDisabled: {
+    backgroundColor: 'rgba(255, 107, 157, 0.3)',
+    shadowOpacity: 0,
   },
-  buttonLabel: {
-    color: '#FFFFFF',
+  buttonText: {
+    color: colors.white,
     fontSize: 17,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'DMSans-Medium',
+    fontWeight: '500',
     letterSpacing: 0.3,
+  },
+  progressDots: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  dotInactive: {
+    backgroundColor: 'rgba(45, 27, 105, 0.2)',
+  },
+  dotActive: {
+    backgroundColor: colors.primary,
+  },
+  footerNote: {
+    color: 'rgba(45, 27, 105, 0.5)',
+    fontSize: 12,
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400',
+    fontStyle: 'italic',
   },
 });
