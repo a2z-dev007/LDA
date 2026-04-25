@@ -3,13 +3,14 @@ import { StatusBar, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { colors } from './src/theme';
 
 function AppContent() {
   return (
     <View style={styles.container}>
       <StatusBar
         barStyle="light-content"
-        backgroundColor="#1A0B2E"
+        backgroundColor={colors.dark}
         translucent={false}
       />
       <NavigationContainer>
@@ -30,7 +31,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1B2E',
+    backgroundColor: colors.dark,
   },
 });
 

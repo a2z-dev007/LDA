@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
+import { colors } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Splash'>;
@@ -51,7 +52,7 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <LinearGradient
-      colors={['#1A0B2E', '#2D1B4E', '#1A0B2E']}
+      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.gradient}
@@ -99,7 +100,7 @@ export const SplashScreen: React.FC = () => {
               onPress={handleBegin}
             >
               <Text style={styles.buttonText}>Begin</Text>
-              <Text style={styles.buttonIcon}>›</Text>
+              <Text style={styles.buttonIcon}>→</Text>
             </TouchableOpacity>
 
             <Text style={styles.footer}>NO SIGNUP. NO DATA. JUST YOU.</Text>
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   logoSection: {
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 50,
+    paddingBottom: 40,
   },
   logoContainer: {
     marginBottom: 28,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: 'rgba(219, 112, 147, 0.12)',
+    backgroundColor: `${colors.primary}20`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(219, 112, 147, 0.25)',
+    backgroundColor: `${colors.primary}40`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -152,11 +153,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#DB7093',
+    backgroundColor: colors.primary,
   },
   title: {
     fontSize: 15,
-    color: '#DB7093',
+    color: colors.primary,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
     letterSpacing: 3.5,
@@ -168,17 +169,16 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   factCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: colors.glassLight,
     borderRadius: 24,
     padding: 32,
-    marginBottom: 48,
-    marginTop: 20,
+    marginBottom: 56,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: colors.glassBorder,
   },
   factLabel: {
     fontSize: 11,
-    color: '#DB7093',
+    color: colors.primary,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
     letterSpacing: 1.8,
@@ -186,21 +186,21 @@ const styles = StyleSheet.create({
   },
   factText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.95)',
+    color: colors.textLight,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
     lineHeight: 26,
   },
   quoteContainer: {
     paddingHorizontal: 12,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   quote: {
-    fontSize: 22,
-    color: 'rgba(255, 255, 255, 0.95)',
+    fontSize: 26,
+    color: colors.textLight,
     fontFamily: 'PlayfairDisplay-Italic',
     fontStyle: 'italic',
-    lineHeight: 32,
+    lineHeight: 38,
     textAlign: 'center',
   },
   // Button Section
@@ -208,14 +208,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   button: {
-    backgroundColor: '#DB7093',
-    paddingVertical: 16,
+    backgroundColor: colors.primary,
+    paddingVertical: 20,
     paddingHorizontal: 32,
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
-    shadowColor: '#DB7093',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: colors.white,
     fontSize: 18,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
@@ -231,13 +231,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   buttonIcon: {
-    color: '#FFFFFF',
-    fontSize: 20,
+    color: colors.white,
+    fontSize: 22,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
   },
   footer: {
-    color: 'rgba(255, 255, 255, 0.45)',
+    color: colors.textSubtle,
     fontSize: 10,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',

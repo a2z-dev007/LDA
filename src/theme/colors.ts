@@ -1,32 +1,80 @@
+import { themes, ThemeName } from './colorThemes';
+
+// ============================================
+// 🎨 SWITCH THEME HERE
+// ============================================
+// Change this to switch the entire app theme:
+// - 'elegantDark' (current theme)
+// - 'luxePinkGold' (from logo - pink heart & gold)
+// - 'romanticRoseGold' (soft rose gold)
+// - 'midnightPassion' (deep blue with hot pink)
+
+const ACTIVE_THEME: ThemeName = 'luxePinkGold';
+
+// ============================================
+// Export active theme colors
+// ============================================
+const activeTheme = themes[ACTIVE_THEME];
+
+// Debug logging
+console.log('🎨 Active Theme:', ACTIVE_THEME);
+console.log('🎨 Theme Name:', activeTheme.name);
+console.log('🎨 Primary Color:', activeTheme.primary);
+console.log('🎨 Background:', activeTheme.dark);
+
 export const colors = {
-  // Brand Core - Premium & Elegant
-  primary: '#7B5BA8',      // Rich Purple
-  secondary: '#9B7BC8',    // Soft Lavender
-  accent: '#B8A0D6',       // Light Purple
+  // Brand Core
+  primary: activeTheme.primary,
+  secondary: activeTheme.secondary,
+  accent: activeTheme.accent,
   
   // Backgrounds
-  dark: '#2D1B4E',         // Deep Purple (for dark sections)
-  light: '#F8F6FB',        // Soft Lavender White
-  white: '#FFFFFF',
+  dark: activeTheme.dark,
+  darkMid: activeTheme.darkMid,
+  light: activeTheme.light,
+  white: activeTheme.white,
   
-  // Gradients - Premium Purple Palette
-  gradientStart: '#4A2C6F',   // Deep Royal Purple
-  gradientMid: '#7B5BA8',     // Rich Purple
-  gradientEnd: '#A88FCC',     // Soft Lavender
+  // Gradients
+  gradientStart: activeTheme.gradientStart,
+  gradientMid: activeTheme.gradientMid,
+  gradientEnd: activeTheme.gradientEnd,
   
-  // Supporting
-  grey: '#888888',
-  textDark: '#2D1B4E',
-  textLight: '#FFFFFF',
+  // Button Gradients (for glowing effects)
+  buttonGradientStart: activeTheme.buttonGradientStart,
+  buttonGradientEnd: activeTheme.buttonGradientEnd,
+  
+  // Glass/Transparent Surfaces
+  glassLight: activeTheme.glassLight,
+  glassBorder: activeTheme.glassBorder,
+  glassHeavy: activeTheme.glassHeavy,
+  
+  // Text Colors
+  textDark: activeTheme.textDark,
+  textLight: activeTheme.textLight,
+  textMuted: activeTheme.textMuted,
+  textSubtle: activeTheme.textSubtle,
+  
+  // Glow Effects
+  glowPrimary: activeTheme.glowPrimary,
+  glowSecondary: activeTheme.glowSecondary,
 
-  // Day Accent Colors — Premium & Harmonious
-  day1: '#7B5BA8',         // Day 1: Rich Purple
-  day2: '#9B7BC8',         // Day 2: Soft Lavender
-  day3: '#B8A0D6',         // Day 3: Light Purple
-  day4: '#D4C4E8',         // Day 4: Pale Lavender
-  day5: '#E8DFF5',         // Day 5: Very Light Purple
+  // Day Accent Colors
+  day1: activeTheme.day1,
+  day2: activeTheme.day2,
+  day3: activeTheme.day3,
+  day4: activeTheme.day4,
+  day5: activeTheme.day5,
 
   // Feedback
-  error: '#EF4444',
-  success: '#10B981',
+  error: activeTheme.error,
+  success: activeTheme.success,
 };
+
+// Export theme info for debugging/display
+export const currentTheme = {
+  name: activeTheme.name,
+  description: activeTheme.description,
+};
+
+// Export all available themes for theme switcher UI (future feature)
+export { themes, type ThemeName } from './colorThemes';

@@ -1,21 +1,23 @@
 import { Platform } from 'react-native';
 
 // Typography System
-// Playfair Display: Display/Headings - Wt 600 upright, 400-500 italic
-// DM Sans: Body/UI - Wt 400 regular, 500 medium ONLY
+// Font Family Names:
+// - Android: Use file name without extension (e.g., 'DMSans-Regular')
+// - iOS: Can use either file name or internal name (e.g., 'DM Sans')
+// We use file names for consistency across platforms
 
 export const typography = {
   // Playfair Display - Headings
   displayLarge: {
     fontSize: 36,
     fontFamily: 'PlayfairDisplay-SemiBold',
-    fontWeight: Platform.OS === 'android' ? undefined : '600',
+    fontWeight: '600' as const,
     lineHeight: 46,
   },
   displayMedium: {
     fontSize: 28,
     fontFamily: 'PlayfairDisplay-SemiBold',
-    fontWeight: Platform.OS === 'android' ? undefined : '600',
+    fontWeight: '600' as const,
     lineHeight: 38,
   },
   
@@ -23,69 +25,119 @@ export const typography = {
   displayItalic: {
     fontSize: 32,
     fontFamily: 'PlayfairDisplay-Italic',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     fontStyle: 'italic' as const,
     lineHeight: 42,
   },
   quoteItalic: {
     fontSize: 24,
     fontFamily: 'PlayfairDisplay-Italic',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     fontStyle: 'italic' as const,
     lineHeight: 34,
+  },
+  quoteItalicLarge: {
+    fontSize: 26,
+    fontFamily: 'PlayfairDisplay-Italic',
+    fontWeight: '400' as const,
+    fontStyle: 'italic' as const,
+    lineHeight: 38,
   },
 
   // DM Sans - Body
   bodyLarge: {
     fontSize: 18,
     fontFamily: 'DMSans-Regular',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     lineHeight: 26,
   },
   bodyMedium: {
     fontSize: 16,
     fontFamily: 'DMSans-Regular',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     lineHeight: 24,
   },
   bodySmall: {
     fontSize: 14,
     fontFamily: 'DMSans-Regular',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     lineHeight: 20,
   },
 
-  // DM Sans - UI Elements
+  // DM Sans - Medium Weight
   labelLarge: {
     fontSize: 17,
     fontFamily: 'DMSans-Medium',
-    fontWeight: Platform.OS === 'android' ? undefined : '500',
+    fontWeight: '500' as const,
     letterSpacing: 0.3,
   },
   labelMedium: {
     fontSize: 14,
     fontFamily: 'DMSans-Medium',
-    fontWeight: Platform.OS === 'android' ? undefined : '500',
+    fontWeight: '500' as const,
     letterSpacing: 0.5,
   },
   labelSmall: {
     fontSize: 12,
     fontFamily: 'DMSans-Medium',
-    fontWeight: Platform.OS === 'android' ? undefined : '500',
+    fontWeight: '500' as const,
     letterSpacing: 1,
   },
+  
+  // DM Sans - Bold Weight
+  labelBold: {
+    fontSize: 11,
+    fontFamily: 'DMSans-Bold',
+    fontWeight: '700' as const,
+    letterSpacing: 1.8,
+  },
+  bodyBold: {
+    fontSize: 16,
+    fontFamily: 'DMSans-Bold',
+    fontWeight: '700' as const,
+    lineHeight: 24,
+  },
+  
+  // Captions and Small Text
   caption: {
     fontSize: 11,
     fontFamily: 'DMSans-Regular',
-    fontWeight: Platform.OS === 'android' ? undefined : '400',
+    fontWeight: '400' as const,
     letterSpacing: 0.5,
+  },
+  captionSmall: {
+    fontSize: 10,
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400' as const,
+    letterSpacing: 2.2,
   },
 
   // Buttons
   button: {
     fontSize: 17,
     fontFamily: 'DMSans-Medium',
-    fontWeight: Platform.OS === 'android' ? undefined : '500',
+    fontWeight: '500' as const,
     letterSpacing: 0.3,
   },
+  buttonLarge: {
+    fontSize: 18,
+    fontFamily: 'DMSans-Bold',
+    fontWeight: '700' as const,
+    letterSpacing: 0.8,
+  },
+};
+
+// Font families - Use file names (works on both Android and iOS)
+export const fonts = {
+  // DM Sans - Use file names without .ttf
+  dmSansRegular: 'DMSans-Regular',
+  dmSansMedium: 'DMSans-Medium',
+  dmSansBold: 'DMSans-Bold',
+  dmSansItalic: 'DMSans-Italic',
+  
+  // Playfair Display - Use file names without .ttf
+  playfairRegular: 'PlayfairDisplay-Regular',
+  playfairItalic: 'PlayfairDisplay-Italic',
+  playfairSemiBold: 'PlayfairDisplay-SemiBold',
+  playfairMediumItalic: 'PlayfairDisplay-MediumItalic',
 };
