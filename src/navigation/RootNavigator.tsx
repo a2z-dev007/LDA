@@ -61,57 +61,61 @@ export const RootNavigator = () => {
     }
   }, []);
 
+  // All screens live in one stack at all times.
+  // initialRouteName controls where the user starts — this avoids the
+  // conditional-render re-mount bug where completing onboarding tears down
+  // the stack and lands back on Splash.
+  const initialRoute: keyof RootStackParamList = onboardingComplete ? 'Home' : 'Splash';
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!onboardingComplete ? (
-        <>
-          <Stack.Screen name="Splash" component={SplashScreen} />
-          <Stack.Screen name="Commitment" component={CommitmentScreen} />
-          <Stack.Screen name="NameKeeper" component={NameKeeperScreen} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Splash" component={SplashScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Navigator
+      initialRouteName={initialRoute}
+      screenOptions={{ headerShown: false }}
+    >
+      {/* Onboarding */}
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Commitment" component={CommitmentScreen} />
+      <Stack.Screen name="NameKeeper" component={NameKeeperScreen} />
 
-          {/* Day 1 */}
-          <Stack.Screen name="Day1Slider" component={Day1ConnectionSlider} />
-          <Stack.Screen name="Day1HonestMoment" component={Day1HonestMoment} />
-          <Stack.Screen name="Day1Quiz" component={Day1SparkQuiz} />
-          <Stack.Screen name="Day1Result" component={Day1ResultScreen} />
+      {/* Hub */}
+      <Stack.Screen name="Home" component={HomeScreen} />
 
-          {/* Bridges */}
-          <Stack.Screen name="Bridge1to2" component={Bridge1to2} />
-          <Stack.Screen name="Bridge2to3" component={Bridge2to3} />
-          <Stack.Screen name="Bridge3to4" component={Bridge3to4} />
-          <Stack.Screen name="Bridge4to5" component={Bridge4to5} />
+      {/* Day 1 */}
+      <Stack.Screen name="Day1Slider" component={Day1ConnectionSlider} />
+      <Stack.Screen name="Day1HonestMoment" component={Day1HonestMoment} />
+      <Stack.Screen name="Day1Quiz" component={Day1SparkQuiz} />
+      <Stack.Screen name="Day1Result" component={Day1ResultScreen} />
 
-          {/* Day 2 */}
-          <Stack.Screen name="Day2MoodPicker" component={Day2MoodPicker} />
-          <Stack.Screen name="Day2MoodFollowUp" component={Day2MoodFollowUp} />
+      {/* Bridges */}
+      <Stack.Screen name="Bridge1to2" component={Bridge1to2} />
+      <Stack.Screen name="Bridge2to3" component={Bridge2to3} />
+      <Stack.Screen name="Bridge3to4" component={Bridge3to4} />
+      <Stack.Screen name="Bridge4to5" component={Bridge4to5} />
 
-          {/* Day 3 */}
-          <Stack.Screen name="Day3AppreciationSnap" component={Day3AppreciationSnap} />
-          <Stack.Screen name="Day3AssumptionsTest" component={Day3AssumptionsTest} />
-          <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
-          <Stack.Screen name="Day3MirrorResults" component={Day3MirrorResults} />
+      {/* Day 2 */}
+      <Stack.Screen name="Day2MoodPicker" component={Day2MoodPicker} />
+      <Stack.Screen name="Day2MoodFollowUp" component={Day2MoodFollowUp} />
 
-          {/* Day 4 */}
-          <Stack.Screen name="Day4MemoryJar" component={Day4MemoryJar} />
-          <Stack.Screen name="Day4TinyCompliment" component={Day4TinyCompliment} />
-          <Stack.Screen name="Day4DailyTwo" component={Day4DailyTwo} />
-          <Stack.Screen name="Day4TriviaFact" component={Day4TriviaFact} />
-          <Stack.Screen name="Day4DropBox" component={Day4DropBox} />
+      {/* Day 3 */}
+      <Stack.Screen name="Day3AppreciationSnap" component={Day3AppreciationSnap} />
+      <Stack.Screen name="Day3AssumptionsTest" component={Day3AssumptionsTest} />
+      <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
+      <Stack.Screen name="Day3MirrorResults" component={Day3MirrorResults} />
 
-          {/* Day 5 */}
-          <Stack.Screen name="Day5Celebration" component={Day5Celebration} />
-          <Stack.Screen name="Day5ReportCard" component={Day5ReportCard} />
-          <Stack.Screen name="Day5ThePromise" component={Day5ThePromise} />
-          <Stack.Screen name="Day5JarReveal" component={Day5JarReveal} />
-          <Stack.Screen name="Day5TheLetter" component={Day5TheLetter} />
-          <Stack.Screen name="Day5PartnerInvite" component={Day5PartnerInvite} />
-        </>
-      )}
+      {/* Day 4 */}
+      <Stack.Screen name="Day4MemoryJar" component={Day4MemoryJar} />
+      <Stack.Screen name="Day4TinyCompliment" component={Day4TinyCompliment} />
+      <Stack.Screen name="Day4DailyTwo" component={Day4DailyTwo} />
+      <Stack.Screen name="Day4TriviaFact" component={Day4TriviaFact} />
+      <Stack.Screen name="Day4DropBox" component={Day4DropBox} />
+
+      {/* Day 5 */}
+      <Stack.Screen name="Day5Celebration" component={Day5Celebration} />
+      <Stack.Screen name="Day5ReportCard" component={Day5ReportCard} />
+      <Stack.Screen name="Day5ThePromise" component={Day5ThePromise} />
+      <Stack.Screen name="Day5JarReveal" component={Day5JarReveal} />
+      <Stack.Screen name="Day5TheLetter" component={Day5TheLetter} />
+      <Stack.Screen name="Day5PartnerInvite" component={Day5PartnerInvite} />
     </Stack.Navigator>
   );
 };

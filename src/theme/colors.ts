@@ -9,7 +9,7 @@ import { themes, ThemeName } from './colorThemes';
 // - 'romanticRoseGold' (soft rose gold)
 // - 'midnightPassion' (deep blue with hot pink)
 
-const ACTIVE_THEME: ThemeName = 'luxePinkGold';
+const ACTIVE_THEME: ThemeName = 'midnightPassion';
 
 // ============================================
 // Export active theme colors
