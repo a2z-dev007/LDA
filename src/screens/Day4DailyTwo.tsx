@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { dailyTwoQuestions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
@@ -18,6 +18,8 @@ import { memoryRef } from './Day4MemoryJar';
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DailyTwo'>;
 
 export const Day4DailyTwo: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const completeDay4 = useDayStore((s) => s.completeDay4);
   const day4 = useDayStore((s) => s.day4);
@@ -104,26 +106,26 @@ export const Day4DailyTwo: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 28, paddingBottom: 8 },
-  eyebrow: { color: colors.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
-  title: { fontSize: 26, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
-  subtitle: { fontSize: 14, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular', lineHeight: 22, marginBottom: 32 },
+  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
+  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
+  subtitle: { fontSize: 14, color: c.textHint, fontFamily: 'Inter-Regular', lineHeight: 22, marginBottom: 32 },
   questionBlock: { marginBottom: 8 },
-  qNumber: { color: colors.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1, marginBottom: 8 },
-  qText: { fontSize: 18, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 14 },
+  qNumber: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1, marginBottom: 8 },
+  qText: { fontSize: 18, color: c.text, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 14 },
   input: {
-    color: '#FFFFFF', fontSize: 15, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12,
+    color: c.text, fontSize: 15, fontFamily: 'Inter-Regular',
+    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
     padding: 14, minHeight: 80, lineHeight: 22,
   },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.07)', marginVertical: 24 },
-  hook: { color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular', textAlign: 'center', marginTop: 24, marginBottom: 8, lineHeight: 20 },
+  divider: { height: 1, backgroundColor: c.surface, marginVertical: 24 },
+  hook: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', textAlign: 'center', marginTop: 24, marginBottom: 8, lineHeight: 20 },
   cta: {
-    backgroundColor: colors.day4, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day4, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
   ctaDim: { opacity: 0.5 },
-  ctaLabel: { color: '#FFFFFF', fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { reframeTextAsync } from '../services/toneReframer';
 import { haptics } from '../utils/haptics';
@@ -16,6 +16,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DropBox'>;
 
 export const Day4DropBox: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day4 = useDayStore((s) => s.day4);
   const completeDay4 = useDayStore((s) => s.completeDay4);
@@ -122,36 +124,36 @@ export const Day4DropBox: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: colors.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
-  title: { fontSize: 26, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
-  subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 24 },
+  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
+  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
+  subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 24 },
   input: {
-    color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12,
+    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
+    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
     padding: 16, minHeight: 140, lineHeight: 24, marginBottom: 12,
   },
-  privacyNote: { color: 'rgba(255,255,255,0.25)', fontSize: 12, fontFamily: 'Inter-Regular', marginBottom: 16 },
+  privacyNote: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginBottom: 16 },
   reframeBtn: {
-    backgroundColor: `${colors.day4}30`, borderWidth: 1.5, borderColor: colors.day4,
+    backgroundColor: `${c.day4}30`, borderWidth: 1.5, borderColor: c.day4,
     paddingVertical: 14, borderRadius: 100, alignItems: 'center',
   },
-  reframeBtnLabel: { color: colors.day4, fontSize: 15, fontFamily: 'Inter-SemiBold' },
+  reframeBtnLabel: { color: c.day4, fontSize: 15, fontFamily: 'Inter-SemiBold' },
   reframeResult: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 24, gap: 16,
+    backgroundColor: c.surface, borderRadius: 16, padding: 24, gap: 16,
   },
-  reframeLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
-  reframeText: { color: '#FFFFFF', fontSize: 18, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
+  reframeLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
+  reframeText: { color: c.text, fontSize: 18, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   reframeActions: { flexDirection: 'row', gap: 12 },
   keepBtn: {
-    flex: 1, backgroundColor: colors.day4, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
+    flex: 1, backgroundColor: c.day4, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
   },
-  keepBtnLabel: { color: '#FFFFFF', fontSize: 15, fontFamily: 'Inter-SemiBold' },
+  keepBtnLabel: { color: c.text, fontSize: 15, fontFamily: 'Inter-SemiBold' },
   discardBtn: {
-    flex: 1, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', paddingVertical: 14, borderRadius: 100, alignItems: 'center',
+    flex: 1, borderWidth: 1, borderColor: c.surfaceBorder, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
   },
-  discardBtnLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 15, fontFamily: 'Inter-Regular' },
+  discardBtnLabel: { color: c.textSecondary, fontSize: 15, fontFamily: 'Inter-Regular' },
   skipLink: { alignItems: 'center', paddingBottom: 40 },
-  skipLinkLabel: { color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular' },
+  skipLinkLabel: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
 });

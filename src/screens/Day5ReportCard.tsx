@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { personalityTypes } from '../data/personalityTypes';
@@ -14,10 +14,12 @@ import { haptics } from '../utils/haptics';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5ReportCard'>;
 
-const DAY_COLORS = [colors.day1, colors.day2, colors.day3, colors.day4, colors.day5];
 const DAY_LABELS = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'];
 
 export const Day5ReportCard: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
+  const DAY_COLORS = [colors.day1, colors.day2, colors.day3, colors.day4, colors.day5];
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const day2 = useDayStore((s) => s.day2);
@@ -131,49 +133,49 @@ export const Day5ReportCard: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  title: { fontSize: 28, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', marginBottom: 28 },
+  title: { fontSize: 28, color: c.text, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 28 },
   section: { marginBottom: 32 },
   sectionLabel: {
-    color: 'rgba(255,255,255,0.35)', fontSize: 11, fontFamily: 'Inter-SemiBold',
+    color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold',
     letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16,
   },
   chart: { flexDirection: 'row', height: 120, gap: 8, alignItems: 'flex-end', marginBottom: 16 },
   barContainer: { flex: 1, alignItems: 'center', gap: 6 },
-  barTrack: { flex: 1, width: '100%', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 4, justifyContent: 'flex-end' },
+  barTrack: { flex: 1, width: '100%', backgroundColor: c.surface, borderRadius: 4, justifyContent: 'flex-end' },
   barFill: { width: '100%', borderRadius: 4, minHeight: 4 },
   barLabel: { fontSize: 10, fontFamily: 'Inter-SemiBold' },
-  chartInsight: { color: 'rgba(255,255,255,0.6)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24, textAlign: 'center' },
+  chartInsight: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24, textAlign: 'center' },
   personalityCard: { borderWidth: 1.5, borderRadius: 16, padding: 20, gap: 16 },
   personalityName: { fontSize: 22, fontFamily: 'PlayfairDisplay-Bold' },
   strengthsList: { gap: 8 },
   strengthRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   strengthBullet: { fontSize: 12, lineHeight: 22 },
-  strengthText: { color: 'rgba(255,255,255,0.8)', fontSize: 14, fontFamily: 'Inter-Regular', flex: 1, lineHeight: 22 },
-  growthBox: { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 10, padding: 14 },
-  growthLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 },
-  growthText: { color: 'rgba(255,255,255,0.7)', fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
+  strengthText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', flex: 1, lineHeight: 22 },
+  growthBox: { backgroundColor: c.surface, borderRadius: 10, padding: 14 },
+  growthLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 },
+  growthText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
   journalEntry: { flexDirection: 'row', gap: 14, marginBottom: 16 },
   entryDot: { width: 8, height: 8, borderRadius: 4, marginTop: 6 },
   entryContent: { flex: 1, gap: 6 },
-  entryDay: { color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1, textTransform: 'uppercase' },
+  entryDay: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1, textTransform: 'uppercase' },
   intentionPill: {
-    alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.08)',
+    alignSelf: 'flex-start', backgroundColor: c.surface,
     borderRadius: 100, paddingHorizontal: 10, paddingVertical: 3,
   },
-  intentionPillText: { color: 'rgba(255,255,255,0.5)', fontSize: 11, fontFamily: 'Inter-SemiBold' },
-  entryText: { color: 'rgba(255,255,255,0.7)', fontSize: 14, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 22 },
-  emptyText: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: 'Inter-Regular', fontStyle: 'italic' },
+  intentionPillText: { color: c.textSecondary, fontSize: 11, fontFamily: 'Inter-SemiBold' },
+  entryText: { color: c.textSecondary, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 22 },
+  emptyText: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular', fontStyle: 'italic' },
   jarPreview: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 24,
+    backgroundColor: c.surface, borderRadius: 16, padding: 24,
     alignItems: 'center', gap: 12,
   },
   jarIcon: { fontSize: 48 },
-  jarPreviewText: { color: 'rgba(255,255,255,0.4)', fontSize: 14, fontFamily: 'Inter-Regular' },
+  jarPreviewText: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
   cta: {
-    backgroundColor: colors.day5, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

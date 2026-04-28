@@ -1,4 +1,7 @@
 export type RootStackParamList = {
+  // ── Intro slider (shown once, before Splash) ──────
+  Intro: undefined;
+
   // ── Onboarding ───────────────────────────────────
   Splash: undefined;
   Commitment: undefined;

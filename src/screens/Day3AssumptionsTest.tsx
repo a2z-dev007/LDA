@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { assumptionsSets } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
@@ -13,6 +13,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day3AssumptionsTest'>;
 
 export const Day3AssumptionsTest: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const completeDay3 = useDayStore((s) => s.completeDay3);
@@ -93,24 +95,24 @@ export const Day3AssumptionsTest: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   progressContainer: { paddingHorizontal: 28, paddingTop: 8, paddingBottom: 16, gap: 8 },
-  progressTrack: { height: 3, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2 },
-  progressFill: { height: '100%', backgroundColor: colors.day3, borderRadius: 2 },
-  progressText: { color: 'rgba(255,255,255,0.3)', fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right' },
+  progressTrack: { height: 3, backgroundColor: c.surface, borderRadius: 2 },
+  progressFill: { height: '100%', backgroundColor: c.day3, borderRadius: 2 },
+  progressText: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right' },
   body: { flex: 1, paddingHorizontal: 28, justifyContent: 'center' },
-  eyebrow: { color: colors.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 32 },
+  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 32 },
   statement: {
-    fontSize: 26, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold',
+    fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 38, marginBottom: 24,
   },
-  instruction: { fontSize: 15, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular' },
+  instruction: { fontSize: 15, color: c.textHint, fontFamily: 'Inter-Regular' },
   buttons: { flexDirection: 'row', paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
   answerBtn: {
     flex: 1, paddingVertical: 20, borderRadius: 16, alignItems: 'center',
     borderWidth: 1.5,
   },
-  trueBtn: { borderColor: colors.day3, backgroundColor: `${colors.day3}15` },
-  falseBtn: { borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.05)' },
-  answerBtnLabel: { color: '#FFFFFF', fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 1 },
+  trueBtn: { borderColor: c.day3, backgroundColor: `${c.day3}15` },
+  falseBtn: { borderColor: c.surfaceBorder, backgroundColor: c.surface },
+  answerBtnLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 1 },
 });

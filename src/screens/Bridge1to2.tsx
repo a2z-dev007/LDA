@@ -6,7 +6,7 @@ import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { StreakRing } from '../components/common/StreakRing';
 import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { bridgeQuotes } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -16,6 +16,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge1to2'>;
 
 export const Bridge1to2: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const setIntentionWord = useDayStore((s) => s.setDay2IntentionWord);
@@ -78,36 +80,36 @@ export const Bridge1to2: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16, gap: 28 },
   zone1: { alignItems: 'center', gap: 16 },
   shieldCard: {
-    backgroundColor: `${colors.primary}20`, borderRadius: 12, padding: 16,
-    borderWidth: 1, borderColor: `${colors.primary}40`,
+    backgroundColor: `${c.primary}20`, borderRadius: 12, padding: 16,
+    borderWidth: 1, borderColor: `${c.primary}40`,
   },
-  shieldText: { color: 'rgba(255,255,255,0.7)', fontSize: 14, fontFamily: 'PlayfairDisplay-Italic', textAlign: 'center' },
+  shieldText: { color: c.textSecondary, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic', textAlign: 'center' },
   zone2: { gap: 12 },
-  recapLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
+  recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   recapCard: {
     flexDirection: 'row', alignItems: 'baseline', gap: 8,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 20,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
   },
-  recapScore: { fontSize: 48, color: colors.day1, fontFamily: 'PlayfairDisplay-Bold' },
-  recapScoreLabel: { fontSize: 16, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular' },
+  recapScore: { fontSize: 48, color: c.day1, fontFamily: 'PlayfairDisplay-Bold' },
+  recapScoreLabel: { fontSize: 16, color: c.textHint, fontFamily: 'Inter-Regular' },
   typeCard: {
     borderWidth: 1.5, borderRadius: 14, padding: 16,
   },
   typeName: { fontSize: 18, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 4 },
-  typeDesc: { fontSize: 13, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular' },
+  typeDesc: { fontSize: 13, color: c.textSecondary, fontFamily: 'Inter-Regular' },
   zone2b: {},
   zone3: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 20,
-    borderLeftWidth: 3, borderLeftColor: colors.day2,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    borderLeftWidth: 3, borderLeftColor: c.day2,
   },
-  quote: { color: 'rgba(255,255,255,0.7)', fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
+  quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   cta: {
-    backgroundColor: colors.day2, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day2, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

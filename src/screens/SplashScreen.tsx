@@ -5,12 +5,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Splash'>;
 
 export const SplashScreen: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const onboardingComplete = useUserStore((s) => s.onboardingComplete);
 
@@ -111,7 +113,7 @@ export const SplashScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   gradient: {
     flex: 1,
   },
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: `${colors.primary}20`,
+    backgroundColor: `${c.primary}20`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: `${colors.primary}40`,
+    backgroundColor: `${c.primary}40`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -153,11 +155,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
   },
   title: {
     fontSize: 15,
-    color: colors.primary,
+    color: c.primary,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
     letterSpacing: 3.5,
@@ -169,16 +171,16 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   factCard: {
-    backgroundColor: colors.glassLight,
+    backgroundColor: c.glassLight,
     borderRadius: 24,
     padding: 32,
     marginBottom: 56,
     borderWidth: 1,
-    borderColor: colors.glassBorder,
+    borderColor: c.glassBorder,
   },
   factLabel: {
     fontSize: 11,
-    color: colors.primary,
+    color: c.primary,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
     letterSpacing: 1.8,
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
   },
   factText: {
     fontSize: 16,
-    color: colors.textLight,
+    color: c.text,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
     lineHeight: 26,
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
   },
   quote: {
     fontSize: 26,
-    color: colors.textLight,
+    color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     fontStyle: 'italic',
     lineHeight: 38,
@@ -208,14 +210,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
     paddingVertical: 20,
     paddingHorizontal: 32,
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
-    shadowColor: colors.primary,
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonText: {
-    color: colors.white,
+    color: c.text,
     fontSize: 18,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
@@ -231,13 +233,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   buttonIcon: {
-    color: colors.white,
+    color: c.text,
     fontSize: 22,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
   },
   footer: {
-    color: colors.textSubtle,
+    color: c.textSubtle,
     fontSize: 10,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',

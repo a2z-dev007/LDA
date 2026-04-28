@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 
 interface GlowButtonProps {
     title: string;
@@ -20,6 +20,8 @@ export const GlowButton: React.FC<GlowButtonProps> = ({
     textStyle,
     variant = 'gradient',
 }) => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
     if (variant === 'gradient') {
         return (
             <TouchableOpacity
@@ -69,7 +71,7 @@ export const GlowButton: React.FC<GlowButtonProps> = ({
     );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     container: {
         width: '100%',
     },
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: colors.glowPrimary,
+        shadowColor: c.glowPrimary,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.6,
         shadowRadius: 16,
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
         elevation: 0,
     },
     solidButton: {
-        backgroundColor: colors.white,
+        backgroundColor: c.white,
         paddingVertical: 18,
         paddingHorizontal: 32,
         borderRadius: 30,
@@ -103,18 +105,18 @@ const styles = StyleSheet.create({
         elevation: 8,
     },
     solidButtonDisabled: {
-        backgroundColor: colors.glassHeavy,
+        backgroundColor: c.glassHeavy,
         shadowOpacity: 0,
         elevation: 0,
     },
     text: {
-        color: colors.white,
+        color: c.text,
         fontSize: 18,
         fontFamily: 'DMSans-Bold',
         fontWeight: '700',
         letterSpacing: 0.8,
     },
     textDisabled: {
-        color: colors.textMuted,
+        color: c.textMuted,
     },
 });

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { personalityTypes } from '../data/personalityTypes';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -15,6 +15,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Result'>;
 
 export const Day1ResultScreen: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const recordActivity = useStreakStore((s) => s.recordActivity);
@@ -111,11 +113,11 @@ export const Day1ResultScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: 28, paddingTop: 60, paddingBottom: 20 },
   reveal: {
-    color: 'rgba(255,255,255,0.4)', fontSize: 14, fontFamily: 'Inter-Regular',
+    color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular',
     letterSpacing: 1, marginBottom: 20, textAlign: 'center',
   },
   card: {
@@ -124,10 +126,10 @@ const styles = StyleSheet.create({
   cardAccent: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
   typeName: { fontSize: 28, fontFamily: 'PlayfairDisplay-Bold', marginTop: 8, marginBottom: 6 },
   typeSubLabel: {
-    fontSize: 14, color: 'rgba(255,255,255,0.5)', fontFamily: 'PlayfairDisplay-Italic',
+    fontSize: 14, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic',
     marginBottom: 14, lineHeight: 22,
   },
-  typeDescription: { fontSize: 15, color: 'rgba(255,255,255,0.8)', fontFamily: 'Inter-Regular', lineHeight: 23 },
+  typeDescription: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 23 },
   details: { gap: 16 },
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   pill: {
@@ -138,19 +140,19 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderRadius: 12, padding: 20,
   },
   growthLabel: {
-    color: 'rgba(255,255,255,0.35)', fontSize: 11, fontFamily: 'Inter-SemiBold',
+    color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold',
     letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8,
   },
-  growthText: { color: 'rgba(255,255,255,0.75)', fontSize: 15, fontFamily: 'Inter-Regular', lineHeight: 22 },
+  growthText: { color: c.textSecondary, fontSize: 15, fontFamily: 'Inter-Regular', lineHeight: 22 },
   keyLine: {
-    color: 'rgba(255,255,255,0.6)', fontSize: 17, fontFamily: 'PlayfairDisplay-Italic',
+    color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 28, textAlign: 'center', marginVertical: 8,
   },
   cta: {
     marginHorizontal: 28, marginBottom: 12, paddingVertical: 18,
     borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   ghostCta: { alignItems: 'center', marginBottom: 40 },
-  ghostCtaLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 15, fontFamily: 'Inter-Regular' },
+  ghostCtaLabel: { color: c.textHint, fontSize: 15, fontFamily: 'Inter-Regular' },
 });

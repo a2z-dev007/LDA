@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { colors } from '../../theme';
+import { useAppColors } from '../../theme';
 
 interface Props {
   streakCount: number;
@@ -8,6 +8,8 @@ interface Props {
 }
 
 export const StreakRing: React.FC<Props> = ({ streakCount, size = 80 }) => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const scale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -25,14 +27,14 @@ export const StreakRing: React.FC<Props> = ({ streakCount, size = 80 }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   ring: {
     borderWidth: 3,
-    borderColor: colors.primary,
+    borderColor: c.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: `${colors.primary}15`,
-    shadowColor: colors.primary,
+    backgroundColor: `${c.primary}15`,
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
@@ -40,13 +42,13 @@ const styles = StyleSheet.create({
   },
   number: {
     fontSize: 26,
-    color: colors.primary,
+    color: c.primary,
     fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 30,
   },
   label: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.5)',
+    color: c.textSecondary,
     fontFamily: 'Inter-Regular',
   },
 });

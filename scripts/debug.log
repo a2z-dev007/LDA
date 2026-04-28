@@ -1,0 +1,11 @@
+Found StyleSheet.create at index: 3503
+Snippet around it:
+;
+
+const styles = StyleSheet.create({
+  content: { padding: 28, paddingBottom: 16 },
+  eyebrow: { color: colors.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBo
+
+---
+Contains colors.? true
+Contains colors. after StyleSheet.create? true

@@ -5,7 +5,7 @@ import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { honestMomentCopy, resolveSegment } from '../data/quizData';
 import { haptics } from '../utils/haptics';
 
@@ -13,6 +13,8 @@ type Nav = StackNavigationProp<RootStackParamList, 'Day1HonestMoment'>;
 type RouteProps = StackScreenProps<RootStackParamList, 'Day1HonestMoment'>['route'];
 
 export const Day1HonestMoment: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const route = useRoute<RouteProps>();
   const { sliderScore } = route.params;
@@ -65,7 +67,7 @@ export const Day1HonestMoment: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: {
     flex: 1,
     paddingHorizontal: 32,
@@ -73,19 +75,19 @@ const styles = StyleSheet.create({
   },
   scoreNumber: {
     fontSize: 96,
-    color: colors.day1,
+    color: c.day1,
     fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 100,
     marginBottom: 32,
   },
   copy: {
     fontSize: 20,
-    color: 'rgba(255,255,255,0.85)',
+    color: c.textSecondary,
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 32,
   },
   cta: {
-    backgroundColor: colors.day1,
+    backgroundColor: c.day1,
     marginHorizontal: 32,
     marginBottom: 48,
     paddingVertical: 18,
@@ -93,13 +95,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ctaLabel: {
-    color: colors.dark,
+    color: c.dark,
     fontSize: 17,
     fontFamily: 'Inter-SemiBold',
     letterSpacing: 0.3,
   },
   ctaSub: {
-    color: `${colors.dark}99`,
+    color: `${c.dark}99`,
     fontSize: 12,
     fontFamily: 'Inter-Regular',
     marginTop: 3,

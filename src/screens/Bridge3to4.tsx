@@ -6,7 +6,7 @@ import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { StreakRing } from '../components/common/StreakRing';
 import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { bridgeQuotes, moodOptions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -15,6 +15,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge3to4'>;
 
 export const Bridge3to4: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day3 = useDayStore((s) => s.day3);
   const day2 = useDayStore((s) => s.day2);
@@ -81,33 +83,33 @@ export const Bridge3to4: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16, gap: 24 },
   zone1: { alignItems: 'center' },
   zone2: { gap: 12 },
-  recapLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
+  recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   scoreCard: {
     flexDirection: 'row', alignItems: 'baseline', gap: 10,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 20,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
   },
-  scoreNum: { fontSize: 48, color: colors.day3, fontFamily: 'PlayfairDisplay-Bold' },
-  scoreOf: { fontSize: 16, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular' },
-  snapCard: { backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: 16 },
-  snapLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
-  snapText: { color: 'rgba(255,255,255,0.7)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
+  scoreNum: { fontSize: 48, color: c.day3, fontFamily: 'PlayfairDisplay-Bold' },
+  scoreOf: { fontSize: 16, color: c.textHint, fontFamily: 'Inter-Regular' },
+  snapCard: { backgroundColor: c.surface, borderRadius: 14, padding: 16 },
+  snapLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
+  snapText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   repeatMoodCard: {
-    backgroundColor: `${colors.day4}15`, borderRadius: 14, padding: 16,
-    borderWidth: 1, borderColor: `${colors.day4}40`,
+    backgroundColor: `${c.day4}15`, borderRadius: 14, padding: 16,
+    borderWidth: 1, borderColor: `${c.day4}40`,
   },
-  repeatMoodText: { color: 'rgba(255,255,255,0.65)', fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
+  repeatMoodText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
   zone3: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 20,
-    borderLeftWidth: 3, borderLeftColor: colors.day4,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    borderLeftWidth: 3, borderLeftColor: c.day4,
   },
-  quote: { color: 'rgba(255,255,255,0.7)', fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
+  quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   cta: {
-    backgroundColor: colors.day4, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day4, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

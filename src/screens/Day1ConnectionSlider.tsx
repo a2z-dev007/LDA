@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { resolveSegment } from '../data/quizData';
@@ -18,6 +18,8 @@ const { width } = Dimensions.get('window');
 const TRACK_WIDTH = width - 64;
 
 export const Day1ConnectionSlider: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const setDay1Slider = useDayStore((s) => s.setDay1Slider);
   const [score, setScore] = useState(5);
@@ -92,40 +94,40 @@ export const Day1ConnectionSlider: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 32, justifyContent: 'center' },
   eyebrow: {
-    color: colors.day1, fontSize: 12, fontFamily: 'Inter-SemiBold',
+    color: c.day1, fontSize: 12, fontFamily: 'Inter-SemiBold',
     letterSpacing: 2, textTransform: 'uppercase', marginBottom: 20,
   },
   question: {
-    fontSize: 24, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold',
+    fontSize: 24, color: c.text, fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 34, marginBottom: 40,
   },
   scoreContainer: { alignItems: 'center', marginBottom: 48 },
   scoreNumber: {
-    fontSize: 96, color: colors.day1, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 100,
+    fontSize: 96, color: c.day1, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 100,
   },
   trackWrapper: { height: 44, justifyContent: 'center' },
   track: {
-    height: 4, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 2, overflow: 'hidden',
+    height: 4, backgroundColor: c.surface, borderRadius: 2, overflow: 'hidden',
   },
-  fill: { height: '100%', backgroundColor: colors.day1, borderRadius: 2 },
+  fill: { height: '100%', backgroundColor: c.day1, borderRadius: 2 },
   thumb: {
     position: 'absolute', width: 28, height: 28, borderRadius: 14,
-    backgroundColor: colors.day1, top: 8, marginLeft: -14,
-    shadowColor: colors.day1, shadowOffset: { width: 0, height: 0 },
+    backgroundColor: c.day1, top: 8, marginLeft: -14,
+    shadowColor: c.day1, shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.6, shadowRadius: 8, elevation: 6,
   },
   scaleLabels: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
-  scaleEnd: { color: 'rgba(255,255,255,0.3)', fontSize: 13, fontFamily: 'Inter-Regular' },
+  scaleEnd: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
   honesty: {
-    color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular',
+    color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular',
     textAlign: 'center', marginTop: 32, letterSpacing: 1,
   },
   cta: {
-    backgroundColor: colors.day1, marginHorizontal: 32, marginBottom: 48,
+    backgroundColor: c.day1, marginHorizontal: 32, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

@@ -6,7 +6,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { sparkQuizQuestions } from '../data/quizData';
 import { calculatePersonalityType } from '../data/personalityTypes';
 import { useDayStore } from '../store/useDayStore';
@@ -25,7 +25,29 @@ const BORDER = 3;
 // fill sequentially based on progress (0.0 → 1.0).
 // Each side = 25% of total perimeter.
 // ─────────────────────────────────────────────────────────────
-const ProgressBorder: React.FC<{ progress: number }> = ({ progress }) => {
+// Border segment styles — no theme colors, safe at module level
+const borderStyles = StyleSheet.create({
+  borderTop: {
+    position: 'absolute', top: 0, left: 0,
+    height: BORDER, zIndex: 100,
+  },
+  borderRight: {
+    position: 'absolute', top: 0, right: 0,
+    width: BORDER, zIndex: 100,
+  },
+  borderBottom: {
+    position: 'absolute', bottom: 0, right: 0,
+    height: BORDER, zIndex: 100,
+  },
+  borderLeft: {
+    position: 'absolute', bottom: 0, left: 0,
+    width: BORDER, zIndex: 100,
+  },
+});
+
+const ProgressBorder: React.FC<{ progress: number; glowColor: string; primaryColor: string }> = ({
+  progress, glowColor, primaryColor,
+}) => {
   const animatedProgress = useRef(new Animated.Value(progress)).current;
 
   useEffect(() => {
@@ -66,7 +88,7 @@ const ProgressBorder: React.FC<{ progress: number }> = ({ progress }) => {
   });
 
   const glowStyle = {
-    shadowColor: colors.glowPrimary,
+    shadowColor: glowColor,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.9,
     shadowRadius: 8,
@@ -75,26 +97,10 @@ const ProgressBorder: React.FC<{ progress: number }> = ({ progress }) => {
 
   return (
     <>
-      {/* Top — left to right */}
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.borderTop, glowStyle, { width: topWidth }]}
-      />
-      {/* Right — top to bottom */}
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.borderRight, glowStyle, { height: rightHeight }]}
-      />
-      {/* Bottom — right to left */}
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.borderBottom, glowStyle, { width: bottomWidth }]}
-      />
-      {/* Left — bottom to top */}
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.borderLeft, glowStyle, { height: leftHeight }]}
-      />
+      <Animated.View pointerEvents="none" style={[borderStyles.borderTop,    glowStyle, { width: topWidth,     backgroundColor: primaryColor }]} />
+      <Animated.View pointerEvents="none" style={[borderStyles.borderRight,  glowStyle, { height: rightHeight, backgroundColor: primaryColor }]} />
+      <Animated.View pointerEvents="none" style={[borderStyles.borderBottom, glowStyle, { width: bottomWidth,  backgroundColor: primaryColor }]} />
+      <Animated.View pointerEvents="none" style={[borderStyles.borderLeft,   glowStyle, { height: leftHeight,  backgroundColor: primaryColor }]} />
     </>
   );
 };
@@ -103,6 +109,8 @@ const ProgressBorder: React.FC<{ progress: number }> = ({ progress }) => {
 // Main Screen
 // ─────────────────────────────────────────────────────────────
 export const Day1SparkQuiz: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const route = useRoute<RouteProps>();
   const { sliderScore } = route.params;
@@ -162,7 +170,7 @@ export const Day1SparkQuiz: React.FC = () => {
       <QuizBackground variant={Math.floor(currentIndex / 2)} />
 
       {/* Animated progress border — drawn on top of everything */}
-      <ProgressBorder progress={borderProgress} />
+      <ProgressBorder progress={borderProgress} glowColor={colors.glowPrimary} primaryColor={colors.primary} />
 
       {/* Content */}
       <Animated.View
@@ -216,44 +224,10 @@ export const Day1SparkQuiz: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.dark,
-  },
-
-  // ── Progress border segments ──────────────────────────────
-  borderTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: BORDER,
-    backgroundColor: colors.primary,
-    zIndex: 100,
-  },
-  borderRight: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: BORDER,
-    backgroundColor: colors.primary,
-    zIndex: 100,
-  },
-  borderBottom: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    height: BORDER,
-    backgroundColor: colors.primary,
-    zIndex: 100,
-  },
-  borderLeft: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: BORDER,
-    backgroundColor: colors.primary,
-    zIndex: 100,
+    backgroundColor: c.dark,
   },
 
   // ── Content ───────────────────────────────────────────────
@@ -264,7 +238,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   counter: {
-    color: 'rgba(255,255,255,0.3)',
+    color: c.textHint,
     fontSize: 13,
     fontFamily: 'Inter-Regular',
     letterSpacing: 1,
@@ -272,29 +246,29 @@ const styles = StyleSheet.create({
   },
   moodBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: `${colors.primary}22`,
+    backgroundColor: `${c.primary}22`,
     borderWidth: 1,
-    borderColor: `${colors.primary}55`,
+    borderColor: `${c.primary}55`,
     borderRadius: 100,
     paddingHorizontal: 14,
     paddingVertical: 6,
     marginBottom: 28,
   },
   moodBadgeText: {
-    color: colors.primary,
+    color: c.primary,
     fontSize: 12,
     fontFamily: 'Inter-SemiBold',
     letterSpacing: 0.5,
   },
   question: {
     fontSize: 28,
-    color: '#FFFFFF',
+    color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 40,
     marginBottom: 48,
   },
   swipeHint: {
-    color: 'rgba(255,255,255,0.2)',
+    color: c.textHint,
     fontSize: 12,
     fontFamily: 'Inter-Regular',
     textAlign: 'center',
@@ -304,29 +278,29 @@ const styles = StyleSheet.create({
   options: { gap: 16 },
   option: {
     borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: c.surfaceBorder,
     borderRadius: 16,
     paddingVertical: 22,
     paddingHorizontal: 24,
     alignItems: 'center',
   },
   optionSelected: {
-    borderColor: colors.primary,
-    backgroundColor: `${colors.primary}15`,
-    shadowColor: colors.glowPrimary,
+    borderColor: c.primary,
+    backgroundColor: `${c.primary}15`,
+    shadowColor: c.glowPrimary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
     elevation: 6,
   },
   optionText: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 17,
     fontFamily: 'Inter-Regular',
     textAlign: 'center',
     lineHeight: 24,
   },
   orDivider: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  orLine: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.1)' },
-  orText: { color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular' },
+  orLine: { flex: 1, height: 1, backgroundColor: c.surface },
+  orText: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
 });

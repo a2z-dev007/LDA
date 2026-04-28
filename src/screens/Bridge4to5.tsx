@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { StreakRing } from '../components/common/StreakRing';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { bridgeQuotes } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -14,6 +14,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge4to5'>;
 
 export const Bridge4to5: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day4 = useDayStore((s) => s.day4);
   const streakCount = useStreakStore((s) => s.streakCount);
@@ -71,33 +73,33 @@ export const Bridge4to5: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16, gap: 24 },
   zone1: { alignItems: 'center', gap: 12 },
-  streakLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic' },
+  streakLabel: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic' },
   zone2: { gap: 12 },
-  recapLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
+  recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   memoryCard: {
     flexDirection: 'row', alignItems: 'flex-start', gap: 14,
-    backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 20,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
   },
   jarIcon: { fontSize: 32 },
-  memoryText: { flex: 1, color: 'rgba(255,255,255,0.7)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
+  memoryText: { flex: 1, color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   complimentCard: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    backgroundColor: `${colors.day4}15`, borderRadius: 14, padding: 16,
-    borderWidth: 1, borderColor: `${colors.day4}40`,
+    backgroundColor: `${c.day4}15`, borderRadius: 14, padding: 16,
+    borderWidth: 1, borderColor: `${c.day4}40`,
   },
-  complimentLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 13, fontFamily: 'Inter-Regular' },
+  complimentLabel: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
   complimentWord: { fontSize: 18, fontFamily: 'PlayfairDisplay-Bold' },
   zone3: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 20,
-    borderLeftWidth: 3, borderLeftColor: colors.day5,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    borderLeftWidth: 3, borderLeftColor: c.day5,
   },
-  quote: { color: 'rgba(255,255,255,0.7)', fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
+  quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   cta: {
-    backgroundColor: colors.day5, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

@@ -8,6 +8,7 @@ import { useStreakStore } from '../store/useStreakStore';
 import { SplashScreen } from '../screens/SplashScreen';
 import { CommitmentScreen } from '../screens/CommitmentScreen';
 import { NameKeeperScreen } from '../screens/NameKeeperScreen';
+import { IntroSliderScreen } from '../screens/IntroSliderScreen';
 
 // Day 1
 import { Day1ConnectionSlider } from '../screens/Day1ConnectionSlider';
@@ -53,6 +54,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export const RootNavigator = () => {
   const onboardingComplete = useUserStore((s) => s.onboardingComplete);
+  const introSeen = useUserStore((s) => s.introSeen);
   const recordActivity = useStreakStore((s) => s.recordActivity);
 
   useEffect(() => {
@@ -61,11 +63,15 @@ export const RootNavigator = () => {
     }
   }, []);
 
-  // All screens live in one stack at all times.
-  // initialRouteName controls where the user starts — this avoids the
-  // conditional-render re-mount bug where completing onboarding tears down
-  // the stack and lands back on Splash.
-  const initialRoute: keyof RootStackParamList = onboardingComplete ? 'Home' : 'Splash';
+  // Route priority:
+  //  1. Never seen intro → show Intro slider
+  //  2. Seen intro, onboarding done → Home
+  //  3. Seen intro, onboarding not done → Splash
+  const initialRoute: keyof RootStackParamList = !introSeen
+    ? 'Intro'
+    : onboardingComplete
+    ? 'Home'
+    : 'Splash';
 
   return (
     <Stack.Navigator
@@ -73,6 +79,7 @@ export const RootNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       {/* Onboarding */}
+      <Stack.Screen name="Intro" component={IntroSliderScreen} />
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Commitment" component={CommitmentScreen} />
       <Stack.Screen name="NameKeeper" component={NameKeeperScreen} />

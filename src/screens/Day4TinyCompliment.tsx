@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
@@ -16,6 +16,8 @@ type Nav = StackNavigationProp<RootStackParamList, 'Day4TinyCompliment'>;
 const COMPLIMENT_WORDS = ['Seen', 'Safe', 'Lighter', 'Lucky', 'Proud', 'Loved', 'Calm', 'Home'];
 
 export const Day4TinyCompliment: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const [selected, setSelected] = useState<string | null>(null);
   const setTinyCompliment = useDayStore((s) => s.setTinyCompliment);
@@ -87,20 +89,20 @@ export const Day4TinyCompliment: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: colors.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
-  title: { fontSize: 26, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 8 },
-  subtitle: { fontSize: 16, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', marginBottom: 32 },
+  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
+  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 8 },
+  subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 32 },
   jarContainer: { alignItems: 'center', marginBottom: 32 },
   jarIcon: { fontSize: 56 },
   sealedWord: { fontSize: 18, fontFamily: 'PlayfairDisplay-Bold', marginTop: 8 },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   pill: {
-    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.2)', borderRadius: 100,
+    borderWidth: 1.5, borderColor: c.surfaceBorder, borderRadius: 100,
     paddingHorizontal: 20, paddingVertical: 12,
   },
-  pillText: { color: 'rgba(255,255,255,0.7)', fontSize: 15, fontFamily: 'Inter-SemiBold' },
+  pillText: { color: c.textSecondary, fontSize: 15, fontFamily: 'Inter-SemiBold' },
   skipBtn: { alignItems: 'center', paddingBottom: 40 },
-  skipBtnLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: 'Inter-Regular' },
+  skipBtnLabel: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
 });

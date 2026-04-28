@@ -6,7 +6,7 @@ import {
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
-import { colors } from '../../theme';
+import { useAppColors } from '../../theme';
 
 interface Props {
   label: string;
@@ -21,25 +21,30 @@ interface Props {
 export const PrimaryButton: React.FC<Props> = ({
   label,
   onPress,
-  color = colors.primary,
+  color,
   textColor = '#FFFFFF',
   style,
   loading = false,
   disabled = false,
-}) => (
-  <TouchableOpacity
-    style={[styles.button, { backgroundColor: color }, style, disabled && styles.disabled]}
-    onPress={onPress}
-    activeOpacity={0.85}
-    disabled={disabled || loading}
-  >
-    {loading ? (
-      <ActivityIndicator color={textColor} />
-    ) : (
-      <Text style={[styles.label, { color: textColor }]}>{label}</Text>
-    )}
-  </TouchableOpacity>
-);
+}) => {
+  const colors = useAppColors();
+  const btnColor = color ?? colors.primary;
+
+  return (
+    <TouchableOpacity
+      style={[styles.button, { backgroundColor: btnColor }, style, disabled && styles.disabled]}
+      onPress={onPress}
+      activeOpacity={0.85}
+      disabled={disabled || loading}
+    >
+      {loading ? (
+        <ActivityIndicator color={textColor} />
+      ) : (
+        <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+      )}
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   button: {

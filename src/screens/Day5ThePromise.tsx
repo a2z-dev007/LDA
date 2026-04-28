@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { calculateBadge } from '../services/badgeCalculator';
@@ -17,6 +17,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day5ThePromise'>;
 
 export const Day5ThePromise: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day5 = useDayStore((s) => s.day5);
   const completeDay5 = useDayStore((s) => s.completeDay5);
@@ -90,20 +92,20 @@ export const Day5ThePromise: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: colors.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
-  title: { fontSize: 32, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 42, marginBottom: 8 },
-  subtitle: { fontSize: 18, color: 'rgba(255,255,255,0.6)', fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 28 },
+  eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
+  title: { fontSize: 32, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 42, marginBottom: 8 },
+  subtitle: { fontSize: 18, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 28 },
   input: {
-    color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12,
+    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
+    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
     padding: 16, minHeight: 120, lineHeight: 24, marginBottom: 16,
   },
-  hint: { color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
+  hint: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
   cta: {
-    backgroundColor: colors.day5, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

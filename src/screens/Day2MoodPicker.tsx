@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { moodOptions, MoodId } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -14,6 +14,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodPicker'>;
 
 export const Day2MoodPicker: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day2 = useDayStore((s) => s.day2);
   const recordMood = useStreakStore((s) => s.recordMood);
@@ -75,15 +77,15 @@ export const Day2MoodPicker: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   header: { paddingHorizontal: 28, paddingTop: 16, paddingBottom: 8, gap: 10 },
-  eyebrow: { color: colors.day2, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase' },
+  eyebrow: { color: c.day2, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase' },
   intentionPill: {
     alignSelf: 'flex-start', borderWidth: 1.5, borderRadius: 100,
     paddingHorizontal: 14, paddingVertical: 5,
   },
   intentionText: { fontSize: 13, fontFamily: 'Inter-SemiBold' },
-  title: { fontSize: 24, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34 },
+  title: { fontSize: 24, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34 },
   candleContainer: { alignItems: 'center', paddingVertical: 12 },
   candleEmoji: { fontSize: 48 },
   scroll: { flex: 1, marginTop: 8 },
@@ -93,5 +95,5 @@ const styles = StyleSheet.create({
     alignItems: 'center', gap: 8,
   },
   moodEmoji: { fontSize: 32 },
-  moodLabel: { color: 'rgba(255,255,255,0.7)', fontSize: 14, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
+  moodLabel: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
 });

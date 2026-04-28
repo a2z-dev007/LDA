@@ -6,10 +6,12 @@ interface UserState {
   userId: string;
   name: string;
   onboardingComplete: boolean;
+  introSeen: boolean;
   createdAt: string | null;
 
   setName: (name: string) => void;
   setOnboardingComplete: (status: boolean) => void;
+  setIntroSeen: (seen: boolean) => void;
 }
 
 function generateUUID(): string {
@@ -26,6 +28,7 @@ export const useUserStore = create<UserState>()(
       userId: generateUUID(),
       name: '',
       onboardingComplete: false,
+      introSeen: false,
       createdAt: null,
 
       setName: (name) => set({ name }),
@@ -35,6 +38,8 @@ export const useUserStore = create<UserState>()(
           onboardingComplete: status,
           createdAt: get().createdAt ?? new Date().toISOString(),
         }),
+
+      setIntroSeen: (seen) => set({ introSeen: seen }),
     }),
     {
       name: 'lda-user-store',

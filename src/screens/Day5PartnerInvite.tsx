@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -13,6 +13,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day5PartnerInvite'>;
 
 export const Day5PartnerInvite: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const setPartnerInviteSent = useDayStore((s) => s.setPartnerInviteSent);
   const day5 = useDayStore((s) => s.day5);
@@ -75,22 +77,22 @@ export const Day5PartnerInvite: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 60, gap: 24 },
-  title: { fontSize: 28, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 38 },
-  subtitle: { fontSize: 16, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', lineHeight: 24 },
+  title: { fontSize: 28, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 38 },
+  subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24 },
   card: {
-    backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 20, gap: 8,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: c.surface, borderRadius: 16, padding: 20, gap: 8,
+    borderWidth: 1, borderColor: c.surfaceBorder,
   },
   cardIcon: { fontSize: 28 },
-  cardTitle: { fontSize: 18, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold' },
-  cardDesc: { fontSize: 14, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', lineHeight: 22 },
+  cardTitle: { fontSize: 18, color: c.text, fontFamily: 'PlayfairDisplay-Bold' },
+  cardDesc: { fontSize: 14, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 22 },
   actions: { paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
   inviteBtn: {
-    backgroundColor: colors.primary, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
+    backgroundColor: c.primary, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  inviteBtnLabel: { color: '#FFFFFF', fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  inviteBtnLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   soloBtn: { alignItems: 'center', paddingVertical: 12 },
-  soloBtnLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 15, fontFamily: 'Inter-Regular' },
+  soloBtnLabel: { color: c.textHint, fontSize: 15, fontFamily: 'Inter-Regular' },
 });

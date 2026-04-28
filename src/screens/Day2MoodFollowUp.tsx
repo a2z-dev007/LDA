@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { moodOptions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
@@ -17,6 +17,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodFollowUp'>;
 
 export const Day2MoodFollowUp: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day2 = useDayStore((s) => s.day2);
   const completeDay2 = useDayStore((s) => s.completeDay2);
@@ -76,25 +78,25 @@ export const Day2MoodFollowUp: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 28, paddingBottom: 8 },
   moodBadge: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 24 },
   moodEmoji: { fontSize: 28 },
   moodText: { fontSize: 18, fontFamily: 'Inter-SemiBold' },
   question: {
-    fontSize: 22, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Italic',
+    fontSize: 22, color: c.text, fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 32, marginBottom: 28,
   },
   input: {
-    color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12,
+    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
+    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
     padding: 16, minHeight: 140, lineHeight: 24, marginBottom: 12,
   },
-  privacy: { color: 'rgba(255,255,255,0.25)', fontSize: 12, fontFamily: 'Inter-Regular' },
+  privacy: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular' },
   cta: {
-    backgroundColor: colors.day2, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day2, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

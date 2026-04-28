@@ -7,7 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -16,15 +16,26 @@ import { haptics } from '../utils/haptics';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Home'>;
 
-const DAY_INFO = [
-  { number: 1, title: 'The Spark Check',      color: colors.day1, route: 'Day1Slider'  as keyof RootStackParamList },
-  { number: 2, title: 'The Mood Room',         color: colors.day2, route: 'Bridge1to2'  as keyof RootStackParamList },
-  { number: 3, title: 'The Assumptions Test',  color: colors.day3, route: 'Bridge2to3'  as keyof RootStackParamList },
-  { number: 4, title: 'The Memory Jar',        color: colors.day4, route: 'Bridge3to4'  as keyof RootStackParamList },
-  { number: 5, title: 'The Reveal',            color: colors.day5, route: 'Bridge4to5'  as keyof RootStackParamList },
+// Colors are injected at render time via getDayInfo(colors)
+const DAY_ROUTES = [
+  { number: 1, title: 'The Spark Check',     route: 'Day1Slider' as keyof RootStackParamList },
+  { number: 2, title: 'The Mood Room',        route: 'Bridge1to2' as keyof RootStackParamList },
+  { number: 3, title: 'The Assumptions Test', route: 'Bridge2to3' as keyof RootStackParamList },
+  { number: 4, title: 'The Memory Jar',       route: 'Bridge3to4' as keyof RootStackParamList },
+  { number: 5, title: 'The Reveal',           route: 'Bridge4to5' as keyof RootStackParamList },
 ];
 
+function getDayInfo(c: ReturnType<typeof useAppColors>) {
+  return DAY_ROUTES.map((d, i) => ({
+    ...d,
+    color: [c.day1, c.day2, c.day3, c.day4, c.day5][i],
+  }));
+}
+
 export const HomeScreen = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
+  const DAY_INFO = getDayInfo(colors);
   const navigation = useNavigation<Nav>();
   const userName    = useUserStore((s) => s.name);
   const nextDay     = useDayStore((s) => s.nextDay());
@@ -144,7 +155,7 @@ export const HomeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   // ── Layout ─────────────────────────────────────────────────
   scroll: {
     flex: 1,
@@ -161,31 +172,31 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   greeting: {
-    color: 'rgba(255,255,255,0.4)',
+    color: c.textHint,
     fontSize: 14,
     fontFamily: 'Inter-Regular',
   },
   title: {
     fontSize: 30,
-    color: '#FFFFFF',
+    color: c.text,
     fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 36,
   },
   streakBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: c.surface,
     borderRadius: 100,
     paddingHorizontal: 12,
     paddingVertical: 5,
   },
   streakText: {
-    color: 'rgba(255,255,255,0.7)',
+    color: c.textSecondary,
     fontSize: 13,
     fontFamily: 'Inter-SemiBold',
   },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.45)',
+    color: c.textHint,
     fontFamily: 'Inter-Regular',
   },
 
@@ -194,7 +205,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   card: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: c.surface,
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderRadius: 16,
@@ -203,7 +214,7 @@ const styles = StyleSheet.create({
   },
   cardCompleted: {
     opacity: 0.65,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: c.surface,
   },
   cardLocked: {
     opacity: 0.3,
@@ -215,7 +226,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   dayNumber: {
-    color: 'rgba(255,255,255,0.3)',
+    color: c.textHint,
     fontSize: 11,
     fontFamily: 'Inter-SemiBold',
     textTransform: 'uppercase',
@@ -223,7 +234,7 @@ const styles = StyleSheet.create({
   },
   statusIcon: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.4)',
+    color: c.textHint,
   },
   activePip: {
     width: 7,
@@ -231,7 +242,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   cardTitle: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 18,
     fontFamily: 'PlayfairDisplay-Bold',
   },
@@ -249,10 +260,10 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: `${colors.dark}E8`,
+    backgroundColor: `${c.dark}E8`,
   },
   continueBtn: {
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
     borderRadius: 100,
     paddingVertical: 14,
     paddingHorizontal: 24,
@@ -264,18 +275,18 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   continueBtnSub: {
-    color: 'rgba(255,255,255,0.65)',
+    color: c.textSecondary,
     fontSize: 10,
     fontFamily: 'Inter-SemiBold',
     letterSpacing: 2,
   },
   continueBtnTitle: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 17,
     fontFamily: 'PlayfairDisplay-Bold',
   },
   continueBtnArrow: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 22,
   },
 });

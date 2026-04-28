@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
@@ -19,6 +19,8 @@ type Nav = StackNavigationProp<RootStackParamList, 'Day4MemoryJar'>;
 export const memoryRef = { current: '', type: 'text' as 'text' | 'emoji' | 'skipped' };
 
 export const Day4MemoryJar: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day4 = useDayStore((s) => s.day4);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
@@ -108,31 +110,31 @@ export const Day4MemoryJar: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 28, paddingBottom: 8 },
-  eyebrow: { color: colors.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
-  title: { fontSize: 28, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', lineHeight: 38, marginBottom: 10 },
-  subtitle: { fontSize: 16, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 28 },
+  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
+  title: { fontSize: 28, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 38, marginBottom: 10 },
+  subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 28 },
   jarContainer: {
-    alignItems: 'center', marginBottom: 24, backgroundColor: `${colors.day4}10`,
-    borderRadius: 20, padding: 24, borderWidth: 1, borderColor: `${colors.day4}30`,
+    alignItems: 'center', marginBottom: 24, backgroundColor: `${c.day4}10`,
+    borderRadius: 20, padding: 24, borderWidth: 1, borderColor: `${c.day4}30`,
   },
   jarIcon: { fontSize: 52, marginBottom: 12 },
-  jarFillBar: { width: '80%', height: 4, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 8 },
-  jarFill: { height: '100%', backgroundColor: colors.day4, borderRadius: 2 },
-  jarNote: { color: colors.day4, fontSize: 13, fontFamily: 'PlayfairDisplay-Italic', textAlign: 'center', marginTop: 8 },
+  jarFillBar: { width: '80%', height: 4, backgroundColor: c.surface, borderRadius: 2, marginBottom: 8 },
+  jarFill: { height: '100%', backgroundColor: c.day4, borderRadius: 2 },
+  jarNote: { color: c.day4, fontSize: 13, fontFamily: 'PlayfairDisplay-Italic', textAlign: 'center', marginTop: 8 },
   input: {
-    color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12,
+    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
+    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
     padding: 16, minHeight: 120, lineHeight: 24, marginBottom: 8,
   },
-  charCount: { color: 'rgba(255,255,255,0.2)', fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right', marginBottom: 16 },
-  hint: { color: 'rgba(255,255,255,0.25)', fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
+  charCount: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right', marginBottom: 16 },
+  hint: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
   cta: {
-    backgroundColor: colors.day4, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day4, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
   ctaDim: { opacity: 0.4 },
-  ctaLabel: { color: '#FFFFFF', fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

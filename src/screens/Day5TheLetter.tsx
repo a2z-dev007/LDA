@@ -7,7 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useUserStore } from '../store/useUserStore';
 import { generateLetter } from '../services/letterGenerator';
@@ -16,6 +16,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day5TheLetter'>;
 
 export const Day5TheLetter: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const day4 = useDayStore((s) => s.day4);
@@ -92,22 +94,22 @@ export const Day5TheLetter: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  eyebrow: { color: colors.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 24 },
+  eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 24 },
   letterCard: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 24,
-    borderWidth: 1, borderColor: `${colors.day5}40`,
+    backgroundColor: c.surface, borderRadius: 16, padding: 24,
+    borderWidth: 1, borderColor: `${c.day5}40`,
   },
-  letterText: { color: 'rgba(255,255,255,0.85)', fontSize: 16, fontFamily: 'PlayfairDisplay-Regular', lineHeight: 28 },
+  letterText: { color: c.textSecondary, fontSize: 16, fontFamily: 'PlayfairDisplay-Regular', lineHeight: 28 },
   actions: { paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
   saveBtn: {
-    backgroundColor: colors.day5, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
+    backgroundColor: c.day5, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  saveBtnLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  saveBtnLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   shareBtn: {
-    backgroundColor: 'rgba(255,255,255,0.08)', paddingVertical: 16, borderRadius: 100,
-    alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: c.surface, paddingVertical: 16, borderRadius: 100,
+    alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
-  shareBtnLabel: { color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-SemiBold' },
+  shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },
 });

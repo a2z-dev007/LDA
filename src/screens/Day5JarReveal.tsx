@@ -5,16 +5,17 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useJournalStore } from '../store/useJournalStore';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5JarReveal'>;
 
-const DAY_COLORS = [colors.day1, colors.day2, colors.day3, colors.day4, colors.day5];
-
 export const Day5JarReveal: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
+  const DAY_COLORS = [colors.day1, colors.day2, colors.day3, colors.day4, colors.day5];
   const navigation = useNavigation<Nav>();
   const jarMemories = useJournalStore((s) => s.jarMemories);
   const day4 = useDayStore((s) => s.day4);
@@ -115,32 +116,32 @@ export const Day5JarReveal: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  title: { fontSize: 28, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
-  subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', marginBottom: 28 },
+  title: { fontSize: 28, color: c.text, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 28 },
   jarContainer: {
-    alignItems: 'center', backgroundColor: `${colors.day5}10`, borderRadius: 20,
-    padding: 24, marginBottom: 28, borderWidth: 1, borderColor: `${colors.day5}30`,
-    shadowColor: colors.day5, shadowOffset: { width: 0, height: 0 }, shadowRadius: 20, elevation: 10,
+    alignItems: 'center', backgroundColor: `${c.day5}10`, borderRadius: 20,
+    padding: 24, marginBottom: 28, borderWidth: 1, borderColor: `${c.day5}30`,
+    shadowColor: c.day5, shadowOffset: { width: 0, height: 0 }, shadowRadius: 20, elevation: 10,
   },
   jarIcon: { fontSize: 64, marginBottom: 12 },
-  jarFillBar: { width: '80%', height: 4, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, marginBottom: 8 },
-  jarFill: { height: '100%', backgroundColor: colors.day5, borderRadius: 2 },
+  jarFillBar: { width: '80%', height: 4, backgroundColor: c.surface, borderRadius: 2, marginBottom: 8 },
+  jarFill: { height: '100%', backgroundColor: c.day5, borderRadius: 2 },
   complimentGlow: { fontSize: 18, fontFamily: 'PlayfairDisplay-Bold', marginTop: 8 },
   notes: { gap: 12 },
   note: {
     borderWidth: 1.5, borderRadius: 14, padding: 16,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: c.surface,
   },
-  noteText: { color: 'rgba(255,255,255,0.8)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
+  noteText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   noteCompliment: { fontSize: 16, fontFamily: 'PlayfairDisplay-Bold' },
-  notePrivate: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: 'Inter-Regular' },
+  notePrivate: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
   emptyJar: { alignItems: 'center', padding: 24 },
-  emptyText: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: 'PlayfairDisplay-Italic' },
+  emptyText: { color: c.textHint, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic' },
   cta: {
-    backgroundColor: colors.day5, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

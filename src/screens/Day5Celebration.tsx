@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { calculateBadge } from '../services/badgeCalculator';
 import { haptics } from '../utils/haptics';
@@ -13,6 +13,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day5Celebration'>;
 
 export const Day5Celebration: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const day2 = useDayStore((s) => s.day2);
@@ -112,7 +114,7 @@ export const Day5Celebration: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   pipsRow: { flexDirection: 'row', paddingHorizontal: 24, paddingTop: 16, paddingBottom: 8, gap: 4 },
   pip: { flex: 1, height: 3, borderRadius: 2 },
   body: { flex: 1, paddingHorizontal: 28, justifyContent: 'center', alignItems: 'center', gap: 16 },
@@ -123,14 +125,14 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.5, shadowRadius: 16, elevation: 10,
   },
-  badgeIcon: { fontSize: 36, color: '#FFFFFF' },
+  badgeIcon: { fontSize: 36, color: c.text },
   badgeName: { fontSize: 24, fontFamily: 'PlayfairDisplay-Bold', textAlign: 'center' },
   tierPill: {
     borderWidth: 1.5, borderRadius: 100, paddingHorizontal: 16, paddingVertical: 5,
   },
   tierText: { fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 2 },
-  keyLine1: { fontSize: 18, color: 'rgba(255,255,255,0.7)', fontFamily: 'PlayfairDisplay-Italic' },
-  keyLine2: { fontSize: 15, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular' },
+  keyLine1: { fontSize: 18, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic' },
+  keyLine2: { fontSize: 15, color: c.textHint, fontFamily: 'Inter-Regular' },
   traitPills: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' },
   traitPill: { borderWidth: 1, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 6 },
   traitPillText: { fontSize: 12, fontFamily: 'Inter-SemiBold' },
@@ -138,5 +140,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 28, marginBottom: 48, paddingVertical: 18,
     borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

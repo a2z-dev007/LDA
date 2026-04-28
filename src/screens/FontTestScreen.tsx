@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 
 export const FontTestScreen: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
@@ -39,17 +41,17 @@ export const FontTestScreen: React.FC = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.dark,
+        backgroundColor: c.dark,
     },
     content: {
         padding: 20,
     },
     header: {
         fontSize: 24,
-        color: colors.white,
+        color: c.text,
         marginBottom: 30,
         textAlign: 'center',
         fontFamily: 'DMSans-Bold',
@@ -58,14 +60,14 @@ const styles = StyleSheet.create({
     section: {
         marginBottom: 30,
         padding: 15,
-        backgroundColor: colors.glassLight,
+        backgroundColor: c.glassLight,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: colors.glassBorder,
+        borderColor: c.glassBorder,
     },
     sectionTitle: {
         fontSize: 14,
-        color: colors.primary,
+        color: c.primary,
         marginBottom: 15,
         fontFamily: 'DMSans-Bold',
         fontWeight: '700',
@@ -75,66 +77,66 @@ const styles = StyleSheet.create({
         fontFamily: 'DMSans-Regular',
         fontWeight: '400',
         fontSize: 16,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     dmMedium: {
         fontFamily: 'DMSans-Medium',
         fontWeight: '500',
         fontSize: 16,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     dmBold: {
         fontFamily: 'DMSans-Bold',
         fontWeight: '700',
         fontSize: 16,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     dmItalic: {
         fontFamily: 'DMSans-Italic',
         fontStyle: 'italic',
         fontSize: 16,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     // Playfair Display
     pfRegular: {
         fontFamily: 'PlayfairDisplay-Regular',
         fontSize: 18,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     pfItalic: {
         fontFamily: 'PlayfairDisplay-Italic',
         fontStyle: 'italic',
         fontSize: 18,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     pfSemiBold: {
         fontFamily: 'PlayfairDisplay-SemiBold',
         fontWeight: '600',
         fontSize: 18,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     pfMediumItalic: {
         fontFamily: 'PlayfairDisplay-MediumItalic',
         fontStyle: 'italic',
         fontSize: 18,
-        color: colors.white,
+        color: c.text,
         marginBottom: 10,
     },
     // System
     systemFont: {
         fontSize: 16,
-        color: colors.white,
+        color: c.text,
     },
     note: {
         fontSize: 12,
-        color: colors.textMuted,
+        color: c.textMuted,
         textAlign: 'center',
         marginTop: 20,
         fontFamily: 'DMSans-Italic',

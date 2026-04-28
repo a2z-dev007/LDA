@@ -12,11 +12,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Commitment'>;
 
 export const CommitmentScreen: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -105,7 +107,7 @@ export const CommitmentScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   gradient: {
     flex: 1,
   },
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   eyebrow: {
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 11,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 34,
-    color: colors.white,
+    color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     fontWeight: '400',
     fontStyle: 'italic',
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: colors.textLight,
+    color: c.text,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
     lineHeight: 26,
@@ -161,16 +163,16 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   commitmentBox: {
-    backgroundColor: colors.glassLight,
+    backgroundColor: c.glassLight,
     borderRadius: 24,
     padding: 24,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: colors.glassBorder,
+    borderColor: c.glassBorder,
   },
   commitmentText: {
     fontSize: 18,
-    color: colors.white,
+    color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     fontWeight: '400',
     fontStyle: 'italic',
@@ -188,17 +190,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2.5,
     borderColor: 'rgba(255, 255, 255, 0.8)',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: c.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
   },
   checkboxChecked: {
-    backgroundColor: colors.white,
-    borderColor: colors.white,
+    backgroundColor: c.white,
+    borderColor: c.white,
   },
   checkmark: {
-    color: colors.primary,
+    color: c.primary,
     fontSize: 18,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     flex: 1,
     fontSize: 15,
-    color: colors.textLight,
+    color: c.text,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
     lineHeight: 22,
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: colors.white,
+    backgroundColor: c.white,
     paddingVertical: 18,
     paddingHorizontal: 48,
     borderRadius: 30,
@@ -229,22 +231,22 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   buttonDisabled: {
-    backgroundColor: colors.glassHeavy,
+    backgroundColor: c.glassHeavy,
     shadowOpacity: 0,
     elevation: 0,
   },
   buttonText: {
-    color: colors.primary,
+    color: c.primary,
     fontSize: 18,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   buttonTextDisabled: {
-    color: colors.textMuted,
+    color: c.textMuted,
   },
   footerNote: {
-    color: colors.textSubtle,
+    color: c.textSubtle,
     fontSize: 10,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',

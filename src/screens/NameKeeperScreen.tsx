@@ -8,12 +8,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 
 type Nav = StackNavigationProp<RootStackParamList, 'NameKeeper'>;
 
 export const NameKeeperScreen: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const setName = useUserStore((s) => s.setName);
   const setOnboardingComplete = useUserStore((s) => s.setOnboardingComplete);
@@ -114,7 +116,7 @@ export const NameKeeperScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   gradient: {
     flex: 1,
   },
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   eyebrow: {
-    color: colors.primary,
+    color: c.primary,
     fontSize: 11,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    color: colors.textDark,
+    color: c.textDark,
     fontFamily: 'PlayfairDisplay-Italic',
     fontWeight: '400',
     fontStyle: 'italic',
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 18,
-    color: colors.textDark,
+    color: c.textDark,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
     paddingVertical: 16,
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 107, 157, 0.2)',
   },
   privacyText: {
-    color: colors.primary,
+    color: c.primary,
     fontSize: 13,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
@@ -199,13 +201,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
     paddingVertical: 18,
     borderRadius: 100,
     alignItems: 'center',
     width: '100%',
     marginBottom: 20,
-    shadowColor: colors.primary,
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
   },
   buttonText: {
-    color: colors.white,
+    color: c.text,
     fontSize: 17,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
@@ -237,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(45, 27, 105, 0.2)',
   },
   dotActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
   },
   footerNote: {
     color: 'rgba(45, 27, 105, 0.5)',

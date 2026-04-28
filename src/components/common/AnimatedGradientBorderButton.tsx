@@ -22,7 +22,7 @@ import {
   Easing,
   ViewStyle,
 } from 'react-native';
-import { colors } from '../../theme';
+import { useAppColors } from '../../theme';
 
 interface Props {
   onPress: () => void;
@@ -43,6 +43,8 @@ export const AnimatedGradientBorderButton: React.FC<Props> = ({
   style,
   activeOpacity = 0.88,
 }) => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const anim = useRef(new Animated.Value(0)).current;
   const mountedRef = useRef(true);
 
@@ -129,7 +131,7 @@ export const AnimatedGradientBorderButton: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   touchable: {
     width: '100%',
   },
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
   innerPill: {
     flex: 1,
     borderRadius: 100,
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
     justifyContent: 'center',
     paddingHorizontal: 22,
     // Inset by border so it doesn't overlap the ring
@@ -161,19 +163,19 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   sublabel: {
-    color: 'rgba(255,255,255,0.65)',
+    color: c.textSecondary,
     fontSize: 10,
     fontFamily: 'Inter-SemiBold',
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   label: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 17,
     fontFamily: 'PlayfairDisplay-Bold',
   },
   arrow: {
-    color: '#FFFFFF',
+    color: c.text,
     fontSize: 22,
   },
 });

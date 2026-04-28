@@ -1,19 +1,29 @@
+/**
+ * Theme barrel export
+ * ───────────────────
+ *
+ * COLORS — two ways:
+ *
+ *  Static (StyleSheet.create, module-level code):
+ *    import { colors } from '../theme';
+ *
+ *  Reactive (inside React components — re-renders on light/dark switch):
+ *    import { useAppColors } from '../theme';
+ *    const colors = useAppColors();
+ *
+ * PROVIDER — wrap the app once in App.tsx (already done):
+ *    import { ThemeProvider } from '../theme';
+ *    <ThemeProvider><App /></ThemeProvider>
+ */
+
 export * from './colors';
 export * from './typography';
+export * from './metrics';
+export { ThemeProvider, useAppColors, ACTIVE_DARK_THEME } from './ThemeContext';
+export type { AppColors } from './ThemeContext';
 
-export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
-};
+// Keep useTheme for any existing usages
+export { useTheme } from './useTheme';
+export type { ThemeColors } from './useTheme';
 
-export const radius = {
-  sm: 4,
-  md: 8,
-  lg: 16,
-  xl: 24,
-  full: 9999,
-};
+export { spacing, radius } from './metrics';

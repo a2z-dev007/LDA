@@ -6,7 +6,7 @@ import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { StreakRing } from '../components/common/StreakRing';
 import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { bridgeQuotes, moodOptions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
@@ -15,6 +15,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge2to3'>;
 
 export const Bridge2to3: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day2 = useDayStore((s) => s.day2);
   const setIntentionWord = useDayStore((s) => s.setDay3IntentionWord);
@@ -75,31 +77,31 @@ export const Bridge2to3: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16, gap: 24 },
   zone1: { alignItems: 'center' },
   zone2: { gap: 12 },
-  recapLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
+  recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   moodCard: {
     flexDirection: 'row', alignItems: 'center', gap: 16,
     borderWidth: 1.5, borderRadius: 16, padding: 18,
   },
   moodEmoji: { fontSize: 36 },
   moodLabel: { fontSize: 20, fontFamily: 'PlayfairDisplay-Bold' },
-  intentionText: { fontSize: 13, color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter-Regular', marginTop: 2 },
+  intentionText: { fontSize: 13, color: c.textHint, fontFamily: 'Inter-Regular', marginTop: 2 },
   answerCard: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: 16,
+    backgroundColor: c.surface, borderRadius: 14, padding: 16,
   },
-  answerLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
-  answerText: { color: 'rgba(255,255,255,0.7)', fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
+  answerLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
+  answerText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   zone3: {
-    backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 20,
-    borderLeftWidth: 3, borderLeftColor: colors.day3,
+    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    borderLeftWidth: 3, borderLeftColor: c.day3,
   },
-  quote: { color: 'rgba(255,255,255,0.7)', fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
+  quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   cta: {
-    backgroundColor: colors.day3, marginHorizontal: 28, marginBottom: 48,
+    backgroundColor: c.day3, marginHorizontal: 28, marginBottom: 48,
     paddingVertical: 18, borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: colors.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

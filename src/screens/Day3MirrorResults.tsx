@@ -7,7 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { colors } from '../theme';
+import { useAppColors } from '../theme';
 import { assumptionsSets } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
@@ -15,6 +15,8 @@ import { haptics } from '../utils/haptics';
 type Nav = StackNavigationProp<RootStackParamList, 'Day3MirrorResults'>;
 
 export const Day3MirrorResults: React.FC = () => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const day3 = useDayStore((s) => s.day3);
@@ -105,39 +107,39 @@ export const Day3MirrorResults: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  eyebrow: { color: colors.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
-  title: { fontSize: 26, color: '#FFFFFF', fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
-  subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.5)', fontFamily: 'Inter-Regular', marginBottom: 24 },
+  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
+  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
+  subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 24 },
   splitContainer: { flexDirection: 'row', gap: 12, marginBottom: 24 },
   column: { flex: 1, gap: 8 },
-  colHeader: { color: 'rgba(255,255,255,0.35)', fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4 },
+  colHeader: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4 },
   answerRow: { height: 36, justifyContent: 'center' },
   answerPill: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, alignSelf: 'flex-start' },
-  truePill: { backgroundColor: `${colors.day3}30`, borderWidth: 1, borderColor: colors.day3 },
-  falsePill: { backgroundColor: 'rgba(255,255,255,0.05)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)' },
-  answerPillText: { color: '#FFFFFF', fontSize: 12, fontFamily: 'Inter-SemiBold' },
+  truePill: { backgroundColor: `${c.day3}30`, borderWidth: 1, borderColor: c.day3 },
+  falsePill: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.surfaceBorder },
+  answerPillText: { color: c.text, fontSize: 12, fontFamily: 'Inter-SemiBold' },
   lockedPill: {
     borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: c.surface, borderWidth: 1, borderColor: c.surfaceBorder,
   },
   lockIcon: { fontSize: 14 },
   banner: {
-    backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 12, padding: 16,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: c.surface, borderRadius: 12, padding: 16,
+    borderWidth: 1, borderColor: c.surfaceBorder,
   },
-  bannerText: { color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20, textAlign: 'center' },
+  bannerText: { color: c.textSecondary, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20, textAlign: 'center' },
   actions: { paddingHorizontal: 28, paddingBottom: 40, gap: 10 },
   shareBtn: {
-    backgroundColor: 'rgba(255,255,255,0.08)', paddingVertical: 16, borderRadius: 100,
-    alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: c.surface, paddingVertical: 16, borderRadius: 100,
+    alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
-  shareBtnLabel: { color: '#FFFFFF', fontSize: 16, fontFamily: 'Inter-SemiBold' },
+  shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },
   inviteBtn: {
-    backgroundColor: colors.day3, paddingVertical: 16, borderRadius: 100, alignItems: 'center',
+    backgroundColor: c.day3, paddingVertical: 16, borderRadius: 100, alignItems: 'center',
   },
-  inviteBtnLabel: { color: colors.dark, fontSize: 16, fontFamily: 'Inter-SemiBold' },
+  inviteBtnLabel: { color: c.dark, fontSize: 16, fontFamily: 'Inter-SemiBold' },
   skipBtn: { alignItems: 'center', paddingVertical: 8 },
-  skipBtnLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: 'Inter-Regular' },
+  skipBtnLabel: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
 });
