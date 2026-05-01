@@ -1,10 +1,8 @@
 /**
  * IntroSliderScreen
  * ─────────────────
- * 3 clean slides shown once on first launch.
- * Top half: rich gradient illustration (always vivid, same in light & dark).
- * Bottom half: theme-aware background, headline, body text.
- * Bottom controls: theme-aware background, dots, buttons.
+ * Premium full-screen image slides with glass morphism content overlay.
+ * Full background image with gradient fade and white glass content cards.
  */
 
 import React, { useRef, useState, useCallback } from 'react';
@@ -16,6 +14,7 @@ import {
   Animated,
   TouchableOpacity,
   Dimensions,
+  ImageBackground,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
@@ -28,301 +27,188 @@ import { useAppColors } from '../theme';
 import { metrics } from '../theme/metrics';
 import { useUserStore } from '../store/useUserStore';
 import { AppColors } from '../theme/ThemeContext';
+import { GradientButton } from '../components/common/GradientButton';
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Intro'>;
 
-const { width: W } = Dimensions.get('window');
+const { width: W, height: H } = Dimensions.get('window');
 
 // ─────────────────────────────────────────────────────────────
-//  Slide definitions — illustration gradients are always vivid
-//  (they look great on both light and dark backgrounds).
-//  Text content is theme-neutral; colors come from useAppColors.
+//  Onboarding images
 // ─────────────────────────────────────────────────────────────
-const SLIDES = [
+const SLIDE_IMAGES = [
+  require('../assets/image/onboarding/slide-1.png'),
+  require('../assets/image/onboarding/slide-2.png'),
+  require('../assets/image/onboarding/slide-3.png'),
+];
+
+// ─────────────────────────────────────────────────────────────
+//  Slide content
+// ─────────────────────────────────────────────────────────────
+const SLIDE_CONTENT = [
   {
-    gradTop: ['#1a0533', '#3b0764', '#6d28d9'] as string[],
-    illustration: 'circles' as const,
-    accentColor: '#a78bfa',
     headline: 'Reignite the\nconnection.',
     body: 'A 5-day solo journey of honest moments, small rituals, and real reflection.',
   },
   {
-    gradTop: ['#1a0a1f', '#4a1942', '#be185d'] as string[],
-    illustration: 'heart' as const,
-    accentColor: '#FF1493',
     headline: 'Daily rituals\nthat actually work.',
     body: 'Mood check-ins, appreciation prompts, and questions that bring you closer.',
   },
   {
-    gradTop: ['#0a1628', '#1e3a5f', '#0ea5e9'] as string[],
-    illustration: 'star' as const,
-    accentColor: '#38bdf8',
     headline: 'Discover your\nrelationship style.',
     body: 'Earn your connection badge and write a promise that lasts beyond 5 days.',
   },
 ];
 
 // ─────────────────────────────────────────────────────────────
-//  Illustration styles — no colors, safe as module-level
-// ─────────────────────────────────────────────────────────────
-const IL_SIZE = W * 0.52;
-const CIRCLE_R = IL_SIZE * 0.42;
-
-const il = StyleSheet.create({
-  root: {
-    width: IL_SIZE,
-    height: IL_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  circle: {
-    width: CIRCLE_R * 2,
-    height: CIRCLE_R * 2,
-    borderRadius: CIRCLE_R,
-    position: 'absolute',
-  },
-  circleLeft:  { left: 0 },
-  circleRight: { right: 0 },
-  overlap: {
-    width: CIRCLE_R * 0.9,
-    height: CIRCLE_R * 2,
-    borderRadius: CIRCLE_R,
-    position: 'absolute',
-    alignSelf: 'center',
-  },
-  disc: {
-    width: IL_SIZE * 0.9,
-    height: IL_SIZE * 0.9,
-    borderRadius: IL_SIZE * 0.45,
-    position: 'absolute',
-  },
-  heartWrap: {
-    width: IL_SIZE * 0.55,
-    height: IL_SIZE * 0.55,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-  },
-  heartLeft: {
-    width: IL_SIZE * 0.28,
-    height: IL_SIZE * 0.28,
-    borderRadius: IL_SIZE * 0.14,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-  },
-  heartRight: {
-    width: IL_SIZE * 0.28,
-    height: IL_SIZE * 0.28,
-    borderRadius: IL_SIZE * 0.14,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  heartBottom: {
-    width: IL_SIZE * 0.38,
-    height: IL_SIZE * 0.38,
-    borderRadius: 4,
-    position: 'absolute',
-    bottom: 0,
-    transform: [{ rotate: '45deg' }],
-  },
-  ring: {
-    width: IL_SIZE * 0.88,
-    height: IL_SIZE * 0.88,
-    borderRadius: IL_SIZE * 0.44,
-    borderWidth: 1.5,
-    position: 'absolute',
-  },
-  ringInner: {
-    width: IL_SIZE * 0.62,
-    height: IL_SIZE * 0.62,
-    borderRadius: IL_SIZE * 0.31,
-    borderWidth: 1.5,
-    position: 'absolute',
-  },
-  centreDot: {
-    width: IL_SIZE * 0.22,
-    height: IL_SIZE * 0.22,
-    borderRadius: IL_SIZE * 0.11,
-    position: 'absolute',
-  },
-  spoke: {
-    width: 2,
-    height: IL_SIZE * 0.38,
-    borderRadius: 1,
-    position: 'absolute',
-    top: IL_SIZE * 0.06,
-    alignSelf: 'center',
-  },
-  labelWrap: {
-    position: 'absolute',
-    bottom: -metrics.spacing.lg,
-  },
-  labelText: {
-    fontSize: metrics.fontSize.caption,
-    fontFamily: 'DMSans-Medium',
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-  },
-});
-
-// ─────────────────────────────────────────────────────────────
-//  Illustration components
-// ─────────────────────────────────────────────────────────────
-const IllustrationCircles: React.FC<{ accent: string; gradTop: string[] }> = ({ accent, gradTop }) => (
-  <View style={il.root}>
-    <LinearGradient colors={[`${accent}cc`, `${accent}44`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[il.circle, il.circleLeft]} />
-    <LinearGradient colors={[`${gradTop[2]}ff`, `${accent}88`]} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={[il.circle, il.circleRight]} />
-    <View style={[il.overlap, { backgroundColor: `${accent}30` }]} />
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>5 days</Text>
-    </View>
-  </View>
-);
-
-const IllustrationHeart: React.FC<{ accent: string }> = ({ accent }) => (
-  <View style={il.root}>
-    <View style={[il.disc, { backgroundColor: `${accent}22` }]} />
-    <View style={il.heartWrap}>
-      <LinearGradient colors={[accent, `${accent}88`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={il.heartLeft} />
-      <LinearGradient colors={[accent, `${accent}88`]} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={il.heartRight} />
-      <LinearGradient colors={[`${accent}cc`, `${accent}44`]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={il.heartBottom} />
-    </View>
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>for two</Text>
-    </View>
-  </View>
-);
-
-const IllustrationStar: React.FC<{ accent: string }> = ({ accent }) => (
-  <View style={il.root}>
-    <View style={[il.ring, { borderColor: `${accent}55` }]} />
-    <View style={[il.ringInner, { borderColor: `${accent}99` }]} />
-    <LinearGradient colors={[accent, `${accent}66`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={il.centreDot} />
-    {[0, 45, 90, 135].map((deg) => (
-      <LinearGradient
-        key={deg}
-        colors={[`${accent}cc`, `${accent}00`]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={[il.spoke, { transform: [{ rotate: `${deg}deg` }] }]}
-      />
-    ))}
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>your badge</Text>
-    </View>
-  </View>
-);
-
-// ─────────────────────────────────────────────────────────────
-//  Theme-aware styles factory
+//  Theme-aware styles
 // ─────────────────────────────────────────────────────────────
 function makeStyles(c: AppColors) {
-  const textPrimary   = c.isDark ? '#FFFFFF'                  : c.textDark;
-  const textSecondary = c.isDark ? 'rgba(255,255,255,0.55)'   : 'rgba(0,0,0,0.45)';
-  const skipColor     = c.isDark ? 'rgba(255,255,255,0.30)'   : 'rgba(0,0,0,0.30)';
-  const privacyColor  = c.isDark ? 'rgba(255,255,255,0.18)'   : 'rgba(0,0,0,0.22)';
-  const bottomBg      = c.isDark ? `${c.dark}F2`              : `${c.dark}F2`;
-
   return StyleSheet.create({
-    root: {
-      flex: 1,
-      backgroundColor: c.dark,
-    },
     page: {
       width: W,
+      height: H,
+    },
+    backgroundImage: {
+      width: W,
+      height: H,
+      justifyContent: 'space-between',
+    },
+    // Gradient overlay for readability
+    imageOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    // Content container - middle section
+    contentContainer: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+      paddingTop: H * 0.55, // Push content to middle-bottom area
       flex: 1,
-      backgroundColor: c.dark,
-    },
-    illustrationBg: {
-      height: '52%',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    seam: {
-      height: metrics.spacing.xxl,
-      marginTop: -metrics.spacing.xxl,
-    },
-    textArea: {
-      flex: 1,
-      paddingHorizontal: metrics.layout.screenPaddingHz * 1.2,
-      paddingTop: metrics.spacing.lg,
       justifyContent: 'flex-start',
-      backgroundColor: c.dark,
     },
+    // Headline
     headline: {
-      fontSize: metrics.fontSize.h1 * 1.1,
+      fontSize: metrics.fontSize.h1 * 1.15,
       fontFamily: 'PlayfairDisplay-SemiBold',
-      color: textPrimary,
-      lineHeight: metrics.fontSize.h1 * 1.5,
+      color: '#FFFFFF',
+      lineHeight: metrics.fontSize.h1 * 1.45,
       marginBottom: metrics.spacing.md,
+      textShadowColor: 'rgba(0, 0, 0, 0.5)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 8,
+    },
+    // Glass card for body text
+    bodyCard: {
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: metrics.radius.xl,
+      paddingVertical: metrics.spacing.md,
+      paddingHorizontal: metrics.spacing.md,
+      marginTop: metrics.spacing.xs,
+      borderWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.4)',
+      borderLeftColor: 'rgba(255, 255, 255, 0.3)',
+      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+      borderRightColor: 'rgba(255, 255, 255, 0.1)',
     },
     body: {
       fontSize: metrics.fontSize.body,
       fontFamily: 'DMSans-Regular',
-      color: textSecondary,
-      lineHeight: metrics.fontSize.body * 1.7,
+      color: '#FFFFFF',
+      lineHeight: metrics.fontSize.body * 1.6,
+      textShadowColor: 'rgba(0, 0, 0, 0.3)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
-    bottom: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+    // Bottom controls container
+    bottomControls: {
       paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingBottom: metrics.spacing.md,
-      backgroundColor: bottomBg,
+      paddingBottom: metrics.spacing.lg,
+      paddingTop: metrics.spacing.md,
+      gap: metrics.spacing.sm,
+    },
+    // Progress dots container
+    dotsContainer: {
+      alignItems: 'center',
+      marginBottom: metrics.spacing.md,
+      
     },
     dots: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: metrics.spacing.xs,
-      marginBottom: metrics.spacing.md,
+      gap: metrics.spacing.sm,
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      paddingHorizontal: metrics.spacing.md,
+      paddingVertical: metrics.spacing.sm,
+      borderRadius: metrics.radius.full,
+      borderWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.3)',
+      borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+      borderRightColor: 'rgba(255, 255, 255, 0.1)',
     },
     dot: {
-      height: 8,
-      borderRadius: 4,
+      height: 6,
+      borderRadius: 3,
     },
+    // Button row
     btnRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: metrics.spacing.sm,
+      justifyContent: 'flex-end',
+      gap: metrics.spacing.md,
     },
     skipBtn: {
-      paddingVertical: metrics.spacing.sm,
-      paddingRight: metrics.spacing.md,
+      paddingVertical: metrics.spacing.smMd,
+      paddingHorizontal: metrics.spacing.lg,
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      borderRadius: metrics.radius.full,
+      borderWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.3)',
+      borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+      borderRightColor: 'rgba(255, 255, 255, 0.1)',
     },
     skipText: {
-      color: skipColor,
+      color: '#FFFFFF',
       fontSize: metrics.fontSize.body,
-      fontFamily: 'DMSans-Regular',
+      fontFamily: 'DMSans-Medium',
+      letterSpacing: 0.3,
+      textShadowColor: 'rgba(0, 0, 0, 0.3)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
     nextBtnTouch: {
-      flex: 1,
+      // Width is animated
     },
-    nextBtn: {
-      height: metrics.button.height,
-      borderRadius: metrics.radius.full,
+    // Privacy text
+    privacyContainer: {
+      flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.4,
-      shadowRadius: 14,
-      elevation: 10,
+      gap: metrics.spacing.xs,
+      marginTop:responsiveHeight(1)
     },
-    nextText: {
-      color: c.text,
-      fontSize: metrics.fontSize.button,
-      fontFamily: 'DMSans-Bold',
-      letterSpacing: 0.4,
+    privacyDot: {
+      width: 3,
+      height: 3,
+      borderRadius: 1.5,
+      backgroundColor: '#FFFFFF',
+      opacity: 0.5,
     },
     privacy: {
-      color: privacyColor,
-      fontSize: metrics.fontSize.micro,
-      fontFamily: 'DMSans-Regular',
-      letterSpacing: 1.5,
+      color: '#FFFFFF',
+      fontSize:responsiveFontSize(1.6),
+      fontFamily: 'DMSans-Medium',
+      letterSpacing: 1.8,
       textAlign: 'center',
+      opacity: 0.7,
+      textShadowColor: 'rgba(0, 0, 0, 0.3)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
   });
 }
@@ -335,24 +221,105 @@ export const IntroSliderScreen: React.FC = () => {
   const s = makeStyles(colors);
 
   const navigation = useNavigation<Nav>();
-  const setIntroSeen = useUserStore((s) => s.setIntroSeen);
+  const setIntroSeen = useUserStore((st) => st.setIntroSeen);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
-  const dotWidths = useRef(SLIDES.map((_, i) => new Animated.Value(i === 0 ? 1 : 0))).current;
+  const slideAnim = useRef(new Animated.Value(1)).current;
+  const buttonWidthAnim = useRef(new Animated.Value(0)).current;
+  
+  // Individual animation values for staggered entrance
+  const headlineOpacity = useRef(new Animated.Value(0)).current;
+  const headlineTranslateY = useRef(new Animated.Value(30)).current;
+  const cardOpacity = useRef(new Animated.Value(0)).current;
+  const cardTranslateY = useRef(new Animated.Value(40)).current;
+  const controlsOpacity = useRef(new Animated.Value(0)).current;
+  const controlsTranslateY = useRef(new Animated.Value(30)).current;
 
-  const activateDot = useCallback(
+  const activateSlide = useCallback(
     (idx: number) => {
-      dotWidths.forEach((anim, i) => {
-        Animated.spring(anim, {
-          toValue: i === idx ? 1 : 0,
-          useNativeDriver: false,
-          tension: 140,
-          friction: 10,
-        }).start();
-      });
+      // Reset all animations to start state
+      headlineOpacity.setValue(0);
+      headlineTranslateY.setValue(30);
+      cardOpacity.setValue(0);
+      cardTranslateY.setValue(40);
+      controlsOpacity.setValue(0);
+      controlsTranslateY.setValue(30);
+      
+      // Animate button width on last slide
+      Animated.spring(buttonWidthAnim, {
+        toValue: idx === SLIDE_CONTENT.length - 1 ? 1 : 0,
+        useNativeDriver: false,
+        tension: 100,
+        friction: 12,
+      }).start();
+      
+      // Staggered entrance animation sequence
+      Animated.sequence([
+        Animated.delay(100),
+        Animated.parallel([
+          // Headline entrance
+          Animated.parallel([
+            Animated.timing(headlineOpacity, {
+              toValue: 1,
+              duration: 600,
+              useNativeDriver: true,
+            }),
+            Animated.spring(headlineTranslateY, {
+              toValue: 0,
+              tension: 80,
+              friction: 10,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]),
+      ]).start();
+      
+      // Card entrance (delayed)
+      Animated.sequence([
+        Animated.delay(250),
+        Animated.parallel([
+          Animated.timing(cardOpacity, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.spring(cardTranslateY, {
+            toValue: 0,
+            tension: 80,
+            friction: 10,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
+      
+      // Controls entrance (delayed)
+      Animated.sequence([
+        Animated.delay(400),
+        Animated.parallel([
+          Animated.timing(controlsOpacity, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.spring(controlsTranslateY, {
+            toValue: 0,
+            tension: 80,
+            friction: 10,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
     },
-    [dotWidths],
+    [
+      buttonWidthAnim,
+      headlineOpacity,
+      headlineTranslateY,
+      cardOpacity,
+      cardTranslateY,
+      controlsOpacity,
+      controlsTranslateY,
+    ],
   );
 
   const onScroll = useCallback(
@@ -360,14 +327,14 @@ export const IntroSliderScreen: React.FC = () => {
       const idx = Math.round(e.nativeEvent.contentOffset.x / W);
       if (idx !== activeIndex) {
         setActiveIndex(idx);
-        activateDot(idx);
+        activateSlide(idx);
       }
     },
-    [activeIndex, activateDot],
+    [activeIndex, activateSlide],
   );
 
   const goNext = () => {
-    if (activeIndex < SLIDES.length - 1) {
+    if (activeIndex < SLIDE_CONTENT.length - 1) {
       scrollRef.current?.scrollTo({ x: W * (activeIndex + 1), animated: true });
     } else {
       finish();
@@ -379,11 +346,15 @@ export const IntroSliderScreen: React.FC = () => {
     navigation.replace('Splash');
   };
 
-  const isLast = activeIndex === SLIDES.length - 1;
-  const slide = SLIDES[activeIndex];
+  const isLast = activeIndex === SLIDE_CONTENT.length - 1;
+
+  // Trigger initial animation on mount
+  React.useEffect(() => {
+    activateSlide(0);
+  }, []);
 
   return (
-    <View style={s.root}>
+    <View style={{ flex: 1 }}>
       {/* ── Paged scroll ─────────────────────────────────── */}
       <ScrollView
         ref={scrollRef}
@@ -395,78 +366,139 @@ export const IntroSliderScreen: React.FC = () => {
         bounces={false}
         style={StyleSheet.absoluteFill}
       >
-        {SLIDES.map((sl, idx) => (
+        {SLIDE_CONTENT.map((content, idx) => (
           <View key={idx} style={s.page}>
-            {/* Top half — vivid gradient illustration (same in light & dark) */}
-            <LinearGradient
-              colors={sl.gradTop}
-              start={{ x: 0.2, y: 0 }}
-              end={{ x: 0.8, y: 1 }}
-              style={s.illustrationBg}
+            {/* Full background image */}
+            <ImageBackground
+              source={SLIDE_IMAGES[idx]}
+              style={s.backgroundImage}
+              resizeMode="cover"
             >
-              {sl.illustration === 'circles' && <IllustrationCircles accent={sl.accentColor} gradTop={sl.gradTop} />}
-              {sl.illustration === 'heart'   && <IllustrationHeart   accent={sl.accentColor} />}
-              {sl.illustration === 'star'    && <IllustrationStar    accent={sl.accentColor} />}
-            </LinearGradient>
+              {/* Gradient overlay for readability */}
+              <LinearGradient
+                colors={[
+                  'rgba(0, 0, 0, 0)',
+                  'rgba(0, 0, 0, 0.1)',
+                  'rgba(0, 0, 0, 0.3)',
+                  'rgba(0, 0, 0, 0.5)',
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={s.imageOverlay}
+              />
 
-            {/* Seam — fades illustration into theme background */}
-            <LinearGradient
-              colors={[`${sl.gradTop[sl.gradTop.length - 1]}00`, colors.dark]}
-              style={s.seam}
-            />
+              {/* Content section - middle area */}
+              <View style={s.contentContainer}>
+                {/* Headline with entrance animation */}
+                <Animated.View
+                  style={{
+                    opacity: headlineOpacity,
+                    transform: [{ translateY: headlineTranslateY }],
+                  }}
+                >
+                  <Text style={s.headline}>{content.headline}</Text>
+                </Animated.View>
 
-            {/* Bottom half — theme-aware */}
-            <View style={s.textArea}>
-              <Text style={s.headline}>{sl.headline}</Text>
-              <Text style={s.body}>{sl.body}</Text>
-            </View>
+                {/* Body card with entrance animation */}
+                <Animated.View
+                  style={{
+                    opacity: cardOpacity,
+                    transform: [{ translateY: cardTranslateY }],
+                  }}
+                >
+                  <View style={s.bodyCard}>
+                    <Text style={s.body}>{content.body}</Text>
+                  </View>
+                </Animated.View>
+              </View>
+
+              {/* Bottom controls section */}
+              <SafeAreaView edges={['bottom']} style={s.bottomControls}>
+                <Animated.View
+                  style={{
+                    opacity: controlsOpacity,
+                    transform: [{ translateY: controlsTranslateY }],
+                  }}
+                >
+                  {/* Progress dots */}
+                  <View style={s.dotsContainer}>
+                    <View style={s.dots}>
+                      {SLIDE_CONTENT.map((_, i) => (
+                        <View
+                          key={i}
+                          style={[
+                            s.dot,
+                            {
+                              backgroundColor: i === activeIndex 
+                                ? colors.primary 
+                                : 'rgba(255, 255, 255, 0.3)',
+                              width: i === activeIndex ? 32 : 6,
+                            },
+                          ]}
+                        />
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Skip / Next buttons */}
+                  <View style={s.btnRow}>
+                    {!isLast && (
+                      <Animated.View
+                        style={{
+                          opacity: buttonWidthAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [1, 0],
+                          }),
+                          transform: [
+                            {
+                              translateX: buttonWidthAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, -20],
+                              }),
+                            },
+                          ],
+                        }}
+                      >
+                        <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
+                          <Text style={s.skipText}>Skip</Text>
+                        </TouchableOpacity>
+                      </Animated.View>
+                    )}
+
+                    <Animated.View
+                      style={[
+                        s.nextBtnTouch,
+                        {
+                          width: buttonWidthAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ['70%', '100%'],
+                          }),
+                        },
+                      ]}
+                    >
+                      <GradientButton
+                        text={isLast ? "Let's Begin" : 'Next'}
+                        onPress={goNext}
+                        showArrow={true}
+                        fullWidth={true}
+                      />
+                    </Animated.View>
+                  </View>
+
+                  {/* Privacy text */}
+                  <View style={s.privacyContainer}>
+                    <Text style={s.privacy}>No signup</Text>
+                    <View style={s.privacyDot} />
+                    <Text style={s.privacy}>No data</Text>
+                    <View style={s.privacyDot} />
+                    <Text style={s.privacy}>Just you two</Text>
+                  </View>
+                </Animated.View>
+              </SafeAreaView>
+            </ImageBackground>
           </View>
         ))}
       </ScrollView>
-
-      {/* ── Fixed bottom controls — theme-aware ─────────── */}
-      <SafeAreaView edges={['bottom']} style={s.bottom} pointerEvents="box-none">
-        {/* Dots */}
-        <View style={s.dots}>
-          {SLIDES.map((sl, i) => (
-            <Animated.View
-              key={i}
-              style={[
-                s.dot,
-                {
-                  backgroundColor: sl.accentColor,
-                  width: dotWidths[i].interpolate({ inputRange: [0, 1], outputRange: [8, 28] }),
-                  opacity: dotWidths[i].interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }),
-                },
-              ]}
-            />
-          ))}
-        </View>
-
-        {/* Buttons */}
-        <View style={s.btnRow}>
-          {!isLast ? (
-            <TouchableOpacity onPress={finish} activeOpacity={0.6} style={s.skipBtn}>
-              <Text style={s.skipText}>Skip</Text>
-            </TouchableOpacity>
-          ) : (
-            <View style={s.skipBtn} />
-          )}
-
-          <TouchableOpacity onPress={goNext} activeOpacity={0.88} style={s.nextBtnTouch}>
-            <LinearGradient
-              colors={[slide.accentColor, `${slide.accentColor}99`]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={s.nextBtn}
-            >
-              <Text style={s.nextText}>{isLast ? "Let's Begin" : 'Next'}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={s.privacy}>No signup · No data · Just you two</Text>
-      </SafeAreaView>
     </View>
   );
 };

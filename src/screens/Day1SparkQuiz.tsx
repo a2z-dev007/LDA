@@ -227,7 +227,7 @@ export const Day1SparkQuiz: React.FC = () => {
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: c.dark,
+    backgroundColor: 'transparent',
   },
 
   // ── Content ───────────────────────────────────────────────

@@ -32,7 +32,7 @@ export const Day2MoodPicker: React.FC = () => {
   };
 
   return (
-    <ScreenWrapper backgroundColor="#0F0E1C">
+    <ScreenWrapper>
       <ProgressStrip currentDay={2} />
       <View style={styles.header}>
         <Text style={styles.eyebrow}>Day 2 · The Mood Room</Text>
@@ -61,7 +61,7 @@ export const Day2MoodPicker: React.FC = () => {
               key={mood.id}
               style={[
                 styles.moodCard,
-                { borderColor: isSelected ? mood.color : 'rgba(255,255,255,0.08)' },
+                { borderColor: isSelected ? mood.color : colors.surfaceBorder },
                 isSelected && { backgroundColor: `${mood.color}15` },
               ]}
               activeOpacity={0.8}

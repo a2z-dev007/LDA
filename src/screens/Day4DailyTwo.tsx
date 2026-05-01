@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -54,7 +55,7 @@ export const Day4DailyTwo: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper backgroundColor="#110A1A">
+      <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <Text style={styles.eyebrow}>The Daily 2</Text>
@@ -67,7 +68,7 @@ export const Day4DailyTwo: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Your answer…"
-              placeholderTextColor="rgba(255,255,255,0.2)"
+              placeholderTextColor={colors.textHint}
               value={answer1}
               onChangeText={setAnswer1}
               multiline
@@ -83,7 +84,7 @@ export const Day4DailyTwo: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Your answer…"
-              placeholderTextColor="rgba(255,255,255,0.2)"
+              placeholderTextColor={colors.textHint}
               value={answer2}
               onChangeText={setAnswer2}
               multiline
@@ -95,11 +96,13 @@ export const Day4DailyTwo: React.FC = () => {
         </ScrollView>
 
         <TouchableOpacity
-          style={[styles.cta, !canContinue && styles.ctaDim]}
+          style={[styles.ctaTouch, !canContinue && styles.ctaDim]}
           activeOpacity={0.85}
           onPress={handleDone}
         >
-          <Text style={styles.ctaLabel}>{canContinue ? 'Save & continue →' : 'Skip for now'}</Text>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>{canContinue ? 'Save & continue →' : 'Skip for now'}</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScreenWrapper>
     </KeyboardAvoidingView>
@@ -122,10 +125,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   divider: { height: 1, backgroundColor: c.surface, marginVertical: 24 },
   hook: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', textAlign: 'center', marginTop: 24, marginBottom: 8, lineHeight: 20 },
-  cta: {
-    backgroundColor: c.day4, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
   ctaDim: { opacity: 0.5 },
-  ctaLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

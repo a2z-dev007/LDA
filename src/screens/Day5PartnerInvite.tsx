@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share, Alert } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -66,8 +67,15 @@ export const Day5PartnerInvite: React.FC = () => {
       </View>
 
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.inviteBtn} activeOpacity={0.85} onPress={handleInvite}>
-          <Text style={styles.inviteBtnLabel}>Invite your partner →</Text>
+        <TouchableOpacity style={styles.inviteBtnTouch} activeOpacity={0.85} onPress={handleInvite}>
+          <LinearGradient
+            colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.inviteBtn}
+          >
+            <Text style={styles.inviteBtnLabel}>Invite your partner →</Text>
+          </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.soloBtn} activeOpacity={0.7} onPress={handleSolo}>
           <Text style={styles.soloBtnLabel}>Continue solo for now</Text>
@@ -82,17 +90,26 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   title: { fontSize: 28, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 38 },
   subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24 },
   card: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 20, gap: 8,
+    backgroundColor: c.white, borderRadius: 16, padding: 20, gap: 8,
     borderWidth: 1, borderColor: c.surfaceBorder,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   cardIcon: { fontSize: 28 },
   cardTitle: { fontSize: 18, color: c.text, fontFamily: 'PlayfairDisplay-Bold' },
   cardDesc: { fontSize: 14, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 22 },
   actions: { paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
-  inviteBtn: {
-    backgroundColor: c.primary, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
+  inviteBtnTouch: {
+    borderRadius: 100,
+    shadowColor: c.glowPrimary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    elevation: 10,
   },
-  inviteBtnLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  inviteBtn: {
+    paddingVertical: 18, borderRadius: 100, alignItems: 'center' as const,
+  },
+  inviteBtnLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   soloBtn: { alignItems: 'center', paddingVertical: 12 },
   soloBtnLabel: { color: c.textHint, fontSize: 15, fontFamily: 'Inter-Regular' },
 });

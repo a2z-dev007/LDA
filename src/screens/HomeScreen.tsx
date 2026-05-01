@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -62,7 +63,7 @@ export const HomeScreen = () => {
   const ctaBottomPadding = insets.bottom + 12;
 
   return (
-    <ScreenWrapper backgroundColor={colors.dark}>
+    <ScreenWrapper>
       {/* ── Scrollable content ─────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
@@ -128,26 +129,40 @@ export const HomeScreen = () => {
       <View style={[styles.ctaContainer, { paddingBottom: ctaBottomPadding }]}>
         {completed < 5 ? (
           <TouchableOpacity
-            style={styles.continueBtn}
+            style={styles.continueBtnTouch}
             activeOpacity={0.88}
             onPress={handleContinue}
           >
-            <View style={styles.continueBtnInner}>
-              <Text style={styles.continueBtnSub}>CONTINUE</Text>
-              <Text style={styles.continueBtnTitle}>
-                Day {nextDay} · {activeDay?.title ?? 'The Reveal'}
-              </Text>
-            </View>
-            <Text style={styles.continueBtnArrow}>→</Text>
+            <LinearGradient
+              colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.continueBtn}
+            >
+              <View style={styles.continueBtnInner}>
+                <Text style={styles.continueBtnSub}>CONTINUE</Text>
+                <Text style={styles.continueBtnTitle}>
+                  Day {nextDay} · {activeDay?.title ?? 'The Reveal'}
+                </Text>
+              </View>
+              <Text style={styles.continueBtnArrow}>→</Text>
+            </LinearGradient>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={styles.continueBtn}
+            style={styles.continueBtnTouch}
             activeOpacity={0.88}
             onPress={() => navigation.navigate('Day5PartnerInvite')}
           >
-            <Text style={styles.continueBtnTitle}>Invite your partner</Text>
-            <Text style={styles.continueBtnArrow}>→</Text>
+            <LinearGradient
+              colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.continueBtn}
+            >
+              <Text style={styles.continueBtnTitle}>Invite your partner</Text>
+              <Text style={styles.continueBtnArrow}>→</Text>
+            </LinearGradient>
           </TouchableOpacity>
         )}
       </View>
@@ -205,7 +220,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: 10,
   },
   card: {
-    backgroundColor: c.surface,
+    backgroundColor: c.white,
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderRadius: 16,
@@ -214,7 +229,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   cardCompleted: {
     opacity: 0.65,
-    backgroundColor: c.surface,
+    backgroundColor: c.white,
   },
   cardLocked: {
     opacity: 0.3,
@@ -262,8 +277,15 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: 12,
     backgroundColor: `${c.dark}E8`,
   },
+  continueBtnTouch: {
+    borderRadius: 100,
+    shadowColor: c.glowPrimary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    elevation: 10,
+  },
   continueBtn: {
-    backgroundColor: c.primary,
     borderRadius: 100,
     paddingVertical: 14,
     paddingHorizontal: 24,
@@ -275,18 +297,19 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: 2,
   },
   continueBtnSub: {
-    color: c.textSecondary,
+    color: c.onPrimary,
     fontSize: 10,
     fontFamily: 'Inter-SemiBold',
     letterSpacing: 2,
+    opacity: 0.75,
   },
   continueBtnTitle: {
-    color: c.text,
+    color: c.onPrimary,
     fontSize: 17,
     fontFamily: 'PlayfairDisplay-Bold',
   },
   continueBtnArrow: {
-    color: c.text,
+    color: c.onPrimary,
     fontSize: 22,
   },
 });

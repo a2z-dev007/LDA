@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, StyleSheet, Animated, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
 import { useAppColors } from '../theme';
 import { useUserStore } from '../store/useUserStore';
+import { SlideToBeginButton } from '../components/common/SlideToBeginButton';
+import { IMAGE } from '../assets/image/bg-images';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Splash'>;
 
@@ -53,27 +54,22 @@ export const SplashScreen: React.FC = () => {
   };
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-      style={styles.gradient}
+    <ImageBackground 
+      source={IMAGE.lavenderBg} 
+      style={styles.backgroundImage}
+      resizeMode="cover"
+      blurRadius={10}
     >
       <SafeAreaView style={styles.root} edges={['bottom']}>
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
           {/* Logo Section */}
           <View style={styles.logoSection}>
-            <Animated.View
-              style={[
-                styles.logoContainer,
-                { transform: [{ scale: pulseAnim }] }
-              ]}
-            >
-              <View style={styles.logoOuterRing}>
-                <View style={styles.logoMiddleRing}>
-                  <View style={styles.logoInnerCircle} />
-                </View>
-              </View>
+            <Animated.View style={[styles.logoClip, { transform: [{ scale: pulseAnim }] }]}>
+              <Animated.Image
+                source={require('../assets/image/logo-transparent.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </Animated.View>
             <Text style={styles.title}>LET'S DATE AGAIN</Text>
           </View>
@@ -96,25 +92,21 @@ export const SplashScreen: React.FC = () => {
 
           {/* Button Section */}
           <View style={styles.buttonSection}>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.85}
-              onPress={handleBegin}
-            >
-              <Text style={styles.buttonText}>Begin</Text>
-              <Text style={styles.buttonIcon}>→</Text>
-            </TouchableOpacity>
+            <SlideToBeginButton
+              text="Slide to Begin"
+              onSlideComplete={handleBegin}
+            />
 
             <Text style={styles.footer}>NO SIGNUP. NO DATA. JUST YOU.</Text>
           </View>
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  gradient: {
+  backgroundImage: {
     flex: 1,
   },
   root: {
@@ -132,30 +124,17 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 40,
   },
-  logoContainer: {
-    marginBottom: 28,
-  },
-  logoOuterRing: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: `${c.primary}20`,
+  // Clip container — cuts off the bottom shadow baked into the PNG
+  logoClip: {
+    width: 220,
+    height: 200,          // intentionally less than image height — clips bottom shadow
+    overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  logoMiddleRing: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: `${c.primary}40`,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoInnerCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: c.primary,
+  logoImage: {
+    width: 220,
+    height: 220,
+    marginTop: 0,
   },
   title: {
     fontSize: 15,
@@ -209,35 +188,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   buttonSection: {
     paddingTop: 10,
   },
-  button: {
-    backgroundColor: c.primary,
-    paddingVertical: 20,
-    paddingHorizontal: 32,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 24,
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 8,
-    flexDirection: 'row',
-  },
-  buttonText: {
-    color: c.text,
-    fontSize: 18,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    marginRight: 8,
-  },
-  buttonIcon: {
-    color: c.text,
-    fontSize: 22,
-    fontFamily: 'DMSans-Bold',
-    fontWeight: '700',
-  },
   footer: {
     color: c.textSubtle,
     fontSize: 10,
@@ -245,5 +195,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontWeight: '400',
     letterSpacing: 2.2,
     textAlign: 'center',
+    marginTop: 24,
   },
 });

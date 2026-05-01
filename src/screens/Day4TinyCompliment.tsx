@@ -42,7 +42,7 @@ export const Day4TinyCompliment: React.FC = () => {
   };
 
   return (
-    <ScreenWrapper backgroundColor="#110A1A">
+    <ScreenWrapper>
       <ProgressStrip currentDay={4} />
       <View style={styles.body}>
         <Text style={styles.eyebrow}>Day 4 · Tiny Compliment</Text>

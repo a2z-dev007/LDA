@@ -74,7 +74,7 @@ export const typography = {
   },
   /** Default body copy  →  metrics.fontSize.body */
   bodyMedium: {
-    fontSize: fontSize.body,
+    fontSize: fontSize.bodySm,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400' as const,
     lineHeight: fontSize.body * 1.5,

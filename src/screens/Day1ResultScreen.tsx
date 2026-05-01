@@ -122,6 +122,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   card: {
     borderWidth: 1.5, borderRadius: 20, padding: 28, marginBottom: 28, overflow: 'hidden',
+    backgroundColor: c.white,
   },
   cardAccent: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
   typeName: { fontSize: 28, fontFamily: 'PlayfairDisplay-Bold', marginTop: 8, marginBottom: 6 },
@@ -138,6 +139,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   pillText: { fontSize: 13, fontFamily: 'Inter-SemiBold' },
   growthCard: {
     borderWidth: 1, borderRadius: 12, padding: 20,
+    backgroundColor: c.white,
   },
   growthLabel: {
     color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold',
@@ -152,7 +154,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginHorizontal: 28, marginBottom: 12, paddingVertical: 18,
     borderRadius: 100, alignItems: 'center',
   },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   ghostCta: { alignItems: 'center', marginBottom: 40 },
   ghostCtaLabel: { color: c.textHint, fontSize: 15, fontFamily: 'Inter-Regular' },
 });

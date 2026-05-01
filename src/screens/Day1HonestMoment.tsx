@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useRoute, StackActions } from '@react-navigation/native';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -51,17 +52,12 @@ export const Day1HonestMoment: React.FC = () => {
       </View>
 
       <Animated.View style={{ opacity: ctaOpacity }}>
-        <TouchableOpacity
-          style={styles.cta}
-          activeOpacity={0.85}
-          onPress={() => {
-            haptics.medium();
-            navigation.navigate('Day1Quiz', { sliderScore });
-          }}
-        >
+      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day1Quiz', { sliderScore }); }}>
+        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
           <Text style={styles.ctaLabel}>Take the Spark Quiz</Text>
           <Text style={styles.ctaSub}>7 questions · 90 seconds</Text>
-        </TouchableOpacity>
+        </LinearGradient>
+      </TouchableOpacity>
       </Animated.View>
     </ScreenWrapper>
   );
@@ -86,24 +82,12 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 32,
   },
-  cta: {
-    backgroundColor: c.day1,
-    marginHorizontal: 32,
-    marginBottom: 48,
-    paddingVertical: 18,
-    borderRadius: 100,
-    alignItems: 'center',
+  ctaTouch: {
+    marginHorizontal: 32, marginBottom: 48, borderRadius: 100,
+    shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4, shadowRadius: 16, elevation: 8,
   },
-  ctaLabel: {
-    color: c.dark,
-    fontSize: 17,
-    fontFamily: 'Inter-SemiBold',
-    letterSpacing: 0.3,
-  },
-  ctaSub: {
-    color: `${c.dark}99`,
-    fontSize: 12,
-    fontFamily: 'Inter-Regular',
-    marginTop: 3,
-  },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaSub: { color: `${c.onPrimary}99`, fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 3 },
 });

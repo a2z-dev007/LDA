@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -45,7 +46,7 @@ export const Day2MoodFollowUp: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper backgroundColor="#0F0E1C">
+      <ScreenWrapper>
         <ProgressStrip currentDay={2} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           {moodData && (
@@ -60,7 +61,7 @@ export const Day2MoodFollowUp: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Write whatever comes to mind…"
-            placeholderTextColor="rgba(255,255,255,0.2)"
+            placeholderTextColor={colors.textHint}
             value={answer}
             onChangeText={setAnswer}
             multiline
@@ -70,8 +71,10 @@ export const Day2MoodFollowUp: React.FC = () => {
           <Text style={styles.privacy}>🔒 Stored only on this phone. Never shared.</Text>
         </ScrollView>
 
-        <TouchableOpacity style={styles.cta} activeOpacity={0.85} onPress={handleSave}>
-          <Text style={styles.ctaLabel}>{answer.trim() ? 'Save & continue' : 'Skip for today'}</Text>
+        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={handleSave}>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>{answer.trim() ? 'Save & continue' : 'Skip for today'}</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScreenWrapper>
     </KeyboardAvoidingView>
@@ -94,9 +97,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     padding: 16, minHeight: 140, lineHeight: 24, marginBottom: 12,
   },
   privacy: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular' },
-  cta: {
-    backgroundColor: c.day2, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

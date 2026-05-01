@@ -2,8 +2,7 @@
  * ThemeContext
  * ────────────
  * Provides live theme colors to the entire app via React context.
- * Listens to Appearance changes and re-renders all consumers
- * automatically when the user switches light ↔ dark in system settings.
+ * Supports both light and dark themes with automatic system appearance detection.
  *
  * Wrap your app once with <ThemeProvider> (done in App.tsx).
  * Consume anywhere with useAppColors() — drop-in replacement for
@@ -19,29 +18,45 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import { Appearance, ColorSchemeName } from 'react-native';
+import { Appearance } from 'react-native';
 import {
-  darkThemes,
   lightThemes,
-  themePairs,
+  darkThemes,
+  LightThemeName,
   DarkThemeName,
   ColorTheme,
 } from './colorThemes';
 
 // ─────────────────────────────────────────────────────────────
-//  ✏️  ONE LINE TO CHANGE THE WHOLE APP THEME PAIR
-//  Options: 'elegantDark' | 'luxePinkGold' | 'romanticRoseGold' | 'midnightPassion'
+//  ✏️  THEME CONFIGURATION
+//  Set your preferred light and dark themes here
 // ─────────────────────────────────────────────────────────────
-export const ACTIVE_DARK_THEME: DarkThemeName = 'midnightPassion';
+export const ACTIVE_LIGHT_THEME: LightThemeName = 'loveBloom';
+export const ACTIVE_DARK_THEME: DarkThemeName = 'midnightGarden';
 
+// Force dark mode - set to false to use light theme
+const FORCE_DARK_MODE = false;
+// Brand Colors:
+// Primary: #D88084
+// Background: #23314A
+// Secondary: #8FA1B1
+// Nectarine: #D7897F
+// Pêche: #F9B95C
+// Menthe: #96C7B3
+// Lagune: #6398A9
 // ─────────────────────────────────────────────────────────────
-//  Resolver
+//  Resolver — returns dark theme when forced, otherwise system
 // ─────────────────────────────────────────────────────────────
-function resolveTheme(scheme: ColorSchemeName): ColorTheme {
-  if (scheme === 'light') {
-    return lightThemes[themePairs[ACTIVE_DARK_THEME]];
+function resolveTheme(): ColorTheme {
+  if (FORCE_DARK_MODE) {
+    return darkThemes[ACTIVE_DARK_THEME];
   }
-  return darkThemes[ACTIVE_DARK_THEME];
+  
+  const colorScheme = Appearance.getColorScheme();
+  if (colorScheme === 'dark') {
+    return darkThemes[ACTIVE_DARK_THEME];
+  }
+  return lightThemes[ACTIVE_LIGHT_THEME];
 }
 
 export type AppColors = ColorTheme;
@@ -49,21 +64,23 @@ export type AppColors = ColorTheme;
 // ─────────────────────────────────────────────────────────────
 //  Context
 // ─────────────────────────────────────────────────────────────
-const ThemeContext = createContext<AppColors>(
-  resolveTheme(Appearance.getColorScheme()),
-);
+const ThemeContext = createContext<AppColors>(resolveTheme());
 
 // ─────────────────────────────────────────────────────────────
 //  Provider — wrap the app once
 // ─────────────────────────────────────────────────────────────
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<AppColors>(() =>
-    resolveTheme(Appearance.getColorScheme()),
-  );
+  const [theme, setTheme] = useState<AppColors>(() => resolveTheme());
 
+  // Listen to system appearance changes (only if not forcing dark mode)
   useEffect(() => {
-    const sub = Appearance.addChangeListener(({ colorScheme }) => {
-      setTheme(resolveTheme(colorScheme));
+    if (FORCE_DARK_MODE) {
+      // Dark mode is forced, no need to listen to system changes
+      return;
+    }
+    
+    const sub = Appearance.addChangeListener(() => {
+      setTheme(resolveTheme());
     });
     return () => sub.remove();
   }, []);
