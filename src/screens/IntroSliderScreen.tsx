@@ -28,8 +28,8 @@ import { metrics } from '../theme/metrics';
 import { useUserStore } from '../store/useUserStore';
 import { AppColors } from '../theme/ThemeContext';
 import { GradientButton } from '../components/common/GradientButton';
-import { Heart, Flame, Leaf, Sun, MessageCircle, HelpCircle } from 'lucide-react-native';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { Heart, Flame, Leaf, Sun, MessageCircle, HelpCircle, Star, PenLine } from 'lucide-react-native';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { IMAGE } from '../assets/image/bg-images';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Intro'>;
@@ -80,7 +80,11 @@ const SLIDE_CONTENT = [
     showHeartIcon: false,
     showDecorativeUnderline: true,
     body: 'Earn your connection badge and write a promise that lasts beyond 5 days.',
-    features: [],
+    features: [
+      { icon: 'star', label: 'Earn your\nconnection badge' },
+      { icon: 'edit', label: 'Write your\npromise' },
+      { icon: 'heart', label: 'Discover your\nlove style' },
+    ],
     isSlide3: true,
   },
 ];
@@ -166,26 +170,26 @@ function makeStyles(c: AppColors) {
       marginTop: metrics.spacing.xs,
     },
     headlineInTeal: {
-      fontSize: 36,
+      fontSize: responsiveFontSize(4),
       fontFamily: 'PlayfairDisplay-Bold',
       color: c.primary,
-      lineHeight: 42,
+      // lineHeight: 42,
     },
     headlineBlack: {
-      fontSize: 36,
+      fontSize: responsiveFontSize(4),
        fontFamily: 'PlayfairDisplay-Italic',
       color: c.text,
       lineHeight: 42,
     },
     headlineAccent: {
-      fontSize: 32,
+     fontSize: responsiveFontSize(4),
       fontFamily: 'PlayfairDisplay-Italic',
       color: c.text,
-      lineHeight: 42,
+      // lineHeight: 42,
     },
     // Body text
     body: {
-      fontSize: 15,
+       fontSize: responsiveFontSize(2),
       fontFamily: 'DMSans-Regular',
       color: c.text,
       lineHeight: 22,
@@ -286,16 +290,16 @@ function makeStyles(c: AppColors) {
     },
     // ── Slide 3 specific ──
     slide3HeadlineBlack: {
-      fontSize: 36,
+      fontSize: responsiveFontSize(4),
       fontFamily: 'PlayfairDisplay-Bold',
       color: c.text,
-      lineHeight: 44,
+      // lineHeight: responsiveFontSize(3.4),
     },
     slide3HeadlineTeal: {
-      fontSize: 36,
+      fontSize: responsiveFontSize(4),
       fontFamily: 'PlayfairDisplay-Italic',
       color: c.primary,
-      lineHeight: 44,
+      // lineHeight: responsiveFontSize(3.4),
     },
     decorativeUnderline: {
       width: 120,
@@ -310,10 +314,12 @@ function makeStyles(c: AppColors) {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      
     },
     slide3BodyText: {
       flex: 1,
-      fontSize: 15,
+
+      fontSize: responsiveFontSize(2),
       fontFamily: 'DMSans-Regular',
       color: c.text,
       lineHeight: 22,
@@ -322,6 +328,9 @@ function makeStyles(c: AppColors) {
     },
     connectionBadge: {
       width: responsiveWidth(28),
+      position:'absolute',
+      top:10,
+      right:0,
       height: responsiveWidth(28),
     },
   });
@@ -403,6 +412,10 @@ export const IntroSliderScreen: React.FC = () => {
         return <MessageCircle size={size} color={iconColor} />;
       case 'help':
         return <HelpCircle size={size} color={iconColor} />;
+      case 'star':
+        return <Star size={size} color={iconColor} />;
+      case 'edit':
+        return <PenLine size={size} color={iconColor} />;
       default:
         return null;
     }
@@ -452,14 +465,27 @@ export const IntroSliderScreen: React.FC = () => {
                         <Text style={s.slide3HeadlineTeal}>{content.headlineTeal}</Text>
                         <Text style={s.slide3HeadlineBlack}>{content.headlineBlackSuffix}</Text>
                       </Text>
-                      <View style={s.decorativeUnderline} />
-                      <View style={s.slide3BodyRow}>
-                        <Text style={s.slide3BodyText}>{content.body}</Text>
                         <Image
                           source={CONNECTION_BADGE}
                           style={s.connectionBadge}
                           resizeMode="contain"
                         />
+                      <View style={s.decorativeUnderline} />
+                      {/* Body + Connection badge side by side */}
+                      <View style={s.slide3BodyRow}>
+                        <Text style={s.slide3BodyText}>{content.body}</Text>
+                      
+                      </View>
+                      {/* Features row — same as slides 1 & 2 */}
+                      <View style={s.featuresRow}>
+                        {content.features.map((feature, i) => (
+                          <View key={i} style={s.featureItem}>
+                            <View style={s.featureIconContainer}>
+                              {renderIcon(feature.icon, 22)}
+                            </View>
+                            <Text style={s.featureLabel}>{feature.label}</Text>
+                          </View>
+                        ))}
                       </View>
                     </>
                   ) : (
