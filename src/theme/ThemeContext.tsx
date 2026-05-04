@@ -15,10 +15,8 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from 'react';
-import { Appearance } from 'react-native';
 import {
   lightThemes,
   darkThemes,
@@ -36,26 +34,14 @@ export const ACTIVE_DARK_THEME: DarkThemeName = 'midnightGarden';
 
 // Force dark mode - set to false to use light theme
 const FORCE_DARK_MODE = false;
-// Brand Colors:
-// Primary: #D88084
-// Background: #23314A
-// Secondary: #8FA1B1
-// Nectarine: #D7897F
-// Pêche: #F9B95C
-// Menthe: #96C7B3
-// Lagune: #6398A9
 // ─────────────────────────────────────────────────────────────
-//  Resolver — returns dark theme when forced, otherwise system
+//  Resolver — always returns light theme, ignores system setting
 // ─────────────────────────────────────────────────────────────
 function resolveTheme(): ColorTheme {
   if (FORCE_DARK_MODE) {
     return darkThemes[ACTIVE_DARK_THEME];
   }
-  
-  const colorScheme = Appearance.getColorScheme();
-  if (colorScheme === 'dark') {
-    return darkThemes[ACTIVE_DARK_THEME];
-  }
+  // Always use light theme — ignore system dark mode
   return lightThemes[ACTIVE_LIGHT_THEME];
 }
 
@@ -72,18 +58,9 @@ const ThemeContext = createContext<AppColors>(resolveTheme());
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<AppColors>(() => resolveTheme());
 
-  // Listen to system appearance changes (only if not forcing dark mode)
-  useEffect(() => {
-    if (FORCE_DARK_MODE) {
-      // Dark mode is forced, no need to listen to system changes
-      return;
-    }
-    
-    const sub = Appearance.addChangeListener(() => {
-      setTheme(resolveTheme());
-    });
-    return () => sub.remove();
-  }, []);
+  // No system appearance listener — light theme is always applied
+  // To re-enable system dark mode support, restore the Appearance listener
+  // and update resolveTheme() accordingly.
 
   return (
     <ThemeContext.Provider value={theme}>

@@ -114,11 +114,14 @@ function makeStyles(c: AppColors) {
     },
     // Rounded image card
     imageCard: {
-      // width: '100%',
-      // aspectRatio: 1.2,
-      height:responsiveHeight(40),
+      width: '95%',
+      aspectRatio: 1.2,
+      // height:responsiveHeight(36),
       borderRadius: metrics.radius.xxl,
       overflow: 'hidden',
+      marginTop:responsiveHeight(1),
+      justifyContent:'center',
+      alignSelf:'center',
       // marginBottom: metrics.spacing.xs,
       // backgroundColor: c.white,
       // shadowColor: c.primary,
@@ -152,7 +155,7 @@ function makeStyles(c: AppColors) {
     // Content section
     contentSection: {
       marginBottom: 0,
-      marginTop:responsiveHeight(3),
+      marginTop:responsiveHeight(1),
       paddingHorizontal: metrics.layout.screenPaddingHz,
       
     },
@@ -214,9 +217,9 @@ function makeStyles(c: AppColors) {
       paddingHorizontal: metrics.spacing.xs,
     },
     featureIconContainer: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
+      width: responsiveWidth(9),
+      height: responsiveWidth(9),
+      borderRadius: responsiveWidth(10),
       borderWidth: 1.5,
       borderColor: c.primary,
       alignItems: 'center',
@@ -224,7 +227,7 @@ function makeStyles(c: AppColors) {
       marginBottom: 4,
     },
     featureLabel: {
-      fontSize: 11,
+      fontSize:responsiveFontSize(1.3),
       fontFamily: 'DMSans-Regular',
       color: c.text,
       textAlign: 'center',
@@ -397,7 +400,7 @@ export const IntroSliderScreen: React.FC = () => {
 
   const isLast = activeIndex === SLIDE_CONTENT.length - 1;
 
-  const renderIcon = (icon: string, size: number = 24) => {
+  const renderIcon = (icon: string, size: number = responsiveFontSize(2)) => {
     const iconColor = colors.primary;
     switch (icon) {
       case 'heart':
@@ -481,7 +484,7 @@ export const IntroSliderScreen: React.FC = () => {
                         {content.features.map((feature, i) => (
                           <View key={i} style={s.featureItem}>
                             <View style={s.featureIconContainer}>
-                              {renderIcon(feature.icon, 22)}
+                              {renderIcon(feature.icon, responsiveFontSize(2))}
                             </View>
                             <Text style={s.featureLabel}>{feature.label}</Text>
                           </View>
