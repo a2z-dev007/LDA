@@ -578,6 +578,67 @@ export const loveBloomTheme: ColorTheme = {
 };
 
 
+// ── 10. Sage Garden (LIGHT) ──────────────────────────────────
+// Soft sage green theme with natural, calming tones
+// Main colors: Sage green, forest teal, mint cream
+// A light, natural theme with botanical warmth and tranquility
+export const sageGardenTheme: ColorTheme = {
+  name: 'Sage Garden',
+  description: 'Soft sage & mint — natural, calming, and grounded',
+  isDark: false,
+
+  // Primary: deep forest teal — grounding and natural
+  primary: '#2D5F5D',           // forest teal — main text, icons
+  secondary: '#8FB8A8',         // sage green — secondary actions
+  accent: '#A8C9BC',            // soft mint — highlights
+
+  dark: '#1A3635',              // deep forest — darkest text
+  darkMid: '#F5FAF9',           // mint cream — card surfaces
+  light: '#FFFFFF',             // pure white
+  white: '#FFFFFF',
+
+  text: '#1A3635',              // deep forest — primary text
+  textSecondary: 'rgba(26,54,53,0.65)',
+  textHint: 'rgba(26,54,53,0.38)',
+
+  surface: 'rgba(45,95,93,0.06)',
+  surfaceBorder: 'rgba(45,95,93,0.15)',
+
+  onPrimary: '#FFFFFF',
+
+  // Background gradient: mint cream → soft sage → light teal
+  gradientStart: '#F5FAF9',
+  gradientMid: '#E8F3F1',
+  gradientEnd: '#E0F0ED',
+
+  // Button gradient: sage green → teal blue
+  buttonGradientStart: '#8FB8A8',
+  buttonGradientEnd: '#6BA8B8',
+
+  glassLight: 'rgba(45,95,93,0.08)',
+  glassBorder: 'rgba(143,184,168,0.25)',
+  glassHeavy: 'rgba(45,95,93,0.12)',
+
+  textDark: '#1A3635',
+  textLight: '#FFFFFF',
+  textMuted: 'rgba(26,54,53,0.65)',
+  textSubtle: 'rgba(26,54,53,0.38)',
+
+  glowPrimary: 'rgba(45,95,93,0.25)',
+  glowSecondary: 'rgba(143,184,168,0.20)',
+
+  // Journey day accents: natural botanical progression
+  day1: '#2D5F5D',   // forest teal
+  day2: '#5A8A7F',   // medium sage
+  day3: '#8FB8A8',   // soft sage
+  day4: '#A8C9BC',   // mint green
+  day5: '#6BA8B8',   // sky teal
+
+  error: '#C85A54',
+  success: '#5A8A7F',
+};
+
+
 // ─────────────────────────────────────────────────────────────
 //  THEME REGISTRY  (light only)
 // ─────────────────────────────────────────────────────────────
@@ -591,6 +652,7 @@ export const lightThemes = {
   nectarineGarden: nectarineGardenTheme,
   flamingoDusk: flamingoDuskTheme,
   loveBloom: loveBloomTheme,
+  sageGarden: sageGardenTheme,
 } as const;
 
 // Dark themes
@@ -611,6 +673,7 @@ export const themePairs: Record<keyof typeof themes, keyof typeof themes> = {
   nectarineGarden: 'nectarineGarden',
   flamingoDusk: 'flamingoDusk',
   loveBloom: 'loveBloom',
+  sageGarden: 'sageGarden',
   midnightGarden: 'midnightGarden',
 };
 

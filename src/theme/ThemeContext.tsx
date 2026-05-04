@@ -31,7 +31,7 @@ import {
 //  ✏️  THEME CONFIGURATION
 //  Set your preferred light and dark themes here
 // ─────────────────────────────────────────────────────────────
-export const ACTIVE_LIGHT_THEME: LightThemeName = 'loveBloom';
+export const ACTIVE_LIGHT_THEME: LightThemeName = 'sageGarden';
 export const ACTIVE_DARK_THEME: DarkThemeName = 'midnightGarden';
 
 // Force dark mode - set to false to use light theme

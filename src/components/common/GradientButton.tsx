@@ -12,6 +12,50 @@ import { useAppColors } from '../../theme';
 import { metrics } from '../../theme/metrics';
 import { typography } from '../../theme/typography';
 
+// ─────────────────────────────────────────────────────────────
+//  Gradient Variants
+// ─────────────────────────────────────────────────────────────
+export type GradientVariant = 
+  | 'default'           // Uses theme colors
+  | 'blushRose'         // Blush rose to peach blossom (day1 → day2)
+  | 'roseLavender'      // Blush rose to soft lavender (day1 → day4)
+  | 'peachMint'         // Peach blossom to sage mint (day2 → day3)
+  | 'mintSky'           // Sage mint to sky mist (day3 → day5)
+  | 'lavenderSky'       // Soft lavender to sky mist (day4 → day5)
+  | 'roseMint'          // Blush rose to sage mint (day1 → day3)
+  | 'peachLavender'     // Peach blossom to soft lavender (day2 → day4)
+  | 'lavenderRose'      // Soft lavender to blush rose (day4 → day1) - reverse
+  | 'skyLavender'       // Sky mist to soft lavender (day5 → day4) - reverse
+  | 'sageBlue'          // Sage green to teal blue
+  | 'forestSage'        // Forest teal to sage green
+  | 'mintTeal'          // Mint to teal
+  | 'sunset'            // Warm coral pink to peachy cream
+  | 'dreamy';           // Lavender purple to soft pink
+
+const GRADIENT_VARIANTS: Record<GradientVariant, { start: string; end: string }> = {
+  default: { start: '', end: '' }, // Will use theme colors
+  
+  // ── Love Bloom Theme Gradients ──────────────────────────────
+  blushRose: { start: '#E8799D', end: '#F5A67A' },        // day1 → day2: romantic warmth
+  roseLavender: { start: '#E8799D', end: '#B8A8D8' },     // day1 → day4: romantic to dreamy
+  peachMint: { start: '#F5A67A', end: '#8ECAAA' },        // day2 → day3: warm to fresh
+  mintSky: { start: '#8ECAAA', end: '#8CB8D8' },          // day3 → day5: fresh to serene
+  lavenderSky: { start: '#B8A8D8', end: '#8CB8D8' },      // day4 → day5: dreamy to calm
+  roseMint: { start: '#E8799D', end: '#8ECAAA' },         // day1 → day3: passion to growth
+  peachLavender: { start: '#F5A67A', end: '#B8A8D8' },    // day2 → day4: warmth to reflection
+  lavenderRose: { start: '#B8A8D8', end: '#E8799D' },     // day4 → day1: reflection to passion
+  skyLavender: { start: '#8CB8D8', end: '#B8A8D8' },      // day5 → day4: calm to dreamy
+  
+  // ── Sage Garden Theme Gradients ─────────────────────────────
+  sageBlue: { start: '#8FB8A8', end: '#6BA8B8' },         // sage green to teal blue
+  forestSage: { start: '#2D5F5D', end: '#8FB8A8' },       // forest teal to sage
+  mintTeal: { start: '#A8C9BC', end: '#6BA8B8' },         // mint to teal
+  
+  // ── Additional Premium Gradients ────────────────────────────
+  sunset: { start: '#FF9A9E', end: '#FAD0C4' },           // coral pink to peachy cream
+  dreamy: { start: '#A18CD1', end: '#FBC2EB' },           // lavender purple to soft pink
+};
+
 interface GradientButtonProps {
   /** Button text */
   text: string;
@@ -25,6 +69,12 @@ interface GradientButtonProps {
   fullWidth?: boolean;
   /** Custom style for container */
   style?: any;
+  /** Gradient variant (predefined color combinations) */
+  variant?: GradientVariant;
+  /** Custom gradient start color (overrides variant and theme) */
+  gradientStart?: string;
+  /** Custom gradient end color (overrides variant and theme) */
+  gradientEnd?: string;
 }
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
@@ -34,8 +84,29 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   showArrow = true,
   fullWidth = false,
   style,
+  variant = 'default',
+  gradientStart,
+  gradientEnd,
 }) => {
   const colors = useAppColors();
+
+  // Determine gradient colors with priority: custom > variant > theme
+  let buttonGradientStart: string;
+  let buttonGradientEnd: string;
+
+  if (gradientStart && gradientEnd) {
+    // Custom colors have highest priority
+    buttonGradientStart = gradientStart;
+    buttonGradientEnd = gradientEnd;
+  } else if (variant !== 'default') {
+    // Use variant colors
+    buttonGradientStart = GRADIENT_VARIANTS[variant].start;
+    buttonGradientEnd = GRADIENT_VARIANTS[variant].end;
+  } else {
+    // Fall back to theme colors
+    buttonGradientStart = colors.buttonGradientStart;
+    buttonGradientEnd = colors.buttonGradientEnd;
+  }
 
   return (
     <TouchableOpacity
@@ -55,7 +126,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
           colors={
             disabled
               ? ['rgba(227,139,155,0.3)', 'rgba(205,180,219,0.3)']
-              : [colors.buttonGradientStart, colors.buttonGradientEnd]
+              : [buttonGradientStart, buttonGradientEnd]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}

@@ -1,8 +1,8 @@
 /**
  * IntroSliderScreen
  * ─────────────────
- * Premium full-screen image slides with glass morphism content overlay.
- * Full background image with gradient fade and white glass content cards.
+ * Premium onboarding slides with rounded image cards and sage green theme.
+ * Matches the design with icons, features, and gradient buttons.
  */
 
 import React, { useRef, useState, useCallback } from 'react';
@@ -14,12 +14,11 @@ import {
   Animated,
   TouchableOpacity,
   Dimensions,
-  ImageBackground,
+  Image,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -28,7 +27,8 @@ import { metrics } from '../theme/metrics';
 import { useUserStore } from '../store/useUserStore';
 import { AppColors } from '../theme/ThemeContext';
 import { GradientButton } from '../components/common/GradientButton';
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import { Heart, Flame, Leaf, Sun, MessageCircle, HelpCircle } from 'lucide-react-native';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Intro'>;
 
@@ -43,21 +43,43 @@ const SLIDE_IMAGES = [
   require('../assets/image/onboarding/slide-3.png'),
 ];
 
+const CONNECTION_BADGE = require('../assets/image/onboarding/connection.png');
+
 // ─────────────────────────────────────────────────────────────
-//  Slide content
+//  Slide content matching the actual design
 // ─────────────────────────────────────────────────────────────
 const SLIDE_CONTENT = [
   {
-    headline: 'Reignite the\nconnection.',
+    headlineTeal: 'Reignite',
+    headlineBlack: 'the connection.',
+    showHeartIcon: true,
     body: 'A 5-day solo journey of honest moments, small rituals, and real reflection.',
+    features: [
+      { icon: 'heart', label: 'Reconnect\nwith yourself' },
+      { icon: 'flame', label: 'Build rituals\nthat ground you' },
+      { icon: 'leaf', label: 'Reflect & grow\nevery day' },
+    ],
   },
   {
-    headline: 'Daily rituals\nthat actually work.',
+    headlineTeal: 'Daily rituals',
+    headlineItalic: 'that actually work.',
+    showHeartIcon: true,
     body: 'Mood check-ins, appreciation prompts, and questions that bring you closer.',
+    features: [
+      { icon: 'sun', label: 'Mood\ncheck-ins' },
+      { icon: 'message', label: 'Appreciation\nprompts' },
+      { icon: 'help', label: 'Questions\nthat bring you closer' },
+    ],
   },
   {
-    headline: 'Discover your\nrelationship style.',
+    headlineBlack: 'Discover your',
+    headlineTeal: 'relationship',
+    headlineBlackSuffix: ' style.',
+    showHeartIcon: false,
+    showDecorativeUnderline: true,
     body: 'Earn your connection badge and write a promise that lasts beyond 5 days.',
+    features: [],
+    isSlide3: true,
   },
 ];
 
@@ -66,123 +88,186 @@ const SLIDE_CONTENT = [
 // ─────────────────────────────────────────────────────────────
 function makeStyles(c: AppColors) {
   return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.gradientStart,
+      flexDirection: 'column-reverse',
+    },
+    scrollView: {
+      flex: 1,
+    },
     page: {
       width: W,
-      height: H,
     },
-    backgroundImage: {
-      width: W,
-      height: H,
-      justifyContent: 'space-between',
+    contentWrapper: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
     },
-    // Gradient overlay for readability
-    imageOverlay: {
+    topSection: {
+      flex: 0,
+    },
+    // Rounded image card
+    imageCard: {
+      width: '100%',
+      // aspectRatio: 1.2,
+      height:responsiveHeight(40),
+      borderRadius: metrics.radius.xxl,
+      overflow: 'hidden',
+      // marginBottom: metrics.spacing.xs,
+      // backgroundColor: c.white,
+      // shadowColor: c.primary,
+      // shadowOffset: { width: 0, height: 8 },
+      // shadowOpacity: 0.12,
+      // shadowRadius: 20,
+      // elevation: 8,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      resizeMode:'contain',
+    },
+    // Heart icon overlay
+    heartIcon: {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    },
-    // Content container - middle section
-    contentContainer: {
-      paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingTop: H * 0.55, // Push content to middle-bottom area
-      flex: 1,
-      justifyContent: 'flex-start',
-    },
-    // Headline
-    headline: {
-      fontSize: metrics.fontSize.h1 * 1.15,
-      fontFamily: 'PlayfairDisplay-SemiBold',
-      color: '#FFFFFF',
-      lineHeight: metrics.fontSize.h1 * 1.45,
-      marginBottom: metrics.spacing.md,
-      textShadowColor: 'rgba(0, 0, 0, 0.5)',
-      textShadowOffset: { width: 0, height: 2 },
-      textShadowRadius: 8,
-    },
-    // Glass card for body text
-    bodyCard: {
-      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-      borderRadius: metrics.radius.xl,
-      paddingVertical: metrics.spacing.md,
-      paddingHorizontal: metrics.spacing.md,
-      marginTop: metrics.spacing.xs,
-      borderWidth: 1,
-      borderTopColor: 'rgba(255, 255, 255, 0.4)',
-      borderLeftColor: 'rgba(255, 255, 255, 0.3)',
-      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-      borderRightColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    body: {
-      fontSize: metrics.fontSize.body,
-      fontFamily: 'DMSans-Regular',
-      color: '#FFFFFF',
-      lineHeight: metrics.fontSize.body * 1.6,
-      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
-    },
-    // Bottom controls container
-    bottomControls: {
-      paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingBottom: metrics.spacing.lg,
-      paddingTop: metrics.spacing.md,
-      gap: metrics.spacing.sm,
-    },
-    // Progress dots container
-    dotsContainer: {
+      bottom: metrics.spacing.md,
+      right: metrics.spacing.md,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.white,
       alignItems: 'center',
-      marginBottom: metrics.spacing.md,
+      justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    // Content section
+    contentSection: {
+      marginBottom: 0,
+      marginTop:responsiveHeight(3),
       
     },
-    dots: {
+    // Headline
+    headlineRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: metrics.spacing.sm,
+      marginBottom: metrics.spacing.xs,
+    },
+    headlineWithIcon: {
+      flex: 1,
+    },
+    heartIconInline: {
+      marginTop: metrics.spacing.xs,
+    },
+    headlineInTeal: {
+      fontSize: metrics.fontSize.h1 * 1.1,
+      fontFamily: 'PlayfairDisplay-SemiBold',
+      color: c.primary,
+      lineHeight: metrics.fontSize.h1 * 1.35,
+    },
+    headlineBlack: {
+      fontSize: metrics.fontSize.h1 * 1.1,
+      fontFamily: 'PlayfairDisplay-SemiBold',
+      color: c.text,
+      lineHeight: metrics.fontSize.h1 * 1.35,
+    },
+    headlineAccent: {
+      fontSize: metrics.fontSize.h1 * 1.1,
+      fontFamily: 'PlayfairDisplay-Italic',
+      color: c.text,
+      lineHeight: metrics.fontSize.h1 * 1.35,
+    },
+    // Body text
+    body: {
+      fontSize: metrics.fontSize.body * 0.95,
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      lineHeight: metrics.fontSize.body * 1.5,
+      marginBottom: metrics.spacing.xs,
+      marginTop: metrics.spacing.xs,
+    },
+    // Features row
+    featuresRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: metrics.spacing.md,
+      marginBottom: metrics.spacing.xs,
+      backgroundColor:"#fff",
+      padding:responsiveWidth(5),
+       borderRadius: metrics.radius.md,
+    },
+    featureItem: {
+      flex: 1,
+      alignItems: 'center',
+      paddingHorizontal: metrics.spacing.xs,
+    },
+    featureIconContainer: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      borderWidth: 1.5,
+      borderColor: c.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: metrics.spacing.xs,
+    },
+    featureLabel: {
+      fontSize: metrics.fontSize.micro * 0.9,
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      textAlign: 'center',
+      lineHeight: metrics.fontSize.micro * 1.3,
+    },
+    // Bottom section - fixed at bottom of screen
+    bottomSection: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+      backgroundColor: c.gradientStart,
+    },
+    // Progress dots
+    dotsContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: metrics.spacing.sm,
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
-      paddingHorizontal: metrics.spacing.md,
-      paddingVertical: metrics.spacing.sm,
-      borderRadius: metrics.radius.full,
-      borderWidth: 1,
-      borderTopColor: 'rgba(255, 255, 255, 0.3)',
-      borderLeftColor: 'rgba(255, 255, 255, 0.2)',
-      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-      borderRightColor: 'rgba(255, 255, 255, 0.1)',
+      justifyContent: 'center',
+      gap: metrics.spacing.xs,
+      marginBottom: metrics.spacing.lg,
     },
     dot: {
-      height: 6,
-      borderRadius: 3,
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: c.textHint,
+    },
+    dotActive: {
+      width: 28,
+      backgroundColor: c.primary,
     },
     // Button row
     btnRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-end',
       gap: metrics.spacing.md,
+      marginBottom: metrics.spacing.md,
     },
     skipBtn: {
-      paddingVertical: metrics.spacing.smMd,
-      paddingHorizontal: metrics.spacing.lg,
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      paddingVertical: metrics.spacing.md,
+      paddingHorizontal: metrics.spacing.xl,
+      backgroundColor: c.white,
       borderRadius: metrics.radius.full,
-      borderWidth: 1,
-      borderTopColor: 'rgba(255, 255, 255, 0.3)',
-      borderLeftColor: 'rgba(255, 255, 255, 0.2)',
-      borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-      borderRightColor: 'rgba(255, 255, 255, 0.1)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      elevation: 2,
     },
     skipText: {
-      color: '#FFFFFF',
+      color: c.text,
       fontSize: metrics.fontSize.body,
       fontFamily: 'DMSans-Medium',
-      letterSpacing: 0.3,
-      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
     },
-    nextBtnTouch: {
-      // Width is animated
+    nextBtnContainer: {
+      flex: 1,
     },
     // Privacy text
     privacyContainer: {
@@ -190,25 +275,52 @@ function makeStyles(c: AppColors) {
       alignItems: 'center',
       justifyContent: 'center',
       gap: metrics.spacing.xs,
-      marginTop:responsiveHeight(1)
-    },
-    privacyDot: {
-      width: 3,
-      height: 3,
-      borderRadius: 1.5,
-      backgroundColor: '#FFFFFF',
-      opacity: 0.5,
+      paddingBottom: metrics.spacing.sm,
     },
     privacy: {
-      color: '#FFFFFF',
-      fontSize:responsiveFontSize(1.6),
-      fontFamily: 'DMSans-Medium',
-      letterSpacing: 1.8,
-      textAlign: 'center',
-      opacity: 0.7,
-      textShadowColor: 'rgba(0, 0, 0, 0.3)',
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
+      color: c.textMuted,
+      fontSize: metrics.fontSize.bodySm,
+      fontFamily: 'DMSans-Regular',
+    },
+    // ── Slide 3 specific ──
+    slide3HeadlineBlack: {
+      fontSize: metrics.fontSize.h1 * 1.15,
+      fontFamily: 'PlayfairDisplay-Bold',
+      color: c.text,
+      lineHeight: metrics.fontSize.h1 * 1.4,
+    },
+    slide3HeadlineTeal: {
+      fontSize: metrics.fontSize.h1 * 1.15,
+      fontFamily: 'PlayfairDisplay-Bold',
+      color: c.primary,
+      lineHeight: metrics.fontSize.h1 * 1.4,
+    },
+    decorativeUnderline: {
+      width: 130,
+      height: 5,
+      borderRadius: 3,
+      backgroundColor: c.primary,
+      opacity: 0.45,
+      marginTop: 2,
+      marginBottom: metrics.spacing.sm,
+    },
+    slide3BodyRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    slide3BodyText: {
+      flex: 1,
+      fontSize: metrics.fontSize.body * 0.95,
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      lineHeight: metrics.fontSize.body * 1.5,
+      paddingRight: metrics.spacing.md,
+    },
+    connectionBadge: {
+      width: responsiveWidth(30),
+      height:  responsiveWidth(30),
+      marginTop:responsiveHeight(4)
     },
   });
 }
@@ -218,6 +330,7 @@ function makeStyles(c: AppColors) {
 // ─────────────────────────────────────────────────────────────
 export const IntroSliderScreen: React.FC = () => {
   const colors = useAppColors();
+  const insets = useSafeAreaInsets();
   const s = makeStyles(colors);
 
   const navigation = useNavigation<Nav>();
@@ -225,101 +338,26 @@ export const IntroSliderScreen: React.FC = () => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
-  const slideAnim = useRef(new Animated.Value(1)).current;
-  const buttonWidthAnim = useRef(new Animated.Value(0)).current;
-  
-  // Individual animation values for staggered entrance
-  const headlineOpacity = useRef(new Animated.Value(0)).current;
-  const headlineTranslateY = useRef(new Animated.Value(30)).current;
-  const cardOpacity = useRef(new Animated.Value(0)).current;
-  const cardTranslateY = useRef(new Animated.Value(40)).current;
-  const controlsOpacity = useRef(new Animated.Value(0)).current;
-  const controlsTranslateY = useRef(new Animated.Value(30)).current;
+  const contentAnim = useRef(new Animated.Value(1)).current;
 
   const activateSlide = useCallback(
-    (idx: number) => {
-      // Reset all animations to start state
-      headlineOpacity.setValue(0);
-      headlineTranslateY.setValue(30);
-      cardOpacity.setValue(0);
-      cardTranslateY.setValue(40);
-      controlsOpacity.setValue(0);
-      controlsTranslateY.setValue(30);
-      
-      // Animate button width on last slide
-      Animated.spring(buttonWidthAnim, {
-        toValue: idx === SLIDE_CONTENT.length - 1 ? 1 : 0,
-        useNativeDriver: false,
-        tension: 100,
-        friction: 12,
-      }).start();
-      
-      // Staggered entrance animation sequence
+    () => {
+      // Simple fade and scale animation
       Animated.sequence([
-        Animated.delay(100),
-        Animated.parallel([
-          // Headline entrance
-          Animated.parallel([
-            Animated.timing(headlineOpacity, {
-              toValue: 1,
-              duration: 600,
-              useNativeDriver: true,
-            }),
-            Animated.spring(headlineTranslateY, {
-              toValue: 0,
-              tension: 80,
-              friction: 10,
-              useNativeDriver: true,
-            }),
-          ]),
-        ]),
-      ]).start();
-      
-      // Card entrance (delayed)
-      Animated.sequence([
-        Animated.delay(250),
-        Animated.parallel([
-          Animated.timing(cardOpacity, {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.spring(cardTranslateY, {
-            toValue: 0,
-            tension: 80,
-            friction: 10,
-            useNativeDriver: true,
-          }),
-        ]),
-      ]).start();
-      
-      // Controls entrance (delayed)
-      Animated.sequence([
-        Animated.delay(400),
-        Animated.parallel([
-          Animated.timing(controlsOpacity, {
-            toValue: 1,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.spring(controlsTranslateY, {
-            toValue: 0,
-            tension: 80,
-            friction: 10,
-            useNativeDriver: true,
-          }),
-        ]),
+        Animated.timing(contentAnim, {
+          toValue: 0.7,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.spring(contentAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
       ]).start();
     },
-    [
-      buttonWidthAnim,
-      headlineOpacity,
-      headlineTranslateY,
-      cardOpacity,
-      cardTranslateY,
-      controlsOpacity,
-      controlsTranslateY,
-    ],
+    [contentAnim],
   );
 
   const onScroll = useCallback(
@@ -327,7 +365,7 @@ export const IntroSliderScreen: React.FC = () => {
       const idx = Math.round(e.nativeEvent.contentOffset.x / W);
       if (idx !== activeIndex) {
         setActiveIndex(idx);
-        activateSlide(idx);
+        activateSlide();
       }
     },
     [activeIndex, activateSlide],
@@ -348,14 +386,57 @@ export const IntroSliderScreen: React.FC = () => {
 
   const isLast = activeIndex === SLIDE_CONTENT.length - 1;
 
-  // Trigger initial animation on mount
-  React.useEffect(() => {
-    activateSlide(0);
-  }, []);
+  const renderIcon = (icon: string, size: number = 24) => {
+    const iconColor = colors.primary;
+    switch (icon) {
+      case 'heart':
+        return <Heart size={size} color={iconColor} />;
+      case 'flame':
+        return <Flame size={size} color={iconColor} />;
+      case 'leaf':
+        return <Leaf size={size} color={iconColor} />;
+      case 'sun':
+        return <Sun size={size} color={iconColor} />;
+      case 'message':
+        return <MessageCircle size={size} color={iconColor} />;
+      case 'help':
+        return <HelpCircle size={size} color={iconColor} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* ── Paged scroll ─────────────────────────────────── */}
+    <View style={s.container}>
+      {/* Fixed bottom buttons - outside the scroll */}
+      <View style={[s.bottomSection, { paddingBottom: Math.max(insets.bottom, 12) + 4 }]}>
+        {/* Progress Dots */}
+        <View style={s.dotsContainer}>
+          {SLIDE_CONTENT.map((_, i) => (
+            <View key={i} style={[s.dot, i === activeIndex && s.dotActive]} />
+          ))}
+        </View>
+        {/* Buttons */}
+        <View style={s.btnRow}>
+          <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
+            <Text style={s.skipText}>Skip</Text>
+          </TouchableOpacity>
+          <View style={s.nextBtnContainer}>
+            <GradientButton
+              text={isLast ? "Let's Begin" : 'Next'}
+              onPress={goNext}
+              showArrow={true}
+              fullWidth={true}
+              variant="sageBlue"
+            />
+          </View>
+        </View>
+        {/* Privacy Text */}
+        <View style={s.privacyContainer}>
+          <Text style={s.privacy}>🔒 No signup • No data • Just you two</Text>
+        </View>
+      </View>
+
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -364,138 +445,88 @@ export const IntroSliderScreen: React.FC = () => {
         scrollEventThrottle={16}
         onScroll={onScroll}
         bounces={false}
-        style={StyleSheet.absoluteFill}
+        style={s.scrollView}
       >
         {SLIDE_CONTENT.map((content, idx) => (
           <View key={idx} style={s.page}>
-            {/* Full background image */}
-            <ImageBackground
-              source={SLIDE_IMAGES[idx]}
-              style={s.backgroundImage}
-              resizeMode="cover"
-            >
-              {/* Gradient overlay for readability */}
-              <LinearGradient
-                colors={[
-                  'rgba(0, 0, 0, 0)',
-                  'rgba(0, 0, 0, 0.1)',
-                  'rgba(0, 0, 0, 0.3)',
-                  'rgba(0, 0, 0, 0.5)',
-                ]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={s.imageOverlay}
-              />
-
-              {/* Content section - middle area */}
-              <View style={s.contentContainer}>
-                {/* Headline with entrance animation */}
-                <Animated.View
-                  style={{
-                    opacity: headlineOpacity,
-                    transform: [{ translateY: headlineTranslateY }],
-                  }}
-                >
-                  <Text style={s.headline}>{content.headline}</Text>
-                </Animated.View>
-
-                {/* Body card with entrance animation */}
-                <Animated.View
-                  style={{
-                    opacity: cardOpacity,
-                    transform: [{ translateY: cardTranslateY }],
-                  }}
-                >
-                  <View style={s.bodyCard}>
-                    <Text style={s.body}>{content.body}</Text>
-                  </View>
-                </Animated.View>
+            <View style={[s.contentWrapper, {
+              paddingTop: Math.max(insets.top, 20),
+            }]}>
+              {/* Rounded Image Card */}
+              <View style={s.imageCard}>
+                <Image
+                  source={SLIDE_IMAGES[idx]}
+                  style={s.image}
+                  resizeMode="cover"
+                />
+              
               </View>
 
-              {/* Bottom controls section */}
-              <SafeAreaView edges={['bottom']} style={s.bottomControls}>
-                <Animated.View
-                  style={{
-                    opacity: controlsOpacity,
-                    transform: [{ translateY: controlsTranslateY }],
-                  }}
-                >
-                  {/* Progress dots */}
-                  <View style={s.dotsContainer}>
-                    <View style={s.dots}>
-                      {SLIDE_CONTENT.map((_, i) => (
-                        <View
-                          key={i}
-                          style={[
-                            s.dot,
-                            {
-                              backgroundColor: i === activeIndex 
-                                ? colors.primary 
-                                : 'rgba(255, 255, 255, 0.3)',
-                              width: i === activeIndex ? 32 : 6,
-                            },
-                          ]}
-                        />
-                      ))}
-                    </View>
-                  </View>
-
-                  {/* Skip / Next buttons */}
-                  <View style={s.btnRow}>
-                    {!isLast && (
-                      <Animated.View
-                        style={{
-                          opacity: buttonWidthAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [1, 0],
-                          }),
-                          transform: [
-                            {
-                              translateX: buttonWidthAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [0, -20],
-                              }),
-                            },
-                          ],
-                        }}
-                      >
-                        <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
-                          <Text style={s.skipText}>Skip</Text>
-                        </TouchableOpacity>
-                      </Animated.View>
-                    )}
-
-                    <Animated.View
-                      style={[
-                        s.nextBtnTouch,
-                        {
-                          width: buttonWidthAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['70%', '100%'],
-                          }),
-                        },
-                      ]}
-                    >
-                      <GradientButton
-                        text={isLast ? "Let's Begin" : 'Next'}
-                        onPress={goNext}
-                        showArrow={true}
-                        fullWidth={true}
+              {/* Content Section */}
+              <View style={s.contentSection}>
+                {/* ── Slide 3 special layout ── */}
+                {content.isSlide3 ? (
+                  <>
+                    {/* Headline: "Discover your" black, "relationship" teal, " style." black */}
+                    <Text style={s.slide3HeadlineBlack}>
+                      {content.headlineBlack}{'\n'}
+                      <Text style={s.slide3HeadlineTeal}>{content.headlineTeal}</Text>
+                      <Text style={s.slide3HeadlineBlack}>{content.headlineBlackSuffix}</Text>
+                    </Text>
+                    {/* Decorative underline under "relationship" */}
+                    <View style={s.decorativeUnderline} />
+                    {/* Body + Connection badge side by side */}
+                    <View style={s.slide3BodyRow}>
+                      <Text style={s.slide3BodyText}>{content.body}</Text>
+                      <Image
+                        source={CONNECTION_BADGE}
+                        style={s.connectionBadge}
+                        resizeMode="contain"
                       />
-                    </Animated.View>
-                  </View>
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    {/* Headline with proper color splits */}
+                    <View style={s.headlineRow}>
+                      <View style={s.headlineWithIcon}>
+                        <Text>
+                          <Text style={s.headlineInTeal}>{content.headlineTeal}</Text>
+                          {content.headlineItalic && (
+                            <Text style={s.headlineAccent}>{content.headlineItalic}</Text>
+                          )}
+                          {content.headlineBlack && (
+                            <Text style={s.headlineBlack}>{'\n'}{content.headlineBlack}</Text>
+                          )}
+                        </Text>
+                      </View>
+                      {content.showHeartIcon && (
+                        <View style={s.heartIconInline}>
+                          <Heart size={28} color={colors.primary} />
+                        </View>
+                      )}
+                    </View>
 
-                  {/* Privacy text */}
-                  <View style={s.privacyContainer}>
-                    <Text style={s.privacy}>No signup</Text>
-                    <View style={s.privacyDot} />
-                    <Text style={s.privacy}>No data</Text>
-                    <View style={s.privacyDot} />
-                    <Text style={s.privacy}>Just you two</Text>
-                  </View>
-                </Animated.View>
-              </SafeAreaView>
-            </ImageBackground>
+                    {/* Body text */}
+                    <Text style={s.body}>{content.body}</Text>
+
+                    {/* Features */}
+                    {content.features.length > 0 && (
+                      <View style={s.featuresRow}>
+                        {content.features.map((feature, i) => (
+                          <View key={i} style={s.featureItem}>
+                            <View style={s.featureIconContainer}>
+                              {renderIcon(feature.icon, 22)}
+                            </View>
+                            <Text style={s.featureLabel}>{feature.label}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </>
+                )}
+              </View>
+            </View>
           </View>
         ))}
       </ScrollView>
