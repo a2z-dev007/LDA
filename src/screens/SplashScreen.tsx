@@ -55,7 +55,7 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <ImageBackground 
-      source={IMAGE.lavenderBg} 
+      source={IMAGE.greenBg} 
       style={styles.backgroundImage}
       resizeMode="cover"
       blurRadius={10}

@@ -17,6 +17,7 @@ import {
   Image,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  ImageBackground,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -29,6 +30,7 @@ import { AppColors } from '../theme/ThemeContext';
 import { GradientButton } from '../components/common/GradientButton';
 import { Heart, Flame, Leaf, Sun, MessageCircle, HelpCircle } from 'lucide-react-native';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { IMAGE } from '../assets/image/bg-images';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Intro'>;
 
@@ -90,24 +92,25 @@ function makeStyles(c: AppColors) {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: c.gradientStart,
-      flexDirection: 'column-reverse',
     },
     scrollView: {
       flex: 1,
+      backgroundColor: 'transparent',
     },
     page: {
       width: W,
+      backgroundColor: 'transparent',
     },
     contentWrapper: {
-      paddingHorizontal: metrics.layout.screenPaddingHz,
+      // paddingHorizontal: metrics.layout.screenPaddingHz,
+      backgroundColor: 'transparent',
     },
     topSection: {
       flex: 0,
     },
     // Rounded image card
     imageCard: {
-      width: '100%',
+      // width: '100%',
       // aspectRatio: 1.2,
       height:responsiveHeight(40),
       borderRadius: metrics.radius.xxl,
@@ -146,6 +149,7 @@ function makeStyles(c: AppColors) {
     contentSection: {
       marginBottom: 0,
       marginTop:responsiveHeight(3),
+      paddingHorizontal: metrics.layout.screenPaddingHz,
       
     },
     // Headline
@@ -162,31 +166,32 @@ function makeStyles(c: AppColors) {
       marginTop: metrics.spacing.xs,
     },
     headlineInTeal: {
-      fontSize: metrics.fontSize.h1 * 1.1,
-      fontFamily: 'PlayfairDisplay-SemiBold',
+      fontSize: 36,
+      fontFamily: 'PlayfairDisplay-Bold',
       color: c.primary,
-      lineHeight: metrics.fontSize.h1 * 1.35,
+      lineHeight: 42,
     },
     headlineBlack: {
-      fontSize: metrics.fontSize.h1 * 1.1,
-      fontFamily: 'PlayfairDisplay-SemiBold',
+      fontSize: 36,
+       fontFamily: 'PlayfairDisplay-Italic',
       color: c.text,
-      lineHeight: metrics.fontSize.h1 * 1.35,
+      lineHeight: 42,
     },
     headlineAccent: {
-      fontSize: metrics.fontSize.h1 * 1.1,
+      fontSize: 32,
       fontFamily: 'PlayfairDisplay-Italic',
       color: c.text,
-      lineHeight: metrics.fontSize.h1 * 1.35,
+      lineHeight: 42,
     },
     // Body text
     body: {
-      fontSize: metrics.fontSize.body * 0.95,
+      fontSize: 15,
       fontFamily: 'DMSans-Regular',
       color: c.text,
-      lineHeight: metrics.fontSize.body * 1.5,
+      lineHeight: 22,
       marginBottom: metrics.spacing.xs,
-      marginTop: metrics.spacing.xs,
+      marginTop: metrics.spacing.sm,
+      opacity: 0.85,
     },
     // Features row
     featuresRow: {
@@ -194,9 +199,10 @@ function makeStyles(c: AppColors) {
       justifyContent: 'space-between',
       marginTop: metrics.spacing.md,
       marginBottom: metrics.spacing.xs,
-      backgroundColor:"#fff",
-      padding:responsiveWidth(5),
-       borderRadius: metrics.radius.md,
+      backgroundColor: 'rgba(255,255,255,0.55)',
+      paddingVertical: responsiveWidth(4),
+      paddingHorizontal: responsiveWidth(3),
+      borderRadius: metrics.radius.md,
     },
     featureItem: {
       flex: 1,
@@ -211,19 +217,18 @@ function makeStyles(c: AppColors) {
       borderColor: c.primary,
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: metrics.spacing.xs,
+      marginBottom: 4,
     },
     featureLabel: {
-      fontSize: metrics.fontSize.micro * 0.9,
+      fontSize: 11,
       fontFamily: 'DMSans-Regular',
       color: c.text,
       textAlign: 'center',
-      lineHeight: metrics.fontSize.micro * 1.3,
+      lineHeight: 15,
     },
     // Bottom section - fixed at bottom of screen
     bottomSection: {
       paddingHorizontal: metrics.layout.screenPaddingHz,
-      backgroundColor: c.gradientStart,
     },
     // Progress dots
     dotsContainer: {
@@ -237,7 +242,7 @@ function makeStyles(c: AppColors) {
       width: 8,
       height: 8,
       borderRadius: 4,
-      backgroundColor: c.textHint,
+      backgroundColor: 'rgba(255,255,255,0.5)',
     },
     dotActive: {
       width: 28,
@@ -247,23 +252,20 @@ function makeStyles(c: AppColors) {
     btnRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: metrics.spacing.md,
-      marginBottom: metrics.spacing.md,
+      gap: metrics.spacing.sm,
+      marginBottom: metrics.spacing.sm,
     },
     skipBtn: {
-      paddingVertical: metrics.spacing.md,
+      paddingVertical: 14,
       paddingHorizontal: metrics.spacing.xl,
-      backgroundColor: c.white,
+      backgroundColor: 'rgba(255,255,255,0.85)',
       borderRadius: metrics.radius.full,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 8,
-      elevation: 2,
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.9)',
     },
     skipText: {
       color: c.text,
-      fontSize: metrics.fontSize.body,
+      fontSize: 16,
       fontFamily: 'DMSans-Medium',
     },
     nextBtnContainer: {
@@ -279,30 +281,30 @@ function makeStyles(c: AppColors) {
     },
     privacy: {
       color: c.textMuted,
-      fontSize: metrics.fontSize.bodySm,
+      fontSize: 12,
       fontFamily: 'DMSans-Regular',
     },
     // ── Slide 3 specific ──
     slide3HeadlineBlack: {
-      fontSize: metrics.fontSize.h1 * 1.15,
+      fontSize: 36,
       fontFamily: 'PlayfairDisplay-Bold',
       color: c.text,
-      lineHeight: metrics.fontSize.h1 * 1.4,
+      lineHeight: 44,
     },
     slide3HeadlineTeal: {
-      fontSize: metrics.fontSize.h1 * 1.15,
-      fontFamily: 'PlayfairDisplay-Bold',
+      fontSize: 36,
+      fontFamily: 'PlayfairDisplay-Italic',
       color: c.primary,
-      lineHeight: metrics.fontSize.h1 * 1.4,
+      lineHeight: 44,
     },
     decorativeUnderline: {
-      width: 130,
-      height: 5,
-      borderRadius: 3,
+      width: 120,
+      height: 4,
+      borderRadius: 2,
       backgroundColor: c.primary,
-      opacity: 0.45,
+      opacity: 0.6,
       marginTop: 2,
-      marginBottom: metrics.spacing.sm,
+      marginBottom: metrics.spacing.md,
     },
     slide3BodyRow: {
       flexDirection: 'row',
@@ -311,16 +313,16 @@ function makeStyles(c: AppColors) {
     },
     slide3BodyText: {
       flex: 1,
-      fontSize: metrics.fontSize.body * 0.95,
+      fontSize: 15,
       fontFamily: 'DMSans-Regular',
       color: c.text,
-      lineHeight: metrics.fontSize.body * 1.5,
+      lineHeight: 22,
+      opacity: 0.85,
       paddingRight: metrics.spacing.md,
     },
     connectionBadge: {
-      width: responsiveWidth(30),
-      height:  responsiveWidth(30),
-      marginTop:responsiveHeight(4)
+      width: responsiveWidth(28),
+      height: responsiveWidth(28),
     },
   });
 }
@@ -407,129 +409,130 @@ export const IntroSliderScreen: React.FC = () => {
   };
 
   return (
-    <View style={s.container}>
-      {/* Fixed bottom buttons - outside the scroll */}
-      <View style={[s.bottomSection, { paddingBottom: Math.max(insets.bottom, 12) + 4 }]}>
-        {/* Progress Dots */}
-        <View style={s.dotsContainer}>
-          {SLIDE_CONTENT.map((_, i) => (
-            <View key={i} style={[s.dot, i === activeIndex && s.dotActive]} />
-          ))}
-        </View>
-        {/* Buttons */}
-        <View style={s.btnRow}>
-          <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
-            <Text style={s.skipText}>Skip</Text>
-          </TouchableOpacity>
-          <View style={s.nextBtnContainer}>
-            <GradientButton
-              text={isLast ? "Let's Begin" : 'Next'}
-              onPress={goNext}
-              showArrow={true}
-              fullWidth={true}
-              variant="sageBlue"
-            />
-          </View>
-        </View>
-        {/* Privacy Text */}
-        <View style={s.privacyContainer}>
-          <Text style={s.privacy}>🔒 No signup • No data • Just you two</Text>
-        </View>
-      </View>
+    <ImageBackground 
+      source={IMAGE.greenBg} 
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      {/* Full screen flex column: scroll content on top, buttons pinned at bottom */}
+      <View style={{ flex: 1, flexDirection: 'column' }}>
 
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={onScroll}
-        bounces={false}
-        style={s.scrollView}
-      >
-        {SLIDE_CONTENT.map((content, idx) => (
-          <View key={idx} style={s.page}>
-            <View style={[s.contentWrapper, {
-              paddingTop: Math.max(insets.top, 20),
-            }]}>
-              {/* Rounded Image Card */}
-              <View style={s.imageCard}>
-                <Image
-                  source={SLIDE_IMAGES[idx]}
-                  style={s.image}
-                  resizeMode="cover"
-                />
-              
-              </View>
+        {/* Scrollable slide content */}
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={onScroll}
+          bounces={false}
+          style={s.scrollView}
+        >
+          {SLIDE_CONTENT.map((content, idx) => (
+            <View key={idx} style={s.page}>
+              <View style={[s.contentWrapper, {
+                paddingTop: Math.max(insets.top, 20),
+              }]}>
+                {/* Rounded Image Card */}
+                <View style={s.imageCard}>
+                  <Image
+                    source={SLIDE_IMAGES[idx]}
+                    style={s.image}
+                    resizeMode="cover"
+                  />
+                </View>
 
-              {/* Content Section */}
-              <View style={s.contentSection}>
-                {/* ── Slide 3 special layout ── */}
-                {content.isSlide3 ? (
-                  <>
-                    {/* Headline: "Discover your" black, "relationship" teal, " style." black */}
-                    <Text style={s.slide3HeadlineBlack}>
-                      {content.headlineBlack}{'\n'}
-                      <Text style={s.slide3HeadlineTeal}>{content.headlineTeal}</Text>
-                      <Text style={s.slide3HeadlineBlack}>{content.headlineBlackSuffix}</Text>
-                    </Text>
-                    {/* Decorative underline under "relationship" */}
-                    <View style={s.decorativeUnderline} />
-                    {/* Body + Connection badge side by side */}
-                    <View style={s.slide3BodyRow}>
-                      <Text style={s.slide3BodyText}>{content.body}</Text>
-                      <Image
-                        source={CONNECTION_BADGE}
-                        style={s.connectionBadge}
-                        resizeMode="contain"
-                      />
-                    </View>
-                  </>
-                ) : (
-                  <>
-                    {/* Headline with proper color splits */}
-                    <View style={s.headlineRow}>
-                      <View style={s.headlineWithIcon}>
-                        <Text>
-                          <Text style={s.headlineInTeal}>{content.headlineTeal}</Text>
-                          {content.headlineItalic && (
-                            <Text style={s.headlineAccent}>{content.headlineItalic}</Text>
-                          )}
-                          {content.headlineBlack && (
-                            <Text style={s.headlineBlack}>{'\n'}{content.headlineBlack}</Text>
-                          )}
-                        </Text>
+                {/* Content Section */}
+                <View style={s.contentSection}>
+                  {/* ── Slide 3 special layout ── */}
+                  {content.isSlide3 ? (
+                    <>
+                      <Text style={s.slide3HeadlineBlack}>
+                        {content.headlineBlack}{'\n'}
+                        <Text style={s.slide3HeadlineTeal}>{content.headlineTeal}</Text>
+                        <Text style={s.slide3HeadlineBlack}>{content.headlineBlackSuffix}</Text>
+                      </Text>
+                      <View style={s.decorativeUnderline} />
+                      <View style={s.slide3BodyRow}>
+                        <Text style={s.slide3BodyText}>{content.body}</Text>
+                        <Image
+                          source={CONNECTION_BADGE}
+                          style={s.connectionBadge}
+                          resizeMode="contain"
+                        />
                       </View>
-                      {content.showHeartIcon && (
-                        <View style={s.heartIconInline}>
-                          <Heart size={28} color={colors.primary} />
+                    </>
+                  ) : (
+                    <>
+                      {/* Slide 1: "Reignite" teal / "the connection." black + heart
+                          Slide 2: "Daily rituals" teal / "that actually work." italic + heart */}
+                      <View style={s.headlineRow}>
+                        <View style={s.headlineWithIcon}>
+                          {/* Line 1 - always teal */}
+                          <Text style={s.headlineInTeal}>{content.headlineTeal}</Text>
+                          {/* Line 2 - italic accent OR black, with heart inline */}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                            {content.headlineItalic ? (
+                              <Text style={s.headlineAccent}>{content.headlineItalic}</Text>
+                            ) : content.headlineBlack ? (
+                              <Text style={s.headlineBlack}>{content.headlineBlack}</Text>
+                            ) : null}
+                            {content.showHeartIcon && (
+                              <Heart size={26} color={colors.primary} strokeWidth={1.5} />
+                            )}
+                          </View>
+                        </View>
+                      </View>
+
+                      <Text style={s.body}>{content.body}</Text>
+
+                      {content.features.length > 0 && (
+                        <View style={s.featuresRow}>
+                          {content.features.map((feature, i) => (
+                            <View key={i} style={s.featureItem}>
+                              <View style={s.featureIconContainer}>
+                                {renderIcon(feature.icon, 22)}
+                              </View>
+                              <Text style={s.featureLabel}>{feature.label}</Text>
+                            </View>
+                          ))}
                         </View>
                       )}
-                    </View>
-
-                    {/* Body text */}
-                    <Text style={s.body}>{content.body}</Text>
-
-                    {/* Features */}
-                    {content.features.length > 0 && (
-                      <View style={s.featuresRow}>
-                        {content.features.map((feature, i) => (
-                          <View key={i} style={s.featureItem}>
-                            <View style={s.featureIconContainer}>
-                              {renderIcon(feature.icon, 22)}
-                            </View>
-                            <Text style={s.featureLabel}>{feature.label}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-                  </>
-                )}
+                    </>
+                  )}
+                </View>
               </View>
             </View>
+          ))}
+        </ScrollView>
+
+        {/* Buttons pinned at bottom */}
+        <View style={[s.bottomSection, { paddingBottom: Math.max(insets.bottom, 12) + 4 }]}>
+          <View style={s.dotsContainer}>
+            {SLIDE_CONTENT.map((_, i) => (
+              <View key={i} style={[s.dot, i === activeIndex && s.dotActive]} />
+            ))}
           </View>
-        ))}
-      </ScrollView>
-    </View>
+          <View style={s.btnRow}>
+            <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
+              <Text style={s.skipText}>Skip</Text>
+            </TouchableOpacity>
+            <View style={s.nextBtnContainer}>
+              <GradientButton
+                text={isLast ? "Let's Begin" : 'Next'}
+                onPress={goNext}
+                showArrow={true}
+                fullWidth={true}
+                variant="sageBlue"
+              />
+            </View>
+          </View>
+          <View style={s.privacyContainer}>
+            <Text style={s.privacy}>🔒 No signup • No data • Just you two</Text>
+          </View>
+        </View>
+
+      </View>
+    </ImageBackground>
   );
 };
