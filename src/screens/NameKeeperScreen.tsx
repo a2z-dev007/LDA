@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Animated,
+  KeyboardAvoidingView, Platform, Animated, ImageBackground,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -17,9 +16,9 @@ import {
   ShieldIcon,
   HeartIcon,
   SparkleIcon,
-  ArrowRightIcon,
 } from '../components/icons/NameKeeperIcons';
 import { GradientButton } from '../components/common/GradientButton';
+import { IMAGE } from '../assets/image/bg-images';
 
 type Nav = StackNavigationProp<RootStackParamList, 'NameKeeper'>;
 
@@ -98,11 +97,10 @@ export const NameKeeperScreen: React.FC = () => {
   };
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+    <ImageBackground
+      source={IMAGE.greenBg}
       style={styles.gradient}
+      resizeMode="cover"
     >
       <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
         <KeyboardAvoidingView style={styles.inner} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -143,7 +141,7 @@ export const NameKeeperScreen: React.FC = () => {
                   }
                 ]}
               >
-                <SparkleIcon size={20} color={colors.accent} />
+                <SparkleIcon size={20} color={colors.primary} />
               </Animated.View>
             </View>
 
@@ -237,7 +235,7 @@ export const NameKeeperScreen: React.FC = () => {
           </Animated.View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
@@ -273,16 +271,11 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: 'rgba(216, 128, 132, 0.12)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     borderWidth: 1.5,
-    borderColor: 'rgba(216, 128, 132, 0.25)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 3,
   },
   floatingIcon1: {
     top: 50,
@@ -312,17 +305,17 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: 104,
     height: 104,
     borderRadius: 52,
-    backgroundColor: 'rgba(45, 62, 87, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderWidth: 2.5,
-    borderColor: 'rgba(216, 128, 132, 0.5)',
+    borderColor: 'rgba(45, 95, 93, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 8,
+    // shadowColor: c.primary,
+    // shadowOffset: { width: 0, height: 8 },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 20,
+    // elevation: 8,Shahh
   },
   heroIconGlow: {
     position: 'absolute',
@@ -358,26 +351,26 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.md,
   },
   inputCard: {
-    backgroundColor: 'rgba(45, 62, 87, 0.6)',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: metrics.radius.xl,
     borderWidth: 2,
-    borderColor: 'rgba(143, 161, 177, 0.25)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 2,
   },
   inputCardFocused: {
-    borderColor: 'rgba(216, 128, 132, 0.6)',
-    backgroundColor: 'rgba(45, 62, 87, 0.8)',
+    borderColor: c.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     shadowColor: c.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 16,
     elevation: 4,
   },
@@ -385,17 +378,12 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(216, 128, 132, 0.18)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     borderWidth: 1.5,
-    borderColor: 'rgba(216, 128, 132, 0.35)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: metrics.spacing.smMd,
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 2,
   },
   input: {
     ...typography.bodyLarge,
@@ -419,27 +407,22 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
 
   // Privacy card
   privacyCard: {
-    backgroundColor: 'rgba(45, 62, 87, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderRadius: metrics.radius.lg,
     borderWidth: 1.5,
-    borderColor: 'rgba(150, 199, 179, 0.3)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     flexDirection: 'row',
     alignItems: 'center',
     padding: metrics.spacing.md,
     gap: metrics.spacing.smMd,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 1,
   },
   privacyIconWrapper: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(150, 199, 179, 0.2)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(150, 199, 179, 0.35)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
@@ -453,7 +436,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   privacyTextBold: {
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
-    color: '#96C7B3',
+    color: c.primary,
   },
 
   // Footer
@@ -478,7 +461,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderRadius: 4,
   },
   dotComplete: {
-    backgroundColor: 'rgba(216, 128, 132, 0.5)',
+    backgroundColor: 'rgba(45, 95, 93, 0.3)',
   },
   dotActive: {
     backgroundColor: c.primary,

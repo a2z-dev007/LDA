@@ -20,11 +20,11 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { useAppColors } from '../../theme';
 import { metrics } from '../../theme/metrics';
 import { typography } from '../../theme/typography';
-import { responsiveHeight } from 'react-native-responsive-dimensions';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.85;
-const SLIDER_SIZE = 50;
+const SLIDER_SIZE = responsiveWidth(12);
 const SLIDE_THRESHOLD = BUTTON_WIDTH - SLIDER_SIZE - 20;
 
 interface SlideToBeginButtonProps {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: '60%',
+    height: '40%',
     borderTopLeftRadius: metrics.radius.full,
     borderTopRightRadius: metrics.radius.full,
   },

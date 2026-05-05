@@ -8,6 +8,7 @@ import { useAppColors } from '../theme';
 import { useUserStore } from '../store/useUserStore';
 import { SlideToBeginButton } from '../components/common/SlideToBeginButton';
 import { IMAGE } from '../assets/image/bg-images';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Splash'>;
 
@@ -71,7 +72,7 @@ export const SplashScreen: React.FC = () => {
                 resizeMode="contain"
               />
             </Animated.View>
-            <Text style={styles.title}>LET'S DATE AGAIN</Text>
+            {/* <Text style={styles.title}>LET'S DATE AGAIN</Text> */}
           </View>
 
           {/* Content Section */}
@@ -126,18 +127,18 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   // Clip container — cuts off the bottom shadow baked into the PNG
   logoClip: {
-    width: 220,
-    height: 200,          // intentionally less than image height — clips bottom shadow
+     width:responsiveWidth(45),
+    height:responsiveWidth(45),         // intentionally less than image height — clips bottom shadow
     overflow: 'hidden',
     alignItems: 'center',
   },
   logoImage: {
-    width: 220,
-    height: 220,
+    width:"100%",
+    height:"100%",
     marginTop: 0,
   },
   title: {
-    fontSize: 15,
+    fontSize:responsiveFontSize(1.5),
     color: c.primary,
     fontFamily: 'DMSans-Medium',
     fontWeight: '500',
@@ -145,20 +146,20 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   // Content Section
   contentSection: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
-    paddingVertical: 20,
+    paddingVertical: responsiveHeight(2),
   },
   factCard: {
     backgroundColor: c.glassLight,
     borderRadius: 24,
-    padding: 32,
-    marginBottom: 56,
+    padding: responsiveFontSize(3),
+    marginBottom:responsiveHeight(5),
     borderWidth: 1,
     borderColor: c.glassBorder,
   },
   factLabel: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(2),
     color: c.primary,
     fontFamily: 'DMSans-Bold',
     fontWeight: '700',
@@ -166,27 +167,28 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginBottom: 16,
   },
   factText: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(1.8),
     color: c.text,
     fontFamily: 'DMSans-Regular',
     fontWeight: '400',
-    lineHeight: 26,
+    lineHeight:responsiveFontSize(3),
   },
   quoteContainer: {
     paddingHorizontal: 12,
     marginBottom: 20,
   },
   quote: {
-    fontSize: 26,
+    fontSize: responsiveFontSize(2.5),
     color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     fontStyle: 'italic',
-    lineHeight: 38,
+    lineHeight: responsiveFontSize(3.5),
     textAlign: 'center',
   },
   // Button Section
   buttonSection: {
     paddingTop: 10,
+    // marginTop:responsiveHeight(8)
   },
   footer: {
     color: c.textSubtle,

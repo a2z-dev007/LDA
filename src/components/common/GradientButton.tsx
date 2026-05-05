@@ -125,7 +125,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
         <LinearGradient
           colors={
             disabled
-              ? ['rgba(227,139,155,0.3)', 'rgba(205,180,219,0.3)']
+              ? ['#E8D5D8', '#D4D0E8']
               : [buttonGradientStart, buttonGradientEnd]
           }
           start={{ x: 0, y: 0 }}
@@ -180,7 +180,9 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   shadowContainerDisabled: {
-    shadowOpacity: 0.15,
+    shadowColor: '#C0B8D0',
+    shadowOpacity: 0.12,
+    elevation: 2,
   },
   gradient: {
     height: metrics.button.height,
@@ -230,6 +232,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   textDisabled: {
-    color: 'rgba(43, 30, 35, 0.4)',
+    color: 'rgba(80, 70, 90, 0.6)',
   },
 });

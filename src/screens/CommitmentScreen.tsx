@@ -154,10 +154,9 @@ export const CommitmentScreen: React.FC = () => {
 
   return (
     <ImageBackground 
-      source={IMAGE.bluePurple} 
+      source={IMAGE.greenBg} 
       style={styles.backgroundImage}
       resizeMode="cover"
-      blurRadius={10}
     >
       <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
         <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
@@ -360,7 +359,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   eyebrow: {
     ...typography.captionSmall,
-    color: '#B8A19C',
+    color: c.primary,
     marginBottom: metrics.spacing.sm,
     textAlign: 'center',
   },
@@ -388,13 +387,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
 
   // ── Bullet card ──────────────────────────────────────────
   bulletCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
     borderRadius: metrics.radius.xl,
     borderWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.4)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.3)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-    borderRightColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
     marginHorizontal: metrics.layout.screenPaddingHz,
     marginBottom: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
@@ -410,9 +406,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: metrics.iconSize.lg,
     height: metrics.iconSize.lg,
     borderRadius: metrics.iconSize.lg / 2,
-    backgroundColor: 'rgba(227, 139, 155, 0.2)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(227, 139, 155, 0.4)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
@@ -425,19 +421,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     marginHorizontal: metrics.card.paddingHz,
   },
 
   // ── Commitment box ───────────────────────────────────────
   commitmentBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
     borderRadius: metrics.radius.xl,
     borderWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.4)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.3)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-    borderRightColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
     marginHorizontal: metrics.layout.screenPaddingHz,
     marginBottom: metrics.spacing.lg,
     paddingVertical: metrics.spacing.xs,
@@ -454,9 +447,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: metrics.iconSize.lg,
     height: metrics.iconSize.lg,
     borderRadius: metrics.iconSize.lg / 2,
-    backgroundColor: 'rgba(227, 139, 155, 0.2)',
+    backgroundColor: 'rgba(45, 95, 93, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(227, 139, 155, 0.4)',
+    borderColor: 'rgba(45, 95, 93, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
@@ -479,8 +472,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     height: metrics.spacing.lg + metrics.spacing.xs,
     borderRadius: metrics.spacing.sm,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(45, 95, 93, 0.3)',
+    backgroundColor: 'rgba(45, 95, 93, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,

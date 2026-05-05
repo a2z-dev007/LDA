@@ -613,7 +613,7 @@ export const sageGardenTheme: ColorTheme = {
 
   // Button gradient: sage green → teal blue
   buttonGradientStart: '#8FB8A8',
-  buttonGradientEnd: '#6BA8B8',
+  buttonGradientEnd: '#0096FF',
 
   glassLight: 'rgba(45,95,93,0.08)',
   glassBorder: 'rgba(143,184,168,0.25)',
