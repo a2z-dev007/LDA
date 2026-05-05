@@ -47,7 +47,7 @@ const GRADIENT_VARIANTS: Record<GradientVariant, { start: string; end: string }>
   skyLavender: { start: '#8CB8D8', end: '#B8A8D8' },      // day5 → day4: calm to dreamy
   
   // ── Sage Garden Theme Gradients ─────────────────────────────
-  sageBlue: { start: '#8FB8A8', end: '#6BA8B8' },         // sage green to teal blue
+  sageBlue: { start: '#8FB8A8', end: '#0096FF' },         // sage green to bright blue — matches theme
   forestSage: { start: '#2D5F5D', end: '#8FB8A8' },       // forest teal to sage
   mintTeal: { start: '#A8C9BC', end: '#6BA8B8' },         // mint to teal
   

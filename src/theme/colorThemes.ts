@@ -611,7 +611,7 @@ export const sageGardenTheme: ColorTheme = {
   gradientMid: '#E8F3F1',
   gradientEnd: '#E0F0ED',
 
-  // Button gradient: sage green → teal blue
+  // Button gradient: sage green → bright blue — matches SlideToBeginButton
   buttonGradientStart: '#8FB8A8',
   buttonGradientEnd: '#0096FF',
 
