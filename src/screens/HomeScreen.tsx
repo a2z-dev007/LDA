@@ -220,16 +220,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: 10,
   },
   card: {
-    backgroundColor: c.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
   },
   cardCompleted: {
     opacity: 0.65,
-    backgroundColor: c.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   cardLocked: {
     opacity: 0.3,
@@ -275,7 +275,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: `${c.dark}E8`,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
   continueBtnTouch: {
     borderRadius: 100,
