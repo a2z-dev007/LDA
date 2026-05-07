@@ -20,6 +20,7 @@ export interface ColorTheme {
   light: string;      // subtle tinted surface
   white: string;      // pure white / near-white
 
+
   // ── Semantic tokens ──────────────────────────────────────
   text: string;           // primary body text
   textSecondary: string;  // secondary / muted text  (~60% opacity)
@@ -33,7 +34,7 @@ export interface ColorTheme {
   gradientStart: string;
   gradientMid: string;
   gradientEnd: string;
-
+  gradientBtn?: any;
   // Button Gradients
   buttonGradientStart: string;
   buttonGradientEnd: string;
@@ -350,7 +351,7 @@ export const nectarineGardenTheme: ColorTheme = {
   name: 'Nectarine Garden',
   description: 'Warm peach canvas with nectarine coral, golden pêche and lagune teal',
   isDark: false,
-  bgImage:IMAGE.bgImag4,
+  bgImage:"",
 
   primary: '#D7897F',           // nectarine coral — warm, inviting, strong
   secondary: '#6398A9',         // lagune teal — cool complement
@@ -610,10 +611,11 @@ export const sageGardenTheme: ColorTheme = {
   gradientStart: '#F5FAF9',
   gradientMid: '#E8F3F1',
   gradientEnd: '#E0F0ED',
+  gradientBtn:['#6EE87A', '#2DD4BF', '#00BCD4'],
 
-  // Button gradient: sage green → bright blue — matches SlideToBeginButton
-  buttonGradientStart: '#8FB8A8',
-  buttonGradientEnd: '#0096FF',
+  // Button gradient: lime green → teal → cyan blue — matches LDA logo
+  buttonGradientStart: '#6EE87A',
+  buttonGradientEnd: '#00BCD4',
 
   glassLight: 'rgba(45,95,93,0.08)',
   glassBorder: 'rgba(143,184,168,0.25)',

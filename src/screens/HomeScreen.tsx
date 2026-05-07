@@ -6,42 +6,73 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
+import { typography } from '../theme/typography';
+import { fontSize, metrics } from '../theme/metrics';
 import { useDayStore } from '../store/useDayStore';
 import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { resolveRoute } from '../services/dayRouter';
 import { haptics } from '../utils/haptics';
+import { Heart, Sparkles, Lock } from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Home'>;
 
-// Colors are injected at render time via getDayInfo(colors)
-const DAY_ROUTES = [
-  { number: 1, title: 'The Spark Check',     route: 'Day1Slider' as keyof RootStackParamList },
-  { number: 2, title: 'The Mood Room',        route: 'Bridge1to2' as keyof RootStackParamList },
-  { number: 3, title: 'The Assumptions Test', route: 'Bridge2to3' as keyof RootStackParamList },
-  { number: 4, title: 'The Memory Jar',       route: 'Bridge3to4' as keyof RootStackParamList },
-  { number: 5, title: 'The Reveal',           route: 'Bridge4to5' as keyof RootStackParamList },
+const DAY_DATA = [
+  {
+    number: 1,
+    title: 'The Spark Check',
+    subtitle: 'Reignite connection and curiosity',
+    route: 'Day1Slider' as keyof RootStackParamList,
+    iconColors: ['#6EE87A', '#2DD4BF'] as [string, string],
+    iconEmoji: '✦',
+  },
+  {
+    number: 2,
+    title: 'The Mood Room',
+    subtitle: 'Explore feelings and set the vibe',
+    route: 'Bridge1to2' as keyof RootStackParamList,
+    iconColors: ['#7EC8E3', '#4A90D9'] as [string, string],
+    iconEmoji: '☁',
+  },
+  {
+    number: 3,
+    title: 'The Assumptions Test',
+    subtitle: 'Challenge stories, build understanding',
+    route: 'Bridge2to3' as keyof RootStackParamList,
+    iconColors: ['#C084FC', '#818CF8'] as [string, string],
+    iconEmoji: '💬',
+  },
+  {
+    number: 4,
+    title: 'The Memory Jar',
+    subtitle: 'Celebrate moments, rebuild closeness',
+    route: 'Bridge3to4' as keyof RootStackParamList,
+    iconColors: ['#2DD4BF', '#0EA5E9'] as [string, string],
+    iconEmoji: '🫙',
+  },
+  {
+    number: 5,
+    title: 'The Reveal',
+    subtitle: 'Share, appreciate and dream ahead',
+    route: 'Bridge4to5' as keyof RootStackParamList,
+    iconColors: ['#86EFAC', '#4ADE80'] as [string, string],
+    iconEmoji: '🎁',
+  },
 ];
-
-function getDayInfo(c: ReturnType<typeof useAppColors>) {
-  return DAY_ROUTES.map((d, i) => ({
-    ...d,
-    color: [c.day1, c.day2, c.day3, c.day4, c.day5][i],
-  }));
-}
 
 export const HomeScreen = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
-  const DAY_INFO = getDayInfo(colors);
   const navigation = useNavigation<Nav>();
   const userName    = useUserStore((s) => s.name);
   const nextDay     = useDayStore((s) => s.nextDay());
   const completed   = useDayStore((s) => s.completedDayCount());
   const streakCount = useStreakStore((s) => s.streakCount);
+  const insets      = useSafeAreaInsets();
 
   const handleContinue = () => {
     haptics.medium();
@@ -56,26 +87,31 @@ export const HomeScreen = () => {
     return 'Good evening';
   };
 
-  const activeDay = DAY_INFO[nextDay - 1];
-  const insets = useSafeAreaInsets();
-
-  // Bottom padding = safe area inset (nav bar) + breathing room
-  const ctaBottomPadding = insets.bottom + 12;
+  const activeDay = DAY_DATA[nextDay - 1];
+  const ctaBottomPadding = insets.bottom + metrics.spacing.sm;
 
   return (
     <ScreenWrapper>
-      {/* ── Scrollable content ─────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
+        {/* ── Header ─────────────────────────────────────── */}
         <View style={styles.header}>
           <Text style={styles.greeting}>
-            {getGreeting()}{userName ? `, ${userName}` : ''}
+            {getGreeting()}{userName ? `, ${userName}` : ''} 👋
           </Text>
-          <Text style={styles.title}>Let's Date Again</Text>
+
+          {/* Title row with sparkles + heart */}
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>Let's Date Again</Text>
+            <View style={styles.titleIcons}>
+              <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
+              {/* <Sparkles size={metrics.iconSize.xs} color={colors.accent} strokeWidth={1.5} /> */}
+              <Heart size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
+            </View>
+          </View>
 
           {streakCount > 0 && (
             <View style={styles.streakBadge}>
@@ -90,74 +126,123 @@ export const HomeScreen = () => {
           </Text>
         </View>
 
-        {/* Day cards */}
+        {/* ── Day cards ──────────────────────────────────── */}
         <View style={styles.cards}>
-          {DAY_INFO.map((day) => {
+          {DAY_DATA.map((day) => {
             const isCompleted = day.number < nextDay;
             const isActive    = day.number === nextDay;
             const isLocked    = day.number > nextDay;
 
             return (
-              <View
+              <TouchableOpacity
                 key={day.number}
+                activeOpacity={isLocked ? 1 : 0.8}
+                onPress={() => {
+                  if (!isLocked) {
+                    haptics.light();
+                    navigation.navigate(day.route as any);
+                  }
+                }}
                 style={[
                   styles.card,
-                  isActive    && { borderColor: day.color, borderWidth: 1.5 },
-                  isCompleted && styles.cardCompleted,
-                  isLocked    && styles.cardLocked,
+                  isActive && styles.cardActive,
+                  isLocked && styles.cardLocked,
                 ]}
               >
-                <View style={styles.cardHeader}>
-                  <Text style={[styles.dayNumber, isActive && { color: day.color }]}>
-                    Day {day.number}
+                {/* Left icon circle */}
+                <LinearGradient
+                  colors={isLocked ? ['#D0E8E4', '#C0D8D4'] : day.iconColors}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.iconCircle}
+                >
+                  <Text style={styles.iconEmoji}>{day.iconEmoji}</Text>
+                </LinearGradient>
+
+                {/* Card content */}
+                <View style={styles.cardContent}>
+                  <Text style={[
+                    styles.dayLabel,
+                    isLocked && styles.dayLabelLocked,
+                  ]}>
+                    DAY {day.number}
                   </Text>
-                  {isCompleted && <Text style={[styles.statusIcon, { color: colors.success }]}>✓</Text>}
-                  {isLocked    && <Text style={styles.statusIcon}>🔒</Text>}
-                  {isActive    && <View style={[styles.activePip, { backgroundColor: day.color }]} />}
+                  <Text style={[
+                    styles.cardTitle,
+                    isLocked && styles.cardTitleLocked,
+                  ]}>
+                    {day.title}
+                  </Text>
+                  <Text style={[
+                    styles.cardSubtitle,
+                    isLocked && styles.cardSubtitleLocked,
+                  ]}>
+                    {day.subtitle}
+                  </Text>
                 </View>
-                <Text style={styles.cardTitle}>{day.title}</Text>
-              </View>
+
+                {/* Right status */}
+                <View style={styles.cardRight}>
+                  {isCompleted && (
+                    <View style={[styles.activeDot, { backgroundColor: colors.success }]} />
+                  )}
+                  {isActive && (
+                    <View style={[styles.activeDotOuter, { borderColor: '#2DD4BF' }]}>
+                      <View style={[styles.activeDotInner, { backgroundColor: '#2DD4BF' }]} />
+                    </View>
+                  )}
+                  {isLocked && (
+                    <Lock size={metrics.iconSize.sm} color="#B0C8C4" strokeWidth={2} />
+                  )}
+                </View>
+              </TouchableOpacity>
             );
           })}
         </View>
 
-        {/* Extra bottom space so last card clears the fixed CTA */}
         <View style={styles.bottomSpacer} />
       </ScrollView>
 
-      {/* ── Fixed bottom CTA ───────────────────────────────── */}
+      {/* ── Fixed bottom CTA ───────────────────────────── */}
       <View style={[styles.ctaContainer, { paddingBottom: ctaBottomPadding }]}>
         {completed < 5 ? (
           <TouchableOpacity
-            style={styles.continueBtnTouch}
             activeOpacity={0.88}
             onPress={handleContinue}
+            style={styles.continueBtnTouch}
           >
             <LinearGradient
-              colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              end={{ x: 1, y: 0 }}
               style={styles.continueBtn}
             >
-              <View style={styles.continueBtnInner}>
+              <View style={styles.continueBtnLeft}>
+                <View style={styles.sparkleCircle}>
+                  <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+                </View>
+              </View>
+              <View style={styles.continueBtnCenter}>
                 <Text style={styles.continueBtnSub}>CONTINUE</Text>
                 <Text style={styles.continueBtnTitle}>
                   Day {nextDay} · {activeDay?.title ?? 'The Reveal'}
                 </Text>
               </View>
-              <Text style={styles.continueBtnArrow}>→</Text>
+              <View style={styles.continueBtnRight}>
+                <Text style={styles.continueBtnArrow}>→</Text>
+              </View>
             </LinearGradient>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={styles.continueBtnTouch}
             activeOpacity={0.88}
             onPress={() => navigation.navigate('Day5PartnerInvite')}
+            style={styles.continueBtnTouch}
           >
             <LinearGradient
-              colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              end={{ x: 1, y: 0 }}
               style={styles.continueBtn}
             >
               <Text style={styles.continueBtnTitle}>Invite your partner</Text>
@@ -171,145 +256,222 @@ export const HomeScreen = () => {
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  // ── Layout ─────────────────────────────────────────────────
-  scroll: {
-    flex: 1,
-  },
+  scroll: { flex: 1 },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.md,
+    paddingBottom: metrics.spacing.sm,
   },
 
-  // ── Header ─────────────────────────────────────────────────
+  // ── Header ───────────────────────────────────────────────
   header: {
-    marginBottom: 20,
-    gap: 6,
+    marginBottom: metrics.spacing.lg,
+    gap: metrics.spacing.xs,
   },
   greeting: {
-    color: c.textHint,
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
+    ...typography.labelMedium,
+    color: c.primary,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.sm,
+    flexWrap: 'wrap',
   },
   title: {
-    fontSize: 30,
+    ...typography.displayLarge,
     color: c.text,
     fontFamily: 'PlayfairDisplay-Bold',
-    lineHeight: 36,
+  },
+  titleIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.xs,
+    marginTop: metrics.spacing.xs,
   },
   streakBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: c.surface,
-    borderRadius: 100,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    backgroundColor: 'rgba(45,95,93,0.1)',
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xxs,
+    marginTop: metrics.spacing.xs,
   },
   streakText: {
-    color: c.textSecondary,
-    fontSize: 13,
-    fontFamily: 'Inter-SemiBold',
+    ...typography.labelSmall,
+    color: c.primary,
   },
   subtitle: {
-    fontSize: 14,
-    color: c.textHint,
-    fontFamily: 'Inter-Regular',
+    ...typography.bodySmall,
+    color: c.primary,
   },
 
-  // ── Day cards ──────────────────────────────────────────────
+  // ── Day cards ────────────────────────────────────────────
   cards: {
-    gap: 10,
+    gap: metrics.spacing.sm,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    paddingVertical: metrics.spacing.smMd,
+    paddingHorizontal: metrics.spacing.smMd,
+    borderRadius: metrics.radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.smMd,
+    shadowColor: '#2D5F5D',
+    shadowOffset: { width: 0, height: responsiveHeight(0.25) },
+    shadowOpacity: 0.06,
+    shadowRadius: responsiveWidth(2),
+    elevation: 2,
   },
-  cardCompleted: {
-    opacity: 0.65,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  cardActive: {
+    borderColor: '#2DD4BF',
+    borderWidth: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   cardLocked: {
-    opacity: 0.3,
+    opacity: 0.55,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+
+  // Icon circle
+  iconCircle: {
+    width: responsiveWidth(13),
+    height: responsiveWidth(13),
+    borderRadius: responsiveWidth(6.5),
     alignItems: 'center',
-    marginBottom: 4,
+    justifyContent: 'center',
+    flexShrink: 0,
   },
-  dayNumber: {
+  iconEmoji: {
+    fontSize: metrics.fontSize.h3,
+    color: '#FFFFFF',
+  },
+
+  // Card text
+  cardContent: {
+    flex: 1,
+    gap: metrics.spacing.xxs,
+  },
+  dayLabel: {
+    ...typography.captionSmall,
+    color: '#2DD4BF',
+    letterSpacing: 1.2,
+  },
+  dayLabelLocked: {
     color: c.textHint,
-    fontSize: 11,
-    fontFamily: 'Inter-SemiBold',
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-  },
-  statusIcon: {
-    fontSize: 13,
-    color: c.textHint,
-  },
-  activePip: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
   },
   cardTitle: {
+    ...typography.displaySmall,
     color: c.text,
-    fontSize: 18,
     fontFamily: 'PlayfairDisplay-Bold',
   },
-
-  // ── Bottom spacer ──────────────────────────────────────────
-  bottomSpacer: {
-    height: 100,
+  cardTitleLocked: {
+    color: c.textSecondary,
+  },
+  cardSubtitle: {
+     fontSize:responsiveFontSize(1.5 ),
+        fontFamily: 'DMSans-Regular',
+        fontWeight: '400' as const,
+        lineHeight: fontSize.body * 1.5,
+    color: c.textSecondary,
+  },
+  cardSubtitleLocked: {
+    color: c.textHint,
   },
 
-  // ── Fixed CTA ─────────────────────────────────────────────
+  // Right status
+  cardRight: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: responsiveWidth(6),
+    flexShrink: 0,
+  },
+  activeDotOuter: {
+    width: responsiveWidth(4.5),
+    height: responsiveWidth(4.5),
+    borderRadius: responsiveWidth(2.25),
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeDotInner: {
+    width: responsiveWidth(2),
+    height: responsiveWidth(2),
+    borderRadius: responsiveWidth(1),
+  },
+  activeDot: {
+    width: responsiveWidth(2.5),
+    height: responsiveWidth(2.5),
+    borderRadius: responsiveWidth(1.25),
+  },
+
+  // ── Bottom spacer ────────────────────────────────────────
+  bottomSpacer: { height: responsiveHeight(12) },
+
+  // ── Fixed CTA ───────────────────────────────────────────
   ctaContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   continueBtnTouch: {
-    borderRadius: 100,
-    shadowColor: c.glowPrimary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 18,
-    elevation: 10,
+    borderRadius: metrics.radius.full,
+    // iOS multi-layer shadow
+    shadowColor: '#0D5C4A',
+    shadowOffset: { width: 0, height: responsiveHeight(1.2) },
+    shadowOpacity: 0.6,
+    shadowRadius: responsiveWidth(6),
+    // Android elevation with colored background trick
+    elevation: 18,
+    backgroundColor: '#1A9B7A', // dark teal — shows as colored shadow on Android
   },
   continueBtn: {
-    borderRadius: 100,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
+    borderRadius: metrics.radius.full,
+    paddingVertical: metrics.spacing.smMd,
+    paddingHorizontal: metrics.spacing.md,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    minHeight: metrics.button.height,
   },
-  continueBtnInner: {
-    gap: 2,
+  btnShadowLayer: {
+    display: 'none' as any,
+  },
+  continueBtnLeft: {
+    marginRight: metrics.spacing.smMd,
+  },
+  sparkleCircle: {
+    width: responsiveWidth(9),
+    height: responsiveWidth(9),
+    borderRadius: responsiveWidth(4.5),
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueBtnCenter: {
+    flex: 1,
+    gap: metrics.spacing.xxs,
   },
   continueBtnSub: {
-    color: c.onPrimary,
-    fontSize: 10,
-    fontFamily: 'Inter-SemiBold',
+    ...typography.captionSmall,
+    color: 'rgba(255,255,255,0.8)',
     letterSpacing: 2,
-    opacity: 0.75,
   },
   continueBtnTitle: {
-    color: c.onPrimary,
-    fontSize: 17,
+    ...typography.displaySmall,
+    color: '#FFFFFF',
     fontFamily: 'PlayfairDisplay-Bold',
   },
+  continueBtnRight: {
+    marginLeft: metrics.spacing.sm,
+  },
   continueBtnArrow: {
-    color: c.onPrimary,
-    fontSize: 22,
+    ...typography.buttonLarge,
+    color: '#FFFFFF',
   },
 });

@@ -47,7 +47,7 @@ const GRADIENT_VARIANTS: Record<GradientVariant, { start: string; end: string }>
   skyLavender: { start: '#8CB8D8', end: '#B8A8D8' },      // day5 → day4: calm to dreamy
   
   // ── Sage Garden Theme Gradients ─────────────────────────────
-  sageBlue: { start: '#8FB8A8', end: '#0096FF' },         // sage green to bright blue — matches theme
+  sageBlue: { start: '#6EE87A', end: '#00BCD4' },         // lime green → cyan blue — matches LDA logo
   forestSage: { start: '#2D5F5D', end: '#8FB8A8' },       // forest teal to sage
   mintTeal: { start: '#A8C9BC', end: '#6BA8B8' },         // mint to teal
   
@@ -77,6 +77,9 @@ interface GradientButtonProps {
   gradientEnd?: string;
 }
 
+// 3-stop gradient matching the LDA logo: lime green → teal → cyan blue
+const SAGE_BLUE_GRADIENT: [string, string, string] = ['#6EE87A', '#2DD4BF', '#00BCD4'];
+
 export const GradientButton: React.FC<GradientButtonProps> = ({
   text,
   onPress,
@@ -90,22 +93,20 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
 }) => {
   const colors = useAppColors();
 
-  // Determine gradient colors with priority: custom > variant > theme
-  let buttonGradientStart: string;
-  let buttonGradientEnd: string;
-
-  if (gradientStart && gradientEnd) {
-    // Custom colors have highest priority
-    buttonGradientStart = gradientStart;
-    buttonGradientEnd = gradientEnd;
+  // Determine gradient colors — sageBlue and default use 3-stop gradient
+  const isSageBlue = variant === 'sageBlue' || (variant === 'default' && !gradientStart);
+  
+  let gradientColors: string[];
+  if (disabled) {
+    gradientColors = ['#E8D5D8', '#D4D0E8'];
+  } else if (gradientStart && gradientEnd) {
+    gradientColors = [gradientStart, gradientEnd];
+  } else if (isSageBlue) {
+    gradientColors = SAGE_BLUE_GRADIENT;
   } else if (variant !== 'default') {
-    // Use variant colors
-    buttonGradientStart = GRADIENT_VARIANTS[variant].start;
-    buttonGradientEnd = GRADIENT_VARIANTS[variant].end;
+    gradientColors = [GRADIENT_VARIANTS[variant].start, GRADIENT_VARIANTS[variant].end];
   } else {
-    // Fall back to theme colors
-    buttonGradientStart = colors.buttonGradientStart;
-    buttonGradientEnd = colors.buttonGradientEnd;
+    gradientColors = [colors.buttonGradientStart, '#5FAFC1', '#1E90FF'];
   }
 
   return (
@@ -123,11 +124,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
       <View style={[styles.shadowContainer, disabled && styles.shadowContainerDisabled]}>
         {/* Button body with gradient */}
         <LinearGradient
-          colors={
-            disabled
-              ? ['#E8D5D8', '#D4D0E8']
-              : [buttonGradientStart, buttonGradientEnd]
-          }
+          colors={gradientColors as any}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.gradient}

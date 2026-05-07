@@ -1,109 +1,107 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated,
-  Dimensions, Platform,
+  ImageBackground, Image,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { useAppColors } from '../theme';
+import { typography } from '../theme/typography';
+import { metrics } from '../theme/metrics';
 import { sparkQuizQuestions } from '../data/quizData';
 import { calculatePersonalityType } from '../data/personalityTypes';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
-import { QuizBackground } from '../components/common/QuizBackground';
+import { IMAGE } from '../assets/image/bg-images';
+import { ICONS } from '../assets/image/icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  Heart, Search, Shield, Flame, Anchor, HandHeart,
+  Compass, MessageCircle, Clock, Leaf, ChevronRight, ArrowLeft,
+} from 'lucide-react-native';
+import {
+  responsiveWidth,
+  responsiveHeight,
+  responsiveFontSize,
+} from 'react-native-responsive-dimensions';
+import {
+  JarEnvelopeAnimation,
+  JarEnvelopeHandle,
+} from '../components/common/JarEnvelopeAnimation';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Quiz'>;
 type RouteProps = StackScreenProps<RootStackParamList, 'Day1Quiz'>['route'];
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
-const BORDER = 3;
-
-// ─────────────────────────────────────────────────────────────
-// ProgressBorder
-// Draws 4 animated segments (top, right, bottom, left) that
-// fill sequentially based on progress (0.0 → 1.0).
-// Each side = 25% of total perimeter.
-// ─────────────────────────────────────────────────────────────
-// Border segment styles — no theme colors, safe at module level
-const borderStyles = StyleSheet.create({
-  borderTop: {
-    position: 'absolute', top: 0, left: 0,
-    height: BORDER, zIndex: 100,
+// ── Icon + teal keyword per question ─────────────────────────
+const QUESTION_META = {
+  q1: {
+    badgeIcon: Heart,
+    optionAIcon: MessageCircle,
+    optionBIcon: Clock,
+    tealWord: 'disconnected',
   },
-  borderRight: {
-    position: 'absolute', top: 0, right: 0,
-    width: BORDER, zIndex: 100,
+  q2: {
+    badgeIcon: Search,
+    optionAIcon: Heart,
+    optionBIcon: Clock,
+    tealWord: 'truly seen',
   },
-  borderBottom: {
-    position: 'absolute', bottom: 0, right: 0,
-    height: BORDER, zIndex: 100,
+  q3: {
+    badgeIcon: Shield,
+    optionAIcon: Shield,
+    optionBIcon: Leaf,
+    tealWord: 'In conflict,',
   },
-  borderLeft: {
-    position: 'absolute', bottom: 0, left: 0,
-    width: BORDER, zIndex: 100,
+  q4: {
+    badgeIcon: Heart,
+    optionAIcon: MessageCircle,
+    optionBIcon: HandHeart,
+    tealWord: 'expressing love',
   },
-});
+  q5: {
+    badgeIcon: Flame,
+    optionAIcon: Anchor,
+    optionBIcon: Compass,
+    tealWord: 'right now',
+  },
+  q6: {
+    badgeIcon: HandHeart,
+    optionAIcon: Heart,
+    optionBIcon: Leaf,
+    tealWord: 'struggling',
+  },
+  q7: {
+    badgeIcon: Compass,
+    optionAIcon: Compass,
+    optionBIcon: Leaf,
+    tealWord: 'future',
+  },
+};
 
-const ProgressBorder: React.FC<{ progress: number; glowColor: string; primaryColor: string }> = ({
-  progress, glowColor, primaryColor,
-}) => {
-  const animatedProgress = useRef(new Animated.Value(progress)).current;
+// ── Highlight teal keyword in prompt ─────────────────────────
+function renderPrompt(
+  prompt: string,
+  tealWord: string,
+  questionStyle: any,
+  tealStyle: any,
+) {
+  const idx = prompt.toLowerCase().indexOf(tealWord.toLowerCase());
+  if (idx === -1) return <Text style={questionStyle}>{prompt}</Text>;
 
-  useEffect(() => {
-    Animated.timing(animatedProgress, {
-      toValue: progress,
-      duration: 350,
-      useNativeDriver: false,
-    }).start();
-  }, [progress]);
-
-  // Top side: 0–25%  → width 0→SCREEN_W
-  // Right side: 25–50% → height 0→SCREEN_H
-  // Bottom side: 50–75% → width 0→SCREEN_W (right to left)
-  // Left side: 75–100% → height 0→SCREEN_H (bottom to top)
-
-  const topWidth = animatedProgress.interpolate({
-    inputRange: [0, 0.25, 1],
-    outputRange: [0, SCREEN_W, SCREEN_W],
-    extrapolate: 'clamp',
-  });
-
-  const rightHeight = animatedProgress.interpolate({
-    inputRange: [0.25, 0.5, 1],
-    outputRange: [0, SCREEN_H, SCREEN_H],
-    extrapolate: 'clamp',
-  });
-
-  const bottomWidth = animatedProgress.interpolate({
-    inputRange: [0.5, 0.75, 1],
-    outputRange: [0, SCREEN_W, SCREEN_W],
-    extrapolate: 'clamp',
-  });
-
-  const leftHeight = animatedProgress.interpolate({
-    inputRange: [0.75, 1],
-    outputRange: [0, SCREEN_H],
-    extrapolate: 'clamp',
-  });
-
-  const glowStyle = {
-    shadowColor: glowColor,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-    elevation: 12,
-  };
+  const before = prompt.slice(0, idx);
+  const match  = prompt.slice(idx, idx + tealWord.length);
+  const after  = prompt.slice(idx + tealWord.length);
 
   return (
-    <>
-      <Animated.View pointerEvents="none" style={[borderStyles.borderTop,    glowStyle, { width: topWidth,     backgroundColor: primaryColor }]} />
-      <Animated.View pointerEvents="none" style={[borderStyles.borderRight,  glowStyle, { height: rightHeight, backgroundColor: primaryColor }]} />
-      <Animated.View pointerEvents="none" style={[borderStyles.borderBottom, glowStyle, { width: bottomWidth,  backgroundColor: primaryColor }]} />
-      <Animated.View pointerEvents="none" style={[borderStyles.borderLeft,   glowStyle, { height: leftHeight,  backgroundColor: primaryColor }]} />
-    </>
+    <Text style={questionStyle}>
+      {before}
+      <Text style={tealStyle}>{match}</Text>
+      {after}
+    </Text>
   );
-};
+}
 
 // ─────────────────────────────────────────────────────────────
 // Main Screen
@@ -115,192 +113,456 @@ export const Day1SparkQuiz: React.FC = () => {
   const route = useRoute<RouteProps>();
   const { sliderScore } = route.params;
   const completeDay1 = useDayStore((s) => s.completeDay1);
+  const insets = useSafeAreaInsets();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, 'A' | 'B'>>({});
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
-  const [showSwipeHint, setShowSwipeHint] = useState(true);
+  const jarRef = useRef<JarEnvelopeHandle>(null);
 
-  const fadeIn = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(40)).current;
-  const unchosen = useRef(new Animated.Value(1)).current;
+  const fadeIn    = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+  const unchosen  = useRef(new Animated.Value(1)).current;
+
+  // Per-option press animations
+  const scaleA = useRef(new Animated.Value(1)).current;
+  const scaleB = useRef(new Animated.Value(1)).current;
 
   const question = sparkQuizQuestions[currentIndex];
-  const total = sparkQuizQuestions.length;
-
-  // Progress: after answering question N, border is (N+1)/total filled
-  // Before any answer: show a tiny sliver so the border is visible from Q1
-  const borderProgress = (currentIndex + 1) / total;
+  const total    = sparkQuizQuestions.length;
+  const meta     = QUESTION_META[question.id as keyof typeof QUESTION_META];
+  const BadgeIcon   = meta.badgeIcon;
+  const OptionAIcon = meta.optionAIcon;
+  const OptionBIcon = meta.optionBIcon;
 
   useEffect(() => {
-    setSelectedOption(null);
-    unchosen.setValue(1);
+    const existing = answers[question.id] ?? null;
+    setSelectedOption(existing);
+    unchosen.setValue(existing ? 0.35 : 1);
+    // Reset scales
+    scaleA.setValue(1);
+    scaleB.setValue(1);
     fadeIn.setValue(0);
-    slideAnim.setValue(40);
+    slideAnim.setValue(30);
     Animated.parallel([
-      Animated.timing(fadeIn, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.timing(fadeIn,    { toValue: 1, duration: 380, useNativeDriver: true }),
       Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 100, useNativeDriver: true }),
     ]).start();
   }, [currentIndex]);
 
+  const animateOptionPress = (scale: Animated.Value, callback: () => void) => {
+    Animated.sequence([
+      Animated.spring(scale, {
+        toValue: 0.96,
+        friction: 4,
+        tension: 300,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 5,
+        tension: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    // Small delay so the press animation is visible before advancing
+    setTimeout(callback, 120);
+  };
+
   const handleSelect = (value: 'A' | 'B') => {
     haptics.light();
-    setSelectedOption(value);
-    if (showSwipeHint) setShowSwipeHint(false);
+    const scale = value === 'A' ? scaleA : scaleB;
 
-    Animated.timing(unchosen, { toValue: 0.3, duration: 200, useNativeDriver: true }).start();
+    animateOptionPress(scale, () => {
+      setSelectedOption(value);
+      Animated.timing(unchosen, { toValue: 0.35, duration: 200, useNativeDriver: true }).start();
 
-    const newAnswers = { ...answers, [question.id]: value };
-    setAnswers(newAnswers);
+      const newAnswers = { ...answers, [question.id]: value };
+      setAnswers(newAnswers);
 
-    setTimeout(() => {
-      if (currentIndex < total - 1) {
-        setCurrentIndex((i) => i + 1);
-      } else {
-        const personality = calculatePersonalityType(newAnswers);
-        completeDay1(newAnswers, personality.id);
-        navigation.replace('Day1Result');
-      }
-    }, 120);
+      jarRef.current?.triggerEnvelope(() => {
+        if (currentIndex < total - 1) {
+          setCurrentIndex((i) => i + 1);
+        } else {
+          const personality = calculatePersonalityType(newAnswers);
+          completeDay1(newAnswers, personality.id);
+          navigation.replace('Day1Result');
+        }
+      });
+    });
+  };
+
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      haptics.light();
+      Animated.parallel([
+        Animated.timing(fadeIn,    { toValue: 0, duration: 180, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: -30, duration: 180, useNativeDriver: true }),
+      ]).start(() => {
+        setCurrentIndex((i) => i - 1);
+      });
+    }
   };
 
   return (
-    <View style={styles.root}>
-      {/* Cycling premium background — changes every 2 questions */}
-      <QuizBackground variant={Math.floor(currentIndex / 2)} />
+    <ImageBackground
+      source={IMAGE.greenBg2}
+      style={styles.root}
+      resizeMode="cover"
+    >
+      {/* Jar animation */}
+      <JarEnvelopeAnimation ref={jarRef} />
 
-      {/* Animated progress border — drawn on top of everything */}
-      <ProgressBorder progress={borderProgress} glowColor={colors.glowPrimary} primaryColor={colors.primary} />
-
-      {/* Content */}
+      {/* Main content — scrollable area with safe area top */}
       <Animated.View
-        style={[styles.body, { opacity: fadeIn, transform: [{ translateY: slideAnim }] }]}
+        style={[
+          styles.body,
+          {
+            opacity: fadeIn,
+            transform: [{ translateY: slideAnim }],
+            paddingTop: Math.max(insets.top + responsiveHeight(2), responsiveHeight(6)),
+          },
+        ]}
       >
-        {/* Counter */}
-        <Text style={styles.counter}>{currentIndex + 1} of {total}</Text>
+        {/* ── Counter + back button ── */}
+        <View style={styles.topRow}>
+          {currentIndex > 0 ? (
+            <TouchableOpacity
+              onPress={handleBack}
+              activeOpacity={0.7}
+              style={styles.backBtn}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            >
+              <View style={styles.backIconCircle}>
+                <ArrowLeft size={metrics.iconSize.sm} color={colors.primary} strokeWidth={2} />
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.backBtnPlaceholder} />
+          )}
+          <Text style={styles.counter}>{currentIndex + 1} of {total}</Text>
+        </View>
 
-        {/* Mood badge */}
+        {/* ── Mood badge with icon ── */}
         <View style={styles.moodBadge}>
+          <BadgeIcon size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
           <Text style={styles.moodBadgeText}>{question.moodBadge}</Text>
         </View>
 
-        {/* Question */}
-        <Text style={styles.question}>{question.prompt}</Text>
+        {/* ── Question with teal keyword + heart ── */}
+        <View style={styles.questionRow}>
+          {renderPrompt(question.prompt, meta.tealWord, styles.question, styles.questionTeal)}
+          <Heart
+            size={metrics.iconSize.sm}
+            color={colors.primary}
+            strokeWidth={1.5}
+            style={styles.questionHeart}
+          />
+        </View>
 
-        {showSwipeHint && (
-          <Text style={styles.swipeHint}>tap to choose</Text>
-        )}
+        {/* ── Tap hint ── */}
+        <View style={styles.hintRow}>
+          <Text style={styles.hintArrow}>›</Text>
+          <Text style={styles.hintText}>Tap to choose</Text>
+          <Text style={styles.hintArrow}>‹</Text>
+        </View>
 
-        {/* Options */}
+        {/* ── Options ── */}
         <View style={styles.options}>
-          <Animated.View style={{ opacity: selectedOption === 'B' ? unchosen : 1 }}>
+          {/* Option A */}
+          <Animated.View style={[
+            { opacity: selectedOption === 'B' ? unchosen : 1 },
+            { transform: [{ scale: scaleA }] },
+          ]}>
             <TouchableOpacity
               style={[styles.option, selectedOption === 'A' && styles.optionSelected]}
-              activeOpacity={0.8}
+              activeOpacity={1}
               onPress={() => handleSelect('A')}
             >
-              <Text style={styles.optionText}>{question.optionA.label}</Text>
+              <LinearGradient
+                colors={selectedOption === 'A'
+                  ? ['#6EE87A', '#2DD4BF', '#1E90FF']
+                  : ['#A8D8D0', '#8EC8C0', '#7AB8C8']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.optionIconCircle}
+              >
+                <OptionAIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+              </LinearGradient>
+              <Text style={[styles.optionText, selectedOption === 'A' && styles.optionTextSelected]}>
+                {question.optionA.label}
+              </Text>
+              <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'A' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </TouchableOpacity>
           </Animated.View>
 
+          {/* Or divider */}
           <View style={styles.orDivider}>
             <View style={styles.orLine} />
             <Text style={styles.orText}>or</Text>
             <View style={styles.orLine} />
           </View>
 
-          <Animated.View style={{ opacity: selectedOption === 'A' ? unchosen : 1 }}>
+          {/* Option B */}
+          <Animated.View style={[
+            { opacity: selectedOption === 'A' ? unchosen : 1 },
+            { transform: [{ scale: scaleB }] },
+          ]}>
             <TouchableOpacity
               style={[styles.option, selectedOption === 'B' && styles.optionSelected]}
-              activeOpacity={0.8}
+              activeOpacity={1}
               onPress={() => handleSelect('B')}
             >
-              <Text style={styles.optionText}>{question.optionB.label}</Text>
+              <LinearGradient
+                colors={selectedOption === 'B'
+                  ? ['#6EE87A', '#2DD4BF', '#1E90FF']
+                  : ['#A8D8D0', '#8EC8C0', '#7AB8C8']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.optionIconCircle}
+              >
+                <OptionBIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+              </LinearGradient>
+              <Text style={[styles.optionText, selectedOption === 'B' && styles.optionTextSelected]}>
+                {question.optionB.label}
+              </Text>
+              <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'B' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </TouchableOpacity>
           </Animated.View>
         </View>
+
+        {/* ── Decorative sparkles + leaves ── */}
+        <View style={styles.decorContainer} pointerEvents="none">
+          <Text style={styles.sparkle1}>✦</Text>
+          <Text style={styles.sparkle2}>✦</Text>
+          <Image source={ICONS.leaves} style={styles.leavesDecor} resizeMode="contain" />
+        </View>
       </Animated.View>
-    </View>
+
+      {/* ── Progress dots — pinned at bottom ── */}
+      <View style={[styles.dotsRow, { paddingBottom: Math.max(insets.bottom, responsiveHeight(12)) }]}>
+        {Array.from({ length: total }, (_, i) => (
+          i <= currentIndex ? (
+            <LinearGradient
+              key={i}
+              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.dot, styles.dotActive]}
+            />
+          ) : (
+            <View key={i} style={[styles.dot, styles.dotInactive]} />
+          )
+        ))}
+      </View>
+    </ImageBackground>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
+  root: { flex: 1 },
 
-  // ── Content ───────────────────────────────────────────────
   body: {
     flex: 1,
-    paddingHorizontal: 28,
-    paddingTop: Platform.OS === 'ios' ? 64 : 48,
-    paddingBottom: 32,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: responsiveHeight(8),
   },
-  counter: {
-    color: c.textHint,
-    fontSize: 13,
-    fontFamily: 'Inter-Regular',
-    letterSpacing: 1,
-    marginBottom: 20,
+
+  // ── Top row (counter + back) ──────────────────────────────
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: metrics.spacing.sm,
   },
-  moodBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: `${c.primary}22`,
+  backBtn: {
+    padding: metrics.spacing.xs,
+  },
+  backIconCircle: {
+    width: responsiveWidth(9),
+    height: responsiveWidth(9),
+    borderRadius: responsiveWidth(4.5),
+    backgroundColor: 'rgba(255,255,255,0.75)',
     borderWidth: 1,
-    borderColor: `${c.primary}55`,
-    borderRadius: 100,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    marginBottom: 28,
+    borderColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backBtnPlaceholder: {
+    width: responsiveWidth(9),
+    height: responsiveWidth(9),
+  },
+
+  // ── Counter ───────────────────────────────────────────────
+  counter: {
+    ...typography.caption,
+    color: c.textSecondary,
+  },
+
+  // ── Mood badge ────────────────────────────────────────────
+  moodBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.xs,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.9)',
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
+    marginBottom: metrics.spacing.md,
   },
   moodBadgeText: {
+    ...typography.labelSmall,
     color: c.primary,
-    fontSize: 12,
-    fontFamily: 'Inter-SemiBold',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
+  },
+
+  // ── Question ──────────────────────────────────────────────
+  questionRow: {
+    marginBottom: metrics.spacing.md,
   },
   question: {
-    fontSize: 28,
-    color: c.text,
+    fontSize: responsiveFontSize(3.2),
     fontFamily: 'PlayfairDisplay-Italic',
-    lineHeight: 40,
-    marginBottom: 48,
+    color: c.text,
+    lineHeight: responsiveFontSize(4.2),
   },
-  swipeHint: {
-    color: c.textHint,
-    fontSize: 12,
-    fontFamily: 'Inter-Regular',
-    textAlign: 'center',
-    marginBottom: 16,
-    letterSpacing: 1,
+  questionTeal: {
+    fontSize: responsiveFontSize(3.2),
+    fontFamily: 'PlayfairDisplay-Italic',
+    color: c.primary,
+    lineHeight: responsiveFontSize(4.2),
   },
-  options: { gap: 16 },
-  option: {
-    borderWidth: 1.5,
-    borderColor: c.surfaceBorder,
-    borderRadius: 16,
-    paddingVertical: 22,
-    paddingHorizontal: 24,
+  questionHeart: {
+    marginTop: metrics.spacing.xs,
+  },
+
+  // ── Tap hint ──────────────────────────────────────────────
+  hintRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: metrics.spacing.xs,
+    marginBottom: metrics.spacing.md,
+  },
+  hintArrow: {
+    ...typography.bodySmall,
+    color: c.textHint,
+  },
+  hintText: {
+    ...typography.caption,
+    color: c.textHint,
+    letterSpacing: 0.5,
+  },
+
+  // ── Options ───────────────────────────────────────────────
+  options: {
+    gap: 0,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.smMd,
+    backgroundColor: 'transparent',
+    borderRadius: metrics.radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.5)',
+    paddingVertical: metrics.spacing.smMd,
+    paddingHorizontal: metrics.spacing.smMd,
   },
   optionSelected: {
     borderColor: c.primary,
-    backgroundColor: `${c.primary}15`,
-    shadowColor: c.glowPrimary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  optionIconCircle: {
+    width: responsiveWidth(11),
+    height: responsiveWidth(11),
+    borderRadius: responsiveWidth(5.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   optionText: {
+    ...typography.bodyMedium,
     color: c.text,
-    fontSize: 17,
-    fontFamily: 'Inter-Regular',
-    textAlign: 'center',
-    lineHeight: 24,
+    flex: 1,
+    lineHeight: metrics.fontSize.body * 1.4,
   },
-  orDivider: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  orLine: { flex: 1, height: 1, backgroundColor: c.surface },
-  orText: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
+  optionTextSelected: {
+    color: c.primary,
+    fontFamily: 'DMSans-SemiBold',
+  },
+
+  // ── Or divider ────────────────────────────────────────────
+  orDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.sm,
+    marginVertical: metrics.spacing.sm,
+    paddingHorizontal: metrics.spacing.sm,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(45,95,93,0.12)',
+  },
+  orText: {
+    ...typography.caption,
+    color: c.textHint,
+  },
+
+  // ── Decorative elements ───────────────────────────────────
+  decorContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: responsiveHeight(22),
+    pointerEvents: 'none' as any,
+  },
+  sparkle1: {
+    position: 'absolute',
+    bottom: responsiveHeight(6),
+    left: responsiveWidth(5),
+    color: '#2DD4BF',
+    fontSize: responsiveFontSize(2),
+    opacity: 0.5,
+  },
+  sparkle2: {
+    position: 'absolute',
+    bottom: responsiveHeight(10),
+    right: responsiveWidth(32),
+    color: '#2DD4BF',
+    fontSize: responsiveFontSize(1.5),
+    opacity: 0.4,
+  },
+  leavesDecor: {
+    position: 'absolute',
+    bottom: 0,
+    right: responsiveWidth(2),
+    width: responsiveWidth(28),
+    height: responsiveWidth(28),
+    opacity: 0.4,
+  },
+
+  // ── Bottom dots — pinned at bottom ────────────────────────
+  dotsRow: {
+    position: 'absolute',
+    bottom: 0,
+    left: metrics.layout.screenPaddingHz,
+    right: metrics.layout.screenPaddingHz,
+    flexDirection: 'row',
+    gap: 4,
+    paddingTop: responsiveHeight(1.5),
+  },
+  dot: {
+    flex: 1,
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {},
+  dotInactive: {
+    backgroundColor: 'rgba(45,95,93,0.15)',
+  },
 });

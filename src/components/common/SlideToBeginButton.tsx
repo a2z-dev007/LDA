@@ -116,7 +116,7 @@ export const SlideToBeginButton: React.FC<SlideToBeginButtonProps> = ({
     inputRange: [0, SLIDE_THRESHOLD * 0.5, SLIDE_THRESHOLD],
     outputRange: [1, 0.5, 0],
   });
-
+// #8FB8A8 → #6FB3B5 → #0096FF
   return (
     <View style={styles.container}>
       {/* Shadow container */}
@@ -125,7 +125,7 @@ export const SlideToBeginButton: React.FC<SlideToBeginButtonProps> = ({
         <View style={styles.trackContainer}>
           {/* Gradient background */}
           <LinearGradient
-            colors={[colors.buttonGradientStart, colors.buttonGradientEnd]}
+            colors={['#6EE87A', '#2DD4BF', '#00BCD4']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.gradient}
