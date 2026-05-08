@@ -1,0 +1,83 @@
+diff --git a/node_modules/@react-navigation/stack/lib/module/views/Stack/Card.js b/node_modules/@react-navigation/stack/lib/module/views/Stack/Card.js
+index a51c3db..0c48459 100644
+--- a/node_modules/@react-navigation/stack/lib/module/views/Stack/Card.js
++++ b/node_modules/@react-navigation/stack/lib/module/views/Stack/Card.js
+@@ -2,7 +2,7 @@
+ 
+ import Color from 'color';
+ import * as React from 'react';
+-import { Animated, InteractionManager, Platform, StyleSheet, View } from 'react-native';
++import { Animated, Platform, StyleSheet, View } from 'react-native';
+ import useLatestCallback from 'use-latest-callback';
+ import { CardAnimationContext } from "../../utils/CardAnimationContext.js";
+ import { gestureActivationCriteria } from "../../utils/gestureActivationCriteria.js";
+@@ -75,7 +75,6 @@ function Card({
+ }) {
+   const didInitiallyAnimate = React.useRef(false);
+   const lastToValueRef = React.useRef(undefined);
+-  const interactionHandleRef = React.useRef(undefined);
+   const animationHandleRef = React.useRef(undefined);
+   const pendingGestureCallbackRef = React.useRef(undefined);
+   const pendingOnCloseCallbackRef = React.useRef(undefined);
+@@ -86,17 +85,8 @@ function Card({
+     height: new Animated.Value(layout.height)
+   }));
+   const [isSwiping] = React.useState(() => new Animated.Value(FALSE));
+-  const onStartInteraction = useLatestCallback(() => {
+-    if (interactionHandleRef.current === undefined) {
+-      interactionHandleRef.current = InteractionManager.createInteractionHandle();
+-    }
+-  });
+-  const onEndInteraction = useLatestCallback(() => {
+-    if (interactionHandleRef.current !== undefined) {
+-      InteractionManager.clearInteractionHandle(interactionHandleRef.current);
+-      interactionHandleRef.current = undefined;
+-    }
+-  });
++  const onStartInteraction = useLatestCallback(() => {});
++  const onEndInteraction = useLatestCallback(() => {});
+   const animate = useLatestCallback(({
+     closing: isClosingParam,
+     velocity
+diff --git a/node_modules/@react-navigation/stack/src/views/Stack/Card.tsx b/node_modules/@react-navigation/stack/src/views/Stack/Card.tsx
+index d4d214e..a7b0f61 100755
+--- a/node_modules/@react-navigation/stack/src/views/Stack/Card.tsx
++++ b/node_modules/@react-navigation/stack/src/views/Stack/Card.tsx
+@@ -3,7 +3,6 @@ import Color from 'color';
+ import * as React from 'react';
+ import {
+   Animated,
+-  InteractionManager,
+   Platform,
+   type StyleProp,
+   StyleSheet,
+@@ -158,7 +157,6 @@ function Card({
+   const didInitiallyAnimate = React.useRef(false);
+   const lastToValueRef = React.useRef<number | undefined>(undefined);
+ 
+-  const interactionHandleRef = React.useRef<number | undefined>(undefined);
+   const animationHandleRef = React.useRef<number | undefined>(undefined);
+   const pendingGestureCallbackRef =
+     React.useRef<ReturnType<typeof setTimeout>>(undefined);
+@@ -181,19 +179,9 @@ function Card({
+ 
+   const [isSwiping] = React.useState(() => new Animated.Value(FALSE));
+ 
+-  const onStartInteraction = useLatestCallback(() => {
+-    if (interactionHandleRef.current === undefined) {
+-      interactionHandleRef.current =
+-        InteractionManager.createInteractionHandle();
+-    }
+-  });
++  const onStartInteraction = useLatestCallback(() => {});
+ 
+-  const onEndInteraction = useLatestCallback(() => {
+-    if (interactionHandleRef.current !== undefined) {
+-      InteractionManager.clearInteractionHandle(interactionHandleRef.current);
+-      interactionHandleRef.current = undefined;
+-    }
+-  });
++  const onEndInteraction = useLatestCallback(() => {});
+ 
+   const animate = useLatestCallback(
+     ({
