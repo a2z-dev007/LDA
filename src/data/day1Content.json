@@ -1,0 +1,339 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "day": 1,
+    "theme": "Bold & Fun",
+    "note": "Replace fetch() calls with real API endpoints when backend is ready"
+  },
+  "slider": {
+    "tag": "Before we begin.",
+    "question": "On a scale of 1 to 10 — how connected do you feel to your partner right now?",
+    "defaultValue": 5,
+    "hint": "drag to set.",
+    "subtext": "no right answer · only your truth",
+    "cta": "That's my number",
+    "segmentRules": [
+      { "min": 1, "max": 2, "segment": "segment_1" },
+      { "min": 3, "max": 5, "segment": "segment_2" },
+      { "min": 6, "max": 7, "segment": "segment_3" },
+      { "min": 8, "max": 9, "segment": "segment_4" },
+      { "min": 10, "max": 10, "segment": "segment_5" }
+    ]
+  },
+  "honestMoment": {
+    "dividerText": "This number isn't a verdict. It's a starting point.",
+    "cta": "Take the Spark Quiz",
+    "ctaSub": "7 questions · 90 seconds",
+    "segments": {
+      "segment_1": "Most people wouldn't admit this. You just did. That takes courage — and it's exactly why you're here. Let's start by being honest.",
+      "segment_2": "Most people open this app at a 5. You opened it at {score}. That's honest. Let's work with that.",
+      "segment_3": "Most people open this app at a 5. You opened it at {score}. You're doing better than you think — and we'll make sure it stays that way.",
+      "segment_4": "{score} out of 10. You're here because you want to protect something good. That's the smartest thing a couple can do. Let's keep it that way.",
+      "segment_5": "10. Either things are genuinely perfect — or you're being very kind to yourself. Either way, we'll find out. Let's begin."
+    }
+  },
+  "sparkQuiz": {
+    "totalQuestions": 7,
+    "autoAdvanceMs": 120,
+    "segments": {
+      "segment_1": {
+        "name": "The Quiet Crisis",
+        "moodBadges": ["Honest · Self-aware", "Reflective · Brave", "Tender · Honest", "Deep · Vulnerable", "Grounded · Clear", "Curious · Open", "Honest · Self-aware"],
+        "questions": [
+          {
+            "id": "q1",
+            "prompt": "When you feel disconnected, you usually…",
+            "optionA": "lonely because they're right there",
+            "optionB": "tired from trying a long time"
+          },
+          {
+            "id": "q2",
+            "prompt": "The last time you felt truly close was…",
+            "optionA": "longer ago than you're comfortable admitting",
+            "optionB": "hard to remember clearly — which tells you everything"
+          },
+          {
+            "id": "q3",
+            "prompt": "What broke down was…",
+            "optionA": "you stopped really talking — conversations became logistics",
+            "optionB": "you stopped choosing each other — it became automatic, not intentional"
+          },
+          {
+            "id": "q4",
+            "prompt": "Your honest role…",
+            "optionA": "you've tried — and you're not sure it's been enough",
+            "optionB": "there are things you could have done differently that you haven't yet"
+          },
+          {
+            "id": "q5",
+            "prompt": "The fear is…",
+            "optionA": "this becomes permanent — that this is just who you are now",
+            "optionB": "one of you will stop trying before the other is ready"
+          },
+          {
+            "id": "q6",
+            "prompt": "What you still believe…",
+            "optionA": "this relationship has something worth fighting for",
+            "optionB": "you're not sure yet — but you're here, which means something"
+          },
+          {
+            "id": "q7",
+            "prompt": "Why you're here…",
+            "optionA": "you're not ready to give up — you just need somewhere to start",
+            "optionB": "you want to understand what happened before you decide anything"
+          }
+        ]
+      },
+      "segment_2": {
+        "name": "The Slow Drift",
+        "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
+        "questions": [
+          {
+            "id": "q1",
+            "prompt": "Your relationship feels…",
+            "optionA": "fine on the surface — but not quite what it used to be underneath",
+            "optionB": "like you're both waiting for something to shift, without saying it"
+          },
+          {
+            "id": "q2",
+            "prompt": "The disconnection lives…",
+            "optionA": "in the everyday — the routines have replaced the real conversations",
+            "optionB": "in the emotional — you talk, but you're not sure they really hear you"
+          },
+          {
+            "id": "q3",
+            "prompt": "The unspoken thing is…",
+            "optionA": "a low-level frustration that keeps recycling",
+            "optionB": "something you genuinely need that you haven't found the words for yet"
+          },
+          {
+            "id": "q4",
+            "prompt": "When things get tense, you…",
+            "optionA": "address it — even imperfectly, even messily",
+            "optionB": "let it settle first — you need to process before you can speak"
+          },
+          {
+            "id": "q5",
+            "prompt": "Compared to a year ago, things feel…",
+            "optionA": "comfortable — which is good, but also a little too quiet",
+            "optionB": "different in a way you haven't fully named yet"
+          },
+          {
+            "id": "q6",
+            "prompt": "What's getting in the way is…",
+            "optionA": "life — the pace, the stress, the endless list of things that aren't each other",
+            "optionB": "something between the two of you specifically — not external, internal"
+          },
+          {
+            "id": "q7",
+            "prompt": "What you actually want is…",
+            "optionA": "to feel close again — not perfect, just genuinely close",
+            "optionB": "to feel like you're both choosing this — not just maintaining it"
+          }
+        ]
+      },
+      "segment_3": {
+        "name": "The Good Place, Going Deeper",
+        "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
+        "questions": [
+          {
+            "id": "q1",
+            "prompt": "You know it's working because of…",
+            "optionA": "the ease — things feel natural, comfortable, genuinely safe",
+            "optionB": "the growth — you're both different people than when you started, in the best way"
+          },
+          {
+            "id": "q2",
+            "prompt": "Your partner knows you love them through…",
+            "optionA": "the consistent small things you do without being asked",
+            "optionB": "the way you show up fully when something actually matters"
+          },
+          {
+            "id": "q3",
+            "prompt": "The honest nuance is…",
+            "optionA": "the depth of your conversations — more real, less routine",
+            "optionB": "the frequency of intentional time — more chosen moments, fewer accidental ones"
+          },
+          {
+            "id": "q4",
+            "prompt": "When there's small friction, you…",
+            "optionA": "address it quickly — you've learned not to let things accumulate",
+            "optionB": "give it space — you've learned that not everything needs a conversation"
+          },
+          {
+            "id": "q5",
+            "prompt": "The inside thing you share is…",
+            "optionA": "a private language — references, looks, words that belong only to the two of you",
+            "optionB": "a way of being together that just works — hard to explain, obvious when you're in it"
+          },
+          {
+            "id": "q6",
+            "prompt": "What you protect most is…",
+            "optionA": "the quality time — not letting life quietly eat it all",
+            "optionB": "the honesty — not letting comfort become performance"
+          },
+          {
+            "id": "q7",
+            "prompt": "Where you're headed feels like…",
+            "optionA": "building something — there's a clear sense of direction and shared purpose",
+            "optionB": "enjoying something — the present is genuinely good and that's enough right now"
+          }
+        ]
+      },
+      "segment_4": {
+        "name": "The Strong Foundation",
+        "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
+        "questions": [
+          {
+            "id": "q1",
+            "prompt": "Your relationship feels like…",
+            "optionA": "something you grew — it took time and work and it shows",
+            "optionB": "something you found — a rare fit that you both recognised and held onto"
+          },
+          {
+            "id": "q2",
+            "prompt": "Your deepest comfort is…",
+            "optionA": "being completely yourself — no performance, no editing, just you",
+            "optionB": "being completely safe — knowing they're there regardless of what comes"
+          },
+          {
+            "id": "q3",
+            "prompt": "The honest corner is…",
+            "optionA": "how much you need to hear that you're valued — not assumed, actually said",
+            "optionB": "how much you notice the small things they do — and how much it means"
+          },
+          {
+            "id": "q4",
+            "prompt": "Your conflict strength is…",
+            "optionA": "come back to each other — the repair is always faster than the rupture",
+            "optionB": "stay fair — neither of you fights dirty, even when it's hard"
+          },
+          {
+            "id": "q5",
+            "prompt": "What you admire most is…",
+            "optionA": "the way they move through difficulty — their resilience quietly amazes you",
+            "optionB": "the way they see the world — their perspective consistently surprises you"
+          },
+          {
+            "id": "q6",
+            "prompt": "The private question you carry is…",
+            "optionA": "are we growing in the same direction — or has the direction quietly shifted?",
+            "optionB": "am I being the partner they actually need — not just the one I think I'm being?"
+          },
+          {
+            "id": "q7",
+            "prompt": "What you're protecting is…",
+            "optionA": "the depth — the knowing-each-other that took years to build",
+            "optionB": "the spark — making sure comfort never becomes invisible to each other"
+          }
+        ]
+      },
+      "segment_5": {
+        "name": "The Perfect Ten — Examined",
+        "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
+        "questions": [
+          {
+            "id": "q1",
+            "prompt": "Your 10 is…",
+            "optionA": "earned — you've done the work and this is what it feels like",
+            "optionB": "genuine — it's just always been this way and you're aware of how rare that is"
+          },
+          {
+            "id": "q2",
+            "prompt": "When you say 10, you mean…",
+            "optionA": "complete trust — you could say anything and know it would be held safely",
+            "optionB": "complete ease — being with them is the most natural thing in your life"
+          },
+          {
+            "id": "q3",
+            "prompt": "The honest fine print is…",
+            "optionA": "time — even at 10 the one currency you're always short of is uninterrupted time together",
+            "optionB": "expression — at 10 you sometimes assume they know things you haven't actually said"
+          },
+          {
+            "id": "q4",
+            "prompt": "How you got here…",
+            "optionA": "you've navigated hard things together — the score reflects survival and growth",
+            "optionB": "you simply work — the compatibility was always there and you both knew it"
+          },
+          {
+            "id": "q5",
+            "prompt": "Your most alive moment together is…",
+            "optionA": "something new together — travel, decisions, adventures, firsts",
+            "optionB": "something completely ordinary — and it's still the best place to be"
+          },
+          {
+            "id": "q6",
+            "prompt": "What you know about 10s…",
+            "optionA": "you can't assume it — you have to keep choosing it",
+            "optionB": "it doesn't mean perfect — it means you'd choose this exact person in any version of your life"
+          },
+          {
+            "id": "q7",
+            "prompt": "Why you're using this app at 10…",
+            "optionA": "the best thing you can do with something this good is pay attention to it",
+            "optionB": "you want to know if your partner would give you the same number — and what it means if it's different"
+          }
+        ]
+      }
+    }
+  },
+  "personalityTypes": {
+    "scoring": {
+      "Q1=A": { "steady_flame": 2, "deep_current": 1 },
+      "Q1=B": { "electric_spark": 2, "shifting_tide": 1 },
+      "Q2=A": { "shifting_tide": 2, "steady_flame": 1 },
+      "Q2=B": { "deep_current": 2, "electric_spark": 1 },
+      "Q3=A": { "electric_spark": 2, "steady_flame": 1 },
+      "Q3=B": { "deep_current": 2, "shifting_tide": 1 },
+      "Q4=A": { "steady_flame": 2, "shifting_tide": 1 },
+      "Q4=B": { "deep_current": 2, "electric_spark": 1 },
+      "Q5=A": { "shifting_tide": 2, "steady_flame": 1 },
+      "Q5=B": { "electric_spark": 1, "deep_current": 1 },
+      "Q6=A": { "electric_spark": 2, "shifting_tide": 1 },
+      "Q6=B": { "steady_flame": 2, "deep_current": 1 },
+      "Q7=A": { "shifting_tide": 3, "steady_flame": 1 },
+      "Q7=B": { "deep_current": 3, "electric_spark": 1 }
+    },
+    "tiebreakOrder": ["q7", "q5"],
+    "tiebreakDefault": "shifting_tide",
+    "types": {
+      "steady_flame": {
+        "id": "steady_flame",
+        "name": "The Steady Flame",
+        "subLabel": "Consistent · Deeply felt · The long game",
+        "description": "You don't do grand gestures — you do quiet, consistent love. You're the partner who remembers what they said three months ago. Your relationship feels like a warm room, not a fireworks show.",
+        "traits": ["Emotionally present", "Acts of care", "Values depth", "Loyal"],
+        "growth": "You assume they know. They might not. Say it out loud more.",
+        "color": "#9B8EC4"
+      },
+      "electric_spark": {
+        "id": "electric_spark",
+        "name": "The Electric Spark",
+        "subLabel": "Spontaneous · High energy · The initiator",
+        "description": "You are the reason your relationship feels alive. You're the one who books the trip, tries the new thing, falls in love with your partner repeatedly. Your relationship has never been boring because you won't let it be.",
+        "traits": ["Adventure-driven", "Expressive", "Spontaneous", "Enthusiastic"],
+        "growth": "The spark needs to land somewhere safe. Make sure they feel secure, not just excited.",
+        "color": "#E85C7A"
+      },
+      "deep_current": {
+        "id": "deep_current",
+        "name": "The Deep Current",
+        "subLabel": "Thoughtful · Intentional · The still water",
+        "description": "You think before you speak and feel before you act. Your love is not loud, but it is deep — the kind that runs underneath everything else and keeps it all moving. People think you're reserved; your partner knows the truth.",
+        "traits": ["Reflective", "Intentional", "Emotionally intelligent", "Patient"],
+        "growth": "Your depth can feel like distance. Let them in before you've figured it all out.",
+        "color": "#4FBFA5"
+      },
+      "shifting_tide": {
+        "id": "shifting_tide",
+        "name": "The Shifting Tide",
+        "subLabel": "Adaptive · Honest · The truth-teller",
+        "description": "You are the partner who says what nobody else will say — and somehow makes it land without cruelty. You've probably had one really honest conversation that changed everything. You're not afraid of the hard stuff because you know it leads somewhere real.",
+        "traits": ["Direct communicator", "Adaptable", "Honest", "Growth-focused"],
+        "growth": "Honesty without tenderness is just criticism. The how matters as much as the what.",
+        "color": "#F0A057"
+      }
+    }
+  }
+}

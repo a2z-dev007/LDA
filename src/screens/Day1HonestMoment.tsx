@@ -11,7 +11,7 @@ import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
 import { typography } from '../theme/typography';
 import { metrics } from '../theme/metrics';
-import { honestMomentCopy, resolveSegment } from '../data/quizData';
+import { getHonestMomentCopy, getHonestMomentMeta, resolveSegment } from '../data/day1Service';
 import { haptics } from '../utils/haptics';
 import { Heart, Lightbulb, Sparkles } from 'lucide-react-native';
 import {
@@ -50,10 +50,9 @@ export const Day1HonestMoment: React.FC = () => {
   const { sliderScore } = route.params;
 
   const segment = resolveSegment(sliderScore);
-  const rawCopy = honestMomentCopy[segment];
-  // Use the full copy text as body (replace {score} token)
-  const bodyText = rawCopy.replace('{score}', String(sliderScore));
-  const headline = SEGMENT_HEADLINE[segment] ?? 'You\'re here.';
+  const bodyText = getHonestMomentCopy(segment, sliderScore);
+  const { dividerText, cta: ctaLabel, ctaSub } = getHonestMomentMeta();
+  const headline = SEGMENT_HEADLINE[segment] ?? "You're here.";
   const tip = SEGMENT_TIP[segment] ?? 'Keep going.';
 
   // Staggered entrance animations
@@ -232,6 +231,9 @@ export const Day1HonestMoment: React.FC = () => {
           {/* Body text — full copy */}
           <Text style={styles.cardBody}>{bodyText}</Text>
 
+          {/* Divider text */}
+          <Text style={styles.cardDivider}>{dividerText}</Text>
+
           {/* Decorative leaves image — bottom right */}
           <Image
             source={ICONS.leaves}
@@ -273,8 +275,8 @@ export const Day1HonestMoment: React.FC = () => {
               <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
             </View>
             <View style={styles.ctaTextCol}>
-              <Text style={styles.ctaLabel}>Take the Spark Quiz</Text>
-              <Text style={styles.ctaSub}>7 questions · 90 seconds</Text>
+              <Text style={styles.ctaLabel}>{ctaLabel}</Text>
+              <Text style={styles.ctaSub}>{ctaSub}</Text>
             </View>
             <Text style={styles.ctaArrow}>→</Text>
           </LinearGradient>
@@ -427,6 +429,13 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textSecondary,
     lineHeight: metrics.fontSize.bodySm * 1.7,
     maxWidth: '75%',
+  },
+  cardDivider: {
+    ...typography.caption,
+    color: c.textHint,
+    fontFamily: 'PlayfairDisplay-Italic',
+    marginTop: metrics.spacing.sm,
+    lineHeight: metrics.fontSize.caption * 1.6,
   },
   leafDecor: {
     position: 'absolute',

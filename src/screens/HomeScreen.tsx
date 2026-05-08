@@ -184,7 +184,9 @@ export const HomeScreen = () => {
                 {/* Right status */}
                 <View style={styles.cardRight}>
                   {isCompleted && (
-                    <View style={[styles.activeDot, { backgroundColor: colors.success }]} />
+                    <View style={[styles.checkCircle, { backgroundColor: '#2DD4BF' }]}>
+                      <Text style={styles.checkIcon}>✓</Text>
+                    </View>
                   )}
                   {isActive && (
                     <View style={[styles.activeDotOuter, { borderColor: '#2DD4BF' }]}>
@@ -320,11 +322,11 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: metrics.spacing.smMd,
-    shadowColor: '#2D5F5D',
-    shadowOffset: { width: 0, height: responsiveHeight(0.25) },
-    shadowOpacity: 0.06,
-    shadowRadius: responsiveWidth(2),
-    elevation: 2,
+    // shadowColor: '#2D5F5D',
+    // shadowOffset: { width: 0, height: responsiveHeight(0.25) },
+    // shadowOpacity: 0.06,
+    // shadowRadius: responsiveWidth(2),
+    // elevation: 2,
   },
   cardActive: {
     borderColor: '#2DD4BF',
@@ -405,6 +407,21 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: responsiveWidth(2.5),
     height: responsiveWidth(2.5),
     borderRadius: responsiveWidth(1.25),
+  },
+  // Completed check circle
+  checkCircle: {
+    width: responsiveWidth(6),
+    height: responsiveWidth(6),
+    borderRadius: responsiveWidth(3),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkIcon: {
+    color: '#FFFFFF',
+    fontSize: responsiveWidth(3.5),
+    fontFamily: 'DMSans-Bold',
+    lineHeight: responsiveWidth(4),
+    includeFontPadding: false,
   },
 
   // ── Bottom spacer ────────────────────────────────────────

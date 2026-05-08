@@ -10,8 +10,7 @@ import { RootStackParamList } from '../navigation/types';
 import { useAppColors } from '../theme';
 import { typography } from '../theme/typography';
 import { metrics } from '../theme/metrics';
-import { sparkQuizQuestions } from '../data/quizData';
-import { calculatePersonalityType } from '../data/personalityTypes';
+import { getQuizQuestions, resolveSegment, calculatePersonalityType } from '../data/day1Service';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
 import { IMAGE } from '../assets/image/bg-images';
@@ -120,16 +119,18 @@ export const Day1SparkQuiz: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
   const jarRef = useRef<JarEnvelopeHandle>(null);
 
+  const segment = resolveSegment(sliderScore);
+  const questions = getQuizQuestions(segment);
+
   const fadeIn    = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
   const unchosen  = useRef(new Animated.Value(1)).current;
 
   // Per-option press animations
   const scaleA = useRef(new Animated.Value(1)).current;
   const scaleB = useRef(new Animated.Value(1)).current;
 
-  const question = sparkQuizQuestions[currentIndex];
-  const total    = sparkQuizQuestions.length;
+  const question = questions[currentIndex];
+  const total    = questions.length;
   const meta     = QUESTION_META[question.id as keyof typeof QUESTION_META];
   const BadgeIcon   = meta.badgeIcon;
   const OptionAIcon = meta.optionAIcon;
@@ -137,41 +138,37 @@ export const Day1SparkQuiz: React.FC = () => {
 
   useEffect(() => {
     const existing = answers[question.id] ?? null;
+    // Reset unchosen first so both options appear at full opacity during fade-in
+    unchosen.setValue(1);
     setSelectedOption(existing);
-    unchosen.setValue(existing ? 0.35 : 1);
-    // Reset scales
+    // Then dim the unchosen option if there's an existing answer
+    if (existing) {
+      unchosen.setValue(0.35);
+    }
     scaleA.setValue(1);
     scaleB.setValue(1);
+    // Simple fade in only — no slide
     fadeIn.setValue(0);
-    slideAnim.setValue(30);
-    Animated.parallel([
-      Animated.timing(fadeIn,    { toValue: 1, duration: 380, useNativeDriver: true }),
-      Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 100, useNativeDriver: true }),
-    ]).start();
+    Animated.timing(fadeIn, {
+      toValue: 1,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
   }, [currentIndex]);
 
   const animateOptionPress = (scale: Animated.Value, callback: () => void) => {
     Animated.sequence([
-      Animated.spring(scale, {
-        toValue: 0.96,
-        friction: 4,
-        tension: 300,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scale, {
-        toValue: 1,
-        friction: 5,
-        tension: 200,
-        useNativeDriver: true,
-      }),
+      Animated.timing(scale, { toValue: 0.97, duration: 80, useNativeDriver: true }),
+      Animated.timing(scale, { toValue: 1, duration: 80, useNativeDriver: true }),
     ]).start();
-    // Small delay so the press animation is visible before advancing
-    setTimeout(callback, 120);
+    setTimeout(callback, 100);
   };
 
   const handleSelect = (value: 'A' | 'B') => {
     haptics.light();
     const scale = value === 'A' ? scaleA : scaleB;
+    // Is this a re-answer (question was already answered)?
+    const isReAnswer = question.id in answers;
 
     animateOptionPress(scale, () => {
       setSelectedOption(value);
@@ -180,6 +177,7 @@ export const Day1SparkQuiz: React.FC = () => {
       const newAnswers = { ...answers, [question.id]: value };
       setAnswers(newAnswers);
 
+      // skipCount=true when re-answering — don't increment jar counter again
       jarRef.current?.triggerEnvelope(() => {
         if (currentIndex < total - 1) {
           setCurrentIndex((i) => i + 1);
@@ -188,17 +186,14 @@ export const Day1SparkQuiz: React.FC = () => {
           completeDay1(newAnswers, personality.id);
           navigation.replace('Day1Result');
         }
-      });
+      }, isReAnswer);
     });
   };
 
   const handleBack = () => {
     if (currentIndex > 0) {
       haptics.light();
-      Animated.parallel([
-        Animated.timing(fadeIn,    { toValue: 0, duration: 180, useNativeDriver: true }),
-        Animated.timing(slideAnim, { toValue: -30, duration: 180, useNativeDriver: true }),
-      ]).start(() => {
+      Animated.timing(fadeIn, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
         setCurrentIndex((i) => i - 1);
       });
     }
@@ -219,11 +214,27 @@ export const Day1SparkQuiz: React.FC = () => {
           styles.body,
           {
             opacity: fadeIn,
-            transform: [{ translateY: slideAnim }],
-            paddingTop: Math.max(insets.top + responsiveHeight(2), responsiveHeight(6)),
+            paddingTop: Math.max(insets.top + responsiveHeight(1), responsiveHeight(5)),
           },
         ]}
       >
+        {/* ── Progress dots — top of content ── */}
+        <View style={styles.dotsRow}>
+          {Array.from({ length: total }, (_, i) => (
+            i <= currentIndex ? (
+              <LinearGradient
+                key={i}
+                colors={['#6EE87A', '#2DD4BF']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.dot, styles.dotActive]}
+              />
+            ) : (
+              <View key={i} style={[styles.dot, styles.dotInactive]} />
+            )
+          ))}
+        </View>
+
         {/* ── Counter + back button ── */}
         <View style={styles.topRow}>
           {currentIndex > 0 ? (
@@ -280,9 +291,7 @@ export const Day1SparkQuiz: React.FC = () => {
               onPress={() => handleSelect('A')}
             >
               <LinearGradient
-                colors={selectedOption === 'A'
-                  ? ['#6EE87A', '#2DD4BF', '#1E90FF']
-                  : ['#A8D8D0', '#8EC8C0', '#7AB8C8']}
+                colors={['#6EE87A', '#2DD4BF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.optionIconCircle}
@@ -290,7 +299,7 @@ export const Day1SparkQuiz: React.FC = () => {
                 <OptionAIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
               </LinearGradient>
               <Text style={[styles.optionText, selectedOption === 'A' && styles.optionTextSelected]}>
-                {question.optionA.label}
+                {question.optionA}
               </Text>
               <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'A' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </TouchableOpacity>
@@ -314,9 +323,7 @@ export const Day1SparkQuiz: React.FC = () => {
               onPress={() => handleSelect('B')}
             >
               <LinearGradient
-                colors={selectedOption === 'B'
-                  ? ['#6EE87A', '#2DD4BF', '#1E90FF']
-                  : ['#A8D8D0', '#8EC8C0', '#7AB8C8']}
+                colors={['#6EE87A', '#2DD4BF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.optionIconCircle}
@@ -324,7 +331,7 @@ export const Day1SparkQuiz: React.FC = () => {
                 <OptionBIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
               </LinearGradient>
               <Text style={[styles.optionText, selectedOption === 'B' && styles.optionTextSelected]}>
-                {question.optionB.label}
+                {question.optionB}
               </Text>
               <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'B' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </TouchableOpacity>
@@ -339,22 +346,6 @@ export const Day1SparkQuiz: React.FC = () => {
         </View>
       </Animated.View>
 
-      {/* ── Progress dots — pinned at bottom ── */}
-      <View style={[styles.dotsRow, { paddingBottom: Math.max(insets.bottom, responsiveHeight(12)) }]}>
-        {Array.from({ length: total }, (_, i) => (
-          i <= currentIndex ? (
-            <LinearGradient
-              key={i}
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.dot, styles.dotActive]}
-            />
-          ) : (
-            <View key={i} style={[styles.dot, styles.dotInactive]} />
-          )
-        ))}
-      </View>
     </ImageBackground>
   );
 };
@@ -365,15 +356,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: {
     flex: 1,
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingBottom: responsiveHeight(8),
+    paddingBottom: responsiveHeight(3),
   },
 
   // ── Top row (counter + back) ──────────────────────────────
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: metrics.spacing.sm,
+    justifyContent: 'flex-start',
+    gap: metrics.spacing.sm,
+    marginBottom: metrics.spacing.xs,
   },
   backBtn: {
     padding: metrics.spacing.xs,
@@ -412,6 +404,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingHorizontal: metrics.spacing.smMd,
     paddingVertical: metrics.spacing.xs,
     marginBottom: metrics.spacing.md,
+    marginTop:responsiveHeight(3)
   },
   moodBadgeText: {
     ...typography.labelSmall,
@@ -464,16 +457,24 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: metrics.spacing.smMd,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255,255,255,0.72)',
     borderRadius: metrics.radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)',
+    borderColor: 'rgba(255,255,255,0.9)',
     paddingVertical: metrics.spacing.smMd,
     paddingHorizontal: metrics.spacing.smMd,
+    // shadowColor: '#2DD4BF',
+    // shadowOffset: { width: 0, height: responsiveHeight(0.2) },
+    // shadowOpacity: 0.06,
+    // shadowRadius: responsiveWidth(2),
+    // elevation: 1,
   },
   optionSelected: {
     borderColor: c.primary,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    shadowColor: c.primary,
+    shadowOpacity: 0.15,
+    elevation: 4,
   },
   optionIconCircle: {
     width: responsiveWidth(11),
@@ -546,15 +547,11 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     opacity: 0.4,
   },
 
-  // ── Bottom dots — pinned at bottom ────────────────────────
+  // ── Bottom dots — now at top ─────────────────────────────
   dotsRow: {
-    position: 'absolute',
-    bottom: 0,
-    left: metrics.layout.screenPaddingHz,
-    right: metrics.layout.screenPaddingHz,
     flexDirection: 'row',
     gap: 4,
-    paddingTop: responsiveHeight(1.5),
+    marginBottom: metrics.spacing.sm,
   },
   dot: {
     flex: 1,

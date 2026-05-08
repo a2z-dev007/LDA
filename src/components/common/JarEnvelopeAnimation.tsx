@@ -42,8 +42,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 // ── Tunables ──────────────────────────────────────────────────
-const JAR_W = responsiveWidth(14);
-const JAR_H = responsiveWidth(16);
+const JAR_W = responsiveWidth(11);
+const JAR_H = responsiveWidth(13);
 const JAR_TOP = responsiveHeight(1.5);
 const JAR_RIGHT = responsiveWidth(5);
 const ENV_W = responsiveWidth(11);
@@ -140,7 +140,11 @@ const BURST_PARTICLES = [
 
 // ── Public handle ─────────────────────────────────────────────
 export interface JarEnvelopeHandle {
-  triggerEnvelope: (onComplete?: () => void) => void;
+  /** Call this when user presses submit.
+   *  @param onComplete fires when animation ends
+   *  @param skipCount  pass true when re-answering a previous question (don't increment counter)
+   */
+  triggerEnvelope: (onComplete?: () => void, skipCount?: boolean) => void;
   incrementCount: () => void;
 }
 
@@ -151,7 +155,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle>((_, ref) => {
   const insets = useSafeAreaInsets();
 
   // Jar top = status bar height + small gap
-  const jarTop = insets.top + responsiveHeight(1);
+  const jarTop = insets.top + responsiveHeight(2);
   const jarRight = responsiveWidth(5);
 
   const envX       = useSharedValue(ENV_START_X);
@@ -170,7 +174,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     incrementCount: doIncrementCount,
-    triggerEnvelope: (onComplete?: () => void) => {
+    triggerEnvelope: (onComplete?: () => void, skipCount?: boolean) => {
       // Reset envelope position
       envX.value       = ENV_START_X;
       envY.value       = ENV_START_Y;
@@ -207,13 +211,15 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle>((_, ref) => {
         withTiming(0.3, { duration: 200, easing: Easing.in(Easing.cubic) }),
       );
 
-      // Fade out + hide + increment count
+      // Fade out + hide + conditionally increment count
       envOpacity.value = withDelay(
         500,
         withTiming(0, { duration: 180 }, (finished) => {
           if (finished) {
             runOnJS(doHideEnvelope)();
-            runOnJS(doIncrementCount)();
+            if (!skipCount) {
+              runOnJS(doIncrementCount)();
+            }
           }
         }),
       );
@@ -326,7 +332,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -4,
     right: -6,
-    backgroundColor: '#FF4444',
+    backgroundColor: '#2DD4BF',
     color: '#fff',
     fontSize: 10,
     fontWeight: '700',

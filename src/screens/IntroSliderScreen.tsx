@@ -426,9 +426,10 @@ export const IntroSliderScreen: React.FC = () => {
 
   return (
     <ImageBackground 
-      source={IMAGE.greenBg} 
+      source={IMAGE.greenBg2} 
       style={{ flex: 1 }}
       resizeMode="cover"
+      blurRadius={1}
     >
       {/* Full screen flex column: scroll content on top, buttons pinned at bottom */}
       <View style={{ flex: 1, flexDirection: 'column' }}>

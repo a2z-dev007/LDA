@@ -2,57 +2,102 @@ import React, { useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
-import { personalityTypes } from '../data/personalityTypes';
+import { typography } from '../theme/typography';
+import { metrics } from '../theme/metrics';
+import { getPersonalityType } from '../data/day1Service';
+import type { PersonalityTypeId } from '../data/day1Service';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { haptics } from '../utils/haptics';
+import { LOTTIE } from '../assets/lottie';
+import {
+  Award, Sparkles, Heart, Star, ChevronRight, Flame,
+  Droplets, Wind, Waves,
+} from 'lucide-react-native';
+import {
+  responsiveWidth,
+  responsiveHeight,
+  responsiveFontSize,
+} from 'react-native-responsive-dimensions';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Result'>;
+
+// Icon per personality type
+const TYPE_ICON: Record<string, any> = {
+  steady_flame:   Flame,
+  electric_spark: Sparkles,
+  deep_current:   Droplets,
+  shifting_tide:  Waves,
+};
 
 export const Day1ResultScreen: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const day1 = useDayStore((s) => s.day1);
   const recordActivity = useStreakStore((s) => s.recordActivity);
 
-  const personality = personalityTypes.find((p) => p.id === day1.personalityType)
-    ?? personalityTypes[0];
+  const personality = getPersonalityType(
+    (day1.personalityType as PersonalityTypeId) ?? 'shifting_tide'
+  );
 
-  // Animation refs
-  const titleOpacity = useRef(new Animated.Value(0)).current;
-  const cardScale = useRef(new Animated.Value(0.88)).current;
-  const cardOpacity = useRef(new Animated.Value(0)).current;
-  const contentOpacity = useRef(new Animated.Value(0)).current;
-  const pill1 = useRef(new Animated.Value(0)).current;
-  const pill2 = useRef(new Animated.Value(0)).current;
-  const pill3 = useRef(new Animated.Value(0)).current;
+  const TypeIcon = TYPE_ICON[personality.id] ?? Star;
+
+  // Animations
+  const headerAnim  = useRef(new Animated.Value(0)).current;
+  const badgeAnim   = useRef(new Animated.Value(0)).current;
+  const badgeScale  = useRef(new Animated.Value(0.5)).current;
+  const cardAnim    = useRef(new Animated.Value(0)).current;
+  const cardSlide   = useRef(new Animated.Value(40)).current;
+  const pillsAnim   = useRef(new Animated.Value(0)).current;
+  const growthAnim  = useRef(new Animated.Value(0)).current;
+  const ctaAnim     = useRef(new Animated.Value(0)).current;
+  const pulseAnim   = useRef(new Animated.Value(1)).current;
+  const lottieRef   = useRef<LottieView>(null);
 
   useEffect(() => {
     haptics.success();
     recordActivity();
+    // Play confetti once
+    lottieRef.current?.play();
 
     Animated.sequence([
-      Animated.timing(titleOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      // Header fades in
+      Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+      // Badge pops in with spring
       Animated.parallel([
-        Animated.spring(cardScale, { toValue: 1, friction: 6, tension: 80, useNativeDriver: true }),
-        Animated.timing(cardOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(badgeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.spring(badgeScale, { toValue: 1, friction: 5, tension: 80, useNativeDriver: true }),
       ]),
-      Animated.timing(contentOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.stagger(80, [
-        Animated.timing(pill1, { toValue: 1, duration: 300, useNativeDriver: true }),
-        Animated.timing(pill2, { toValue: 1, duration: 300, useNativeDriver: true }),
-        Animated.timing(pill3, { toValue: 1, duration: 300, useNativeDriver: true }),
+      // Card slides up
+      Animated.parallel([
+        Animated.timing(cardAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.spring(cardSlide, { toValue: 0, friction: 8, tension: 80, useNativeDriver: true }),
       ]),
-    ]).start();
+      // Pills + growth
+      Animated.timing(pillsAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
+      Animated.timing(growthAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
+      // CTA
+      Animated.timing(ctaAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+    ]).start(() => {
+      // Pulse the badge continuously
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, { toValue: 1.06, duration: 1400, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 1, duration: 1400, useNativeDriver: true }),
+        ])
+      ).start();
+    });
   }, []);
-
-  const pillAnims = [pill1, pill2, pill3];
 
   const handleSave = () => {
     haptics.medium();
@@ -66,95 +111,416 @@ export const Day1ResultScreen: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Animated.Text style={[styles.reveal, { opacity: titleOpacity }]}>
-          Your relationship type is
-        </Animated.Text>
+      {/* ── Confetti — plays once on mount, absolute over everything ── */}
+      <LottieView
+        ref={lottieRef}
+        source={LOTTIE.confetti}
+        style={styles.confetti}
+        autoPlay={false}
+        loop={false}
+        resizeMode="cover"
+      />
 
-        {/* Personality Card */}
-        <Animated.View style={[styles.card, { borderColor: personality.color }, { opacity: cardOpacity, transform: [{ scale: cardScale }] }]}>
-          <View style={[styles.cardAccent, { backgroundColor: personality.color }]} />
-          <Text style={[styles.typeName, { color: personality.color }]}>{personality.name}</Text>
-          <Text style={styles.typeSubLabel}>{personality.subLabel}</Text>
-          <Text style={styles.typeDescription}>{personality.description}</Text>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.content,
+          { paddingTop: Math.max(insets.top, metrics.spacing.md) },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Achievement header ── */}
+        <Animated.View style={[styles.header, { opacity: headerAnim }]}>
+          <View style={styles.achievementBadgeRow}>
+            <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
+            <Text style={[styles.achievementLabel, { color: personality.color }]}>
+              DAY 1 COMPLETE
+            </Text>
+            <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
+          </View>
+          <Text style={styles.headerTitle}>Your relationship type is</Text>
         </Animated.View>
 
-        <Animated.View style={[styles.details, { opacity: contentOpacity }]}>
-          {/* Trait pills */}
+        {/* ── Big badge / icon ── */}
+        <Animated.View
+          style={[
+            styles.badgeContainer,
+            {
+              opacity: badgeAnim,
+              transform: [{ scale: Animated.multiply(badgeScale, pulseAnim) }],
+            },
+          ]}
+        >
+          {/* Outer glow ring */}
+          <View style={[styles.badgeGlowRing, { borderColor: `${personality.color}30` }]} />
+          {/* Middle ring */}
+          <View style={[styles.badgeMidRing, { borderColor: `${personality.color}50` }]} />
+          {/* Inner gradient circle */}
+          <LinearGradient
+            colors={['#6EE87A', '#2DD4BF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.badgeCircle}
+          >
+            <TypeIcon size={responsiveWidth(10)} color="#FFFFFF" strokeWidth={1.5} />
+          </LinearGradient>
+          {/* Star decorations */}
+        
+        </Animated.View>
+
+        {/* ── Type name + sublabel ── */}
+        <Animated.View style={[styles.typeNameContainer, { opacity: badgeAnim }]}>
+          <Text style={[styles.typeName, { color: personality.color }]}>
+            {personality.name}
+          </Text>
+          <Text style={styles.typeSubLabel}>{personality.subLabel}</Text>
+        </Animated.View>
+
+        {/* ── Description card ── */}
+        <Animated.View
+          style={[
+            styles.card,
+            {
+              opacity: cardAnim,
+              transform: [{ translateY: cardSlide }],
+              borderColor: `${personality.color}30`,
+            },
+          ]}
+        >
+          {/* Top accent bar */}
+          <LinearGradient
+            colors={['#6EE87A', '#2DD4BF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.cardAccentBar}
+          />
+          <Text style={styles.cardDescription}>{personality.description}</Text>
+        </Animated.View>
+
+        {/* ── Trait pills ── */}
+        <Animated.View style={[styles.pillsSection, { opacity: pillsAnim }]}>
+          <Text style={styles.sectionLabel}>YOUR TRAITS</Text>
           <View style={styles.pillRow}>
             {personality.traits.map((trait, i) => (
-              <Animated.View key={i} style={[styles.pill, { borderColor: personality.color, opacity: pillAnims[i] ?? contentOpacity }]}>
+              <LinearGradient
+                key={i}
+                colors={['rgba(110,232,122,0.15)', 'rgba(45,212,191,0.15)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.pill, { borderColor: `${personality.color}50` }]}
+              >
                 <Text style={[styles.pillText, { color: personality.color }]}>{trait}</Text>
-              </Animated.View>
+              </LinearGradient>
             ))}
           </View>
+        </Animated.View>
 
-          {/* Growth area */}
-          <View style={[styles.growthCard, { borderColor: `${personality.color}40` }]}>
-            <Text style={styles.growthLabel}>One invitation for you</Text>
-            <Text style={styles.growthText}>{personality.growth}</Text>
+        {/* ── Growth invitation ── */}
+        <Animated.View style={[styles.growthCard, { opacity: growthAnim }]}>
+          <View style={styles.growthIconRow}>
+            <View style={[styles.growthIconCircle, { backgroundColor: `${personality.color}15` }]}>
+              <Heart size={metrics.iconSize.sm} color={personality.color} strokeWidth={1.5} />
+            </View>
+            <Text style={styles.growthLabel}>ONE INVITATION FOR YOU</Text>
           </View>
+          <Text style={styles.growthText}>{personality.growth}</Text>
+        </Animated.View>
 
-          {/* Key Playfair line */}
+        {/* ── Key question ── */}
+        <Animated.View style={[styles.keyLineContainer, { opacity: growthAnim }]}>
           <Text style={styles.keyLine}>
             "Would your partner say the same thing about themselves?"
           </Text>
         </Animated.View>
+
+        <View style={{ height: responsiveHeight(12) }} />
       </ScrollView>
 
-      <TouchableOpacity style={[styles.cta, { backgroundColor: personality.color }]} activeOpacity={0.85} onPress={handleSave}>
-        <Text style={styles.ctaLabel}>Save my result</Text>
-      </TouchableOpacity>
+      {/* ── Fixed CTAs ── */}
+      <Animated.View
+        style={[
+          styles.ctaSection,
+          {
+            opacity: ctaAnim,
+            paddingBottom:responsiveHeight(2),
+          },
+        ]}
+      >
+        {/* Primary CTA — gradient button */}
+        <TouchableOpacity
+          style={styles.primaryBtnTouch}
+          activeOpacity={0.88}
+          onPress={handleSave}
+        >
+          <LinearGradient
+            colors={['#6EE87A', '#2DD4BF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.primaryBtn}
+          >
+            <View style={styles.primaryBtnIconCircle}>
+              <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+            </View>
+            <Text style={styles.primaryBtnLabel}>Save my result</Text>
+            <ChevronRight size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+          </LinearGradient>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.ghostCta} activeOpacity={0.7} onPress={handleTomorrow}>
-        <Text style={styles.ghostCtaLabel}>Come back tomorrow →</Text>
-      </TouchableOpacity>
+        {/* Ghost CTA */}
+        <TouchableOpacity
+          style={styles.ghostCta}
+          activeOpacity={0.7}
+          onPress={handleTomorrow}
+        >
+          <Text style={styles.ghostCtaLabel}>Come back tomorrow →</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
-  content: { paddingHorizontal: 28, paddingTop: 60, paddingBottom: 20 },
-  reveal: {
-    color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular',
-    letterSpacing: 1, marginBottom: 20, textAlign: 'center',
+  content: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: metrics.spacing.sm,
   },
-  card: {
-    borderWidth: 1.5, borderRadius: 20, padding: 28, marginBottom: 28, overflow: 'hidden',
-    backgroundColor: c.white,
+
+  // ── Confetti ─────────────────────────────────────────────
+  confetti: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: responsiveHeight(50),
+    zIndex: 999,
+    pointerEvents: 'none' as any,
   },
-  cardAccent: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
-  typeName: { fontSize: 28, fontFamily: 'PlayfairDisplay-Bold', marginTop: 8, marginBottom: 6 },
+
+  // ── Header ───────────────────────────────────────────────
+  header: {
+    alignItems: 'center',
+    marginBottom:responsiveHeight(5),
+  },
+  achievementBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.xs,
+    marginBottom: metrics.spacing.xs,
+  },
+  achievementLabel: {
+    ...typography.captionSmall,
+    letterSpacing: 2,
+  },
+  headerTitle: {
+    ...typography.bodySmall,
+    color: c.textSecondary,
+    textAlign: 'center',
+  },
+
+  // ── Badge ────────────────────────────────────────────────
+  badgeContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: metrics.spacing.xl,
+    position: 'relative',
+  },
+  badgeGlowRing: {
+    position: 'absolute',
+    width: responsiveWidth(42),
+    height: responsiveWidth(42),
+    borderRadius: responsiveWidth(21),
+    borderWidth: 1,
+  },
+  badgeMidRing: {
+    position: 'absolute',
+    width: responsiveWidth(34),
+    height: responsiveWidth(34),
+    borderRadius: responsiveWidth(17),
+    borderWidth: 1.5,
+  },
+  badgeCircle: {
+    width: responsiveWidth(26),
+    height: responsiveWidth(26),
+    borderRadius: responsiveWidth(13),
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#2DD4BF',
+    shadowOffset: { width: 0, height: responsiveHeight(0.5) },
+    shadowOpacity: 0.4,
+    shadowRadius: responsiveWidth(4),
+    elevation: 10,
+  },
+  starDecor: {
+    position: 'absolute',
+    color: '#2DD4BF',
+    fontSize: responsiveFontSize(2),
+    opacity: 0.6,
+  },
+  starTopLeft:     { top: responsiveWidth(2),  left: responsiveWidth(2) },
+  starTopRight:    { top: 0,                   right: responsiveWidth(4) },
+  starBottomRight: { bottom: responsiveWidth(2), right: 0 },
+
+  // ── Type name ────────────────────────────────────────────
+  typeNameContainer: {
+    alignItems: 'center',
+    marginBottom: metrics.spacing.md,
+  },
+  typeName: {
+    fontSize: responsiveFontSize(4),
+    fontFamily: 'PlayfairDisplay-Bold',
+    textAlign: 'center',
+    marginBottom: metrics.spacing.xxs,
+  },
   typeSubLabel: {
-    fontSize: 14, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic',
-    marginBottom: 14, lineHeight: 22,
+    ...typography.bodySmall,
+    color: c.textSecondary,
+    fontFamily: 'PlayfairDisplay-Italic',
+    textAlign: 'center',
   },
-  typeDescription: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 23 },
-  details: { gap: 16 },
-  pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+
+  // ── Description card ─────────────────────────────────────
+  card: {
+    backgroundColor: 'rgba(255,255,255,0.82)',
+    borderRadius: metrics.radius.xl,
+    borderWidth: 1,
+    overflow: 'hidden',
+    marginBottom: metrics.spacing.md,
+    shadowColor: '#2DD4BF',
+    shadowOffset: { width: 0, height: responsiveHeight(0.3) },
+    shadowOpacity: 0.08,
+    shadowRadius: responsiveWidth(3),
+    elevation: 3,
+  },
+  cardAccentBar: {
+    height: 3,
+    width: '100%',
+  },
+  cardDescription: {
+    ...typography.bodyMedium,
+    color: c.text,
+    lineHeight: metrics.fontSize.body * 1.65,
+    padding: metrics.spacing.md,
+  },
+
+  // ── Trait pills ──────────────────────────────────────────
+  pillsSection: {
+    marginBottom: metrics.spacing.md,
+  },
+  sectionLabel: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 1.8,
+    marginBottom: metrics.spacing.sm,
+  },
+  pillRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: metrics.spacing.sm,
+  },
   pill: {
-    borderWidth: 1, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 6,
+    borderWidth: 1,
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
   },
-  pillText: { fontSize: 13, fontFamily: 'Inter-SemiBold' },
+  pillText: {
+    ...typography.labelSmall,
+    letterSpacing: 0.3,
+  },
+
+  // ── Growth card ──────────────────────────────────────────
   growthCard: {
-    borderWidth: 1, borderRadius: 12, padding: 20,
-    backgroundColor: c.white,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: metrics.radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.9)',
+    padding: metrics.spacing.smMd,
+    marginBottom: metrics.spacing.sm,
+  },
+  growthIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.sm,
+    marginBottom: metrics.spacing.xs,
+  },
+  growthIconCircle: {
+    width: responsiveWidth(8),
+    height: responsiveWidth(8),
+    borderRadius: responsiveWidth(4),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   growthLabel: {
-    color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold',
-    letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8,
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 1.5,
   },
-  growthText: { color: c.textSecondary, fontSize: 15, fontFamily: 'Inter-Regular', lineHeight: 22 },
+  growthText: {
+    ...typography.bodySmall,
+    color: c.text,
+    lineHeight: metrics.fontSize.bodySm * 1.6,
+    fontFamily: 'PlayfairDisplay-Italic',
+  },
+
+  // ── Key line ─────────────────────────────────────────────
+  keyLineContainer: {
+    paddingHorizontal: metrics.spacing.sm,
+  },
   keyLine: {
-    color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic',
-    lineHeight: 28, textAlign: 'center', marginVertical: 8,
+    ...typography.quoteItalic,
+    color: c.textSecondary,
+    textAlign: 'center',
+    lineHeight: metrics.fontSize.h4 * 1.5,
   },
-  cta: {
-    marginHorizontal: 28, marginBottom: 12, paddingVertical: 18,
-    borderRadius: 100, alignItems: 'center',
+
+  // ── CTAs ─────────────────────────────────────────────────
+  ctaSection: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.sm,
+    gap: metrics.spacing.xs,
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
-  ghostCta: { alignItems: 'center', marginBottom: 40 },
-  ghostCtaLabel: { color: c.textHint, fontSize: 15, fontFamily: 'Inter-Regular' },
+  primaryBtnTouch: {
+    borderRadius: metrics.radius.full,
+    backgroundColor: '#1A9B7A',
+    shadowColor: '#0D5C4A',
+    shadowOffset: { width: 0, height: responsiveHeight(0.8) },
+    shadowOpacity: 0.4,
+    shadowRadius: responsiveWidth(4),
+    elevation: 12,
+  },
+  primaryBtn: {
+    borderRadius: metrics.radius.full,
+    paddingVertical: metrics.spacing.smMd,
+    paddingHorizontal: metrics.spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: metrics.button.height,
+  },
+  primaryBtnIconCircle: {
+    width: responsiveWidth(9),
+    height: responsiveWidth(9),
+    borderRadius: responsiveWidth(4.5),
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: metrics.spacing.smMd,
+  },
+  primaryBtnLabel: {
+    ...typography.buttonLarge,
+    color: '#FFFFFF',
+    flex: 1,
+    textAlign: 'center',
+  },
+  ghostCta: {
+    alignItems: 'center',
+    paddingVertical: metrics.spacing.sm,
+  },
+  ghostCtaLabel: {
+    ...typography.bodySmall,
+    color: c.textHint,
+  },
 });

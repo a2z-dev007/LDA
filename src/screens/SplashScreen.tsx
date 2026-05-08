@@ -56,10 +56,10 @@ export const SplashScreen: React.FC = () => {
 
   return (
     <ImageBackground 
-      source={IMAGE.greenBg} 
+      source={IMAGE.greenBg2} 
       style={styles.backgroundImage}
       resizeMode="cover"
-      blurRadius={10}
+      // blurRadius={10}
     >
       <SafeAreaView style={styles.root} edges={['bottom']}>
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
