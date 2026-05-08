@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -63,15 +64,10 @@ export const Bridge2to3: React.FC = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity
-        style={styles.cta}
-        activeOpacity={0.85}
-        onPress={() => {
-          haptics.medium();
-          navigation.navigate('Day3AppreciationSnap');
-        }}
-      >
-        <Text style={styles.ctaLabel}>Continue to Day 3 →</Text>
+      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day3AppreciationSnap'); }}>
+        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+          <Text style={styles.ctaLabel}>Continue to Day 3 →</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScreenWrapper>
   );
@@ -90,18 +86,18 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   moodLabel: { fontSize: 20, fontFamily: 'PlayfairDisplay-Bold' },
   intentionText: { fontSize: 13, color: c.textHint, fontFamily: 'Inter-Regular', marginTop: 2 },
   answerCard: {
-    backgroundColor: c.surface, borderRadius: 14, padding: 16,
+    backgroundColor: c.white, borderRadius: 14, padding: 16,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   answerLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
   answerText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   zone3: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    backgroundColor: c.white, borderRadius: 16, padding: 20,
     borderLeftWidth: 3, borderLeftColor: c.day3,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
-  cta: {
-    backgroundColor: c.day3, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

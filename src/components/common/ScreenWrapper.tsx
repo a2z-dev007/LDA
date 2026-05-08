@@ -1,15 +1,21 @@
 import React from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppColors } from '../../theme';
+import { IMAGE } from '../../assets/image/bg-images';
 
 interface Props {
   children: React.ReactNode;
   backgroundColor?: string;
   style?: ViewStyle;
-  [key: string]: any; // allow panHandlers spread
+  [key: string]: any;
 }
 
+/**
+ * ScreenWrapper
+ * ─────────────
+ * Green background image for every screen.
+ */
 export const ScreenWrapper: React.FC<Props> = ({
   children,
   backgroundColor,
@@ -18,18 +24,28 @@ export const ScreenWrapper: React.FC<Props> = ({
 }) => {
   const colors = useAppColors();
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: backgroundColor ?? colors.dark }, style]}
-      edges={['top', 'bottom', 'left', 'right']}
-      {...rest}
+    <ImageBackground
+      source={IMAGE.greenBg}
+      style={styles.gradient}
+      resizeMode="cover"
     >
-      {children}
-    </SafeAreaView>
+      <SafeAreaView
+        style={[styles.root, style]}
+        edges={['top', 'bottom', 'left', 'right']}
+        {...rest}
+      >
+        {children}
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   root: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
 });

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -99,15 +100,10 @@ export const Day5Celebration: React.FC = () => {
       </View>
 
       <Animated.View style={{ opacity: buttonOpacity }}>
-        <TouchableOpacity
-          style={[styles.cta, { backgroundColor: tierColor }]}
-          activeOpacity={0.85}
-          onPress={() => {
-            haptics.medium();
-            navigation.navigate('Day5ReportCard');
-          }}
-        >
-          <Text style={styles.ctaLabel}>See your full report →</Text>
+        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day5ReportCard'); }}>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>See your full report →</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </Animated.View>
     </ScreenWrapper>
@@ -136,9 +132,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   traitPills: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' },
   traitPill: { borderWidth: 1, borderRadius: 100, paddingHorizontal: 14, paddingVertical: 6 },
   traitPillText: { fontSize: 12, fontFamily: 'Inter-SemiBold' },
-  cta: {
-    marginHorizontal: 28, marginBottom: 48, paddingVertical: 18,
-    borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

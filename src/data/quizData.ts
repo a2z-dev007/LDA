@@ -69,9 +69,9 @@ export const sparkQuizQuestions: SparkQuestion[] = [
 
 export function resolveSegment(sliderScore: number): Segment {
   if (sliderScore <= 2) return 'segment_1';
-  if (sliderScore <= 4) return 'segment_2';
-  if (sliderScore <= 6) return 'segment_3';
-  if (sliderScore <= 8) return 'segment_4';
+  if (sliderScore <= 5) return 'segment_2';
+  if (sliderScore <= 7) return 'segment_3';
+  if (sliderScore <= 9) return 'segment_4';
   return 'segment_5';
 }
 
@@ -80,15 +80,15 @@ export function resolveSegment(sliderScore: number): Segment {
 // ─────────────────────────────────────────────────────────────
 export const honestMomentCopy: Record<Segment, string> = {
   segment_1:
-    "A {score}. That took courage to admit. Most people round up. You didn't. That honesty is exactly where this journey starts.",
+    "Most people wouldn't admit this. You just did. That takes courage — and it's exactly why you're here. Let's start by being honest.",
   segment_2:
-    "A {score}. Something feels off and you know it. The fact that you're here means you haven't given up. That matters.",
+    "Most people open this app at a 5. You opened it at {score}. That's honest. Let's work with that.",
   segment_3:
-    "A {score}. Right in the middle — which means there's real room to move. You're not stuck. You're just ready.",
+    "Most people open this app at a 5. You opened it at {score}. You're doing better than you think — and we'll make sure it stays that way.",
   segment_4:
-    "A {score}. You're close. Something good is already here. This week is about making it deeper.",
+    "{score} out of 10. You're here because you want to protect something good. That's the smartest thing a couple can do. Let's keep it that way.",
   segment_5:
-    "A {score}. You feel it. Now let's make sure they feel it too. Five days to turn a feeling into something they'll remember.",
+    "10. Either things are genuinely perfect — or you're being very kind to yourself. Either way, we'll find out. Let's begin.",
 };
 
 // ─────────────────────────────────────────────────────────────

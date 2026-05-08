@@ -37,7 +37,7 @@ export const GlowButton: React.FC<GlowButtonProps> = ({
                             : [colors.buttonGradientStart, colors.buttonGradientEnd]
                     }
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={[
                         styles.gradient,
                         disabled && styles.gradientDisabled,
@@ -82,10 +82,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: c.glowPrimary,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.6,
-        shadowRadius: 16,
-        elevation: 12,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.45,
+        shadowRadius: 18,
+        elevation: 10,
     },
     gradientDisabled: {
         shadowOpacity: 0,

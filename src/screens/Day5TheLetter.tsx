@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, Share,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -82,9 +83,11 @@ export const Day5TheLetter: React.FC = () => {
 
       {buttonsVisible && (
         <Animated.View style={[styles.actions, { opacity: buttonOpacity }]}>
-          <TouchableOpacity style={styles.saveBtn} activeOpacity={0.85} onPress={handleSave}>
+        <TouchableOpacity style={styles.saveBtnTouch} activeOpacity={0.85} onPress={handleSave}>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.saveBtn}>
             <Text style={styles.saveBtnLabel}>Save this</Text>
-          </TouchableOpacity>
+          </LinearGradient>
+        </TouchableOpacity>
           <TouchableOpacity style={styles.shareBtn} activeOpacity={0.85} onPress={handleShare}>
             <Text style={styles.shareBtnLabel}>Share this</Text>
           </TouchableOpacity>
@@ -98,17 +101,17 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
   eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 24 },
   letterCard: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 24,
+    backgroundColor: c.white, borderRadius: 16, padding: 24,
     borderWidth: 1, borderColor: `${c.day5}40`,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   letterText: { color: c.textSecondary, fontSize: 16, fontFamily: 'PlayfairDisplay-Regular', lineHeight: 28 },
   actions: { paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
-  saveBtn: {
-    backgroundColor: c.day5, paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  saveBtnLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  saveBtnTouch: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  saveBtn: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  saveBtnLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   shareBtn: {
-    backgroundColor: c.surface, paddingVertical: 16, borderRadius: 100,
+    backgroundColor: c.white, paddingVertical: 16, borderRadius: 100,
     alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
   shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },

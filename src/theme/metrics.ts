@@ -40,13 +40,13 @@ import {
 // ─────────────────────────────────────────────────────────────
 export const fontSize = {
   /** Main screen headings  (e.g. "Day 1 – Love Languages") */
-  h1: responsiveFontSize(4.5),
+  h1: responsiveFontSize(3),
   /** Section headings */
-  h2: responsiveFontSize(3.5),
+  h2: responsiveFontSize(2.5),
   /** Card / modal headings */
-  h3: responsiveFontSize(3.0),
+  h3: responsiveFontSize(2),
   /** Sub-headings */
-  h4: responsiveFontSize(2.5),
+  h4: responsiveFontSize(1.5),
 
   /** Large body copy */
   bodyLg: responsiveFontSize(2.2),

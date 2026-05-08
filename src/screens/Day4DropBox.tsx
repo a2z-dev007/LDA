@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -66,7 +67,7 @@ export const Day4DropBox: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper backgroundColor="#110A1A">
+      <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <View style={styles.body}>
           <Text style={styles.eyebrow}>Day 4 · Drop Box</Text>
@@ -81,7 +82,7 @@ export const Day4DropBox: React.FC = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Write what's on your mind…"
-                placeholderTextColor="rgba(255,255,255,0.2)"
+                placeholderTextColor={colors.textHint}
                 value={rawText}
                 onChangeText={setRawText}
                 multiline
@@ -104,7 +105,9 @@ export const Day4DropBox: React.FC = () => {
               <Text style={styles.reframeText}>"{reframed}"</Text>
               <View style={styles.reframeActions}>
                 <TouchableOpacity style={styles.keepBtn} activeOpacity={0.85} onPress={handleKeep}>
-                  <Text style={styles.keepBtnLabel}>{kept ? '✓ Saved' : 'Keep this'}</Text>
+                  <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.keepBtnInner}>
+                    <Text style={styles.keepBtnLabel}>{kept ? '✓ Saved' : 'Keep this'}</Text>
+                  </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.discardBtn} activeOpacity={0.7} onPress={handleSkip}>
                   <Text style={styles.discardBtnLabel}>Discard</Text>
@@ -141,15 +144,15 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   reframeBtnLabel: { color: c.day4, fontSize: 15, fontFamily: 'Inter-SemiBold' },
   reframeResult: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 24, gap: 16,
+    backgroundColor: c.white, borderRadius: 16, padding: 24, gap: 16,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   reframeLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   reframeText: { color: c.text, fontSize: 18, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
   reframeActions: { flexDirection: 'row', gap: 12 },
-  keepBtn: {
-    flex: 1, backgroundColor: c.day4, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
-  },
-  keepBtnLabel: { color: c.text, fontSize: 15, fontFamily: 'Inter-SemiBold' },
+  keepBtn: { flex: 1, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 6 },
+  keepBtnInner: { paddingVertical: 14, borderRadius: 100, alignItems: 'center' },
+  keepBtnLabel: { color: c.onPrimary, fontSize: 15, fontFamily: 'Inter-SemiBold' },
   discardBtn: {
     flex: 1, borderWidth: 1, borderColor: c.surfaceBorder, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
   },

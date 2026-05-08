@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Share,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -42,7 +43,7 @@ export const Day3MirrorResults: React.FC = () => {
   };
 
   return (
-    <ScreenWrapper backgroundColor="#0B1020">
+    <ScreenWrapper>
       <ProgressStrip currentDay={3} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.eyebrow}>Day 3 · Mirror Results</Text>
@@ -97,7 +98,9 @@ export const Day3MirrorResults: React.FC = () => {
           <Text style={styles.shareBtnLabel}>Share this card</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.inviteBtn} activeOpacity={0.85} onPress={handleInvitePartner}>
-          <Text style={styles.inviteBtnLabel}>Invite my partner →</Text>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.inviteBtnInner}>
+            <Text style={styles.inviteBtnLabel}>Invite my partner →</Text>
+          </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={styles.skipBtn} activeOpacity={0.7} onPress={() => navigation.navigate('Home')}>
           <Text style={styles.skipBtnLabel}>Continue solo</Text>
@@ -126,20 +129,19 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   lockIcon: { fontSize: 14 },
   banner: {
-    backgroundColor: c.surface, borderRadius: 12, padding: 16,
+    backgroundColor: c.white, borderRadius: 12, padding: 16,
     borderWidth: 1, borderColor: c.surfaceBorder,
   },
   bannerText: { color: c.textSecondary, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20, textAlign: 'center' },
   actions: { paddingHorizontal: 28, paddingBottom: 40, gap: 10 },
   shareBtn: {
-    backgroundColor: c.surface, paddingVertical: 16, borderRadius: 100,
+    backgroundColor: c.white, paddingVertical: 16, borderRadius: 100,
     alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
   shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },
-  inviteBtn: {
-    backgroundColor: c.day3, paddingVertical: 16, borderRadius: 100, alignItems: 'center',
-  },
-  inviteBtnLabel: { color: c.dark, fontSize: 16, fontFamily: 'Inter-SemiBold' },
+  inviteBtn: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  inviteBtnInner: { paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
+  inviteBtnLabel: { color: c.onPrimary, fontSize: 16, fontFamily: 'Inter-SemiBold' },
   skipBtn: { alignItems: 'center', paddingVertical: 8 },
   skipBtnLabel: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
 });

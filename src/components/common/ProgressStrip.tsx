@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useAppColors } from '../../theme';
 
 interface Props {
@@ -9,7 +10,6 @@ interface Props {
 
 export const ProgressStrip: React.FC<Props> = ({ currentDay, totalDays = 5 }) => {
   const colors = useAppColors();
-  const DAY_COLORS = [colors.day1, colors.day2, colors.day3, colors.day4, colors.day5];
 
   return (
     <View style={styles.container}>
@@ -17,15 +17,26 @@ export const ProgressStrip: React.FC<Props> = ({ currentDay, totalDays = 5 }) =>
         const day = i + 1;
         const isCompleted = day < currentDay;
         const isActive = day === currentDay;
+
+        if (isActive || isCompleted) {
+          return (
+            <LinearGradient
+              key={day}
+              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.segment, { marginRight: i < totalDays - 1 ? 4 : 0 }]}
+            />
+          );
+        }
+
         return (
           <View
             key={day}
             style={[
               styles.segment,
               { marginRight: i < totalDays - 1 ? 4 : 0 },
-              isCompleted && { backgroundColor: DAY_COLORS[i], opacity: 1 },
-              isActive && { backgroundColor: DAY_COLORS[i], opacity: 1 },
-              !isCompleted && !isActive && { backgroundColor: colors.surface },
+              { backgroundColor: colors.surface },
             ]}
           />
         );

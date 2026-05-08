@@ -1,31 +1,26 @@
 /**
  * colors.ts
  * ─────────
- * Static color snapshot — resolved once at module load from the
- * current system appearance. Used by StyleSheet.create() calls
- * and any code that runs outside React components.
+ * Static color snapshot — resolved once at module load.
+ * Currently forced to use dark theme (Midnight Garden).
  *
  * For live reactive colors inside components use:
- *   const colors = useAppColors();   ← re-renders on theme change
+ *   const colors = useAppColors();   ← preferred in components
  *
- * The active theme pair is controlled by ACTIVE_DARK_THEME in
- * ThemeContext.tsx — change it there and both static + reactive
- * colors update together.
+ * The active themes are controlled by ACTIVE_LIGHT_THEME and
+ * ACTIVE_DARK_THEME in ThemeContext.tsx.
  */
 
-import { Appearance } from 'react-native';
-import { darkThemes, lightThemes, themePairs } from './colorThemes';
-import { ACTIVE_DARK_THEME } from './ThemeContext';
+import { lightThemes, darkThemes } from './colorThemes';
+import { ACTIVE_LIGHT_THEME, ACTIVE_DARK_THEME } from './ThemeContext';
 
-function resolveStaticTheme() {
-  const scheme = Appearance.getColorScheme();
-  if (scheme === 'light') {
-    return lightThemes[themePairs[ACTIVE_DARK_THEME]];
-  }
-  return darkThemes[ACTIVE_DARK_THEME];
-}
+// Force dark mode - always use dark theme
+const FORCE_DARK_MODE = true;
 
-const _t = resolveStaticTheme();
+// Resolve to dark theme when forced, otherwise check system appearance
+const _t = FORCE_DARK_MODE
+  ? darkThemes[ACTIVE_DARK_THEME]
+  : lightThemes[ACTIVE_LIGHT_THEME];
 
 export const colors = {
   primary: _t.primary,

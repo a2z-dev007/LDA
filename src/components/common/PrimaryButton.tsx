@@ -22,13 +22,14 @@ export const PrimaryButton: React.FC<Props> = ({
   label,
   onPress,
   color,
-  textColor = '#FFFFFF',
+  textColor,
   style,
   loading = false,
   disabled = false,
 }) => {
   const colors = useAppColors();
   const btnColor = color ?? colors.primary;
+  const lblColor = textColor ?? colors.onPrimary;
 
   return (
     <TouchableOpacity
@@ -38,9 +39,9 @@ export const PrimaryButton: React.FC<Props> = ({
       disabled={disabled || loading}
     >
       {loading ? (
-        <ActivityIndicator color={textColor} />
+        <ActivityIndicator color={lblColor} />
       ) : (
-        <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+        <Text style={[styles.label, { color: lblColor }]}>{label}</Text>
       )}
     </TouchableOpacity>
   );
@@ -54,10 +55,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
   },
   label: {
     fontSize: 17,

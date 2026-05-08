@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView, Animated,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -63,7 +64,7 @@ export const Day4MemoryJar: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper backgroundColor="#110A1A">
+      <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <Text style={styles.eyebrow}>Day 4 · The Memory Jar</Text>
@@ -86,7 +87,7 @@ export const Day4MemoryJar: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Type a memory… a single moment, a look, a laugh"
-            placeholderTextColor="rgba(255,255,255,0.2)"
+            placeholderTextColor={colors.textHint}
             value={memory}
             onChangeText={setMemory}
             multiline
@@ -98,12 +99,14 @@ export const Day4MemoryJar: React.FC = () => {
         </ScrollView>
 
         <TouchableOpacity
-          style={[styles.cta, !memory.trim() && styles.ctaDim]}
+          style={[styles.ctaTouch, !memory.trim() && styles.ctaDim]}
           activeOpacity={0.85}
           onPress={handleDrop}
           disabled={!memory.trim()}
         >
-          <Text style={styles.ctaLabel}>Drop it in the jar →</Text>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>Drop it in the jar →</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScreenWrapper>
     </KeyboardAvoidingView>
@@ -131,10 +134,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   charCount: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right', marginBottom: 16 },
   hint: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
-  cta: {
-    backgroundColor: c.day4, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
   ctaDim: { opacity: 0.4 },
-  ctaLabel: { color: c.text, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

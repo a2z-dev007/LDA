@@ -1,35 +1,30 @@
 /**
  * useTheme()
  * ──────────
- * React hook that returns live theme colors and re-renders
- * automatically when the user switches between light and dark mode.
+ * React hook that returns live theme colors.
+ * The app uses premium light themes exclusively — always returns
+ * the active light theme regardless of system appearance.
  *
  * Usage:
  *   const { colors, isDark } = useTheme();
  *
  * For StyleSheet.create() outside components, keep using the
- * static `colors` export from '../theme' — it reflects the
- * system appearance at app launch.
+ * static `colors` export from '../theme'.
  */
 
 import { useState, useEffect } from 'react';
-import { Appearance, ColorSchemeName } from 'react-native';
+import { Appearance } from 'react-native';
 import {
-  darkThemes,
   lightThemes,
-  themePairs,
-  DarkThemeName,
+  LightThemeName,
   ColorTheme,
 } from './colorThemes';
 
-// Must match the ACTIVE_DARK_THEME in colors.ts
-const ACTIVE_DARK_THEME: DarkThemeName = 'midnightPassion';
+// Must match ACTIVE_DARK_THEME in ThemeContext.tsx
+const ACTIVE_THEME: LightThemeName = 'velvetMauve';
 
-function resolveTheme(scheme: ColorSchemeName): ColorTheme {
-  if (scheme === 'light') {
-    return lightThemes[themePairs[ACTIVE_DARK_THEME]];
-  }
-  return darkThemes[ACTIVE_DARK_THEME];
+function resolveTheme(): ColorTheme {
+  return lightThemes[ACTIVE_THEME];
 }
 
 function buildColors(theme: ColorTheme) {
@@ -42,6 +37,13 @@ function buildColors(theme: ColorTheme) {
     darkMid: theme.darkMid,
     light: theme.light,
     white: theme.white,
+
+    text: theme.text,
+    textSecondary: theme.textSecondary,
+    textHint: theme.textHint,
+    surface: theme.surface,
+    surfaceBorder: theme.surfaceBorder,
+    onPrimary: theme.onPrimary,
 
     gradientStart: theme.gradientStart,
     gradientMid: theme.gradientMid,
@@ -78,24 +80,24 @@ function buildColors(theme: ColorTheme) {
 export type ThemeColors = ReturnType<typeof buildColors>;
 
 export function useTheme() {
-  const [scheme, setScheme] = useState<ColorSchemeName>(
-    Appearance.getColorScheme(),
-  );
+  // Keep Appearance listener for API compatibility, but theme never changes
+  const [, setTick] = useState(0);
 
   useEffect(() => {
-    const sub = Appearance.addChangeListener(({ colorScheme }) => {
-      setScheme(colorScheme);
+    const sub = Appearance.addChangeListener(() => {
+      // Light-only: no theme switch needed
+      setTick(t => t); // no-op re-render guard
     });
     return () => sub.remove();
   }, []);
 
-  const theme = resolveTheme(scheme);
+  const theme = resolveTheme();
   const themeColors = buildColors(theme);
 
   return {
     colors: themeColors,
-    isDark: theme.isDark,
+    isDark: false,
     themeName: theme.name,
-    scheme,
+    scheme: 'light' as const,
   };
 }

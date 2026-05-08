@@ -58,7 +58,7 @@ export const Day3AssumptionsTest: React.FC = () => {
   const progress = (currentIndex + 1) / total;
 
   return (
-    <ScreenWrapper backgroundColor="#0B1020">
+    <ScreenWrapper>
       <ProgressStrip currentDay={3} />
 
       {/* Progress bar */}

@@ -1,10 +1,8 @@
 /**
  * IntroSliderScreen
  * ─────────────────
- * 3 clean slides shown once on first launch.
- * Top half: rich gradient illustration (always vivid, same in light & dark).
- * Bottom half: theme-aware background, headline, body text.
- * Bottom controls: theme-aware background, dots, buttons.
+ * Premium onboarding slides with rounded image cards and sage green theme.
+ * Matches the design with icons, features, and gradient buttons.
  */
 
 import React, { useRef, useState, useCallback } from 'react';
@@ -16,11 +14,12 @@ import {
   Animated,
   TouchableOpacity,
   Dimensions,
+  Image,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  ImageBackground,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -28,301 +27,314 @@ import { useAppColors } from '../theme';
 import { metrics } from '../theme/metrics';
 import { useUserStore } from '../store/useUserStore';
 import { AppColors } from '../theme/ThemeContext';
+import { GradientButton } from '../components/common/GradientButton';
+import { Heart, Flame, Leaf, Sun, MessageCircle, HelpCircle, Star, PenLine } from 'lucide-react-native';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { IMAGE } from '../assets/image/bg-images';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Intro'>;
 
-const { width: W } = Dimensions.get('window');
+const { width: W, height: H } = Dimensions.get('window');
 
 // ─────────────────────────────────────────────────────────────
-//  Slide definitions — illustration gradients are always vivid
-//  (they look great on both light and dark backgrounds).
-//  Text content is theme-neutral; colors come from useAppColors.
+//  Onboarding images
 // ─────────────────────────────────────────────────────────────
-const SLIDES = [
+const SLIDE_IMAGES = [
+  require('../assets/image/onboarding/slide-1.png'),
+  require('../assets/image/onboarding/slide-2.png'),
+  require('../assets/image/onboarding/slide-3.png'),
+];
+
+const CONNECTION_BADGE = require('../assets/image/onboarding/connection.png');
+
+// ─────────────────────────────────────────────────────────────
+//  Slide content matching the actual design
+// ─────────────────────────────────────────────────────────────
+const SLIDE_CONTENT = [
   {
-    gradTop: ['#1a0533', '#3b0764', '#6d28d9'] as string[],
-    illustration: 'circles' as const,
-    accentColor: '#a78bfa',
-    headline: 'Reignite the\nconnection.',
+    headlineTeal: 'Reignite',
+    headlineBlack: 'the connection.',
+    showHeartIcon: true,
     body: 'A 5-day solo journey of honest moments, small rituals, and real reflection.',
+    features: [
+      { icon: 'heart', label: 'Reconnect\nwith yourself' },
+      { icon: 'flame', label: 'Build rituals\nthat ground you' },
+      { icon: 'leaf', label: 'Reflect & grow\nevery day' },
+    ],
   },
   {
-    gradTop: ['#1a0a1f', '#4a1942', '#be185d'] as string[],
-    illustration: 'heart' as const,
-    accentColor: '#FF1493',
-    headline: 'Daily rituals\nthat actually work.',
+    headlineTeal: 'Daily rituals',
+    headlineItalic: 'that actually work.',
+    showHeartIcon: true,
     body: 'Mood check-ins, appreciation prompts, and questions that bring you closer.',
+    features: [
+      { icon: 'sun', label: 'Mood\ncheck-ins' },
+      { icon: 'message', label: 'Appreciation\nprompts' },
+      { icon: 'help', label: 'Questions\nthat bring you closer' },
+    ],
   },
   {
-    gradTop: ['#0a1628', '#1e3a5f', '#0ea5e9'] as string[],
-    illustration: 'star' as const,
-    accentColor: '#38bdf8',
-    headline: 'Discover your\nrelationship style.',
+    headlineBlack: 'Discover your',
+    headlineTeal: 'relationship',
+    headlineBlackSuffix: ' style.',
+    showHeartIcon: false,
+    showDecorativeUnderline: true,
     body: 'Earn your connection badge and write a promise that lasts beyond 5 days.',
+    features: [
+      { icon: 'star', label: 'Earn your\nconnection badge' },
+      { icon: 'edit', label: 'Write your\npromise' },
+      { icon: 'heart', label: 'Discover your\nlove style' },
+    ],
+    isSlide3: true,
   },
 ];
 
 // ─────────────────────────────────────────────────────────────
-//  Illustration styles — no colors, safe as module-level
-// ─────────────────────────────────────────────────────────────
-const IL_SIZE = W * 0.52;
-const CIRCLE_R = IL_SIZE * 0.42;
-
-const il = StyleSheet.create({
-  root: {
-    width: IL_SIZE,
-    height: IL_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  circle: {
-    width: CIRCLE_R * 2,
-    height: CIRCLE_R * 2,
-    borderRadius: CIRCLE_R,
-    position: 'absolute',
-  },
-  circleLeft:  { left: 0 },
-  circleRight: { right: 0 },
-  overlap: {
-    width: CIRCLE_R * 0.9,
-    height: CIRCLE_R * 2,
-    borderRadius: CIRCLE_R,
-    position: 'absolute',
-    alignSelf: 'center',
-  },
-  disc: {
-    width: IL_SIZE * 0.9,
-    height: IL_SIZE * 0.9,
-    borderRadius: IL_SIZE * 0.45,
-    position: 'absolute',
-  },
-  heartWrap: {
-    width: IL_SIZE * 0.55,
-    height: IL_SIZE * 0.55,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-  },
-  heartLeft: {
-    width: IL_SIZE * 0.28,
-    height: IL_SIZE * 0.28,
-    borderRadius: IL_SIZE * 0.14,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-  },
-  heartRight: {
-    width: IL_SIZE * 0.28,
-    height: IL_SIZE * 0.28,
-    borderRadius: IL_SIZE * 0.14,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  heartBottom: {
-    width: IL_SIZE * 0.38,
-    height: IL_SIZE * 0.38,
-    borderRadius: 4,
-    position: 'absolute',
-    bottom: 0,
-    transform: [{ rotate: '45deg' }],
-  },
-  ring: {
-    width: IL_SIZE * 0.88,
-    height: IL_SIZE * 0.88,
-    borderRadius: IL_SIZE * 0.44,
-    borderWidth: 1.5,
-    position: 'absolute',
-  },
-  ringInner: {
-    width: IL_SIZE * 0.62,
-    height: IL_SIZE * 0.62,
-    borderRadius: IL_SIZE * 0.31,
-    borderWidth: 1.5,
-    position: 'absolute',
-  },
-  centreDot: {
-    width: IL_SIZE * 0.22,
-    height: IL_SIZE * 0.22,
-    borderRadius: IL_SIZE * 0.11,
-    position: 'absolute',
-  },
-  spoke: {
-    width: 2,
-    height: IL_SIZE * 0.38,
-    borderRadius: 1,
-    position: 'absolute',
-    top: IL_SIZE * 0.06,
-    alignSelf: 'center',
-  },
-  labelWrap: {
-    position: 'absolute',
-    bottom: -metrics.spacing.lg,
-  },
-  labelText: {
-    fontSize: metrics.fontSize.caption,
-    fontFamily: 'DMSans-Medium',
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-  },
-});
-
-// ─────────────────────────────────────────────────────────────
-//  Illustration components
-// ─────────────────────────────────────────────────────────────
-const IllustrationCircles: React.FC<{ accent: string; gradTop: string[] }> = ({ accent, gradTop }) => (
-  <View style={il.root}>
-    <LinearGradient colors={[`${accent}cc`, `${accent}44`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[il.circle, il.circleLeft]} />
-    <LinearGradient colors={[`${gradTop[2]}ff`, `${accent}88`]} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={[il.circle, il.circleRight]} />
-    <View style={[il.overlap, { backgroundColor: `${accent}30` }]} />
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>5 days</Text>
-    </View>
-  </View>
-);
-
-const IllustrationHeart: React.FC<{ accent: string }> = ({ accent }) => (
-  <View style={il.root}>
-    <View style={[il.disc, { backgroundColor: `${accent}22` }]} />
-    <View style={il.heartWrap}>
-      <LinearGradient colors={[accent, `${accent}88`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={il.heartLeft} />
-      <LinearGradient colors={[accent, `${accent}88`]} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={il.heartRight} />
-      <LinearGradient colors={[`${accent}cc`, `${accent}44`]} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={il.heartBottom} />
-    </View>
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>for two</Text>
-    </View>
-  </View>
-);
-
-const IllustrationStar: React.FC<{ accent: string }> = ({ accent }) => (
-  <View style={il.root}>
-    <View style={[il.ring, { borderColor: `${accent}55` }]} />
-    <View style={[il.ringInner, { borderColor: `${accent}99` }]} />
-    <LinearGradient colors={[accent, `${accent}66`]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={il.centreDot} />
-    {[0, 45, 90, 135].map((deg) => (
-      <LinearGradient
-        key={deg}
-        colors={[`${accent}cc`, `${accent}00`]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={[il.spoke, { transform: [{ rotate: `${deg}deg` }] }]}
-      />
-    ))}
-    <View style={il.labelWrap}>
-      <Text style={[il.labelText, { color: accent }]}>your badge</Text>
-    </View>
-  </View>
-);
-
-// ─────────────────────────────────────────────────────────────
-//  Theme-aware styles factory
+//  Theme-aware styles
 // ─────────────────────────────────────────────────────────────
 function makeStyles(c: AppColors) {
-  const textPrimary   = c.isDark ? '#FFFFFF'                  : c.textDark;
-  const textSecondary = c.isDark ? 'rgba(255,255,255,0.55)'   : 'rgba(0,0,0,0.45)';
-  const skipColor     = c.isDark ? 'rgba(255,255,255,0.30)'   : 'rgba(0,0,0,0.30)';
-  const privacyColor  = c.isDark ? 'rgba(255,255,255,0.18)'   : 'rgba(0,0,0,0.22)';
-  const bottomBg      = c.isDark ? `${c.dark}F2`              : `${c.dark}F2`;
-
   return StyleSheet.create({
-    root: {
+    container: {
       flex: 1,
-      backgroundColor: c.dark,
+    },
+    scrollView: {
+      flex: 1,
+      backgroundColor: 'transparent',
     },
     page: {
       width: W,
-      flex: 1,
-      backgroundColor: c.dark,
+      backgroundColor: 'transparent',
     },
-    illustrationBg: {
-      height: '52%',
+    contentWrapper: {
+      // paddingHorizontal: metrics.layout.screenPaddingHz,
+      backgroundColor: 'transparent',
+    },
+    topSection: {
+      flex: 0,
+    },
+    // Rounded image card
+    imageCard: {
+      width: '95%',
+      aspectRatio: 1.2,
+      // height:responsiveHeight(36),
+      borderRadius: metrics.radius.xxl,
+      overflow: 'hidden',
+      marginTop:responsiveHeight(1),
+      justifyContent:'center',
+      alignSelf:'center',
+      // marginBottom: metrics.spacing.xs,
+      // backgroundColor: c.white,
+      // shadowColor: c.primary,
+      // shadowOffset: { width: 0, height: 8 },
+      // shadowOpacity: 0.12,
+      // shadowRadius: 20,
+      // elevation: 8,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      resizeMode:'contain',
+    },
+    // Heart icon overlay
+    heartIcon: {
+      position: 'absolute',
+      bottom: metrics.spacing.md,
+      right: metrics.spacing.md,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.white,
       alignItems: 'center',
       justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
     },
-    seam: {
-      height: metrics.spacing.xxl,
-      marginTop: -metrics.spacing.xxl,
-    },
-    textArea: {
-      flex: 1,
-      paddingHorizontal: metrics.layout.screenPaddingHz * 1.2,
-      paddingTop: metrics.spacing.lg,
-      justifyContent: 'flex-start',
-      backgroundColor: c.dark,
-    },
-    headline: {
-      fontSize: metrics.fontSize.h1 * 1.1,
-      fontFamily: 'PlayfairDisplay-SemiBold',
-      color: textPrimary,
-      lineHeight: metrics.fontSize.h1 * 1.5,
-      marginBottom: metrics.spacing.md,
-    },
-    body: {
-      fontSize: metrics.fontSize.body,
-      fontFamily: 'DMSans-Regular',
-      color: textSecondary,
-      lineHeight: metrics.fontSize.body * 1.7,
-    },
-    bottom: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+    // Content section
+    contentSection: {
+      marginBottom: 0,
+      marginTop:responsiveHeight(1),
       paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingBottom: metrics.spacing.md,
-      backgroundColor: bottomBg,
+      
     },
-    dots: {
+    // Headline
+    headlineRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: metrics.spacing.sm,
+      marginBottom: metrics.spacing.xs,
+    },
+    headlineWithIcon: {
+      flex: 1,
+    },
+    heartIconInline: {
+      marginTop: metrics.spacing.xs,
+    },
+    headlineInTeal: {
+      fontSize: responsiveFontSize(4),
+      fontFamily: 'PlayfairDisplay-Bold',
+      color: c.primary,
+      // lineHeight: 42,
+    },
+    headlineBlack: {
+      fontSize: responsiveFontSize(4),
+       fontFamily: 'PlayfairDisplay-Italic',
+      color: c.text,
+      lineHeight: 42,
+    },
+    headlineAccent: {
+     fontSize: responsiveFontSize(4),
+      fontFamily: 'PlayfairDisplay-Italic',
+      color: c.text,
+      // lineHeight: 42,
+    },
+    // Body text
+    body: {
+       fontSize: responsiveFontSize(2),
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      lineHeight: 22,
+      marginBottom: metrics.spacing.xs,
+      marginTop: metrics.spacing.sm,
+      opacity: 0.85,
+    },
+    // Features row
+    featuresRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: metrics.spacing.md,
+      marginBottom: metrics.spacing.xs,
+      backgroundColor: 'rgba(255,255,255,0.55)',
+      paddingVertical: responsiveWidth(4),
+      paddingHorizontal: responsiveWidth(3),
+      borderRadius: metrics.radius.md,
+    },
+    featureItem: {
+      flex: 1,
+      alignItems: 'center',
+      paddingHorizontal: metrics.spacing.xs,
+    },
+    featureIconContainer: {
+      width: responsiveWidth(9),
+      height: responsiveWidth(9),
+      borderRadius: responsiveWidth(10),
+      borderWidth: 1.5,
+      borderColor: c.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 4,
+    },
+    featureLabel: {
+      fontSize:responsiveFontSize(1.3),
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      textAlign: 'center',
+      lineHeight: 15,
+    },
+    // Bottom section - fixed at bottom of screen
+    bottomSection: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+    },
+    // Progress dots
+    dotsContainer: {
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'center',
       gap: metrics.spacing.xs,
-      marginBottom: metrics.spacing.md,
+      marginBottom: metrics.spacing.lg,
     },
     dot: {
+      width: 8,
       height: 8,
       borderRadius: 4,
+      backgroundColor: 'rgba(255,255,255,0.5)',
     },
+    dotActive: {
+      width: 28,
+      backgroundColor: c.primary,
+    },
+    // Button row
     btnRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: metrics.spacing.sm,
       marginBottom: metrics.spacing.sm,
     },
     skipBtn: {
-      paddingVertical: metrics.spacing.sm,
-      paddingRight: metrics.spacing.md,
+      paddingVertical: 14,
+      paddingHorizontal: metrics.spacing.xl,
+      backgroundColor: 'rgba(255,255,255,0.85)',
+      borderRadius: metrics.radius.full,
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.9)',
     },
     skipText: {
-      color: skipColor,
-      fontSize: metrics.fontSize.body,
-      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      fontSize: 16,
+      fontFamily: 'DMSans-Medium',
     },
-    nextBtnTouch: {
+    nextBtnContainer: {
       flex: 1,
     },
-    nextBtn: {
-      height: metrics.button.height,
-      borderRadius: metrics.radius.full,
+    // Privacy text
+    privacyContainer: {
+      flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.4,
-      shadowRadius: 14,
-      elevation: 10,
-    },
-    nextText: {
-      color: c.text,
-      fontSize: metrics.fontSize.button,
-      fontFamily: 'DMSans-Bold',
-      letterSpacing: 0.4,
+      gap: metrics.spacing.xs,
+      paddingBottom: metrics.spacing.sm,
     },
     privacy: {
-      color: privacyColor,
-      fontSize: metrics.fontSize.micro,
+      color: c.textMuted,
+      fontSize: 12,
       fontFamily: 'DMSans-Regular',
-      letterSpacing: 1.5,
-      textAlign: 'center',
+    },
+    // ── Slide 3 specific ──
+    slide3HeadlineBlack: {
+      fontSize: responsiveFontSize(4),
+      fontFamily: 'PlayfairDisplay-Bold',
+      color: c.text,
+      // lineHeight: responsiveFontSize(3.4),
+    },
+    slide3HeadlineTeal: {
+      fontSize: responsiveFontSize(4),
+      fontFamily: 'PlayfairDisplay-Italic',
+      color: c.primary,
+      // lineHeight: responsiveFontSize(3.4),
+    },
+    decorativeUnderline: {
+      width: 120,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: c.primary,
+      opacity: 0.6,
+      marginTop: 2,
+      marginBottom: metrics.spacing.md,
+    },
+    slide3BodyRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      
+    },
+    slide3BodyText: {
+      flex: 1,
+
+      fontSize: responsiveFontSize(2),
+      fontFamily: 'DMSans-Regular',
+      color: c.text,
+      lineHeight: 22,
+      opacity: 0.85,
+      paddingRight: metrics.spacing.md,
+    },
+    connectionBadge: {
+      width: responsiveWidth(28),
+      position:'absolute',
+      top:10,
+      right:0,
+      height: responsiveWidth(28),
     },
   });
 }
@@ -332,27 +344,34 @@ function makeStyles(c: AppColors) {
 // ─────────────────────────────────────────────────────────────
 export const IntroSliderScreen: React.FC = () => {
   const colors = useAppColors();
+  const insets = useSafeAreaInsets();
   const s = makeStyles(colors);
 
   const navigation = useNavigation<Nav>();
-  const setIntroSeen = useUserStore((s) => s.setIntroSeen);
+  const setIntroSeen = useUserStore((st) => st.setIntroSeen);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
-  const dotWidths = useRef(SLIDES.map((_, i) => new Animated.Value(i === 0 ? 1 : 0))).current;
+  const contentAnim = useRef(new Animated.Value(1)).current;
 
-  const activateDot = useCallback(
-    (idx: number) => {
-      dotWidths.forEach((anim, i) => {
-        Animated.spring(anim, {
-          toValue: i === idx ? 1 : 0,
-          useNativeDriver: false,
-          tension: 140,
-          friction: 10,
-        }).start();
-      });
+  const activateSlide = useCallback(
+    () => {
+      // Simple fade and scale animation
+      Animated.sequence([
+        Animated.timing(contentAnim, {
+          toValue: 0.7,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.spring(contentAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+      ]).start();
     },
-    [dotWidths],
+    [contentAnim],
   );
 
   const onScroll = useCallback(
@@ -360,14 +379,14 @@ export const IntroSliderScreen: React.FC = () => {
       const idx = Math.round(e.nativeEvent.contentOffset.x / W);
       if (idx !== activeIndex) {
         setActiveIndex(idx);
-        activateDot(idx);
+        activateSlide();
       }
     },
-    [activeIndex, activateDot],
+    [activeIndex, activateSlide],
   );
 
   const goNext = () => {
-    if (activeIndex < SLIDES.length - 1) {
+    if (activeIndex < SLIDE_CONTENT.length - 1) {
       scrollRef.current?.scrollTo({ x: W * (activeIndex + 1), animated: true });
     } else {
       finish();
@@ -379,94 +398,171 @@ export const IntroSliderScreen: React.FC = () => {
     navigation.replace('Splash');
   };
 
-  const isLast = activeIndex === SLIDES.length - 1;
-  const slide = SLIDES[activeIndex];
+  const isLast = activeIndex === SLIDE_CONTENT.length - 1;
+
+  const renderIcon = (icon: string, size: number = responsiveFontSize(2)) => {
+    const iconColor = colors.primary;
+    switch (icon) {
+      case 'heart':
+        return <Heart size={size} color={iconColor} />;
+      case 'flame':
+        return <Flame size={size} color={iconColor} />;
+      case 'leaf':
+        return <Leaf size={size} color={iconColor} />;
+      case 'sun':
+        return <Sun size={size} color={iconColor} />;
+      case 'message':
+        return <MessageCircle size={size} color={iconColor} />;
+      case 'help':
+        return <HelpCircle size={size} color={iconColor} />;
+      case 'star':
+        return <Star size={size} color={iconColor} />;
+      case 'edit':
+        return <PenLine size={size} color={iconColor} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <View style={s.root}>
-      {/* ── Paged scroll ─────────────────────────────────── */}
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={onScroll}
-        bounces={false}
-        style={StyleSheet.absoluteFill}
-      >
-        {SLIDES.map((sl, idx) => (
-          <View key={idx} style={s.page}>
-            {/* Top half — vivid gradient illustration (same in light & dark) */}
-            <LinearGradient
-              colors={sl.gradTop}
-              start={{ x: 0.2, y: 0 }}
-              end={{ x: 0.8, y: 1 }}
-              style={s.illustrationBg}
-            >
-              {sl.illustration === 'circles' && <IllustrationCircles accent={sl.accentColor} gradTop={sl.gradTop} />}
-              {sl.illustration === 'heart'   && <IllustrationHeart   accent={sl.accentColor} />}
-              {sl.illustration === 'star'    && <IllustrationStar    accent={sl.accentColor} />}
-            </LinearGradient>
+    <ImageBackground 
+      source={IMAGE.greenBg2} 
+      style={{ flex: 1 }}
+      resizeMode="cover"
+      blurRadius={1}
+    >
+      {/* Full screen flex column: scroll content on top, buttons pinned at bottom */}
+      <View style={{ flex: 1, flexDirection: 'column' }}>
 
-            {/* Seam — fades illustration into theme background */}
-            <LinearGradient
-              colors={[`${sl.gradTop[sl.gradTop.length - 1]}00`, colors.dark]}
-              style={s.seam}
-            />
+        {/* Scrollable slide content */}
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={onScroll}
+          bounces={false}
+          style={s.scrollView}
+        >
+          {SLIDE_CONTENT.map((content, idx) => (
+            <View key={idx} style={s.page}>
+              <View style={[s.contentWrapper, {
+                paddingTop: Math.max(insets.top, 20),
+              }]}>
+                {/* Rounded Image Card */}
+                <View style={s.imageCard}>
+                  <Image
+                    source={SLIDE_IMAGES[idx]}
+                    style={s.image}
+                    resizeMode="cover"
+                  />
+                </View>
 
-            {/* Bottom half — theme-aware */}
-            <View style={s.textArea}>
-              <Text style={s.headline}>{sl.headline}</Text>
-              <Text style={s.body}>{sl.body}</Text>
+                {/* Content Section */}
+                <View style={s.contentSection}>
+                  {/* ── Slide 3 special layout ── */}
+                  {content.isSlide3 ? (
+                    <>
+                      <Text style={s.slide3HeadlineBlack}>
+                        {content.headlineBlack}{'\n'}
+                        <Text style={s.slide3HeadlineTeal}>{content.headlineTeal}</Text>
+                        <Text style={s.slide3HeadlineBlack}>{content.headlineBlackSuffix}</Text>
+                      </Text>
+                        <Image
+                          source={CONNECTION_BADGE}
+                          style={s.connectionBadge}
+                          resizeMode="contain"
+                        />
+                      <View style={s.decorativeUnderline} />
+                      {/* Body + Connection badge side by side */}
+                      <View style={s.slide3BodyRow}>
+                        <Text style={s.slide3BodyText}>{content.body}</Text>
+                      
+                      </View>
+                      {/* Features row — same as slides 1 & 2 */}
+                      <View style={s.featuresRow}>
+                        {content.features.map((feature, i) => (
+                          <View key={i} style={s.featureItem}>
+                            <View style={s.featureIconContainer}>
+                              {renderIcon(feature.icon, responsiveFontSize(2))}
+                            </View>
+                            <Text style={s.featureLabel}>{feature.label}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      {/* Slide 1: "Reignite" teal / "the connection." black + heart
+                          Slide 2: "Daily rituals" teal / "that actually work." italic + heart */}
+                      <View style={s.headlineRow}>
+                        <View style={s.headlineWithIcon}>
+                          {/* Line 1 - always teal */}
+                          <Text style={s.headlineInTeal}>{content.headlineTeal}</Text>
+                          {/* Line 2 - italic accent OR black, with heart inline */}
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                            {content.headlineItalic ? (
+                              <Text style={s.headlineAccent}>{content.headlineItalic}</Text>
+                            ) : content.headlineBlack ? (
+                              <Text style={s.headlineBlack}>{content.headlineBlack}</Text>
+                            ) : null}
+                            {content.showHeartIcon && (
+                              <Heart size={26} color={colors.primary} strokeWidth={1.5} />
+                            )}
+                          </View>
+                        </View>
+                      </View>
+
+                      <Text style={s.body}>{content.body}</Text>
+
+                      {content.features.length > 0 && (
+                        <View style={s.featuresRow}>
+                          {content.features.map((feature, i) => (
+                            <View key={i} style={s.featureItem}>
+                              <View style={s.featureIconContainer}>
+                                {renderIcon(feature.icon, 22)}
+                              </View>
+                              <Text style={s.featureLabel}>{feature.label}</Text>
+                            </View>
+                          ))}
+                        </View>
+                      )}
+                    </>
+                  )}
+                </View>
+              </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* ── Fixed bottom controls — theme-aware ─────────── */}
-      <SafeAreaView edges={['bottom']} style={s.bottom} pointerEvents="box-none">
-        {/* Dots */}
-        <View style={s.dots}>
-          {SLIDES.map((sl, i) => (
-            <Animated.View
-              key={i}
-              style={[
-                s.dot,
-                {
-                  backgroundColor: sl.accentColor,
-                  width: dotWidths[i].interpolate({ inputRange: [0, 1], outputRange: [8, 28] }),
-                  opacity: dotWidths[i].interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }),
-                },
-              ]}
-            />
           ))}
-        </View>
+        </ScrollView>
 
-        {/* Buttons */}
-        <View style={s.btnRow}>
-          {!isLast ? (
-            <TouchableOpacity onPress={finish} activeOpacity={0.6} style={s.skipBtn}>
+        {/* Buttons pinned at bottom */}
+        <View style={[s.bottomSection, { paddingBottom: Math.max(insets.bottom, 12) + 4 }]}>
+          <View style={s.dotsContainer}>
+            {SLIDE_CONTENT.map((_, i) => (
+              <View key={i} style={[s.dot, i === activeIndex && s.dotActive]} />
+            ))}
+          </View>
+          <View style={s.btnRow}>
+            <TouchableOpacity onPress={finish} activeOpacity={0.7} style={s.skipBtn}>
               <Text style={s.skipText}>Skip</Text>
             </TouchableOpacity>
-          ) : (
-            <View style={s.skipBtn} />
-          )}
-
-          <TouchableOpacity onPress={goNext} activeOpacity={0.88} style={s.nextBtnTouch}>
-            <LinearGradient
-              colors={[slide.accentColor, `${slide.accentColor}99`]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={s.nextBtn}
-            >
-              <Text style={s.nextText}>{isLast ? "Let's Begin" : 'Next'}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+            <View style={s.nextBtnContainer}>
+              <GradientButton
+                text={isLast ? "Let's Begin" : 'Next'}
+                onPress={goNext}
+                showArrow={true}
+                fullWidth={true}
+                variant="sageBlue"
+              />
+            </View>
+          </View>
+          <View style={s.privacyContainer}>
+            <Text style={s.privacy}>🔒 No signup • No data • Just you two</Text>
+          </View>
         </View>
 
-        <Text style={s.privacy}>No signup · No data · Just you two</Text>
-      </SafeAreaView>
-    </View>
+      </View>
+    </ImageBackground>
   );
 };

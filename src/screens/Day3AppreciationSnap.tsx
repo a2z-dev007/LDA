@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -45,7 +46,7 @@ export const Day3AppreciationSnap: React.FC = () => {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper backgroundColor="#0B1020">
+      <ScreenWrapper>
         <ProgressStrip currentDay={3} />
         <View style={styles.body}>
           <Text style={styles.eyebrow}>Day 3 · Quick Win</Text>
@@ -65,7 +66,7 @@ export const Day3AppreciationSnap: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Write something true…"
-              placeholderTextColor="rgba(255,255,255,0.2)"
+          placeholderTextColor={colors.textHint}
               value={text}
               onChangeText={setText}
               multiline
@@ -83,8 +84,10 @@ export const Day3AppreciationSnap: React.FC = () => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.cta} activeOpacity={0.85} onPress={handleSave}>
-          <Text style={styles.ctaLabel}>{text.trim() ? 'Save this →' : 'Skip for now →'}</Text>
+        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={handleSave}>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>{text.trim() ? 'Save this →' : 'Skip for now →'}</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScreenWrapper>
     </KeyboardAvoidingView>
@@ -104,9 +107,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   savedNote: { color: c.day3, fontSize: 14, fontFamily: 'Inter-SemiBold', marginTop: 12 },
   hint: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 16 },
-  cta: {
-    backgroundColor: c.day3, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

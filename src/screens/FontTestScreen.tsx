@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppColors } from '../theme';
 
@@ -7,7 +8,13 @@ export const FontTestScreen: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
     return (
-        <SafeAreaView style={styles.container}>
+        <LinearGradient
+          colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.container}
+        >
+          <SafeAreaView style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.content}>
                 <Text style={styles.header}>Font Test Screen</Text>
 
@@ -37,14 +44,14 @@ export const FontTestScreen: React.FC = () => {
                     Each line should look different.
                 </Text>
             </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </LinearGradient>
     );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: c.dark,
     },
     content: {
         padding: 20,

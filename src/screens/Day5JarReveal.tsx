@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -101,15 +102,10 @@ export const Day5JarReveal: React.FC = () => {
       </ScrollView>
 
       <Animated.View style={{ opacity: buttonOpacity }}>
-        <TouchableOpacity
-          style={styles.cta}
-          activeOpacity={0.85}
-          onPress={() => {
-            haptics.medium();
-            navigation.navigate('Day5TheLetter');
-          }}
-        >
-          <Text style={styles.ctaLabel}>Read your letter →</Text>
+        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day5TheLetter'); }}>
+          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+            <Text style={styles.ctaLabel}>Read your letter →</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </Animated.View>
     </ScreenWrapper>
@@ -132,16 +128,14 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   notes: { gap: 12 },
   note: {
     borderWidth: 1.5, borderRadius: 14, padding: 16,
-    backgroundColor: c.surface,
+    backgroundColor: c.white,
   },
   noteText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
   noteCompliment: { fontSize: 16, fontFamily: 'PlayfairDisplay-Bold' },
   notePrivate: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
   emptyJar: { alignItems: 'center', padding: 24 },
   emptyText: { color: c.textHint, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic' },
-  cta: {
-    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

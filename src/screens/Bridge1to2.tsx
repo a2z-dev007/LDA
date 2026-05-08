@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -66,15 +67,10 @@ export const Bridge1to2: React.FC = () => {
       </ScrollView>
 
       {/* Zone 4 — CTA */}
-      <TouchableOpacity
-        style={styles.cta}
-        activeOpacity={0.85}
-        onPress={() => {
-          haptics.medium();
-          navigation.navigate('Day2MoodPicker');
-        }}
-      >
-        <Text style={styles.ctaLabel}>Continue to Day 2 →</Text>
+      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day2MoodPicker'); }}>
+        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+          <Text style={styles.ctaLabel}>Continue to Day 2 →</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScreenWrapper>
   );
@@ -92,24 +88,24 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
   recapCard: {
     flexDirection: 'row', alignItems: 'baseline', gap: 8,
-    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    backgroundColor: c.white, borderRadius: 16, padding: 20,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   recapScore: { fontSize: 48, color: c.day1, fontFamily: 'PlayfairDisplay-Bold' },
   recapScoreLabel: { fontSize: 16, color: c.textHint, fontFamily: 'Inter-Regular' },
-  typeCard: {
-    borderWidth: 1.5, borderRadius: 14, padding: 16,
-  },
+  typeCard: { borderWidth: 1.5, borderRadius: 14, padding: 16, backgroundColor: c.white },
   typeName: { fontSize: 18, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 4 },
   typeDesc: { fontSize: 13, color: c.textSecondary, fontFamily: 'Inter-Regular' },
   zone2b: {},
   zone3: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 20,
+    backgroundColor: c.white, borderRadius: 16, padding: 20,
     borderLeftWidth: 3, borderLeftColor: c.day2,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
-  cta: {
-    backgroundColor: c.day2, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -119,15 +120,10 @@ export const Day5ReportCard: React.FC = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity
-        style={styles.cta}
-        activeOpacity={0.85}
-        onPress={() => {
-          haptics.medium();
-          navigation.navigate('Day5ThePromise');
-        }}
-      >
-        <Text style={styles.ctaLabel}>Continue →</Text>
+      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day5ThePromise'); }}>
+        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
+          <Text style={styles.ctaLabel}>Continue →</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScreenWrapper>
   );
@@ -153,7 +149,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   strengthRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   strengthBullet: { fontSize: 12, lineHeight: 22 },
   strengthText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', flex: 1, lineHeight: 22 },
-  growthBox: { backgroundColor: c.surface, borderRadius: 10, padding: 14 },
+  growthBox: { backgroundColor: c.white, borderRadius: 10, padding: 14,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3, elevation: 1 },
   growthLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 },
   growthText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
   journalEntry: { flexDirection: 'row', gap: 14, marginBottom: 16 },
@@ -168,14 +165,13 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   entryText: { color: c.textSecondary, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 22 },
   emptyText: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular', fontStyle: 'italic' },
   jarPreview: {
-    backgroundColor: c.surface, borderRadius: 16, padding: 24,
+    backgroundColor: c.white, borderRadius: 16, padding: 24,
     alignItems: 'center', gap: 12,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   jarIcon: { fontSize: 48 },
   jarPreviewText: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
-  cta: {
-    backgroundColor: c.day5, marginHorizontal: 28, marginBottom: 48,
-    paddingVertical: 18, borderRadius: 100, alignItems: 'center',
-  },
-  ctaLabel: { color: c.dark, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
+  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });
