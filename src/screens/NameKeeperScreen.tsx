@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated, ImageBackground,
@@ -156,7 +157,7 @@ export const NameKeeperScreen: React.FC = () => {
                   <View style={[styles.heroIconGlow, { backgroundColor: colors.primary }]} />
                 </View>
 
-                <Text style={styles.eyebrow}>ONE LAST THING</Text>
+                <DayHeader eyebrow="ONE LAST THING" />
 
                 <Text style={styles.title}>
                   What should we{'\n'}call you?
@@ -326,12 +327,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     top: -8,
     left: -8,
     zIndex: 1,
-  },
-  eyebrow: {
-    ...typography.captionSmall,
-    color: c.primary,
-    marginBottom: metrics.spacing.md,
-    textAlign: 'center',
   },
   title: {
     ...typography.displayLarge,

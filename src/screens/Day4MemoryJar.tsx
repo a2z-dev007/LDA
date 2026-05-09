@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
+import { DayCTA } from '../components/common/DayCTA';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView, Animated,
@@ -67,7 +69,7 @@ export const Day4MemoryJar: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Text style={styles.eyebrow}>Day 4 · The Memory Jar</Text>
+          <DayHeader eyebrow="Day 4 · The Memory Jar" />
           <Text style={styles.title}>Drop one memory here.</Text>
           <Text style={styles.subtitle}>A moment with your partner you never want to forget.</Text>
 
@@ -98,16 +100,7 @@ export const Day4MemoryJar: React.FC = () => {
           <Text style={styles.hint}>This stays in your private jar. You'll see it again on Day 5.</Text>
         </ScrollView>
 
-        <TouchableOpacity
-          style={[styles.ctaTouch, !memory.trim() && styles.ctaDim]}
-          activeOpacity={0.85}
-          onPress={handleDrop}
-          disabled={!memory.trim()}
-        >
-          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-            <Text style={styles.ctaLabel}>Drop it in the jar →</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <DayCTA title="Drop it in the jar" onPress={handleDrop} disabled={!memory.trim()} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -134,8 +127,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   charCount: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right', marginBottom: 16 },
   hint: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaDim: { opacity: 0.4 },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

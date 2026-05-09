@@ -1,17 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { DayCTA } from '../components/common/DayCTA';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { StreakRing } from '../components/common/StreakRing';
 import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
 import { useAppColors } from '../theme';
-import { bridgeQuotes, moodOptions } from '../data/quizData';
+import { bridgeQuotes } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { haptics } from '../utils/haptics';
+import { DayHeader } from '../components/common/DayHeader';
+import {
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import { metrics } from '../theme/metrics';
+import { fonts, typography } from '../theme/typography';
+import { 
+  Leaf, Heart, Target, Star
+} from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge3to4'>;
 
@@ -20,95 +28,195 @@ export const Bridge3to4: React.FC = () => {
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day3 = useDayStore((s) => s.day3);
-  const day2 = useDayStore((s) => s.day2);
   const setIntentionWord = useDayStore((s) => s.setDay4IntentionWord);
   const streakCount = useStreakStore((s) => s.streakCount);
-  const repeatMoodStreak = useStreakStore((s) => s.repeatMoodStreak);
 
   const trueCount = Object.values(day3.mirrorAnswers).filter(Boolean).length;
   const total = Object.keys(day3.mirrorAnswers).length;
-  const showRepeatMoodWarning = repeatMoodStreak >= 3 && day2.mood;
-  const moodData = moodOptions.find((m) => m.id === day2.mood);
+
+  const pillars = [
+    { label: 'Reflection', Icon: Leaf, color: colors.day1, pos: styles.satLeft },
+    { label: 'Growth', Icon: Heart, color: '#E85C7A', pos: styles.satRight },
+    { label: 'Intention', Icon: Target, color: colors.primary, pos: styles.satBottom },
+  ];
 
   return (
     <ScreenWrapper>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Zone 1 */}
-        <View style={styles.zone1}>
-          <StreakRing streakCount={streakCount} />
+        <DayHeader eyebrow="BRIDGE · TO DAY 4" />
+
+        {/* Zone 1 — Journey Visualization */}
+        <View style={styles.journeyZone}>
+          <Text style={styles.journeyTitle}>Your Journey ✨</Text>
+          <View style={styles.ringWrapper}>
+            <View style={styles.orbitalPath} />
+
+            {pillars.map((item, idx) => (
+              <View key={idx} style={[styles.satellite, item.pos]}>
+                <View style={styles.satIconBox}><item.Icon size={16} color={item.color} /></View>
+                <Text style={styles.satLabel}>{item.label}</Text>
+              </View>
+            ))}
+
+            <View style={styles.ringInner}>
+              <View style={styles.dayHexagon}>
+                <Text style={styles.dayNumber}>{streakCount}</Text>
+                <Text style={styles.dayLabel}>DAY</Text>
+              </View>
+              <View style={styles.ringProgress} />
+            </View>
+          </View>
         </View>
 
-        {/* Zone 2 — Recap */}
+        {/* Zone 2 — Rich Recap Card */}
         <View style={styles.zone2}>
-          <Text style={styles.recapLabel}>Yesterday's assumptions test</Text>
-          <View style={styles.scoreCard}>
-            <Text style={styles.scoreNum}>{trueCount}</Text>
-            <Text style={styles.scoreOf}>of {total} marked TRUE</Text>
-          </View>
-          {day3.appreciationSnap && (
-            <View style={styles.snapCard}>
-              <Text style={styles.snapLabel}>You wanted them to know</Text>
-              <Text style={styles.snapText}>"{day3.appreciationSnap}"</Text>
+          <Text style={styles.recapLabel}>Yesterday you said</Text>
+          <View style={styles.richRecapCard}>
+            {/* Mirror Stats Section */}
+            <View style={styles.recapCol}>
+              <View style={[styles.statCircle, { backgroundColor: colors.day3 + '15' }]}>
+                <Star size={20} color={colors.day3} fill={colors.day3} />
+              </View>
+              <Text style={styles.moodLabelSmall}>Assumptions</Text>
+              <Text style={styles.moodValueText}>{trueCount} / {total} True</Text>
             </View>
-          )}
-          {showRepeatMoodWarning && moodData && (
-            <View style={styles.repeatMoodCard}>
-              <Text style={styles.repeatMoodText}>
-                You've been feeling <Text style={{ color: moodData.color }}>{moodData.label.toLowerCase()}</Text> for a few days.{'\n'}
-                That's worth noticing. The jar is a good place for that.
+
+            <View style={styles.recapDivider} />
+
+            {/* Snap Section */}
+            <View style={[styles.recapCol, { flex: 1.2, alignItems: 'flex-start' }]}>
+              <Text style={styles.scoreLabelSmall}>You wrote</Text>
+              <Text style={styles.answerPreview} numberOfLines={3}>
+                {day3.appreciationSnap || "A moment of shared truth."}
               </Text>
             </View>
-          )}
+
+            <View style={styles.recapDivider} />
+
+            {/* Quote Section */}
+            <View style={styles.quoteBox}>
+              <Text style={styles.quoteMiniText}>
+                {bridgeQuotes.bridge_3to4}
+              </Text>
+            </View>
+          </View>
         </View>
 
-        {/* Zone 2b — Intention Word */}
-        <IntentionWordSelector accentColor={colors.day4} onSelect={setIntentionWord} />
-
-        {/* Zone 3 — Quote */}
-        <View style={styles.zone3}>
-          <Text style={styles.quote}>"{bridgeQuotes.bridge_3to4}"</Text>
+        {/* Zone 3 — Intention Word */}
+        <View style={styles.zone2b}>
+          <IntentionWordSelector accentColor={colors.day4} onSelect={setIntentionWord} />
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day4MemoryJar'); }}>
-        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-          <Text style={styles.ctaLabel}>Continue to Day 4 →</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <DayCTA title="Continue to Day 4" onPress={() => { haptics.medium(); navigation.navigate('Day4MemoryJar');} } />
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  content: { padding: 28, paddingBottom: 16, gap: 24 },
-  zone1: { alignItems: 'center' },
-  zone2: { gap: 12 },
-  recapLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
-  scoreCard: {
-    flexDirection: 'row', alignItems: 'baseline', gap: 10,
-    backgroundColor: c.white, borderRadius: 16, padding: 20,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.lg, gap: metrics.spacing.md, paddingTop: metrics.spacing.sm },
+  
+  journeyZone: { alignItems: 'center', marginVertical: metrics.spacing.sm },
+  journeyTitle: { 
+    color: c.textSecondary, 
+    ...typography.labelBold,
+    textTransform: 'uppercase', 
+    marginBottom: metrics.spacing.lg 
   },
-  scoreNum: { fontSize: 48, color: c.day3, fontFamily: 'PlayfairDisplay-Bold' },
-  scoreOf: { fontSize: 16, color: c.textHint, fontFamily: 'Inter-Regular' },
-  snapCard: {
-    backgroundColor: c.white, borderRadius: 14, padding: 16,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  ringWrapper: { width: responsiveWidth(75), height: responsiveWidth(65), justifyContent: 'center', alignItems: 'center' },
+  
+  orbitalPath: {
+    position: 'absolute', width: responsiveWidth(55), height: responsiveWidth(55),
+    borderRadius: responsiveWidth(27.5), borderWidth: 1, borderColor: `${c.primary}20`,
+    borderStyle: 'dashed',
   },
-  snapLabel: { color: c.textHint, fontSize: 11, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 },
-  snapText: { color: c.textSecondary, fontSize: 15, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 24 },
-  repeatMoodCard: {
-    backgroundColor: `${c.day4}15`, borderRadius: 14, padding: 16,
-    borderWidth: 1, borderColor: `${c.day4}40`,
+
+  ringInner: { 
+    width: responsiveWidth(28), height: responsiveWidth(28), borderRadius: responsiveWidth(14),
+    backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 1,
+    borderWidth: 6, borderColor: '#F0F9F9'
   },
-  repeatMoodText: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-Regular', lineHeight: 22 },
-  zone3: {
-    backgroundColor: c.white, borderRadius: 16, padding: 20,
-    borderLeftWidth: 3, borderLeftColor: c.day4,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  dayHexagon: { alignItems: 'center', justifyContent: 'center' },
+  dayNumber: { 
+    fontSize: metrics.fontSize.h1 * 1.5, 
+    fontFamily: fonts.dmSansBold, 
+    color: c.text 
   },
-  quote: { color: c.textSecondary, fontSize: 17, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
+  dayLabel: { 
+    ...typography.labelBold,
+    fontSize: metrics.fontSize.micro,
+    color: c.textHint, 
+    marginBottom: -2 
+  },
+  ringProgress: {
+    position: 'absolute', width: responsiveWidth(32), height: responsiveWidth(32),
+    borderRadius: responsiveWidth(16), borderWidth: 3, borderColor: c.primary,
+    opacity: 0.7,
+  },
+  
+  satellite: { position: 'absolute', alignItems: 'center', gap: 4 },
+  satIconBox: { 
+    width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFF', 
+    justifyContent: 'center', alignItems: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
+    borderWidth: 1, borderColor: '#F0F9F9'
+  },
+  satLabel: { 
+    ...typography.labelSmall,
+    fontSize: metrics.fontSize.micro,
+    color: c.textSecondary 
+  },
+  satLeft: { left: metrics.spacing.sm, top: '35%' },
+  satRight: { right: metrics.spacing.sm, top: '35%' },
+  satBottom: { bottom: 0, alignSelf: 'center' },
+
+  zone2: { gap: metrics.spacing.sm },
+  recapLabel: { 
+    color: c.primary, 
+    ...typography.labelBold,
+    textTransform: 'uppercase' 
+  },
+  richRecapCard: {
+    flexDirection: 'row', backgroundColor: '#FFF', borderRadius: metrics.radius.xl, padding: metrics.spacing.md,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 15, elevation: 1,
+    alignItems: 'center'
+  },
+  recapCol: { alignItems: 'center', gap: 4, flex: 1 },
+  statCircle: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  moodLabelSmall: { 
+    ...typography.labelBold,
+    fontSize: metrics.fontSize.micro,
+    color: c.textHint, 
+    textTransform: 'uppercase' 
+  },
+  moodValueText: { 
+    ...typography.bodyBold,
+    fontSize: metrics.fontSize.micro + 2,
+    color: c.text 
+  },
+  
+  recapDivider: { width: 1, height: '60%', backgroundColor: '#F3F4F6', marginHorizontal: 8 },
+  
+  scoreLabelSmall: { 
+    ...typography.labelBold,
+    fontSize: metrics.fontSize.micro,
+    color: c.textHint, 
+    textTransform: 'uppercase' 
+  },
+  answerPreview: {
+    ...typography.bodySmall,
+    color: c.text,
+    fontFamily: fonts.playfairItalic,
+    lineHeight: 16
+  },
+  
+  quoteBox: { flex: 1.5, backgroundColor: '#F0FDF4', borderRadius: metrics.radius.md, padding: metrics.spacing.sm, position: 'relative' },
+  quoteMiniText: { 
+    ...typography.quoteItalic,
+    fontSize: metrics.fontSize.caption,
+    color: '#064E3B', 
+  },
+
+  zone2b: { marginTop: metrics.spacing.xs },
 });

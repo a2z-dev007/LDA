@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView } from 'react-native';
+import { DayCTA } from '../components/common/DayCTA';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -102,11 +103,7 @@ export const Day5JarReveal: React.FC = () => {
       </ScrollView>
 
       <Animated.View style={{ opacity: buttonOpacity }}>
-        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day5TheLetter'); }}>
-          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-            <Text style={styles.ctaLabel}>Read your letter →</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <DayCTA title="Read your letter" onPress={() => { haptics.medium(); navigation.navigate('Day5TheLetter');} } />
       </Animated.View>
     </ScreenWrapper>
   );
@@ -135,7 +132,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   notePrivate: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
   emptyJar: { alignItems: 'center', padding: 24 },
   emptyText: { color: c.textHint, fontSize: 14, fontFamily: 'PlayfairDisplay-Italic' },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

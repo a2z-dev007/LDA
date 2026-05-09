@@ -1,4 +1,5 @@
 import React from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Share,
 } from 'react-native';
@@ -46,7 +47,7 @@ export const Day3MirrorResults: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>Day 3 · Mirror Results</Text>
+        <DayHeader eyebrow="Day 3 · Mirror Results" />
         <Text style={styles.title}>Your answers</Text>
         <Text style={styles.subtitle}>
           The right column is waiting for your partner.
@@ -112,7 +113,6 @@ export const Day3MirrorResults: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
   subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 24 },
   splitContainer: { flexDirection: 'row', gap: 12, marginBottom: 24 },
@@ -139,7 +139,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
   shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },
-  inviteBtn: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  inviteBtn: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 } },
   inviteBtnInner: { paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
   inviteBtnLabel: { color: c.onPrimary, fontSize: 16, fontFamily: 'Inter-SemiBold' },
   skipBtn: { alignItems: 'center', paddingVertical: 8 },

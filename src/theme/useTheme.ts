@@ -20,8 +20,8 @@ import {
   ColorTheme,
 } from './colorThemes';
 
-// Must match ACTIVE_DARK_THEME in ThemeContext.tsx
-const ACTIVE_THEME: LightThemeName = 'velvetMauve';
+// Must match ACTIVE_LIGHT_THEME in ThemeContext.tsx
+const ACTIVE_THEME: LightThemeName = 'sageGarden';
 
 function resolveTheme(): ColorTheme {
   return lightThemes[ACTIVE_THEME];

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { DayHeader } from '../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -10,6 +11,14 @@ import { moodOptions, MoodId } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { haptics } from '../utils/haptics';
+import {
+  responsiveWidth,
+  responsiveHeight,
+  responsiveFontSize,
+} from 'react-native-responsive-dimensions';
+import { metrics } from '../theme/metrics';
+import { typography } from '../theme/typography';
+import { Sparkles, Flame } from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodPicker'>;
 
@@ -35,13 +44,15 @@ export const Day2MoodPicker: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={2} />
       <View style={styles.header}>
-        <Text style={styles.eyebrow}>Day 2 · The Mood Room</Text>
+        <DayHeader eyebrow="Day 2 · The Mood Room" />
         {day2.intentionWord ? (
           <View style={[styles.intentionPill, { borderColor: colors.day2 }]}>
+            <Flame size={metrics.iconSize.xs} color={colors.day2} style={{marginRight: 4}}/>
             <Text style={[styles.intentionText, { color: colors.day2 }]}>{day2.intentionWord}</Text>
           </View>
         ) : null}
-        <Text style={styles.title}>How do you feel about{'\n'}your relationship today?</Text>
+        <Text style={styles.title}>How do you feel about{'\n'}your relationship today? ☁️</Text>
+        <Text style={styles.subtitle}>No right answer · Only your truth</Text>
       </View>
 
       {/* SVG Candle placeholder — shows selected mood */}
@@ -78,22 +89,25 @@ export const Day2MoodPicker: React.FC = () => {
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  header: { paddingHorizontal: 28, paddingTop: 16, paddingBottom: 8, gap: 10 },
-  eyebrow: { color: c.day2, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase' },
+  header: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingTop: metrics.spacing.md, paddingBottom: metrics.spacing.sm, gap: metrics.spacing.sm },
   intentionPill: {
-    alignSelf: 'flex-start', borderWidth: 1.5, borderRadius: 100,
-    paddingHorizontal: 14, paddingVertical: 5,
+    alignSelf: 'flex-start', borderWidth: 1.5, borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd, paddingVertical: metrics.spacing.xs,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.7)',
   },
-  intentionText: { fontSize: 13, fontFamily: 'Inter-SemiBold' },
-  title: { fontSize: 24, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34 },
-  candleContainer: { alignItems: 'center', paddingVertical: 12 },
-  candleEmoji: { fontSize: 48 },
-  scroll: { flex: 1, marginTop: 8 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20, gap: 12, paddingBottom: 16 },
+  intentionText: { ...typography.labelSmall, fontFamily: 'Inter-SemiBold' },
+  title: { ...typography.displayMedium, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: metrics.fontSize.h2 * 1.35 },
+  subtitle: { ...typography.bodySmall, color: c.textSecondary, marginBottom: metrics.spacing.sm },
+  candleContainer: { alignItems: 'center', paddingVertical: metrics.spacing.md },
+  candleEmoji: { fontSize: responsiveFontSize(8) },
+  scroll: { flex: 1, marginTop: metrics.spacing.xs },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: metrics.layout.screenPaddingHz, gap: metrics.spacing.sm, paddingBottom: responsiveHeight(4) },
   moodCard: {
-    width: '46%', borderWidth: 1.5, borderRadius: 16, padding: 20,
-    alignItems: 'center', gap: 8,
+    width: '48%', borderWidth: 1.5, borderRadius: metrics.radius.lg, padding: metrics.spacing.md,
+    alignItems: 'center', gap: metrics.spacing.sm, backgroundColor: 'rgba(255,255,255,0.7)',
+    shadowColor: c.primary, shadowOffset: { width: 0, height: responsiveHeight(0.2) },
+    shadowOpacity: 0.05, shadowRadius: responsiveWidth(2), elevation: 1,
   },
-  moodEmoji: { fontSize: 32 },
-  moodLabel: { color: c.textSecondary, fontSize: 14, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
+  moodEmoji: { fontSize: responsiveFontSize(4.5) },
+  moodLabel: { color: c.textSecondary, ...typography.bodySmall, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
 });

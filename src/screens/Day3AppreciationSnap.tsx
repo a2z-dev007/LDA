@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
+import { DayCTA } from '../components/common/DayCTA';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
@@ -49,7 +51,7 @@ export const Day3AppreciationSnap: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={3} />
         <View style={styles.body}>
-          <Text style={styles.eyebrow}>Day 3 · Quick Win</Text>
+          <DayHeader eyebrow="Day 3 · Quick Win" />
           <Text style={styles.title}>
             Before we test what you know about them —
           </Text>
@@ -84,11 +86,7 @@ export const Day3AppreciationSnap: React.FC = () => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={handleSave}>
-          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-            <Text style={styles.ctaLabel}>{text.trim() ? 'Save this →' : 'Skip for now →'}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <DayCTA title="{text.trim() ? 'Save this ' : 'Skip for now '}" onPress={handleSave} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -107,7 +105,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   savedNote: { color: c.day3, fontSize: 14, fontFamily: 'Inter-SemiBold', marginTop: 12 },
   hint: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 16 },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

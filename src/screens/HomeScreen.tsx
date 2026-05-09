@@ -88,7 +88,6 @@ export const HomeScreen = () => {
   };
 
   const activeDay = DAY_DATA[nextDay - 1];
-  const ctaBottomPadding = insets.bottom + metrics.spacing.sm;
 
   return (
     <ScreenWrapper>
@@ -202,11 +201,11 @@ export const HomeScreen = () => {
           })}
         </View>
 
-        <View style={styles.bottomSpacer} />
+        {/* Removed bottomSpacer because CTA is now in flex layout */}
       </ScrollView>
 
       {/* ── Fixed bottom CTA ───────────────────────────── */}
-      <View style={[styles.ctaContainer, { paddingBottom: ctaBottomPadding }]}>
+      <View style={[styles.ctaContainer]}>
         {completed < 5 ? (
           <TouchableOpacity
             activeOpacity={0.88}
@@ -429,12 +428,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
 
   // ── Fixed CTA ───────────────────────────────────────────
   ctaContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.sm,
+    paddingBottom: metrics.spacing.md,
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
   continueBtnTouch: {

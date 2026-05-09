@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
@@ -70,7 +71,7 @@ export const Day4DropBox: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <View style={styles.body}>
-          <Text style={styles.eyebrow}>Day 4 · Drop Box</Text>
+          <DayHeader eyebrow="Day 4 · Drop Box" />
           <Text style={styles.title}>Something you need to say?</Text>
           <Text style={styles.subtitle}>
             Write it raw. We'll help you say it better.{'\n'}
@@ -129,7 +130,6 @@ export const Day4DropBox: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
   subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 24 },
   input: {

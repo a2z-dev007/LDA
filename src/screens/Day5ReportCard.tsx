@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { DayCTA } from '../components/common/DayCTA';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -120,11 +121,7 @@ export const Day5ReportCard: React.FC = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.ctaTouch} activeOpacity={0.85} onPress={() => { haptics.medium(); navigation.navigate('Day5ThePromise'); }}>
-        <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-          <Text style={styles.ctaLabel}>Continue →</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <DayCTA title="Continue" onPress={() => { haptics.medium(); navigation.navigate('Day5ThePromise');} } />
     </ScreenWrapper>
   );
 };
@@ -171,7 +168,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   jarIcon: { fontSize: 48 },
   jarPreviewText: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

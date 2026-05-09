@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
+import { DayCTA } from '../components/common/DayCTA';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView,
@@ -58,7 +60,7 @@ export const Day4DailyTwo: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Text style={styles.eyebrow}>The Daily 2</Text>
+          <DayHeader eyebrow="The Daily 2" />
           <Text style={styles.title}>Two questions.{'\n'}Both for you.</Text>
           <Text style={styles.subtitle}>Private. No one will read them but you.</Text>
 
@@ -95,15 +97,7 @@ export const Day4DailyTwo: React.FC = () => {
           <Text style={styles.hook}>Tomorrow is Day 5. Your final ritual. Make it count.</Text>
         </ScrollView>
 
-        <TouchableOpacity
-          style={[styles.ctaTouch, !canContinue && styles.ctaDim]}
-          activeOpacity={0.85}
-          onPress={handleDone}
-        >
-          <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cta}>
-            <Text style={styles.ctaLabel}>{canContinue ? 'Save & continue →' : 'Skip for now'}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <DayCTA title="{canContinue ? 'Save & continue ' : 'Skip for now'}" onPress={handleDone} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -125,8 +119,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   divider: { height: 1, backgroundColor: c.surface, marginVertical: 24 },
   hook: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', textAlign: 'center', marginTop: 24, marginBottom: 8, lineHeight: 20 },
-  ctaTouch: { marginHorizontal: 28, marginBottom: 48, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
-  cta: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
-  ctaDim: { opacity: 0.5 },
-  ctaLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
 });

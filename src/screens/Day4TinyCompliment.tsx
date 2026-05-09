@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { DayHeader } from '../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -45,7 +46,7 @@ export const Day4TinyCompliment: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={4} />
       <View style={styles.body}>
-        <Text style={styles.eyebrow}>Day 4 · Tiny Compliment</Text>
+        <DayHeader eyebrow="Day 4 · Tiny Compliment" />
         <Text style={styles.title}>
           How does your partner make you feel?
         </Text>
@@ -91,7 +92,6 @@ export const Day4TinyCompliment: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 8 },
   subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 32 },
   jarContainer: { alignItems: 'center', marginBottom: 32 },
