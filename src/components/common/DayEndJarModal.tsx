@@ -110,7 +110,7 @@ export const DayEndJarModal: React.FC<DayEndJarModalProps> = ({
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={animationFinished ? ['#6EE87A', '#2DD4BF'] : ['#E0E0E0', '#D1D1D1']}
+                colors={animationFinished ? colors.gradientBtn : ['#E0E0E0', '#D1D1D1']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.buttonGradient}

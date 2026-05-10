@@ -35,6 +35,7 @@ export interface ColorTheme {
   gradientMid: string;
   gradientEnd: string;
   gradientBtn?: any;
+  gradientBtn2?: any;
   // Button Gradients
   buttonGradientStart: string;
   buttonGradientEnd: string;
@@ -146,7 +147,7 @@ export const sageGardenTheme: ColorTheme = {
   gradientMid: '#E8F3F1',
   gradientEnd: '#E0F0ED',
   gradientBtn:['#6EE87A', '#2DD4BF', '#00BCD4'],
-
+  gradientBtn2: ['#6EE87A', '#2DD4BF', '#1E90FF'],
   buttonGradientStart: '#6EE87A',
   buttonGradientEnd: '#00BCD4',
   glassWhite: 'rgba(255,255,255,0.3)',

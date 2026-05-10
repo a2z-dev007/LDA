@@ -50,6 +50,7 @@ export const Day1VibeCheck: React.FC = () => {
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const setDay1Vibe = useDayStore((s) => s.setDay1Vibe);
+  const completeDay1 = useDayStore((s) => s.completeDay1);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showJarModal, setShowJarModal] = useState(false);
@@ -91,6 +92,7 @@ export const Day1VibeCheck: React.FC = () => {
 
   const handleModalNext = () => {
     setShowJarModal(false);
+    completeDay1();
     navigation.navigate('Bridge1to2');
   };
 
@@ -168,7 +170,7 @@ export const Day1VibeCheck: React.FC = () => {
             activeOpacity={0.9}
           >
             <LinearGradient
-              colors={['#6EE87A', '#2DD4BF']}
+              colors={colors.gradientBtn}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.nextBtn}
@@ -243,25 +245,25 @@ const makeStyles = (c: any) => StyleSheet.create({
   tile: {
     flex: 1,
     height: responsiveWidth(40),
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.4)',
     borderRadius: metrics.radius.xl,
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.9)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: metrics.spacing.md,
-    shadowColor: '#2DD4BF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    // shadowColor: '#2DD4BF',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.05,
+    // shadowRadius: 10,
+    // elevation: 3,
     overflow: 'hidden',
   },
   tileSelected: {
     borderColor: c.primary,
     backgroundColor: '#FFFFFF',
     shadowOpacity: 0.1,
-    elevation: 6,
+    // elevation: 6,
   },
   emojiContainer: {
     width: responsiveWidth(14),

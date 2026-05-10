@@ -103,7 +103,8 @@ interface DayStore {
   // Day 1
   setDay1Slider: (score: number, segment: Segment) => void;
   setDay1Vibe: (vibe: string, category: Day1Data['vibe_d1_category']) => void;
-  completeDay1: (quizAnswers: Record<string, 'A' | 'B'>, personalityType: PersonalityTypeId) => void;
+  saveDay1Quiz: (quizAnswers: Record<string, 'A' | 'B'>, personalityType: PersonalityTypeId) => void;
+  completeDay1: () => void;
 
   // Day 2
   setDay2IntentionWord: (word: string) => void;
@@ -252,12 +253,19 @@ export const useDayStore = create<DayStore>()(
       setDay1Vibe: (vibe, category) =>
         set((s) => ({ day1: { ...s.day1, vibe_d1: vibe, vibe_d1_category: category } })),
 
-      completeDay1: (quizAnswers, personalityType) =>
+      saveDay1Quiz: (quizAnswers, personalityType) =>
         set((s) => ({
           day1: {
             ...s.day1,
             quizAnswers,
             personalityType,
+          },
+        })),
+      
+      completeDay1: () =>
+        set((s) => ({
+          day1: {
+            ...s.day1,
             complete: true,
             completionTimestamp: new Date().toISOString(),
           },

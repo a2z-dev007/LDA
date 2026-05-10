@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Animated, PanResponder,
   TouchableOpacity, Dimensions,
@@ -56,7 +56,15 @@ export const Day1ConnectionSlider: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const isDay1Complete = useDayStore((s) => s.day1.complete);
   const setDay1Slider = useDayStore((s) => s.setDay1Slider);
+
+  useEffect(() => {
+    if (isDay1Complete) {
+      navigation.replace('Home');
+    }
+  }, [isDay1Complete]);
+
   const [score, setScore] = useState(5);
   const thumbX = useRef(new Animated.Value(((5 - 1) / 9) * TRACK_WIDTH)).current;
   const scoreAnim = useRef(new Animated.Value(1)).current;
@@ -97,6 +105,8 @@ export const Day1ConnectionSlider: React.FC = () => {
   const meta = SCORE_META[score];
   const insight = getInsight(score);
   const thumbPercent = ((score - 1) / 9) * 100;
+
+  if (isDay1Complete) return null;
 
   return (
     <ScreenWrapper>
@@ -185,7 +195,7 @@ export const Day1ConnectionSlider: React.FC = () => {
           onPress={handleNext}
         >
           <LinearGradient
-            colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+            colors={colors.gradientBtn2}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.cta}

@@ -137,9 +137,12 @@ export const HomeScreen = () => {
                 key={day.number}
                 activeOpacity={isLocked ? 1 : 0.8}
                 onPress={() => {
-                  if (!isLocked) {
+                  if (isActive) {
                     haptics.light();
                     navigation.navigate(day.route as any);
+                  } else if (isCompleted) {
+                    // Prevent re-entry to completed days
+                    haptics.notification('warning');
                   }
                 }}
                 style={[
@@ -213,7 +216,7 @@ export const HomeScreen = () => {
             style={styles.continueBtnTouch}
           >
             <LinearGradient
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+              colors={colors.gradientBtn}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.continueBtn}
@@ -235,21 +238,22 @@ export const HomeScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            activeOpacity={0.88}
-            onPress={() => navigation.navigate('Day5PartnerInvite')}
-            style={styles.continueBtnTouch}
-          >
-            <LinearGradient
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.continueBtn}
-            >
-              <Text style={styles.continueBtnTitle}>Invite your partner</Text>
-              <Text style={styles.continueBtnArrow}>→</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          // <TouchableOpacity
+          //   activeOpacity={0.88}
+          //   onPress={() => navigation.navigate('Day5PartnerInvite')}
+          //   style={styles.continueBtnTouch}
+          // >
+          //   <LinearGradient
+          //     colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+          //     start={{ x: 0, y: 0 }}
+          //     end={{ x: 1, y: 0 }}
+          //     style={styles.continueBtn}
+          //   >
+          //     <Text style={styles.continueBtnTitle}>Invite your partner</Text>
+          //     <Text style={styles.continueBtnArrow}>→</Text>
+          //   </LinearGradient>
+          // </TouchableOpacity>
+          <></>
         )}
       </View>
     </ScreenWrapper>

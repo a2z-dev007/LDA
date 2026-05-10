@@ -107,7 +107,7 @@ export const Day1SparkQuiz: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const route = useRoute<RouteProps>();
   const { sliderScore } = route.params;
-  const completeDay1 = useDayStore((s) => s.completeDay1);
+  const saveDay1Quiz = useDayStore((s) => s.saveDay1Quiz);
   const insets = useSafeAreaInsets();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -179,7 +179,7 @@ export const Day1SparkQuiz: React.FC = () => {
         }, 300);
       } else {
         const personality = calculatePersonalityType(newAnswers);
-        completeDay1(newAnswers, personality.id);
+        saveDay1Quiz(newAnswers, personality.id);
         navigation.replace('Day1Result');
       }
     });
