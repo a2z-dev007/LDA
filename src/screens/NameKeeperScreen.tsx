@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Animated, ImageBackground,
+  KeyboardAvoidingView, Platform, Animated, ImageBackground, Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -38,6 +38,17 @@ export const NameKeeperScreen: React.FC = () => {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     // Entrance animation
@@ -213,26 +224,28 @@ export const NameKeeperScreen: React.FC = () => {
               </View>
             </View>
 
-            {/* Footer with button */}
-            <View style={styles.footer}>
-              <GradientButton
-                text="Continue to Day 1"
-                onPress={handleContinue}
-                disabled={!userName.trim()}
-                showArrow={true}
-                fullWidth={true}
-              />
+            {/* Footer with button — Hidden when keyboard is open to avoid UI overlap */}
+            {!isKeyboardVisible && (
+              <View style={styles.footer}>
+                <GradientButton
+                  text="Continue to Day 1"
+                  onPress={handleContinue}
+                  disabled={!userName.trim()}
+                  showArrow={true}
+                  fullWidth={true}
+                />
 
-              {/* Progress indicator */}
-              <View style={styles.progressContainer}>
-                <View style={styles.progressDots}>
-                  <View style={[styles.dot, styles.dotComplete]} />
-                  <View style={[styles.dot, styles.dotComplete]} />
-                  <View style={[styles.dot, styles.dotActive]} />
+                {/* Progress indicator */}
+                <View style={styles.progressContainer}>
+                  <View style={styles.progressDots}>
+                    <View style={[styles.dot, styles.dotComplete]} />
+                    <View style={[styles.dot, styles.dotComplete]} />
+                    <View style={[styles.dot, styles.dotActive]} />
+                  </View>
+                  <Text style={styles.progressText}>Step 3 of 3</Text>
                 </View>
-                <Text style={styles.progressText}>Step 3 of 3</Text>
               </View>
-            </View>
+            )}
           </Animated.View>
         </KeyboardAvoidingView>
       </SafeAreaView>
