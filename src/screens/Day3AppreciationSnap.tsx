@@ -2,10 +2,9 @@ import React, { useState, useRef } from 'react';
 import { DayHeader } from '../components/common/DayHeader';
 import { DayCTA } from '../components/common/DayCTA';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity,
+  View, Text, StyleSheet, TextInput,
   KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -30,19 +29,18 @@ export const Day3AppreciationSnap: React.FC = () => {
 
   const handleSave = () => {
     if (!text.trim()) {
-      navigation.navigate('Day3AssumptionsTest');
+      navigation.navigate('Day3FinishMySentence');
       return;
     }
     haptics.success();
     setAppreciationSnap(text.trim());
     addEntry({ day: 3, type: 'appreciation', content: text.trim() });
 
-    // Arc animation — card flies to journal
     setSaved(true);
     Animated.sequence([
       Animated.timing(flyAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
     ]).start(() => {
-      setTimeout(() => navigation.navigate('Day3AssumptionsTest'), 200);
+      setTimeout(() => navigation.navigate('Day3FinishMySentence'), 200);
     });
   };
 
@@ -68,7 +66,7 @@ export const Day3AppreciationSnap: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Write something true…"
-          placeholderTextColor={colors.textHint}
+              placeholderTextColor={colors.textHint}
               value={text}
               onChangeText={setText}
               multiline
@@ -86,7 +84,7 @@ export const Day3AppreciationSnap: React.FC = () => {
           </Text>
         </View>
 
-        <DayCTA title="{text.trim() ? 'Save this ' : 'Skip for now '}" onPress={handleSave} />
+        <DayCTA title={text.trim() ? "Save this" : "Skip for now"} onPress={handleSave} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -94,7 +92,6 @@ export const Day3AppreciationSnap: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 22, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 32, marginBottom: 8 },
   subtitle: { fontSize: 18, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 28 },
   inputCard: {},

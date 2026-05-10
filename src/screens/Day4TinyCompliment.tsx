@@ -10,7 +10,6 @@ import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
-import { memoryRef } from './Day4MemoryJar';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4TinyCompliment'>;
 
@@ -29,7 +28,6 @@ export const Day4TinyCompliment: React.FC = () => {
     setSelected(word);
     setTinyCompliment(word);
 
-    // Update jar memory with compliment
     addJarMemory({
       content: null,
       type: 'text',
@@ -37,9 +35,7 @@ export const Day4TinyCompliment: React.FC = () => {
       dayColor: colors.day4,
     });
 
-    // Store the compliment word in day4 store via a partial update
-    // We'll pass it forward through navigation to Day4DailyTwo
-    setTimeout(() => navigation.navigate('Day4DailyTwo'), 600);
+    setTimeout(() => navigation.navigate('Day4PriorityShuffle'), 600);
   };
 
   return (
@@ -52,7 +48,6 @@ export const Day4TinyCompliment: React.FC = () => {
         </Text>
         <Text style={styles.subtitle}>One word. Seal it into the jar.</Text>
 
-        {/* Jar with sparkle */}
         <View style={styles.jarContainer}>
           <Text style={styles.jarIcon}>🫙</Text>
           {selected && (
@@ -82,7 +77,7 @@ export const Day4TinyCompliment: React.FC = () => {
       <TouchableOpacity
         style={styles.skipBtn}
         activeOpacity={0.7}
-        onPress={() => navigation.navigate('Day4DailyTwo')}
+        onPress={() => navigation.navigate('Day4PriorityShuffle')}
       >
         <Text style={styles.skipBtnLabel}>Skip for now</Text>
       </TouchableOpacity>

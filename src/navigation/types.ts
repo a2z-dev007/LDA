@@ -13,6 +13,7 @@ export type RootStackParamList = {
   // ── Day 1 ────────────────────────────────────────
   Day1Slider: undefined;
   Day1HonestMoment: { sliderScore: number };
+  Day1VibeCheck: undefined;
   Day1Quiz: { sliderScore: number };
   Day1Result: undefined;
 
@@ -28,7 +29,9 @@ export type RootStackParamList = {
 
   // ── Day 3 ────────────────────────────────────────
   Day3AppreciationSnap: undefined;
+  Day3FinishMySentence: undefined;
   Day3AssumptionsTest: undefined;
+  Day3MoodBoard: undefined;
   Day3OneCertainty: undefined;
   Day3MirrorResults: undefined;
 
@@ -38,6 +41,7 @@ export type RootStackParamList = {
   // ── Day 4 ────────────────────────────────────────
   Day4MemoryJar: undefined;
   Day4TinyCompliment: undefined;
+  Day4PriorityShuffle: undefined;
   Day4DailyTwo: undefined;
   Day4TriviaFact: undefined;
   Day4DropBox: undefined;

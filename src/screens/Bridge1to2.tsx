@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { DayCTA } from '../components/common/DayCTA';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { StreakRing } from '../components/common/StreakRing';
 import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
 import { useAppColors } from '../theme';
 import { bridgeQuotes } from '../data/quizData';
@@ -22,8 +21,9 @@ import {
 import { metrics } from '../theme/metrics';
 import { fonts, typography } from '../theme/typography';
 import { 
-  Sparkles, ShieldCheck, Leaf, Heart, Target, Star, Waves, ChevronRight, Flame
+  ShieldCheck, Heart, Target, Star, Waves, Sparkles
 } from 'lucide-react-native';
+import { ThisOrThatBridge } from '../components/bridge/ThisOrThatBridge';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge1to2'>;
 
@@ -33,16 +33,13 @@ export const Bridge1to2: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const setIntentionWord = useDayStore((s) => s.setDay2IntentionWord);
+  const b2_tot_complete = useDayStore((s) => s.day2.b2_tot_complete);
   const streakCount = useStreakStore((s) => s.streakCount);
   const shieldUsed = useStreakStore((s) => s.shieldUsed);
 
-  const personality = personalityTypes.find((p) => p.id === day1.personalityType);
+  const [intentionSelected, setIntentionSelected] = useState(false);
 
-  const pillars = [
-    { label: 'Reflection', Icon: Leaf, color: colors.day1, pos: styles.satLeft },
-    { label: 'Growth', Icon: Heart, color: '#E85C7A', pos: styles.satRight },
-    { label: 'Intention', Icon: Target, color: colors.primary, pos: styles.satBottom },
-  ];
+  const personality = personalityTypes.find((p) => p.id === day1.personalityType);
 
   const getDerivedMood = (score: number) => {
     if (score >= 9) return { emoji: '🔥', label: 'Inspired', color: '#FEF3C7' };
@@ -56,7 +53,7 @@ export const Bridge1to2: React.FC = () => {
 
   const renderStars = (score: number) => {
     const stars = [];
-    const normalizedScore = Math.round(score / 2); // 10 -> 5 stars
+    const normalizedScore = Math.round(score / 2);
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <Star 
@@ -79,34 +76,19 @@ export const Bridge1to2: React.FC = () => {
         {/* Zone 1 — Journey Visualization */}
         <View style={styles.journeyZone}>
           <Text style={styles.journeyTitle}>Your Journey</Text>
-          <View >
-            {/* Orbital Path */}
-           
-
-            {/* Dynamic Satellites */}
-            {/* {pillars.map((item, idx) => (
-              <View key={idx} style={[styles.satellite, item.pos]}>
-                <View style={styles.satIconBox}><item.Icon size={16} color={item.color} /></View>
-                <Text style={styles.satLabel}>{item.label}</Text>
-              </View>
-            ))} */}
-
-            {/* Central Streak Ring */}
-            <View style={styles.ringInner}>
-              <View style={styles.dayHexagon}>
-                <Text style={styles.dayNumber}>{streakCount}</Text>
-                <Text style={styles.dayLabel}>DAY</Text>
-              </View>
-              <View style={styles.ringProgress} />
+          <View style={styles.ringInner}>
+            <View style={styles.dayHexagon}>
+              <Text style={styles.dayNumber}>{streakCount}</Text>
+              <Text style={styles.dayLabel}>DAY</Text>
             </View>
+            <View style={styles.ringProgress} />
           </View>
         </View>
 
-        {/* Zone 2 — Rich Recap Card */}
+        {/* Zone 2 — Recap Card */}
         <View style={styles.zone2}>
           <Text style={styles.recapLabel}>Yesterday you said</Text>
           <View style={styles.richRecapCard}>
-            {/* Mood Face Section */}
             <View style={styles.recapCol}>
               <View style={[styles.moodFace]}>
                 <Text style={{ fontSize: responsiveFontSize(4) }}>{derivedMood.emoji}</Text>
@@ -114,33 +96,23 @@ export const Bridge1to2: React.FC = () => {
               <Text style={styles.moodLabelSmall}>Mood</Text>
               <Text style={styles.moodValueText}>{derivedMood.label}</Text>
             </View>
-
             <View style={styles.recapDivider} />
-
-            {/* Score Section */}
             <View style={[styles.recapCol, { flex: 1.2 }]}>
               <Text style={styles.scoreLabelSmall}>Your Score</Text>
               <View style={styles.scoreRow}>
                 <Text style={styles.scoreBig}>{day1.sliderScore}</Text>
                 <Text style={styles.scoreOf}>/ 10</Text>
               </View>
-              <View style={styles.starsRow}>
-                {renderStars(day1.sliderScore)}
-              </View>
+              <View style={styles.starsRow}>{renderStars(day1.sliderScore)}</View>
             </View>
-
             <View style={styles.recapDivider} />
-
-            {/* Quote Section */}
             <View style={styles.quoteBox}>
-              <Text style={styles.quoteMiniText}>
-                {bridgeQuotes.bridge_1to2}
-              </Text>
+              <Text style={styles.quoteMiniText}>{bridgeQuotes.bridge_1to2}</Text>
             </View>
           </View>
 
           {personality && (
-            <TouchableOpacity activeOpacity={0.9} style={[styles.personalityCard]}>
+            <View style={styles.personalityCard}>
               <View style={[styles.personalityIconBox, { backgroundColor: personality.color + '15' }]}>
                 <Waves size={20} color={personality.color} />
               </View>
@@ -148,8 +120,7 @@ export const Bridge1to2: React.FC = () => {
                 <Text style={[styles.personalityName, { color: personality.color }]}>{personality.name}</Text>
                 <Text style={styles.personalitySub}>{personality.subLabel}</Text>
               </View>
-              {/* <ChevronRight size={18} color={colors.textHint} /> */}
-            </TouchableOpacity>
+            </View>
           )}
 
           {shieldUsed && (
@@ -161,26 +132,41 @@ export const Bridge1to2: React.FC = () => {
         </View>
 
         {/* Zone 3 — Intention Word */}
-        <View style={styles.zone2b}>
-          <IntentionWordSelector accentColor={colors.day2} onSelect={setIntentionWord} />
+        <View style={styles.zoneIntention}>
+          <IntentionWordSelector 
+            accentColor={colors.day2} 
+            onSelect={(word) => {
+              setIntentionWord(word);
+              setIntentionSelected(true);
+            }} 
+          />
         </View>
+
+        {/* Zone 4 — Game 06: This or That */}
+        {intentionSelected && (
+          <View style={styles.zoneGame}>
+            <ThisOrThatBridge onComplete={() => haptics.success()} />
+          </View>
+        )}
       </ScrollView>
 
-      <DayCTA title="Continue to Day 2" onPress={() => { haptics.medium(); navigation.navigate('Day2MoodPicker');} } />
+      <DayCTA 
+        title="Continue to Day 2" 
+        disabled={!intentionSelected || !b2_tot_complete}
+        onPress={() => { haptics.medium(); navigation.navigate('Day2MoodPicker');} } 
+      />
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.lg, gap: metrics.spacing.md, paddingTop: metrics.spacing.sm },
-  
-  // Journey Zone
-  journeyZone: { alignItems: 'center',  },
+  journeyZone: { alignItems: 'center', marginBottom: metrics.spacing.md },
   journeyTitle: { 
     color: c.textSecondary, 
     ...typography.labelBold,
     textTransform: 'uppercase', 
-    marginBottom: responsiveHeight(3)
+    marginBottom: responsiveHeight(2)
   },
   ringInner: { 
     width: responsiveWidth(28), height: responsiveWidth(28), borderRadius: responsiveWidth(14),
@@ -205,25 +191,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderRadius: responsiveWidth(16), borderWidth: 3, borderColor: c.primary,
     opacity: 0.7,
   },
-  
-  // Satellites
-  satellite: { position: 'absolute', alignItems: 'center', gap: 4 },
-  satIconBox: { 
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFF', 
-    justifyContent: 'center', alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
-    borderWidth: 1, borderColor: '#F0F9F9'
-  },
-  satLabel: { 
-    ...typography.labelSmall,
-    fontSize: metrics.fontSize.micro,
-    color: c.textSecondary 
-  },
-  satLeft: { left: metrics.spacing.sm, top: '35%' },
-  satRight: { right: metrics.spacing.sm, top: '35%' },
-  satBottom: { bottom: 12, alignSelf: 'center' },
-
-  // Recap Card
   zone2: { gap: metrics.spacing.sm },
   recapLabel: { 
     color: c.primary, 
@@ -248,9 +215,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: metrics.fontSize.bodySm,
     color: c.text 
   },
-  
   recapDivider: { width: 1, height: '60%', backgroundColor: '#F3F4F6', marginHorizontal: 8 },
-  
   scoreLabelSmall: { 
     ...typography.labelBold,
     fontSize: metrics.fontSize.micro,
@@ -270,15 +235,12 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginLeft: 2 
   },
   starsRow: { flexDirection: 'row', marginTop: 2 },
-  
   quoteBox: { flex: 1.5, backgroundColor: '#F0FDF4', borderRadius: metrics.radius.md, padding: metrics.spacing.sm, position: 'relative' },
   quoteMiniText: { 
     ...typography.quoteItalic,
     fontSize: metrics.fontSize.caption,
     color: '#064E3B', 
   },
-
-  // Personality Card
   personalityCard: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     backgroundColor: '#FFF', borderRadius: 100, padding: 10,
@@ -286,7 +248,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 4, elevation: 2, gap: 12
   },
   personalityIconBox: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
-  personalityTitleRow: { flexDirection: 'row', alignItems: 'center' },
   personalityName: { 
     ...typography.bodyBold,
     color: c.text 
@@ -296,7 +257,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: metrics.fontSize.micro,
     color: c.textSecondary 
   },
-
   shieldCard: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     backgroundColor: `${c.primary}10`, borderRadius: metrics.radius.md, padding: 6,
@@ -307,5 +267,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: metrics.fontSize.micro,
     color: c.textSecondary 
   },
-  zone2b: { marginTop: metrics.spacing.xs },
+  zoneIntention: { marginTop: metrics.spacing.xs },
+  zoneGame: { marginTop: metrics.spacing.md },
 });

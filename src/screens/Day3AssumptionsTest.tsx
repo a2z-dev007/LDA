@@ -47,11 +47,10 @@ export const Day3AssumptionsTest: React.FC = () => {
     if (currentIndex < total - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
-      // Calculate trueRatio
       const trueCount = Object.values(newAnswers).filter(Boolean).length;
       const trueRatio = trueCount / total;
       completeDay3(newAnswers, trueRatio);
-      navigation.navigate('Day3OneCertainty');
+      navigation.navigate('Day3MirrorResults');
     }
   };
 
@@ -62,7 +61,6 @@ export const Day3AssumptionsTest: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
 
-      {/* Progress bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressTrack}>
           <Animated.View style={[styles.progressFill, { width: `${progress * 100}%` }]} />

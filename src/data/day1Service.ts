@@ -63,8 +63,15 @@ export function getHonestMomentMeta() {
 // ── Spark Quiz ────────────────────────────────────────────────
 export function getQuizQuestions(segment: SegmentId): QuizQuestion[] {
   const segData = (day1Data.sparkQuiz.segments as any)[segment];
-  if (!segData) return [];
-  return segData.questions.map((q: any, i: number) => ({
+  if (!segData || !segData.sets) return [];
+  
+  // Randomly pick set_a or set_b
+  const setKey = Math.random() > 0.5 ? 'set_a' : 'set_b';
+  const questions = segData.sets[setKey];
+  
+  if (!questions) return [];
+
+  return questions.map((q: any, i: number) => ({
     id: q.id,
     prompt: q.prompt,
     optionA: q.optionA,

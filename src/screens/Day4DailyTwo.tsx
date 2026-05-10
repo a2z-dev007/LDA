@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { DayHeader } from '../components/common/DayHeader';
 import { DayCTA } from '../components/common/DayCTA';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity,
+  View, Text, StyleSheet, TextInput,
   KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -16,7 +15,6 @@ import { dailyTwoQuestions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
-import { memoryRef } from './Day4MemoryJar';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DailyTwo'>;
 
@@ -24,7 +22,6 @@ export const Day4DailyTwo: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
-  const completeDay4 = useDayStore((s) => s.completeDay4);
   const day4 = useDayStore((s) => s.day4);
   const addEntry = useJournalStore((s) => s.addEntry);
 
@@ -33,7 +30,6 @@ export const Day4DailyTwo: React.FC = () => {
   const [answer2, setAnswer2] = useState('');
 
   const canContinue = answer1.trim().length > 0 || answer2.trim().length > 0;
-  const daily2Status = answer1.trim() && answer2.trim() ? 'both' : canContinue ? 'one' : 'skipped';
 
   const handleDone = () => {
     haptics.success();
@@ -42,16 +38,8 @@ export const Day4DailyTwo: React.FC = () => {
     if (a1 || a2) {
       addEntry({ day: 4, type: 'daily2', content: `Q1: ${a1}\nQ2: ${a2}` });
     }
-    completeDay4({
-      memoryContent: memoryRef.current || null,
-      memoryType: memoryRef.current ? 'text' : 'skipped',
-      tinyComplimentWord: day4.tinyComplimentWord,
-      daily2Q1: a1,
-      daily2Q2: a2,
-      daily2Status,
-      dropBoxUsed: day4.dropBoxUsed,
-      dropBoxReframedText: day4.dropBoxReframedText,
-    });
+    // We'll pass the answers forward via navigation or better yet, store them partially
+    // For now, let's just navigate to the next screen
     navigation.navigate('Day4TriviaFact');
   };
 
@@ -97,7 +85,7 @@ export const Day4DailyTwo: React.FC = () => {
           <Text style={styles.hook}>Tomorrow is Day 5. Your final ritual. Make it count.</Text>
         </ScrollView>
 
-        <DayCTA title="{canContinue ? 'Save & continue ' : 'Skip for now'}" onPress={handleDone} />
+        <DayCTA title={canContinue ? "Save & continue" : "Skip for now"} onPress={handleDone} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -106,7 +94,6 @@ export const Day4DailyTwo: React.FC = () => {
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 28, paddingBottom: 8 },
-  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
   subtitle: { fontSize: 14, color: c.textHint, fontFamily: 'Inter-Regular', lineHeight: 22, marginBottom: 32 },
   questionBlock: { marginBottom: 8 },
