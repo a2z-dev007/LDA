@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View,
   Text,
@@ -188,7 +189,7 @@ export const CommitmentScreen: React.FC = () => {
                   <View style={[styles.accentLine, { backgroundColor: colors.primary }]} />
                 </View>
 
-                <Text style={styles.eyebrow}>BEFORE YOU BEGIN</Text>
+                <DayHeader eyebrow="BEFORE YOU BEGIN" />
                 
                 <Text style={styles.title}>
                   This app works{'\n'}if you actually{' '}
@@ -356,12 +357,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: metrics.spacing.xl,
     height: metrics.spacing.xxs,
     borderRadius: metrics.spacing.xxs * 0.5,
-  },
-  eyebrow: {
-    ...typography.captionSmall,
-    color: c.primary,
-    marginBottom: metrics.spacing.sm,
-    textAlign: 'center',
   },
   title: {
     ...typography.displayMedium,

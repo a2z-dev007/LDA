@@ -1,4 +1,5 @@
 import React from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Share,
 } from 'react-native';
@@ -21,7 +22,6 @@ export const Day3MirrorResults: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
   const day3 = useDayStore((s) => s.day3);
-  const setPartnerInviteSent = useDayStore((s) => s.setPartnerInviteSent);
 
   const personalityKey = day1.personalityType ?? 'default';
   const questions = assumptionsSets[personalityKey] ?? assumptionsSets['default'];
@@ -36,17 +36,16 @@ export const Day3MirrorResults: React.FC = () => {
     } catch {}
   };
 
-  const handleInvitePartner = () => {
-    haptics.success();
-    setPartnerInviteSent(3);
-    navigation.navigate('Home');
+  const handleContinue = () => {
+    haptics.medium();
+    navigation.navigate('Day3MoodBoard');
   };
 
   return (
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>Day 3 · Mirror Results</Text>
+        <DayHeader eyebrow="Day 3 · Mirror Results" />
         <Text style={styles.title}>Your answers</Text>
         <Text style={styles.subtitle}>
           The right column is waiting for your partner.
@@ -57,7 +56,7 @@ export const Day3MirrorResults: React.FC = () => {
           {/* Left — user answers */}
           <View style={styles.column}>
             <Text style={styles.colHeader}>You said</Text>
-            {questions.map((q, i) => (
+            {questions.map((q) => (
               <View key={q.id} style={styles.answerRow}>
                 <View style={[
                   styles.answerPill,
@@ -92,18 +91,14 @@ export const Day3MirrorResults: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Screenshot icon top-right handled by OS */}
       <View style={styles.actions}>
         <TouchableOpacity style={styles.shareBtn} activeOpacity={0.85} onPress={handleShareCard}>
           <Text style={styles.shareBtnLabel}>Share this card</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.inviteBtn} activeOpacity={0.85} onPress={handleInvitePartner}>
+        <TouchableOpacity style={styles.inviteBtn} activeOpacity={0.85} onPress={handleContinue}>
           <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.inviteBtnInner}>
-            <Text style={styles.inviteBtnLabel}>Invite my partner →</Text>
+            <Text style={styles.inviteBtnLabel}>Next: Mood Board Match →</Text>
           </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.skipBtn} activeOpacity={0.7} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.skipBtnLabel}>Continue solo</Text>
         </TouchableOpacity>
       </View>
     </ScreenWrapper>
@@ -112,7 +107,6 @@ export const Day3MirrorResults: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', marginBottom: 8 },
   subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 24 },
   splitContainer: { flexDirection: 'row', gap: 12, marginBottom: 24 },
@@ -139,9 +133,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignItems: 'center', borderWidth: 1, borderColor: c.surfaceBorder,
   },
   shareBtnLabel: { color: c.text, fontSize: 16, fontFamily: 'Inter-SemiBold' },
-  inviteBtn: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  inviteBtn: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 } },
   inviteBtnInner: { paddingVertical: 16, borderRadius: 100, alignItems: 'center' },
   inviteBtnLabel: { color: c.onPrimary, fontSize: 16, fontFamily: 'Inter-SemiBold' },
-  skipBtn: { alignItems: 'center', paddingVertical: 8 },
-  skipBtnLabel: { color: c.textHint, fontSize: 14, fontFamily: 'Inter-Regular' },
 });

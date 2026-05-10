@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { DayHeader } from '../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -9,7 +10,6 @@ import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
-import { memoryRef } from './Day4MemoryJar';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4TinyCompliment'>;
 
@@ -28,7 +28,6 @@ export const Day4TinyCompliment: React.FC = () => {
     setSelected(word);
     setTinyCompliment(word);
 
-    // Update jar memory with compliment
     addJarMemory({
       content: null,
       type: 'text',
@@ -36,22 +35,19 @@ export const Day4TinyCompliment: React.FC = () => {
       dayColor: colors.day4,
     });
 
-    // Store the compliment word in day4 store via a partial update
-    // We'll pass it forward through navigation to Day4DailyTwo
-    setTimeout(() => navigation.navigate('Day4DailyTwo'), 600);
+    setTimeout(() => navigation.navigate('Day4PriorityShuffle'), 600);
   };
 
   return (
     <ScreenWrapper>
       <ProgressStrip currentDay={4} />
       <View style={styles.body}>
-        <Text style={styles.eyebrow}>Day 4 · Tiny Compliment</Text>
+        <DayHeader eyebrow="Day 4 · Tiny Compliment" />
         <Text style={styles.title}>
           How does your partner make you feel?
         </Text>
         <Text style={styles.subtitle}>One word. Seal it into the jar.</Text>
 
-        {/* Jar with sparkle */}
         <View style={styles.jarContainer}>
           <Text style={styles.jarIcon}>🫙</Text>
           {selected && (
@@ -81,7 +77,7 @@ export const Day4TinyCompliment: React.FC = () => {
       <TouchableOpacity
         style={styles.skipBtn}
         activeOpacity={0.7}
-        onPress={() => navigation.navigate('Day4DailyTwo')}
+        onPress={() => navigation.navigate('Day4PriorityShuffle')}
       >
         <Text style={styles.skipBtnLabel}>Skip for now</Text>
       </TouchableOpacity>
@@ -91,7 +87,6 @@ export const Day4TinyCompliment: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 8 },
   subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', marginBottom: 32 },
   jarContainer: { alignItems: 'center', marginBottom: 32 },

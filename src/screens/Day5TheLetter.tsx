@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, Share,
 } from 'react-native';
@@ -75,7 +76,7 @@ export const Day5TheLetter: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={5} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>Day 5 · The Letter</Text>
+        <DayHeader eyebrow="Day 5 · The Letter" />
         <Animated.View style={[styles.letterCard, { opacity: letterOpacity }]}>
           <Text style={styles.letterText}>{letter}</Text>
         </Animated.View>
@@ -99,7 +100,6 @@ export const Day5TheLetter: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: { padding: 28, paddingBottom: 16 },
-  eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 24 },
   letterCard: {
     backgroundColor: c.white, borderRadius: 16, padding: 24,
     borderWidth: 1, borderColor: `${c.day5}40`,
@@ -107,7 +107,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   letterText: { color: c.textSecondary, fontSize: 16, fontFamily: 'PlayfairDisplay-Regular', lineHeight: 28 },
   actions: { paddingHorizontal: 28, paddingBottom: 48, gap: 12 },
-  saveBtnTouch: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 8 },
+  saveBtnTouch: { borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 6 } },
   saveBtn: { paddingVertical: 18, borderRadius: 100, alignItems: 'center' },
   saveBtnLabel: { color: c.onPrimary, fontSize: 17, fontFamily: 'Inter-SemiBold', letterSpacing: 0.3 },
   shareBtn: {

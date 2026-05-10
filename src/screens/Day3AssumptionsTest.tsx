@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { DayHeader } from '../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -46,11 +47,10 @@ export const Day3AssumptionsTest: React.FC = () => {
     if (currentIndex < total - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
-      // Calculate trueRatio
       const trueCount = Object.values(newAnswers).filter(Boolean).length;
       const trueRatio = trueCount / total;
       completeDay3(newAnswers, trueRatio);
-      navigation.navigate('Day3OneCertainty');
+      navigation.navigate('Day3MirrorResults');
     }
   };
 
@@ -61,7 +61,6 @@ export const Day3AssumptionsTest: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
 
-      {/* Progress bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressTrack}>
           <Animated.View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
@@ -70,7 +69,7 @@ export const Day3AssumptionsTest: React.FC = () => {
       </View>
 
       <Animated.View style={[styles.body, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-        <Text style={styles.eyebrow}>Day 3 · The Assumptions Test</Text>
+        <DayHeader eyebrow="Day 3 · The Assumptions Test" />
         <Text style={styles.statement}>{question.statement}</Text>
         <Text style={styles.instruction}>Does your partner think this is TRUE about you?</Text>
       </Animated.View>
@@ -101,7 +100,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   progressFill: { height: '100%', backgroundColor: c.day3, borderRadius: 2 },
   progressText: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', textAlign: 'right' },
   body: { flex: 1, paddingHorizontal: 28, justifyContent: 'center' },
-  eyebrow: { color: c.day3, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 32 },
   statement: {
     fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: 38, marginBottom: 24,

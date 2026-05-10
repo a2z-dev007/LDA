@@ -20,7 +20,7 @@ import { haptics } from '../utils/haptics';
 import { LOTTIE } from '../assets/lottie';
 import {
   Award, Sparkles, Heart, Star, ChevronRight, Flame,
-  Droplets, Wind, Waves,
+  Droplets, Waves,
 } from 'lucide-react-native';
 import {
   responsiveWidth,
@@ -30,7 +30,6 @@ import {
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Result'>;
 
-// Icon per personality type
 const TYPE_ICON: Record<string, any> = {
   steady_flame:   Flame,
   electric_spark: Sparkles,
@@ -52,7 +51,6 @@ export const Day1ResultScreen: React.FC = () => {
 
   const TypeIcon = TYPE_ICON[personality.id] ?? Star;
 
-  // Animations
   const headerAnim  = useRef(new Animated.Value(0)).current;
   const badgeAnim   = useRef(new Animated.Value(0)).current;
   const badgeScale  = useRef(new Animated.Value(0.5)).current;
@@ -67,29 +65,22 @@ export const Day1ResultScreen: React.FC = () => {
   useEffect(() => {
     haptics.success();
     recordActivity();
-    // Play confetti once
     lottieRef.current?.play();
 
     Animated.sequence([
-      // Header fades in
       Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
-      // Badge pops in with spring
       Animated.parallel([
         Animated.timing(badgeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
         Animated.spring(badgeScale, { toValue: 1, friction: 5, tension: 80, useNativeDriver: true }),
       ]),
-      // Card slides up
       Animated.parallel([
         Animated.timing(cardAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
         Animated.spring(cardSlide, { toValue: 0, friction: 8, tension: 80, useNativeDriver: true }),
       ]),
-      // Pills + growth
       Animated.timing(pillsAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
       Animated.timing(growthAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
-      // CTA
       Animated.timing(ctaAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
     ]).start(() => {
-      // Pulse the badge continuously
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, { toValue: 1.06, duration: 1400, useNativeDriver: true }),
@@ -99,19 +90,13 @@ export const Day1ResultScreen: React.FC = () => {
     });
   }, []);
 
-  const handleSave = () => {
+  const handleVibeCheck = () => {
     haptics.medium();
-    navigation.navigate('Home');
-  };
-
-  const handleTomorrow = () => {
-    haptics.light();
-    navigation.navigate('Home');
+    navigation.navigate('Day1VibeCheck');
   };
 
   return (
     <ScreenWrapper>
-      {/* ── Confetti — plays once on mount, absolute over everything ── */}
       <LottieView
         ref={lottieRef}
         source={LOTTIE.confetti}
@@ -129,7 +114,6 @@ export const Day1ResultScreen: React.FC = () => {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Achievement header ── */}
         <Animated.View style={[styles.header, { opacity: headerAnim }]}>
           <View style={styles.achievementBadgeRow}>
             <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
@@ -141,7 +125,6 @@ export const Day1ResultScreen: React.FC = () => {
           <Text style={styles.headerTitle}>Your relationship type is</Text>
         </Animated.View>
 
-        {/* ── Big badge / icon ── */}
         <Animated.View
           style={[
             styles.badgeContainer,
@@ -151,11 +134,8 @@ export const Day1ResultScreen: React.FC = () => {
             },
           ]}
         >
-          {/* Outer glow ring */}
           <View style={[styles.badgeGlowRing, { borderColor: `${personality.color}30` }]} />
-          {/* Middle ring */}
           <View style={[styles.badgeMidRing, { borderColor: `${personality.color}50` }]} />
-          {/* Inner gradient circle */}
           <LinearGradient
             colors={['#6EE87A', '#2DD4BF']}
             start={{ x: 0, y: 0 }}
@@ -164,11 +144,8 @@ export const Day1ResultScreen: React.FC = () => {
           >
             <TypeIcon size={responsiveWidth(10)} color="#FFFFFF" strokeWidth={1.5} />
           </LinearGradient>
-          {/* Star decorations */}
-        
         </Animated.View>
 
-        {/* ── Type name + sublabel ── */}
         <Animated.View style={[styles.typeNameContainer, { opacity: badgeAnim }]}>
           <Text style={[styles.typeName, { color: personality.color }]}>
             {personality.name}
@@ -176,7 +153,6 @@ export const Day1ResultScreen: React.FC = () => {
           <Text style={styles.typeSubLabel}>{personality.subLabel}</Text>
         </Animated.View>
 
-        {/* ── Description card ── */}
         <Animated.View
           style={[
             styles.card,
@@ -187,7 +163,6 @@ export const Day1ResultScreen: React.FC = () => {
             },
           ]}
         >
-          {/* Top accent bar */}
           <LinearGradient
             colors={['#6EE87A', '#2DD4BF']}
             start={{ x: 0, y: 0 }}
@@ -197,7 +172,6 @@ export const Day1ResultScreen: React.FC = () => {
           <Text style={styles.cardDescription}>{personality.description}</Text>
         </Animated.View>
 
-        {/* ── Trait pills ── */}
         <Animated.View style={[styles.pillsSection, { opacity: pillsAnim }]}>
           <Text style={styles.sectionLabel}>YOUR TRAITS</Text>
           <View style={styles.pillRow}>
@@ -215,7 +189,6 @@ export const Day1ResultScreen: React.FC = () => {
           </View>
         </Animated.View>
 
-        {/* ── Growth invitation ── */}
         <Animated.View style={[styles.growthCard, { opacity: growthAnim }]}>
           <View style={styles.growthIconRow}>
             <View style={[styles.growthIconCircle, { backgroundColor: `${personality.color}15` }]}>
@@ -226,31 +199,22 @@ export const Day1ResultScreen: React.FC = () => {
           <Text style={styles.growthText}>{personality.growth}</Text>
         </Animated.View>
 
-        {/* ── Key question ── */}
-        <Animated.View style={[styles.keyLineContainer, { opacity: growthAnim }]}>
-          <Text style={styles.keyLine}>
-            "Would your partner say the same thing about themselves?"
-          </Text>
-        </Animated.View>
-
         <View style={{ height: responsiveHeight(12) }} />
       </ScrollView>
 
-      {/* ── Fixed CTAs ── */}
       <Animated.View
         style={[
           styles.ctaSection,
           {
             opacity: ctaAnim,
-            paddingBottom:responsiveHeight(2),
+            paddingBottom: responsiveHeight(2),
           },
         ]}
       >
-        {/* Primary CTA — gradient button */}
         <TouchableOpacity
           style={styles.primaryBtnTouch}
           activeOpacity={0.88}
-          onPress={handleSave}
+          onPress={handleVibeCheck}
         >
           <LinearGradient
             colors={['#6EE87A', '#2DD4BF']}
@@ -261,18 +225,9 @@ export const Day1ResultScreen: React.FC = () => {
             <View style={styles.primaryBtnIconCircle}>
               <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
             </View>
-            <Text style={styles.primaryBtnLabel}>Save my result</Text>
+            <Text style={styles.primaryBtnLabel}>Vibe Check</Text>
             <ChevronRight size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
           </LinearGradient>
-        </TouchableOpacity>
-
-        {/* Ghost CTA */}
-        <TouchableOpacity
-          style={styles.ghostCta}
-          activeOpacity={0.7}
-          onPress={handleTomorrow}
-        >
-          <Text style={styles.ghostCtaLabel}>Come back tomorrow →</Text>
         </TouchableOpacity>
       </Animated.View>
     </ScreenWrapper>
@@ -285,8 +240,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingBottom: metrics.spacing.sm,
   },
-
-  // ── Confetti ─────────────────────────────────────────────
   confetti: {
     position: 'absolute',
     top: 0,
@@ -297,11 +250,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     zIndex: 999,
     pointerEvents: 'none' as any,
   },
-
-  // ── Header ───────────────────────────────────────────────
   header: {
     alignItems: 'center',
-    marginBottom:responsiveHeight(5),
+    marginBottom: responsiveHeight(5),
   },
   achievementBadgeRow: {
     flexDirection: 'row',
@@ -318,8 +269,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textSecondary,
     textAlign: 'center',
   },
-
-  // ── Badge ────────────────────────────────────────────────
   badgeContainer: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -353,17 +302,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     shadowRadius: responsiveWidth(4),
     elevation: 10,
   },
-  starDecor: {
-    position: 'absolute',
-    color: '#2DD4BF',
-    fontSize: responsiveFontSize(2),
-    opacity: 0.6,
-  },
-  starTopLeft:     { top: responsiveWidth(2),  left: responsiveWidth(2) },
-  starTopRight:    { top: 0,                   right: responsiveWidth(4) },
-  starBottomRight: { bottom: responsiveWidth(2), right: 0 },
-
-  // ── Type name ────────────────────────────────────────────
   typeNameContainer: {
     alignItems: 'center',
     marginBottom: metrics.spacing.md,
@@ -380,8 +318,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Italic',
     textAlign: 'center',
   },
-
-  // ── Description card ─────────────────────────────────────
   card: {
     backgroundColor: 'rgba(255,255,255,0.82)',
     borderRadius: metrics.radius.xl,
@@ -404,8 +340,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     lineHeight: metrics.fontSize.body * 1.65,
     padding: metrics.spacing.md,
   },
-
-  // ── Trait pills ──────────────────────────────────────────
   pillsSection: {
     marginBottom: metrics.spacing.md,
   },
@@ -430,8 +364,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     ...typography.labelSmall,
     letterSpacing: 0.3,
   },
-
-  // ── Growth card ──────────────────────────────────────────
   growthCard: {
     backgroundColor: 'rgba(255,255,255,0.7)',
     borderRadius: metrics.radius.lg,
@@ -464,19 +396,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     lineHeight: metrics.fontSize.bodySm * 1.6,
     fontFamily: 'PlayfairDisplay-Italic',
   },
-
-  // ── Key line ─────────────────────────────────────────────
-  keyLineContainer: {
-    paddingHorizontal: metrics.spacing.sm,
-  },
-  keyLine: {
-    ...typography.quoteItalic,
-    color: c.textSecondary,
-    textAlign: 'center',
-    lineHeight: metrics.fontSize.h4 * 1.5,
-  },
-
-  // ── CTAs ─────────────────────────────────────────────────
   ctaSection: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.sm,
@@ -514,13 +433,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: '#FFFFFF',
     flex: 1,
     textAlign: 'center',
-  },
-  ghostCta: {
-    alignItems: 'center',
-    paddingVertical: metrics.spacing.sm,
-  },
-  ghostCtaLabel: {
-    ...typography.bodySmall,
-    color: c.textHint,
   },
 });

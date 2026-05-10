@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, Animated, PanResponder,
 } from 'react-native';
@@ -52,7 +53,7 @@ export const Day4TriviaFact: React.FC = () => {
     <ScreenWrapper {...panResponder.panHandlers}>
       <ProgressStrip currentDay={4} />
       <Animated.View style={[styles.body, { opacity, transform: [{ translateY }] }]}>
-        <Text style={styles.eyebrow}>Psychology Fact</Text>
+        <DayHeader eyebrow="Psychology Fact" />
         {personality && (
           <View style={[styles.typePill, { borderColor: personality.color }]}>
             <Text style={[styles.typePillText, { color: personality.color }]}>{personality.name}</Text>
@@ -67,10 +68,6 @@ export const Day4TriviaFact: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 32, justifyContent: 'center', alignItems: 'center' },
-  eyebrow: {
-    color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold',
-    letterSpacing: 2, textTransform: 'uppercase', marginBottom: 20,
-  },
   typePill: {
     borderWidth: 1.5, borderRadius: 100, paddingHorizontal: 16, paddingVertical: 6, marginBottom: 32,
   },

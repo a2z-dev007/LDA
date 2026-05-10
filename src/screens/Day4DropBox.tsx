@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, Animated,
@@ -13,6 +14,10 @@ import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { reframeTextAsync } from '../services/toneReframer';
 import { haptics } from '../utils/haptics';
+import { metrics } from '../theme/metrics';
+import { typography, fonts } from '../theme/typography';
+import { Lock, Sparkles, Send } from 'lucide-react-native';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DropBox'>;
 
@@ -22,47 +27,49 @@ export const Day4DropBox: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const day4 = useDayStore((s) => s.day4);
   const completeDay4 = useDayStore((s) => s.completeDay4);
+  const setLoveDrop = useDayStore((s) => s.setLoveDrop);
 
+  const [mode, setMode] = useState<'reframe' | 'seal'>('reframe');
   const [rawText, setRawText] = useState('');
   const [reframed, setReframed] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [kept, setKept] = useState(false);
-  const loadingOpacity = useRef(new Animated.Value(0)).current;
-
-  const showReframeButton = rawText.length >= 20 && !reframed;
+  const [sealType, setSealType] = useState<'compliment' | 'memory' | 'challenge' | 'unsaid' | null>(null);
+  const [showJarModal, setShowJarModal] = useState(false);
 
   const handleReframe = async () => {
     haptics.light();
     setLoading(true);
-    Animated.timing(loadingOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start();
-
     const result = await reframeTextAsync(rawText);
-    // NEVER store rawText — clear it immediately
     setRawText('');
     setReframed(result);
     setLoading(false);
     haptics.success();
   };
 
-  const handleKeep = () => {
+  const handleSeal = () => {
+    if (!sealType || !rawText.trim()) return;
     haptics.success();
-    setKept(true);
-    // Store only the reframe, never the original
+    setLoveDrop(sealType, rawText.trim());
     completeDay4({
-      memoryContent: day4.memoryContent,
-      memoryType: day4.memoryType,
-      tinyComplimentWord: day4.tinyComplimentWord,
-      daily2Q1: day4.daily2Q1,
-      daily2Q2: day4.daily2Q2,
-      daily2Status: day4.daily2Status,
+      ...day4,
+      dropBoxUsed: true,
+    });
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
+    navigation.navigate('Home');
+  };
+
+  const handleKeepReframe = () => {
+    haptics.success();
+    completeDay4({
+      ...day4,
       dropBoxUsed: true,
       dropBoxReframedText: reframed,
     });
-    setTimeout(() => navigation.navigate('Home'), 400);
-  };
-
-  const handleSkip = () => {
-    navigation.navigate('Home');
+    setShowJarModal(true);
   };
 
   return (
@@ -70,93 +77,223 @@ export const Day4DropBox: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={4} />
         <View style={styles.body}>
-          <Text style={styles.eyebrow}>Day 4 · Drop Box</Text>
-          <Text style={styles.title}>Something you need to say?</Text>
-          <Text style={styles.subtitle}>
-            Write it raw. We'll help you say it better.{'\n'}
-            The original is never saved.
-          </Text>
+          <DayHeader eyebrow="Game 04 · Love Drop" />
+          
+          <View style={styles.modeToggle}>
+            <TouchableOpacity 
+              style={[styles.modeBtn, mode === 'reframe' && styles.modeBtnActive]}
+              onPress={() => setMode('reframe')}
+            >
+              <Text style={[styles.modeBtnText, mode === 'reframe' && styles.modeBtnTextActive]}>Reframer</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.modeBtn, mode === 'seal' && styles.modeBtnActive]}
+              onPress={() => setMode('seal')}
+            >
+              <Text style={[styles.modeBtnText, mode === 'seal' && styles.modeBtnTextActive]}>Seal It</Text>
+            </TouchableOpacity>
+          </View>
 
-          {!reframed ? (
-            <>
+          {mode === 'reframe' ? (
+            <View style={styles.contentCol}>
+              <Text style={styles.title}>Something you need to say?</Text>
+              <Text style={styles.subtitle}>Write it raw. We'll help you say it better. The original is never saved.</Text>
+              
+              {!reframed ? (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Write what's on your mind…"
+                    placeholderTextColor={colors.textHint}
+                    value={rawText}
+                    onChangeText={setRawText}
+                    multiline
+                    textAlignVertical="top"
+                    editable={!loading}
+                  />
+                  {rawText.length >= 20 && (
+                    <TouchableOpacity style={styles.ctaBtn} onPress={handleReframe} disabled={loading}>
+                      <Text style={styles.ctaBtnText}>{loading ? 'Reframing...' : 'Help me say this better'}</Text>
+                    </TouchableOpacity>
+                  )}
+                </>
+              ) : (
+                <View style={styles.resultCard}>
+                   <Text style={styles.resultLabel}>A GENTLER WAY TO SAY IT</Text>
+                   <Text style={styles.resultText}>"{reframed}"</Text>
+                   <TouchableOpacity style={styles.ctaBtn} onPress={handleKeepReframe}>
+                      <Text style={styles.ctaBtnText}>Keep this</Text>
+                   </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          ) : (
+            <View style={styles.contentCol}>
+              <Text style={styles.title}>Seal a secret message</Text>
+              <Text style={styles.subtitle}>Choose a theme. It stays locked until your partner joins.</Text>
+              
+              <View style={styles.sealTypeRow}>
+                {['compliment', 'memory', 'challenge', 'unsaid'].map((type: any) => (
+                  <TouchableOpacity 
+                    key={type}
+                    style={[styles.sealPill, sealType === type && styles.sealPillActive]}
+                    onPress={() => setSealType(type)}
+                  >
+                    <Text style={[styles.sealPillText, sealType === type && styles.sealPillTextActive]}>
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
               <TextInput
                 style={styles.input}
-                placeholder="Write what's on your mind…"
+                placeholder="Write your sealed message..."
                 placeholderTextColor={colors.textHint}
                 value={rawText}
                 onChangeText={setRawText}
                 multiline
                 textAlignVertical="top"
-                editable={!loading}
               />
-              <Text style={styles.privacyNote}>🔒 Original text is never stored or saved.</Text>
 
-              {showReframeButton && (
-                <TouchableOpacity style={styles.reframeBtn} activeOpacity={0.85} onPress={handleReframe} disabled={loading}>
-                  <Text style={styles.reframeBtnLabel}>
-                    {loading ? 'Reframing…' : 'Help me say this better →'}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </>
-          ) : (
-            <View style={styles.reframeResult}>
-              <Text style={styles.reframeLabel}>A gentler way to say it</Text>
-              <Text style={styles.reframeText}>"{reframed}"</Text>
-              <View style={styles.reframeActions}>
-                <TouchableOpacity style={styles.keepBtn} activeOpacity={0.85} onPress={handleKeep}>
-                  <LinearGradient colors={[colors.buttonGradientStart, colors.buttonGradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.keepBtnInner}>
-                    <Text style={styles.keepBtnLabel}>{kept ? '✓ Saved' : 'Keep this'}</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.discardBtn} activeOpacity={0.7} onPress={handleSkip}>
-                  <Text style={styles.discardBtnLabel}>Discard</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity 
+                style={[styles.ctaBtn, (!sealType || !rawText.trim()) && styles.ctaBtnDisabled]} 
+                onPress={handleSeal}
+                disabled={!sealType || !rawText.trim()}
+              >
+                <Lock size={16} color="#FFF" style={{marginRight: 8}} />
+                <Text style={styles.ctaBtnText}>Seal and send</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
-
-        {!reframed && (
-          <TouchableOpacity style={styles.skipLink} activeOpacity={0.7} onPress={handleSkip}>
-            <Text style={styles.skipLinkLabel}>Skip Drop Box</Text>
-          </TouchableOpacity>
-        )}
       </ScreenWrapper>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={4}
+        onNext={handleModalNext}
+      />
     </KeyboardAvoidingView>
   );
 };
 
-const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
+const makeStyles = (c: any) => StyleSheet.create({
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  eyebrow: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
-  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
-  subtitle: { fontSize: 15, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 24 },
+  modeToggle: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 100,
+    padding: 4,
+    marginBottom: 24,
+  },
+  modeBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 100,
+  },
+  modeBtnActive: {
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  modeBtnText: {
+    ...typography.caption,
+    fontFamily: fonts.dmSansBold,
+    color: c.textHint,
+  },
+  modeBtnTextActive: {
+    color: c.primary,
+  },
+  contentCol: {
+    gap: metrics.spacing.sm,
+  },
+  title: {
+    ...typography.displaySmall,
+    color: c.text,
+    fontFamily: 'PlayfairDisplay-Bold',
+  },
+  subtitle: {
+    ...typography.bodySmall,
+    color: c.textSecondary,
+    marginBottom: metrics.spacing.md,
+  },
   input: {
-    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
-    padding: 16, minHeight: 140, lineHeight: 24, marginBottom: 12,
+    backgroundColor: '#FFF',
+    borderRadius: metrics.radius.lg,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0,0,0,0.05)',
+    padding: metrics.spacing.md,
+    minHeight: 140,
+    color: c.text,
+    fontFamily: fonts.dmSansRegular,
+    fontSize: 16,
+    textAlignVertical: 'top',
   },
-  privacyNote: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginBottom: 16 },
-  reframeBtn: {
-    backgroundColor: `${c.day4}30`, borderWidth: 1.5, borderColor: c.day4,
-    paddingVertical: 14, borderRadius: 100, alignItems: 'center',
+  ctaBtn: {
+    backgroundColor: c.primary,
+    paddingVertical: 16,
+    borderRadius: 100,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: metrics.spacing.md,
   },
-  reframeBtnLabel: { color: c.day4, fontSize: 15, fontFamily: 'Inter-SemiBold' },
-  reframeResult: {
-    backgroundColor: c.white, borderRadius: 16, padding: 24, gap: 16,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  ctaBtnDisabled: {
+    backgroundColor: c.textHint,
+    opacity: 0.5,
   },
-  reframeLabel: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1.5, textTransform: 'uppercase' },
-  reframeText: { color: c.text, fontSize: 18, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28 },
-  reframeActions: { flexDirection: 'row', gap: 12 },
-  keepBtn: { flex: 1, borderRadius: 100, shadowColor: c.glowPrimary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 6 },
-  keepBtnInner: { paddingVertical: 14, borderRadius: 100, alignItems: 'center' },
-  keepBtnLabel: { color: c.onPrimary, fontSize: 15, fontFamily: 'Inter-SemiBold' },
-  discardBtn: {
-    flex: 1, borderWidth: 1, borderColor: c.surfaceBorder, paddingVertical: 14, borderRadius: 100, alignItems: 'center',
+  ctaBtnText: {
+    ...typography.buttonLarge,
+    color: '#FFF',
   },
-  discardBtnLabel: { color: c.textSecondary, fontSize: 15, fontFamily: 'Inter-Regular' },
-  skipLink: { alignItems: 'center', paddingBottom: 40 },
-  skipLinkLabel: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular' },
+  resultCard: {
+    backgroundColor: '#FFF',
+    borderRadius: metrics.radius.xl,
+    padding: metrics.spacing.lg,
+    borderWidth: 1,
+    borderColor: c.primary,
+    gap: 12,
+  },
+  resultLabel: {
+    ...typography.labelBold,
+    color: c.primary,
+    fontSize: 10,
+    letterSpacing: 1,
+  },
+  resultText: {
+    ...typography.bodyMedium,
+    fontFamily: 'PlayfairDisplay-Italic',
+    fontSize: 18,
+    color: c.text,
+  },
+  sealTypeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: metrics.spacing.sm,
+  },
+  sealPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
+  },
+  sealPillActive: {
+    borderColor: c.primary,
+    backgroundColor: 'rgba(45,212,191,0.1)',
+  },
+  sealPillText: {
+    ...typography.caption,
+    color: c.textSecondary,
+  },
+  sealPillTextActive: {
+    color: c.primary,
+    fontFamily: fonts.dmSansBold,
+  },
 });

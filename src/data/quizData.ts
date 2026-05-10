@@ -292,17 +292,18 @@ export const bridgeQuotes: Record<string, string> = {
 export interface IntentionWord {
   word: string;
   subtext: string;
+  emoji: string;
 }
 
 export const intentionWords: IntentionWord[] = [
-  { word: 'Present', subtext: 'I will be here, fully.' },
-  { word: 'Gentle', subtext: 'I will soften where I can.' },
-  { word: 'Curious', subtext: 'I will ask before assuming.' },
-  { word: 'Open', subtext: 'I will let them in.' },
-  { word: 'Patient', subtext: 'I will wait for the right moment.' },
-  { word: 'Brave', subtext: 'I will say the hard thing.' },
-  { word: 'Grateful', subtext: 'I will notice what I have.' },
-  { word: 'Playful', subtext: 'I will not take this too seriously.' },
+  { word: 'Present', subtext: 'I will be here, fully.', emoji: '🌿' },
+  { word: 'Gentle', subtext: 'I will soften where I can.', emoji: '💛' },
+  { word: 'Curious', subtext: 'I will ask before assuming.', emoji: '🔍' },
+  { word: 'Open', subtext: 'I will let them in.', emoji: '🚪' },
+  { word: 'Patient', subtext: 'I will wait for the right moment.', emoji: '⏳' },
+  { word: 'Brave', subtext: 'I will say the hard thing.', emoji: '🛡️' },
+  { word: 'Grateful', subtext: 'I will notice what I have.', emoji: '🍃' },
+  { word: 'Playful', subtext: 'I will not take this too seriously.', emoji: '🎈' },
 ];
 
 // ─────────────────────────────────────────────────────────────

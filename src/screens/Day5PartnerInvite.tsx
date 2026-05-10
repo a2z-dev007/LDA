@@ -10,6 +10,8 @@ import { useDayStore } from '../store/useDayStore';
 import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { haptics } from '../utils/haptics';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
+import { useState, useEffect } from 'react';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5PartnerInvite'>;
 
@@ -20,6 +22,15 @@ export const Day5PartnerInvite: React.FC = () => {
   const setPartnerInviteSent = useDayStore((s) => s.setPartnerInviteSent);
   const day5 = useDayStore((s) => s.day5);
   const userName = useUserStore((s) => s.name);
+  const [showJarModal, setShowJarModal] = useState(false);
+
+  useEffect(() => {
+    // Show the final jar payoff on mount for Day 5
+    const timer = setTimeout(() => {
+      setShowJarModal(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleInvite = async () => {
     haptics.success();
@@ -81,6 +92,12 @@ export const Day5PartnerInvite: React.FC = () => {
           <Text style={styles.soloBtnLabel}>Continue solo for now</Text>
         </TouchableOpacity>
       </View>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={5}
+        onNext={() => setShowJarModal(false)}
+      />
     </ScreenWrapper>
   );
 };

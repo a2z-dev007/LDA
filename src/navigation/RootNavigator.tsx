@@ -13,6 +13,7 @@ import { IntroSliderScreen } from '../screens/IntroSliderScreen';
 // Day 1
 import { Day1ConnectionSlider } from '../screens/Day1ConnectionSlider';
 import { Day1HonestMoment } from '../screens/Day1HonestMoment';
+import { Day1VibeCheck } from '../screens/Day1VibeCheck';
 import { Day1SparkQuiz } from '../screens/Day1SparkQuiz';
 import { Day1ResultScreen } from '../screens/Day1ResultScreen';
 
@@ -28,13 +29,16 @@ import { Day2MoodFollowUp } from '../screens/Day2MoodFollowUp';
 
 // Day 3
 import { Day3AppreciationSnap } from '../screens/Day3AppreciationSnap';
+import { Day3FinishMySentence } from '../screens/Day3FinishMySentence';
 import { Day3AssumptionsTest } from '../screens/Day3AssumptionsTest';
+import { Day3MoodBoard } from '../screens/Day3MoodBoard';
 import { Day3OneCertainty } from '../screens/Day3OneCertainty';
 import { Day3MirrorResults } from '../screens/Day3MirrorResults';
 
 // Day 4
 import { Day4MemoryJar } from '../screens/Day4MemoryJar';
 import { Day4TinyCompliment } from '../screens/Day4TinyCompliment';
+import { Day4PriorityShuffle } from '../screens/Day4PriorityShuffle';
 import { Day4DailyTwo } from '../screens/Day4DailyTwo';
 import { Day4TriviaFact } from '../screens/Day4TriviaFact';
 import { Day4DropBox } from '../screens/Day4DropBox';
@@ -63,10 +67,6 @@ export const RootNavigator = () => {
     }
   }, []);
 
-  // Route priority:
-  //  1. Never seen intro → show Intro slider
-  //  2. Seen intro, onboarding done → Home
-  //  3. Seen intro, onboarding not done → Splash
   const initialRoute: keyof RootStackParamList = !introSeen
     ? 'Intro'
     : onboardingComplete
@@ -92,6 +92,7 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day1HonestMoment" component={Day1HonestMoment} />
       <Stack.Screen name="Day1Quiz" component={Day1SparkQuiz} />
       <Stack.Screen name="Day1Result" component={Day1ResultScreen} />
+      <Stack.Screen name="Day1VibeCheck" component={Day1VibeCheck} />
 
       {/* Bridges */}
       <Stack.Screen name="Bridge1to2" component={Bridge1to2} />
@@ -105,13 +106,16 @@ export const RootNavigator = () => {
 
       {/* Day 3 */}
       <Stack.Screen name="Day3AppreciationSnap" component={Day3AppreciationSnap} />
+      <Stack.Screen name="Day3FinishMySentence" component={Day3FinishMySentence} />
       <Stack.Screen name="Day3AssumptionsTest" component={Day3AssumptionsTest} />
-      <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
       <Stack.Screen name="Day3MirrorResults" component={Day3MirrorResults} />
+      <Stack.Screen name="Day3MoodBoard" component={Day3MoodBoard} />
+      <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
 
       {/* Day 4 */}
       <Stack.Screen name="Day4MemoryJar" component={Day4MemoryJar} />
       <Stack.Screen name="Day4TinyCompliment" component={Day4TinyCompliment} />
+      <Stack.Screen name="Day4PriorityShuffle" component={Day4PriorityShuffle} />
       <Stack.Screen name="Day4DailyTwo" component={Day4DailyTwo} />
       <Stack.Screen name="Day4TriviaFact" component={Day4TriviaFact} />
       <Stack.Screen name="Day4DropBox" component={Day4DropBox} />
