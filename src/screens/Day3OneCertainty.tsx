@@ -15,6 +15,7 @@ import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3OneCertainty'>;
 
@@ -25,6 +26,7 @@ export const Day3OneCertainty: React.FC = () => {
   const setOneCertainty = useDayStore((s) => s.setOneCertainty);
   const addEntry = useJournalStore((s) => s.addEntry);
   const [text, setText] = useState('');
+  const [showJarModal, setShowJarModal] = useState(false);
 
   const handleSave = () => {
     haptics.success();
@@ -33,7 +35,12 @@ export const Day3OneCertainty: React.FC = () => {
       setOneCertainty(trimmed);
       addEntry({ day: 3, type: 'certainty', content: trimmed });
     }
-    navigation.navigate('Day3MirrorResults');
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
+    navigation.navigate('Home');
   };
 
   return (
@@ -62,8 +69,14 @@ export const Day3OneCertainty: React.FC = () => {
           <Text style={styles.hint}>This will appear in your Day 5 report.</Text>
         </View>
 
-        <DayCTA title="{text.trim() ? 'Save this ' : 'Skip '}" onPress={handleSave} />
+        <DayCTA title={text.trim() ? 'Save this ' : 'Skip '} onPress={handleSave} />
       </ScreenWrapper>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={3}
+        onNext={handleModalNext}
+      />
     </KeyboardAvoidingView>
   );
 };

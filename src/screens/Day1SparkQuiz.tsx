@@ -25,10 +25,6 @@ import {
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import {
-  JarEnvelopeAnimation,
-  JarEnvelopeHandle,
-} from '../components/common/JarEnvelopeAnimation';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Quiz'>;
 type RouteProps = StackScreenProps<RootStackParamList, 'Day1Quiz'>['route'];
@@ -117,7 +113,6 @@ export const Day1SparkQuiz: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, 'A' | 'B'>>({});
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
-  const jarRef = useRef<JarEnvelopeHandle>(null);
 
   const segment = resolveSegment(sliderScore);
   const questions = getQuizQuestions(segment);
@@ -177,16 +172,16 @@ export const Day1SparkQuiz: React.FC = () => {
       const newAnswers = { ...answers, [question.id]: value };
       setAnswers(newAnswers);
 
-      // skipCount=true when re-answering — don't increment jar counter again
-      jarRef.current?.triggerEnvelope(() => {
-        if (currentIndex < total - 1) {
+      if (currentIndex < total - 1) {
+        // Short delay to let user see selection
+        setTimeout(() => {
           setCurrentIndex((i) => i + 1);
-        } else {
-          const personality = calculatePersonalityType(newAnswers);
-          completeDay1(newAnswers, personality.id);
-          navigation.replace('Day1Result');
-        }
-      }, isReAnswer);
+        }, 300);
+      } else {
+        const personality = calculatePersonalityType(newAnswers);
+        completeDay1(newAnswers, personality.id);
+        navigation.replace('Day1Result');
+      }
     });
   };
 
@@ -205,9 +200,6 @@ export const Day1SparkQuiz: React.FC = () => {
       style={styles.root}
       resizeMode="cover"
     >
-      {/* Jar animation */}
-      <JarEnvelopeAnimation ref={jarRef} />
-
       {/* Main content — scrollable area with safe area top */}
       <Animated.View
         style={[

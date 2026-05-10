@@ -14,6 +14,7 @@ import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { Sparkles, ChevronRight, ArrowRight } from 'lucide-react-native';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -51,6 +52,7 @@ export const Day1VibeCheck: React.FC = () => {
   const setDay1Vibe = useDayStore((s) => s.setDay1Vibe);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showJarModal, setShowJarModal] = useState(false);
   const fadeAnims = useRef(VIBE_OPTIONS.map(() => new Animated.Value(0))).current;
   const ctaOpacity = useRef(new Animated.Value(0)).current;
 
@@ -84,6 +86,11 @@ export const Day1VibeCheck: React.FC = () => {
   const handleNext = () => {
     if (!selectedId) return;
     haptics.heavy();
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
     navigation.navigate('Bridge1to2');
   };
 
@@ -181,6 +188,12 @@ export const Day1VibeCheck: React.FC = () => {
           </TouchableOpacity>
         </Animated.View>
       </View>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={1}
+        onNext={handleModalNext}
+      />
     </ScreenWrapper>
   );
 };

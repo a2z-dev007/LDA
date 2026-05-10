@@ -17,6 +17,7 @@ import { haptics } from '../utils/haptics';
 import { metrics } from '../theme/metrics';
 import { typography, fonts } from '../theme/typography';
 import { Lock, Sparkles, Send } from 'lucide-react-native';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DropBox'>;
 
@@ -33,6 +34,7 @@ export const Day4DropBox: React.FC = () => {
   const [reframed, setReframed] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sealType, setSealType] = useState<'compliment' | 'memory' | 'challenge' | 'unsaid' | null>(null);
+  const [showJarModal, setShowJarModal] = useState(false);
 
   const handleReframe = async () => {
     haptics.light();
@@ -52,6 +54,11 @@ export const Day4DropBox: React.FC = () => {
       ...day4,
       dropBoxUsed: true,
     });
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
     navigation.navigate('Home');
   };
 
@@ -62,7 +69,7 @@ export const Day4DropBox: React.FC = () => {
       dropBoxUsed: true,
       dropBoxReframedText: reframed,
     });
-    navigation.navigate('Home');
+    setShowJarModal(true);
   };
 
   return (
@@ -161,6 +168,12 @@ export const Day4DropBox: React.FC = () => {
           )}
         </View>
       </ScreenWrapper>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={4}
+        onNext={handleModalNext}
+      />
     </KeyboardAvoidingView>
   );
 };

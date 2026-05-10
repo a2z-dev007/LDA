@@ -24,6 +24,7 @@ import {
 import { metrics } from '../theme/metrics';
 import { typography } from '../theme/typography';
 import { Sparkles, MessageCircle } from 'lucide-react-native';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodFollowUp'>;
 
@@ -35,6 +36,7 @@ export const Day2MoodFollowUp: React.FC = () => {
   const completeDay2 = useDayStore((s) => s.completeDay2);
   const addEntry = useJournalStore((s) => s.addEntry);
   const [answer, setAnswer] = useState('');
+  const [showJarModal, setShowJarModal] = useState(false);
 
   const moodData = moodOptions.find((m) => m.id === day2.mood);
   const question = moodData?.followUpQuestion ?? "What's on your mind today?";
@@ -51,6 +53,11 @@ export const Day2MoodFollowUp: React.FC = () => {
       question,
       trimmed
     );
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
     navigation.navigate('Home');
   };
 
@@ -91,8 +98,14 @@ export const Day2MoodFollowUp: React.FC = () => {
           <Text style={styles.privacy}>🔒 Stored only on this phone. Never shared.</Text>
         </ScrollView>
 
-        <DayCTA title="{answer.trim() ? 'Save & continue' : 'Skip for today'}" onPress={handleSave} />
+        <DayCTA title={answer.trim() ? 'Save & continue' : 'Skip for today'} onPress={handleSave} />
       </ScreenWrapper>
+
+      <DayEndJarModal 
+        visible={showJarModal}
+        currentDay={2}
+        onNext={handleModalNext}
+      />
     </KeyboardAvoidingView>
   );
 };
