@@ -142,7 +142,7 @@ export const HomeScreen = () => {
                     navigation.navigate(day.route as any);
                   } else if (isCompleted) {
                     // Prevent re-entry to completed days
-                    haptics.notification('warning');
+                    haptics.warning();
                   }
                 }}
                 style={[

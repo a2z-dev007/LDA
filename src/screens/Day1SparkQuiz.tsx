@@ -3,6 +3,16 @@ import {
   View, Text, StyleSheet, TouchableOpacity, Animated,
   ImageBackground, Image,
 } from 'react-native';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Reanimated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  runOnJS,
+  withTiming,
+  interpolate,
+  Extrapolate
+} from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
@@ -99,6 +109,69 @@ function renderPrompt(
 }
 
 // ─────────────────────────────────────────────────────────────
+// Swipeable Option Component
+// ─────────────────────────────────────────────────────────────
+const SWIPE_THRESHOLD = 80;
+
+interface SwipeableOptionProps {
+  children: React.ReactNode;
+  onSelect: () => void;
+  isSelected: boolean;
+  isDimmed: boolean;
+  colors: any;
+}
+
+const SwipeableOption: React.FC<SwipeableOptionProps> = ({ 
+  children, 
+  onSelect, 
+  isSelected, 
+  isDimmed, 
+  colors 
+}) => {
+  const translateX = useSharedValue(0);
+  const isPressed = useSharedValue(false);
+
+  const panGesture = Gesture.Pan()
+    .onBegin(() => {
+      isPressed.value = true;
+    })
+    .onUpdate((event) => {
+      translateX.value = event.translationX;
+    })
+    .onEnd((event) => {
+      isPressed.value = false;
+      if (Math.abs(event.translationX) > SWIPE_THRESHOLD) {
+        runOnJS(onSelect)();
+      }
+      translateX.value = withSpring(0);
+    });
+
+  const tapGesture = Gesture.Tap()
+    .onEnd(() => {
+      runOnJS(onSelect)();
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const opacity = isDimmed ? 0.35 : 1;
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { scale: isPressed.value ? 0.98 : 1 }
+      ],
+      opacity: withTiming(opacity, { duration: 200 })
+    };
+  });
+
+  return (
+    <GestureDetector gesture={Gesture.Exclusive(panGesture, tapGesture)}>
+      <Reanimated.View style={animatedStyle}>
+        {children}
+      </Reanimated.View>
+    </GestureDetector>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────
 // Main Screen
 // ─────────────────────────────────────────────────────────────
 export const Day1SparkQuiz: React.FC = () => {
@@ -118,11 +191,6 @@ export const Day1SparkQuiz: React.FC = () => {
   const questions = getQuizQuestions(segment);
 
   const fadeIn    = useRef(new Animated.Value(0)).current;
-  const unchosen  = useRef(new Animated.Value(1)).current;
-
-  // Per-option press animations
-  const scaleA = useRef(new Animated.Value(1)).current;
-  const scaleB = useRef(new Animated.Value(1)).current;
 
   const question = questions[currentIndex];
   const total    = questions.length;
@@ -133,15 +201,8 @@ export const Day1SparkQuiz: React.FC = () => {
 
   useEffect(() => {
     const existing = answers[question.id] ?? null;
-    // Reset unchosen first so both options appear at full opacity during fade-in
-    unchosen.setValue(1);
     setSelectedOption(existing);
-    // Then dim the unchosen option if there's an existing answer
-    if (existing) {
-      unchosen.setValue(0.35);
-    }
-    scaleA.setValue(1);
-    scaleB.setValue(1);
+    
     // Simple fade in only — no slide
     fadeIn.setValue(0);
     Animated.timing(fadeIn, {
@@ -151,38 +212,25 @@ export const Day1SparkQuiz: React.FC = () => {
     }).start();
   }, [currentIndex]);
 
-  const animateOptionPress = (scale: Animated.Value, callback: () => void) => {
-    Animated.sequence([
-      Animated.timing(scale, { toValue: 0.97, duration: 80, useNativeDriver: true }),
-      Animated.timing(scale, { toValue: 1, duration: 80, useNativeDriver: true }),
-    ]).start();
-    setTimeout(callback, 100);
-  };
+
 
   const handleSelect = (value: 'A' | 'B') => {
     haptics.light();
-    const scale = value === 'A' ? scaleA : scaleB;
-    // Is this a re-answer (question was already answered)?
-    const isReAnswer = question.id in answers;
+    setSelectedOption(value);
 
-    animateOptionPress(scale, () => {
-      setSelectedOption(value);
-      Animated.timing(unchosen, { toValue: 0.35, duration: 200, useNativeDriver: true }).start();
+    const newAnswers = { ...answers, [question.id]: value };
+    setAnswers(newAnswers);
 
-      const newAnswers = { ...answers, [question.id]: value };
-      setAnswers(newAnswers);
-
-      if (currentIndex < total - 1) {
-        // Short delay to let user see selection
-        setTimeout(() => {
-          setCurrentIndex((i) => i + 1);
-        }, 300);
-      } else {
-        const personality = calculatePersonalityType(newAnswers);
-        saveDay1Quiz(newAnswers, personality.id);
-        navigation.replace('Day1Result');
-      }
-    });
+    if (currentIndex < total - 1) {
+      // Short delay to let user see selection
+      setTimeout(() => {
+        setCurrentIndex((i) => i + 1);
+      }, 300);
+    } else {
+      const personality = calculatePersonalityType(newAnswers);
+      saveDay1Quiz(newAnswers, personality.id);
+      navigation.replace('Day1Result');
+    }
   };
 
   const handleBack = () => {
@@ -263,25 +311,23 @@ export const Day1SparkQuiz: React.FC = () => {
           />
         </View>
 
-        {/* ── Tap hint ── */}
+        {/* ── Swipe/Tap hint ── */}
         <View style={styles.hintRow}>
-          <Text style={styles.hintArrow}>›</Text>
-          <Text style={styles.hintText}>Tap to choose</Text>
-          <Text style={styles.hintArrow}>‹</Text>
+          <Text style={styles.hintArrow}>«</Text>
+          <Text style={styles.hintText}>Swipe or Tap to choose</Text>
+          <Text style={styles.hintArrow}>»</Text>
         </View>
 
         {/* ── Options ── */}
         <View style={styles.options}>
           {/* Option A */}
-          <Animated.View style={[
-            { opacity: selectedOption === 'B' ? unchosen : 1 },
-            { transform: [{ scale: scaleA }] },
-          ]}>
-            <TouchableOpacity
-              style={[styles.option, selectedOption === 'A' && styles.optionSelected]}
-              activeOpacity={1}
-              onPress={() => handleSelect('A')}
-            >
+          <SwipeableOption
+            onSelect={() => handleSelect('A')}
+            isDimmed={selectedOption === 'B'}
+            isSelected={selectedOption === 'A'}
+            colors={colors}
+          >
+            <View style={[styles.option, selectedOption === 'A' && styles.optionSelected]}>
               <LinearGradient
                 colors={['#6EE87A', '#2DD4BF']}
                 start={{ x: 0, y: 0 }}
@@ -294,8 +340,8 @@ export const Day1SparkQuiz: React.FC = () => {
                 {question.optionA}
               </Text>
               <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'A' ? colors.primary : colors.textHint} strokeWidth={1.5} />
-            </TouchableOpacity>
-          </Animated.View>
+            </View>
+          </SwipeableOption>
 
           {/* Or divider */}
           <View style={styles.orDivider}>
@@ -305,15 +351,13 @@ export const Day1SparkQuiz: React.FC = () => {
           </View>
 
           {/* Option B */}
-          <Animated.View style={[
-            { opacity: selectedOption === 'A' ? unchosen : 1 },
-            { transform: [{ scale: scaleB }] },
-          ]}>
-            <TouchableOpacity
-              style={[styles.option, selectedOption === 'B' && styles.optionSelected]}
-              activeOpacity={1}
-              onPress={() => handleSelect('B')}
-            >
+          <SwipeableOption
+            onSelect={() => handleSelect('B')}
+            isDimmed={selectedOption === 'A'}
+            isSelected={selectedOption === 'B'}
+            colors={colors}
+          >
+            <View style={[styles.option, selectedOption === 'B' && styles.optionSelected]}>
               <LinearGradient
                 colors={['#6EE87A', '#2DD4BF']}
                 start={{ x: 0, y: 0 }}
@@ -326,8 +370,8 @@ export const Day1SparkQuiz: React.FC = () => {
                 {question.optionB}
               </Text>
               <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'B' ? colors.primary : colors.textHint} strokeWidth={1.5} />
-            </TouchableOpacity>
-          </Animated.View>
+            </View>
+          </SwipeableOption>
         </View>
 
         {/* ── Decorative sparkles + leaves ── */}

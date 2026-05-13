@@ -217,7 +217,7 @@ export const Day1ResultScreen: React.FC = () => {
           onPress={handleVibeCheck}
         >
           <LinearGradient
-            colors={['#6EE87A', '#2DD4BF']}
+            colors={colors.gradientBtn}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.primaryBtn}

@@ -5,6 +5,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ThemeProvider, useAppColors } from './src/theme';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 function AppContent() {
   // useAppColors() re-renders this component — and therefore the
   // StatusBar + NavigationContainer background — whenever the
@@ -12,16 +14,18 @@ function AppContent() {
   const colors = useAppColors();
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.dark }}>
-      <StatusBar
-        barStyle={colors.isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.dark}
-        translucent={false}
-      />
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: colors.dark }}>
+        <StatusBar
+          barStyle={colors.isDark ? 'light-content' : 'dark-content'}
+          backgroundColor={colors.dark}
+          translucent={false}
+        />
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
