@@ -51,11 +51,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 // ── Sizing ────────────────────────────────────────────────────
-const JAR_W         = responsiveWidth(28);
-const JAR_H         = responsiveWidth(33);
-const LID_H         = responsiveWidth(8);   // animated lid height
-const ENV_W         = responsiveWidth(18);
-const ENV_H         = responsiveWidth(14);
+const JAR_W         = responsiveWidth(22);
+const JAR_H         = responsiveWidth(26);
+const LID_H         = responsiveWidth(6);   // animated lid height
+const ENV_W         = responsiveWidth(14);
+const ENV_H         = responsiveWidth(11);
+
 const JAR_RIGHT     = responsiveWidth(3.5);
 const JAR_TOP_EXTRA = responsiveHeight(1.5);
 

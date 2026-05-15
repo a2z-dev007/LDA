@@ -19,22 +19,23 @@ const ROUNDS: Round[] = [
   {
     id: 1,
     prompt: 'For our next trip together...',
-    optionA: { label: 'Beach & do nothing', icon: PalmTree, id: 'A' },
-    optionB: { label: 'Trek & explore', icon: Mountain, id: 'B' },
+    optionA: { label: 'Beach & do nothing', icon: '🏖️', id: 'A' },
+    optionB: { label: 'Trek & explore', icon: '🏔️', id: 'B' },
   },
   {
     id: 2,
     prompt: 'On a quiet Sunday...',
-    optionA: { label: 'Slow morning at home', icon: Coffee, id: 'A' },
-    optionB: { label: 'Spontaneous day out', icon: Car, id: 'B' },
+    optionA: { label: 'Slow morning at home', icon: '☕', id: 'A' },
+    optionB: { label: 'Spontaneous day out', icon: '🚗', id: 'B' },
   },
   {
     id: 3,
     prompt: 'When I need to recharge...',
-    optionA: { label: 'Need space alone', icon: User, id: 'A' },
-    optionB: { label: 'Need you close', icon: Heart, id: 'B' },
+    optionA: { label: 'Need space alone', icon: '🧘', id: 'A' },
+    optionB: { label: 'Need you close', icon: '🤗', id: 'B' },
   },
 ];
+
 
 interface ThisOrThatBridgeProps {
   onComplete: () => void;
@@ -147,8 +148,13 @@ const OptionCard = ({ option, onPress, isSelected, isPredicting }: any) => {
       ]}
     >
       <View style={styles.iconBox}>
-        <Icon size={responsiveWidth(8)} color={isSelected ? colors.primary : colors.textSecondary} />
+        {typeof Icon === 'string' ? (
+          <Text style={styles.optionEmoji}>{Icon}</Text>
+        ) : (
+          <Icon size={responsiveWidth(8)} color={isSelected ? colors.primary : colors.textSecondary} />
+        )}
       </View>
+
       <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
         {option.label}
       </Text>
@@ -231,8 +237,12 @@ const makeStyles = (c: any) => StyleSheet.create({
     backgroundColor: 'rgba(45,212,191,0.05)',
   },
   iconBox: {
-    marginBottom: metrics.spacing.sm,
+    marginBottom: metrics.spacing.xs,
   },
+  optionEmoji: {
+    fontSize: responsiveFontSize(4),
+  },
+
   optionLabel: {
     ...typography.caption,
     fontFamily: fonts.dmSansBold,

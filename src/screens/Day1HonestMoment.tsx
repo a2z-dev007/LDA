@@ -154,7 +154,7 @@ export const Day1HonestMoment: React.FC = () => {
       <View style={styles.body}>
 
         {/* ── Jar Animation ── */}
-        <Animated.View style={[styles.jarWrapper, { opacity: scoreAnim }]}>
+        <Animated.View style={[styles.jarWrapper, { opacity: scoreAnim, top: responsiveHeight(-2) }]}>
           <JarEnvelopeAnimation ref={jarRef} />
         </Animated.View>
 

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+
 import { DayHeader } from '../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -30,11 +31,34 @@ export const Day2MoodPicker: React.FC = () => {
   const day2 = useDayStore((s) => s.day2);
   const recordMood = useStreakStore((s) => s.recordMood);
   const [selectedMood, setSelectedMood] = useState<MoodId | null>(null);
+  
+  // Animation for the button
+  const slideAnim = useRef(new Animated.Value(100)).current; // Start off-screen (100px below)
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (selectedMood) {
+      Animated.parallel([
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [selectedMood]);
 
   const handleSelect = (id: MoodId) => {
     haptics.light();
     setSelectedMood(id);
   };
+
 
   const handleContinue = () => {
     if (selectedMood) {
@@ -89,18 +113,27 @@ export const Day2MoodPicker: React.FC = () => {
         })}
       </ScrollView>
 
-      {/* Footer Button */}
-      <View style={styles.footer}>
-        <GradientButton
-          text="Continue"
-          onPress={handleContinue}
-          disabled={!selectedMood}
-          showArrow={true}
-          fullWidth={true}
-          gradientColors={colors.gradientBtn}
-        />
-      
-      </View>
+      {/* Footer Button - Animated */}
+      {selectedMood && (
+        <Animated.View 
+          style={[
+            styles.footer,
+            {
+              opacity: opacityAnim,
+              transform: [{ translateY: slideAnim }]
+            }
+          ]}
+        >
+          <GradientButton
+            text="Continue"
+            onPress={handleContinue}
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={colors.gradientBtn}
+          />
+        </Animated.View>
+      )}
+
     </ScreenWrapper>
   );
 };

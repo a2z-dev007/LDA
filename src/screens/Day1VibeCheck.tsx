@@ -14,8 +14,12 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
+import { useJournalStore } from '../store/useJournalStore';
 import { Sparkles, ChevronRight, ArrowRight } from 'lucide-react-native';
+
 import { GradientButton } from '../components/common/GradientButton';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+
 import {
   responsiveWidth,
 
@@ -54,15 +58,20 @@ export const Day1VibeCheck: React.FC = () => {
   const insets = useSafeAreaInsets();
   const setDay1Vibe = useDayStore((s) => s.setDay1Vibe);
   const completeDay1 = useDayStore((s) => s.completeDay1);
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+  const initialJarCount = jarMemories.length;
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const fadeAnims = useRef(VIBE_OPTIONS.map(() => new Animated.Value(0))).current;
+  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const fadeAnims = VIBE_OPTIONS.map(() => useRef(new Animated.Value(0)).current);
 
   const ctaTranslateY = useRef(new Animated.Value(120)).current;
   const ctaOpacity    = useRef(new Animated.Value(0)).current;
+  const headerAnim    = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Staggered entrance for tiles
+    // Entrance animations for content (Jar remains hidden until Next is clicked)
     Animated.stagger(40, fadeAnims.map(anim => 
       Animated.timing(anim, {
         toValue: 1,
@@ -71,6 +80,9 @@ export const Day1VibeCheck: React.FC = () => {
       })
     )).start();
   }, []);
+
+
+
 
   useEffect(() => {
     if (selectedId) {
@@ -98,10 +110,38 @@ export const Day1VibeCheck: React.FC = () => {
 
   const handleNext = () => {
     if (!selectedId) return;
+    const selectedOption = VIBE_OPTIONS.find(o => o.id === selectedId);
+    
     haptics.heavy();
-    completeDay1();
-    navigation.navigate('Bridge1to2');
+
+    // 1. Show the Jar first
+    Animated.timing(headerAnim, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+
+    // 2. Trigger the envelope animation after a brief delay so user sees the jar appearing
+    setTimeout(() => {
+      jarRef.current?.triggerEnvelope(() => {
+        // Callback after slip is in (usually ~1s into animation)
+        addJarMemory({
+          content: `Felt ${selectedId} ${selectedOption?.emoji || ''}`,
+          type: 'text',
+          tinyCompliment: null,
+          dayColor: colors.primary,
+        });
+      });
+    }, 450);
+
+    // 3. Redirect only after the jar animation (open -> slip -> close) is finished
+    setTimeout(() => {
+      completeDay1();
+      navigation.navigate('Bridge1to2');
+    }, 2000); // 2 seconds covers the full cinematic sequence
   };
+
+
 
 
   const handleComeBack = () => {
@@ -148,8 +188,12 @@ export const Day1VibeCheck: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={1} />
 
+      {/* Jar moved into ListHeaderComponent below for consistent scrolling */}
+
+
       <FlatList
         data={VIBE_OPTIONS}
+
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -160,6 +204,11 @@ export const Day1VibeCheck: React.FC = () => {
         scrollEventThrottle={16}
         ListHeaderComponent={
           <View style={styles.header}>
+            <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1), position: 'absolute', right: -10 }]}>
+              <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+            </Animated.View>
+
+
             <View style={styles.eyebrowPill}>
               <Sparkles size={metrics.iconSize.xs} color={colors.primary} />
               <Text style={styles.eyebrow}>VIBE CHECK</Text>
@@ -168,6 +217,7 @@ export const Day1VibeCheck: React.FC = () => {
               One card that captures how your relationship feels right now.
             </Text>
           </View>
+
         }
         // ListFooterComponent={<View style={styles.listFooterSpacer} />}
       />
@@ -184,7 +234,7 @@ export const Day1VibeCheck: React.FC = () => {
         pointerEvents={selectedId ? 'auto' : 'none'}
       >
         <GradientButton
-          text="Next"
+          text={selectedId ? `Confirm ${selectedId}` : 'Next'}
           onPress={handleNext}
           showArrow={true}
           fullWidth={true}
@@ -207,7 +257,14 @@ export const Day1VibeCheck: React.FC = () => {
 const makeStyles = (c: any) => StyleSheet.create({
   list: {
     flex: 1,
+    position: 'relative',
   },
+  jarWrapper: {
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
+  },
+
+
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.lg,

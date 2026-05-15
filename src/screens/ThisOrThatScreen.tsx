@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions,
+  View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +13,15 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
-import { thisOrThatQuestions } from '../data/thisOrThatData';
-import { ChevronLeft, Sparkles, Lock, Share2 } from 'lucide-react-native';
+import { useJournalStore } from '../store/useJournalStore';
+import { GradientButton } from '../components/common/GradientButton';
+
+import { thisOrThatSets, ThisOrThatQuestion } from '../data/thisOrThatData';
+import { JarEnvelopeAnimation } from '../components/common/JarEnvelopeAnimation';
+
+
+
+import { ChevronLeft, Sparkles, Lock, UserPlus, Share2 } from 'lucide-react-native';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -23,6 +30,24 @@ import {
 
 type Nav = StackNavigationProp<RootStackParamList, 'ThisOrThat'>;
 
+const DotsIndicator: React.FC<{ current: number; total: number; colors: any }> = ({ current, total, colors }) => (
+  <View style={{ flexDirection: 'row', gap: 6, marginVertical: 12 }}>
+    {Array.from({ length: total }).map((_, i) => (
+      <View
+        key={i}
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: 4,
+          backgroundColor: i <= current ? colors.primary : 'rgba(0,0,0,0.1)',
+          opacity: i === current ? 1 : 0.4,
+        }}
+      />
+    ))}
+  </View>
+);
+
+
 export const ThisOrThatScreen: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
@@ -30,16 +55,58 @@ export const ThisOrThatScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const setB2ThisOrThat = useDayStore((s) => s.setB2ThisOrThat);
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const intentionWord = useDayStore((s) => s.day2.intentionWord) || 'Present';
+  const activeSet = thisOrThatSets[intentionWord] || thisOrThatSets.Present;
+  const thisOrThatQuestions = activeSet.questions;
+
+  const [currentRound, setCurrentRound] = useState(0);
   const [picks, setPicks] = useState<string[]>([]);
-  const [predictions, setPredictions] = useState<string[]>([]);
+  const [showQuote, setShowQuote] = useState(false);
+  const jarRef = useRef<any>(null);
+  const resultHeaderAnim = useRef(new Animated.Value(0)).current;
+
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+  const initialJarCount = jarMemories.length;
+
+
+  // Animation for the jar when finished
+  useEffect(() => {
+    if (isFinished && jarRef.current) {
+      // Animate the jar wrapper opacity/position
+      Animated.timing(resultHeaderAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+
+      setTimeout(() => {
+        jarRef.current?.triggerEnvelope(() => {
+          // Persist to store when animation slip enters jar
+          addJarMemory({
+            content: `This or That: ${intentionWord} Edition Complete`,
+            type: 'text',
+            tinyCompliment: null,
+            dayColor: colors.primary,
+          });
+        });
+      }, 700);
+    }
+  }, [isFinished]);
+
+
+
+
+
+
   
   const totalQuestions = thisOrThatQuestions.length;
-  const currentQuestionIndex = currentStep;
-  const isPredicting = currentStep % 2 !== 0; // Alternates: 0=Pick, 1=Predict, 2=Pick, etc.
-  const isFinished = currentStep >= totalQuestions;
+  const isFinished = currentRound >= totalQuestions;
+  const currentQuestionIndex = currentRound;
+
 
   const currentQuestion = thisOrThatQuestions[currentQuestionIndex];
+
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -55,32 +122,37 @@ export const ThisOrThatScreen: React.FC = () => {
     haptics.medium();
     
     let newPicks = [...picks];
-    let newPredictions = [...predictions];
-
-    if (!isPredicting) {
-      newPicks[currentStep] = optionText;
-      setPicks(newPicks);
-    } else {
-      newPredictions[currentStep] = optionText;
-      setPredictions(newPredictions);
-    }
-
-    // Auto advance
+    newPicks[currentRound] = optionText;
+    setPicks(newPicks);
+    
+    // Show quote after selection
     setTimeout(() => {
-      triggerTransition(() => {
-        if (currentStep === totalQuestions - 1) {
-          // Final step complete
-          const finalRounds = thisOrThatQuestions.map((q, idx) => ({
-            round: idx + 1,
-            my_pick: newPicks[idx] || '',
-            my_pred_of_partner: newPredictions[idx] || '',
-          }));
-          setB2ThisOrThat(finalRounds);
-        }
-        setCurrentStep((p) => p + 1);
-      });
-    }, 300);
+      setShowQuote(true);
+    }, 400);
   };
+
+  const handleNextRound = () => {
+    setShowQuote(false);
+    triggerTransition(() => {
+      const isLastRound = currentRound === totalQuestions - 1;
+      if (isLastRound) {
+        const finalRounds = thisOrThatQuestions.map((q, idx) => ({
+          round: idx + 1,
+          my_pick: picks[idx] || '',
+          my_pred_of_partner: '', // Removed prediction phase
+        }));
+        useDayStore.getState().setB2ThisOrThat(finalRounds);
+        setCurrentRound(totalQuestions);
+      } else {
+        setCurrentRound((p) => p + 1);
+      }
+    });
+  };
+
+
+
+
+
 
   const handleFinish = () => {
     haptics.heavy();
@@ -88,392 +160,462 @@ export const ThisOrThatScreen: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
+    if (currentRound > 0) {
       triggerTransition(() => {
-        setCurrentStep((p) => p - 1);
+        setCurrentRound((p) => p - 1);
       });
     } else {
       navigation.goBack();
     }
   };
 
+
+
   // Progress percentage
-  const progress = isFinished ? 1 : currentStep / totalQuestions;
+  const progress = isFinished ? 1 : currentRound / totalQuestions;
+
+
+
 
   return (
     <ScreenWrapper>
-      {/* Back button */}
-      <TouchableOpacity
-        style={[styles.backBtn, { top: insets.top + metrics.spacing.sm }]}
-        onPress={handleBack}
-        activeOpacity={0.7}
-      >
-        <ChevronLeft size={22} color={colors.text} />
-      </TouchableOpacity>
+      {/* Top Header */}
+      <View style={[styles.topHeader]}>
+        <TouchableOpacity
+          style={styles.backBtnHeader}
+          onPress={handleBack}
+          activeOpacity={0.7}
+        >
+          <ChevronLeft size={22} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>This or That: Us Edition</Text>
+      </View>
+
+      <View style={styles.jarContainer}>
+        <Animated.View style={[styles.jarWrapper, { opacity: resultHeaderAnim }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </Animated.View>
+      </View>
+
 
       <Animated.ScrollView
         style={[styles.container, { opacity: fadeAnim }]}
-        contentContainerStyle={[
-          styles.content,
-          { paddingTop: insets.top + metrics.spacing.xxl },
-        ]}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+
+
+        <View style={styles.centeredContent}>
         {!isFinished ? (
           <>
             {/* Header */}
             <View style={styles.header}>
-              <Text style={styles.title}>
-                {!isPredicting ? 'Pick yours' : 'What would they pick?'}
-              </Text>
+              <Text style={styles.title}>3 quick rounds</Text>
               <Text style={styles.subtitle}>
-                {!isPredicting
-                  ? `Round ${currentStep + 1} · Choose your preference`
-                  : `Round ${currentStep + 1} · Predict their choice`}
+                {currentRound === 0 ? activeSet.intro : "Pick yours — then see what it reveals."}
               </Text>
-              
-              {/* Progress Bar */}
-              <View style={styles.progressBg}>
-                <Animated.View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+
+
+              <DotsIndicator current={currentRound} total={totalQuestions} colors={colors} />
+
+              <View style={styles.promptBox}>
+                <Text style={styles.promptText}>{currentQuestion.prompt}</Text>
               </View>
-              
-              <Text style={styles.roundIndicator}>
-                ROUND {currentStep + 1} OF {totalQuestions}
-              </Text>
+
             </View>
 
-            {/* Question Category */}
-            <View style={styles.categoryContainer}>
-              <Text style={styles.categoryText}>{currentQuestion.category}</Text>
-            </View>
+
+
 
             {/* Options */}
             <View style={styles.optionsContainer}>
               {currentQuestion.options.map((option) => {
-                const isSelected = !isPredicting
-                  ? picks[currentStep] === option.text
-                  : predictions[currentStep] === option.text;
+                const isSelected = picks[currentQuestionIndex] === option.text;
+                const borderColor = isSelected ? colors.primary : 'rgba(255,255,255,0.9)';
+
 
                 return (
                   <TouchableOpacity
                     key={option.text}
-                    style={[styles.optionCard, isSelected && styles.optionCardSelected]}
+                    style={[styles.optionCard, { borderColor }]}
                     onPress={() => handleSelect(option.text)}
                     activeOpacity={0.8}
                   >
-                    {isSelected && (
-                      <LinearGradient
-                        colors={['rgba(45,212,191,0.15)', 'rgba(110,232,122,0.15)']}
-                        style={StyleSheet.absoluteFill}
-                      />
-                    )}
                     <Text style={styles.optionEmoji}>{option.emoji}</Text>
                     <Text style={styles.optionText}>{option.text}</Text>
+                    <Text style={styles.optionSubtext}>{option.subtext}</Text>
                   </TouchableOpacity>
+
                 );
               })}
             </View>
 
-            <View style={[styles.stepIndicatorContainer, { backgroundColor: isPredicting ? 'rgba(45,212,191,0.1)' : 'rgba(0,0,0,0.05)' }]}>
-              <Text style={[styles.stepIndicatorText, { color: isPredicting ? colors.primary : colors.textSecondary }]}>
-                {!isPredicting ? 'MY PICK' : 'MY PREDICTION'}
-              </Text>
+
+            {/* Phase Indicators */}
+            <View style={styles.phaseIndicatorWrapper}>
+              {!picks[currentRound] ? (
+                <Text style={styles.tapPrompt}>Tap your preference</Text>
+              ) : (
+                <Text style={styles.tapPrompt}>✓ Selected</Text>
+              )}
             </View>
 
-            <Text style={styles.hintText}>
-              {!isPredicting
-                ? "Tap your preference"
-                : "Predict what your partner would choose"}
-            </Text>
+
+            {/* Bottom Progress Indicator */}
+            <View style={styles.bottomProgressWrapper}>
+               <View style={styles.progressLine} />
+               <Text style={styles.bottomRoundIndicator}>
+                 ROUND {currentRound + 1} OF {totalQuestions}
+               </Text>
+            </View>
+
+
           </>
         ) : (
           <>
+
             {/* Results Screen */}
             <View style={styles.header}>
-              <Text style={styles.title}>This or That: Us Edition</Text>
-              <Text style={styles.subtitle}>All {totalQuestions} rounds done 🎉</Text>
+              <Text style={styles.title}>All 3 rounds done 🎉</Text>
+              <Text style={styles.subtitle}>Their answers are sealed — reveal when they join.</Text>
               
-              <View style={styles.progressBg}>
-                <View style={[styles.progressBar, { width: '100%' }]} />
-              </View>
+              <DotsIndicator current={2} total={3} colors={colors} />
             </View>
 
-            <View style={styles.summaryContainer}>
-              <Text style={styles.summaryTitle}>Your answers are sealed 🔒</Text>
-              <Text style={styles.summarySub}>They'll reveal when your partner joins.</Text>
-
-              <View style={styles.roundsSummary}>
-                {thisOrThatQuestions.map((q, idx) => (
-                  <View key={idx} style={styles.roundRow}>
-                    <View style={styles.roundBadge}>
-                      <Text style={styles.roundBadgeText}>R{idx + 1}</Text>
-                    </View>
-                    <View style={styles.roundDetails}>
-                      <Text style={styles.roundQ}>{q.category}</Text>
-                      {picks[idx] ? (
-                        <Text style={styles.roundA}>You picked: {picks[idx]}</Text>
-                      ) : null}
-                      {predictions[idx] ? (
-                        <Text style={styles.roundA}>You predicted: {predictions[idx]}</Text>
-                      ) : null}
-                    </View>
-                  </View>
-                ))}
-              </View>
-
+            <View style={styles.sealedCardsRow}>
+              {[1, 2, 3].map((r) => (
+                <View key={r} style={styles.sealedCard}>
+                  <Lock size={20} color={colors.textHint} />
+                  <Text style={styles.sealedCardTitle}>Round {r}</Text>
+                  <Text style={styles.sealedCardSub}>Sealed</Text>
+                </View>
+              ))}
             </View>
 
-            <TouchableOpacity
-              style={styles.ctaButton}
-              onPress={handleFinish}
-              activeOpacity={0.9}
-            >
-              <LinearGradient
-                colors={colors.gradientBtn}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.ctaGradient}
-              >
-                <Text style={styles.ctaText}>Enter Day 2 →</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+            <View style={styles.resultInfoBox}>
+              <Text style={styles.resultInfoText}>
+                Their answers reveal when they join. Never shown to you again until reveal.
+              </Text>
+            </View>
+
+            <View style={styles.ctaGroup}>
+              <GradientButton
+                text="Enter Day 2"
+                onPress={handleFinish}
+                showArrow={true}
+                fullWidth={true}
+              />
+            </View>
+
+
+
+
+
           </>
         )}
+        </View>
       </Animated.ScrollView>
+
+
+      {/* Quote Modal */}
+      <Modal
+        visible={showQuote}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowQuote(false)}
+      >
+        <View style={styles.quoteOverlay}>
+          <Animated.View 
+            style={[
+              styles.quoteCard,
+              {
+                transform: [
+                  { translateY: 0 }
+                ]
+              }
+            ]}
+          >
+            <View style={styles.quoteIconBox}>
+              <Sparkles size={24} color={colors.primary} />
+            </View>
+            <Text style={styles.quoteTitle}>Couple Insight</Text>
+            <Text style={styles.quoteText}>{currentQuestion?.coupleCard}</Text>
+            <GradientButton
+              text={currentRound === totalQuestions - 1 ? 'Finish Activity' : 'Next Round'}
+              onPress={handleNextRound}
+              showArrow={true}
+              style={{ width: '100%', marginTop: metrics.spacing.md }}
+            />
+          </Animated.View>
+        </View>
+      </Modal>
+
     </ScreenWrapper>
+
   );
 };
 
 const makeStyles = (c: any) => StyleSheet.create({
-  container: { flex: 1 },
-  content: {
+  topHeader: {
+
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingBottom: metrics.spacing.xxl,
+    height: 60,
+    zIndex: 20,
   },
-  backBtn: {
+  jarContainer: {
     position: 'absolute',
-    left: metrics.layout.screenPaddingHz,
-    zIndex: 10,
-    width: responsiveWidth(10),
-    height: responsiveWidth(10),
-    borderRadius: responsiveWidth(5),
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
+    top: responsiveHeight(3),
+    right: 3,
+    left: 0,
+    zIndex: 100,
+    pointerEvents: 'none',
+  },
+  jarWrapper: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 25,
+    top: 0,
+    transform: [{ scale: 0.55 }],
+  },
+
+
+
+
+
+  backBtnHeader: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.5)',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 12,
   },
+  headerTitle: {
+    ...typography.bodyBold,
+    color: c.text,
+    fontFamily: fonts.dmSansBold,
+  },
+  container: { flex: 1 },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: metrics.spacing.xxl,
+    paddingTop: 20,
+    position: 'relative',
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+
   header: {
     alignItems: 'center',
     marginBottom: metrics.spacing.xl,
-    marginTop: metrics.spacing.md,
   },
   title: {
     ...typography.h3,
     color: c.text,
     fontFamily: fonts.dmSansBold,
-    marginBottom: 4,
+    textAlign: 'center',
+    marginBottom: 8,
   },
   subtitle: {
     ...typography.bodySmall,
     color: c.textSecondary,
-    marginBottom: metrics.spacing.md,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 12,
   },
-  progressBg: {
-    width: '60%',
-    height: 4,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 2,
-    overflow: 'hidden',
-    marginBottom: metrics.spacing.sm,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: c.primary,
-    borderRadius: 2,
-  },
-  roundIndicator: {
+  categoryLabel: {
     ...typography.captionSmall,
     color: c.textHint,
-    letterSpacing: 1.2,
-  },
-  categoryContainer: {
-    backgroundColor: 'rgba(255,255,255,0.6)',
-    paddingVertical: metrics.spacing.sm,
-    paddingHorizontal: metrics.spacing.md,
-    borderRadius: metrics.radius.full,
-    alignSelf: 'center',
-    marginBottom: metrics.spacing.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(45,212,191,0.15)',
-  },
-  categoryText: {
-    ...typography.caption,
-    color: c.primary,
     fontFamily: fonts.dmSansBold,
-    letterSpacing: 1,
+    letterSpacing: 2,
+    marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'row',
     gap: metrics.spacing.md,
     justifyContent: 'space-between',
-    marginBottom: metrics.spacing.xl,
+    alignItems: 'stretch',
+    marginBottom: metrics.spacing.lg,
   },
   optionCard: {
     flex: 1,
-    height: responsiveWidth(42),
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(255,255,255,0.8)',
     borderRadius: metrics.radius.xl,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.9)',
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: metrics.spacing.md,
-    overflow: 'hidden',
-    gap: metrics.spacing.sm,
+    padding: metrics.spacing.lg,
+    gap: metrics.spacing.md,
+    minHeight: responsiveWidth(48),
   },
-  optionCardSelected: {
-    borderColor: c.primary,
-    backgroundColor: '#FFFFFF',
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
+
   optionEmoji: {
-    fontSize: responsiveFontSize(4),
+    fontSize: responsiveFontSize(4.5),
   },
   optionText: {
-    ...typography.bodyMedium,
-    color: c.text,
-    fontFamily: fonts.dmSansBold,
-    textAlign: 'center',
-  },
-  stepIndicatorContainer: {
-    alignSelf: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginBottom: metrics.spacing.md,
-  },
-  stepIndicatorText: {
-    fontSize: metrics.fontSize.caption,
-    fontFamily: fonts.dmSansBold,
-    letterSpacing: 1,
-  },
-  hintText: {
-    ...typography.caption,
-    color: c.textHint,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  summaryContainer: {
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderRadius: metrics.radius.xxl,
-    padding: metrics.spacing.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
-    marginBottom: metrics.spacing.xl,
-    alignItems: 'center',
-    shadowColor: '#2DD4BF',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.05,
-    shadowRadius: 16,
-    elevation: 2,
-  },
-  summaryTitle: {
     ...typography.bodyBold,
     color: c.text,
-    fontSize: responsiveFontSize(2.2),
-    marginBottom: 4,
-  },
-  summarySub: {
-    ...typography.caption,
-    color: c.textSecondary,
-    marginBottom: metrics.spacing.lg,
     textAlign: 'center',
   },
-  roundsSummary: {
-    width: '100%',
-    gap: metrics.spacing.md,
-    marginBottom: metrics.spacing.md,
+  optionSubtext: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    textAlign: 'center',
+    marginTop: 4,
+    lineHeight: 14,
+    letterSpacing: 0,
   },
-  roundRow: {
-    flexDirection: 'row',
-    gap: metrics.spacing.md,
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: metrics.spacing.md,
-    borderRadius: metrics.radius.xl,
-    borderWidth: 1,
-    borderColor: 'rgba(45,212,191,0.1)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
+
+  promptBox: {
+    marginTop: 10,
+    paddingHorizontal: 10,
   },
-  roundBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(45,212,191,0.15)',
+  promptText: {
+    ...typography.bodyLarge,
+    color: c.text,
+    fontFamily: 'PlayfairDisplay-Italic',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+
+  phaseIndicatorWrapper: {
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: metrics.spacing.xxl,
   },
-  roundBadgeText: {
-    ...typography.captionSmall,
-    color: c.primary,
-    fontFamily: fonts.dmSansBold,
-  },
-  roundDetails: {
-    flex: 1,
-  },
-  roundQ: {
-    ...typography.bodySmall,
-    color: c.text,
-    fontFamily: fonts.dmSansBold,
-    marginBottom: 2,
-  },
-  roundA: {
-    ...typography.captionSmall,
-    color: c.textSecondary,
+  tapPrompt: {
+    ...typography.caption,
+    color: c.textHint,
     fontStyle: 'italic',
   },
-  inviteBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: metrics.spacing.xs,
-    paddingVertical: metrics.spacing.xs,
-    paddingHorizontal: metrics.spacing.md,
-    borderRadius: metrics.radius.full,
-    borderWidth: 1,
-    borderColor: c.primary,
+  predictNextLink: {
+    paddingVertical: 4,
   },
-  inviteBtnText: {
+  predictNextText: {
+    ...typography.bodySmall,
+    color: c.primary,
+  },
+  predictPrompt: {
+    ...typography.bodySmall,
+    color: '#F87171',
+  },
+  quoteOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: metrics.spacing.xl,
+  },
+
+  quoteCard: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: metrics.spacing.xl,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  quoteIconBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(45,212,191,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: metrics.spacing.lg,
+  },
+  quoteTitle: {
     ...typography.caption,
     color: c.primary,
     fontFamily: fonts.dmSansBold,
+    letterSpacing: 1.5,
+    marginBottom: metrics.spacing.md,
   },
-  ctaButton: {
+  quoteText: {
+    ...typography.bodyLarge,
+    color: c.text,
+    fontFamily: 'PlayfairDisplay-Italic',
+    textAlign: 'center',
+    lineHeight: 28,
+    marginBottom: metrics.spacing.xl,
+  },
+  quoteNextBtn: {
     width: '100%',
-    shadowColor: '#2DD4BF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    marginTop: metrics.spacing.md,
   },
-  ctaGradient: {
+
+  bottomProgressWrapper: {
+    alignItems: 'center',
+    marginTop: metrics.spacing.xl,
+  },
+
+  progressLine: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+    marginBottom: metrics.spacing.md,
+  },
+  bottomRoundIndicator: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 1.5,
+  },
+
+  // Results Styles
+  sealedCardsRow: {
     flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'center',
+    marginBottom: metrics.spacing.xl,
+  },
+  sealedCard: {
+    width: responsiveWidth(26),
+    height: responsiveWidth(30),
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: metrics.spacing.md,
-    borderRadius: metrics.radius.full,
-    gap: metrics.spacing.sm,
+    gap: 6,
   },
-  ctaText: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
+  sealedCardTitle: {
+    fontSize: 10,
+    fontFamily: fonts.dmSansBold,
+    color: c.text,
   },
+  sealedCardSub: {
+    fontSize: 9,
+    fontFamily: fonts.dmSansMedium,
+    color: c.textHint,
+  },
+  resultInfoBox: {
+    paddingHorizontal: metrics.spacing.xl,
+    marginBottom: metrics.spacing.xxl,
+  },
+  resultInfoText: {
+    ...typography.caption,
+    color: c.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  ctaGroup: {
+    gap: 12,
+    alignItems: 'center',
+  },
+  enterDay2Btn: {
+    width: '100%',
+  },
+
 });

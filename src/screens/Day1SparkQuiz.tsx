@@ -440,7 +440,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingHorizontal: metrics.spacing.smMd,
     paddingVertical: metrics.spacing.xs,
     marginBottom: metrics.spacing.md,
-    marginTop:responsiveHeight(3)
+    marginTop:responsiveHeight(1)
   },
   moodBadgeText: {
     ...typography.labelSmall,

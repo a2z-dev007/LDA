@@ -296,15 +296,16 @@ export interface IntentionWord {
 }
 
 export const intentionWords: IntentionWord[] = [
+  { word: 'Patient', subtext: 'I will wait for the right moment.', emoji: '🕰' },
   { word: 'Present', subtext: 'I will be here, fully.', emoji: '🌿' },
-  { word: 'Gentle', subtext: 'I will soften where I can.', emoji: '💛' },
-  { word: 'Curious', subtext: 'I will ask before assuming.', emoji: '🔍' },
-  { word: 'Open', subtext: 'I will let them in.', emoji: '🚪' },
-  { word: 'Patient', subtext: 'I will wait for the right moment.', emoji: '⏳' },
-  { word: 'Brave', subtext: 'I will say the hard thing.', emoji: '🛡️' },
-  { word: 'Grateful', subtext: 'I will notice what I have.', emoji: '🍃' },
-  { word: 'Playful', subtext: 'I will not take this too seriously.', emoji: '🎈' },
+  { word: 'Honest', subtext: 'I will tell the hard truth.', emoji: '🔦' },
+  { word: 'Warm', subtext: 'I will give or receive tenderness.', emoji: '🧡' },
+  { word: 'Playful', subtext: 'I will bring lightness back.', emoji: '🎈' },
+  { word: 'Open', subtext: 'I will be more vulnerable.', emoji: '🚪' },
+  { word: 'Gentle', subtext: 'I will soften where I can.', emoji: '🌸' },
+  { word: 'Brave', subtext: 'I will face hard things together.', emoji: '🦁' },
 ];
+
 
 // ─────────────────────────────────────────────────────────────
 // Badges — 8 badges with axis keys, descriptions, trait pills

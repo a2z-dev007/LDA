@@ -15,6 +15,8 @@ import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { intentionWords } from '../data/quizData';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
+
 import {
   responsiveWidth,
   responsiveHeight,
@@ -144,23 +146,14 @@ export const SetYourIntention: React.FC = () => {
         ]}
         pointerEvents={selectedWord ? 'auto' : 'none'}
       >
-        <TouchableOpacity
-          style={styles.confirmBtnTouch}
+        <GradientButton
+          text={selectedWord ? `Confirm ${selectedWord}` : 'Confirm'}
           onPress={handleConfirm}
-          activeOpacity={0.9}
-        >
-          <LinearGradient
-            colors={colors.gradientBtn}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.confirmBtn}
-          >
-            <Text style={styles.confirmBtnText}>
-              {selectedWord ? `Confirm ${selectedWord}` : 'Confirm'}
-            </Text>
-            <ChevronRight size={20} color="#FFF" />
-          </LinearGradient>
-        </TouchableOpacity>
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
+
       </Animated.View>
     </ScreenWrapper>
   );
@@ -277,24 +270,9 @@ const makeStyles = (c: any) => StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.5)',
   },
-  confirmBtnTouch: {
-    borderRadius: metrics.radius.full,
-    shadowColor: '#2DD4BF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  confirmBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: metrics.spacing.md,
-    borderRadius: metrics.radius.full,
-    gap: metrics.spacing.sm,
-  },
   confirmBtnText: {
     ...typography.buttonLarge,
     color: '#FFFFFF',
   },
+
 });

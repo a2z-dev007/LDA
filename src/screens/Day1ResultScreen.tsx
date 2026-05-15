@@ -133,7 +133,7 @@ export const Day1ResultScreen: React.FC = () => {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: Math.max(insets.top, metrics.spacing.md) }]}>
+        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-2) }]}>
           <JarEnvelopeAnimation ref={jarRef} initialCount={1} />
         </Animated.View>
 

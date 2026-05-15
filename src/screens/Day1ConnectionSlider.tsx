@@ -60,11 +60,12 @@ export const Day1ConnectionSlider: React.FC = () => {
   const isDay1Complete = useDayStore((s) => s.day1.complete);
   const setDay1Slider = useDayStore((s) => s.setDay1Slider);
 
-  useEffect(() => {
-    if (isDay1Complete) {
-      navigation.replace('Home');
-    }
-  }, [isDay1Complete]);
+  // useEffect(() => {
+  //   if (isDay1Complete) {
+  //     navigation.replace('Home');
+  //   }
+  // }, [isDay1Complete]);
+
 
   const [score, setScore] = useState(5);
   const thumbX = useRef(new Animated.Value(((5 - 1) / 9) * TRACK_WIDTH)).current;
@@ -107,7 +108,8 @@ export const Day1ConnectionSlider: React.FC = () => {
   const insight = getInsight(score);
   const thumbPercent = ((score - 1) / 9) * 100;
 
-  if (isDay1Complete) return null;
+  // if (isDay1Complete) return null;
+
 
   return (
     <ScreenWrapper>

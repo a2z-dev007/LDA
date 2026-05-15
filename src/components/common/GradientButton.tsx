@@ -243,10 +243,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     // Subtle border for definition
     borderWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.3)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.2)',
-    borderBottomColor: 'rgba(0, 0, 0, 0.15)',
-    borderRightColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    // borderTopColor: 'rgba(255, 255, 255, 0.3)',
+    // borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+    // borderBottomColor: 'rgba(0, 0, 0, 0.15)',
+    // borderRightColor: 'rgba(0, 0, 0, 0.1)',
   },
   // Glossy overlay for shine effect
   glossOverlay: {
