@@ -16,8 +16,13 @@ import { getPersonalityType } from '../data/day1Service';
 import type { PersonalityTypeId } from '../data/day1Service';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
+import { useJournalStore } from '../store/useJournalStore';
+
 import { haptics } from '../utils/haptics';
 import { LOTTIE } from '../assets/lottie';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { GradientButton } from '../components/common/GradientButton';
+
 import {
   Award, Sparkles, Heart, Star, ChevronRight, Flame,
   Droplets, Waves,
@@ -44,6 +49,8 @@ export const Day1ResultScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const day1 = useDayStore((s) => s.day1);
   const recordActivity = useStreakStore((s) => s.recordActivity);
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+
 
   const personality = getPersonalityType(
     (day1.personalityType as PersonalityTypeId) ?? 'shifting_tide'
@@ -51,7 +58,9 @@ export const Day1ResultScreen: React.FC = () => {
 
   const TypeIcon = TYPE_ICON[personality.id] ?? Star;
 
+  const jarRef = useRef<JarEnvelopeHandle>(null);
   const headerAnim  = useRef(new Animated.Value(0)).current;
+
   const badgeAnim   = useRef(new Animated.Value(0)).current;
   const badgeScale  = useRef(new Animated.Value(0.5)).current;
   const cardAnim    = useRef(new Animated.Value(0)).current;
@@ -66,8 +75,18 @@ export const Day1ResultScreen: React.FC = () => {
     haptics.success();
     recordActivity();
     lottieRef.current?.play();
+    jarRef.current?.triggerEnvelope(() => {
+      addJarMemory({
+        content: `Relationship Type: ${personality.name}`,
+        type: 'text',
+        tinyCompliment: null,
+        dayColor: personality.color,
+      });
+    });
 
     Animated.sequence([
+
+
       Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       Animated.parallel([
         Animated.timing(badgeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
@@ -114,7 +133,12 @@ export const Day1ResultScreen: React.FC = () => {
         ]}
         showsVerticalScrollIndicator={false}
       >
+        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: Math.max(insets.top, metrics.spacing.md) }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={1} />
+        </Animated.View>
+
         <Animated.View style={[styles.header, { opacity: headerAnim }]}>
+
           <View style={styles.achievementBadgeRow}>
             <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
             <Text style={[styles.achievementLabel, { color: personality.color }]}>
@@ -211,24 +235,14 @@ export const Day1ResultScreen: React.FC = () => {
           },
         ]}
       >
-        <TouchableOpacity
-          style={styles.primaryBtnTouch}
-          activeOpacity={0.88}
+        <GradientButton
+          text="Vibe Check"
           onPress={handleVibeCheck}
-        >
-          <LinearGradient
-            colors={colors.gradientBtn}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.primaryBtn}
-          >
-            <View style={styles.primaryBtnIconCircle}>
-              <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-            </View>
-            <Text style={styles.primaryBtnLabel}>Vibe Check</Text>
-            <ChevronRight size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-          </LinearGradient>
-        </TouchableOpacity>
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+          icon={<Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />}
+        />
       </Animated.View>
     </ScreenWrapper>
   );
@@ -239,7 +253,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingBottom: metrics.spacing.sm,
+    position: 'relative',
   },
+  jarWrapper: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 15,
+    top:0,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
+  },
+
   confetti: {
     position: 'absolute',
     top: 0,
@@ -401,37 +424,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: metrics.spacing.sm,
     gap: metrics.spacing.xs,
     backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  primaryBtnTouch: {
-    borderRadius: metrics.radius.full,
-    backgroundColor: '#1A9B7A',
-    shadowColor: '#0D5C4A',
-    shadowOffset: { width: 0, height: responsiveHeight(0.8) },
-    shadowOpacity: 0.4,
-    shadowRadius: responsiveWidth(4),
-    elevation: 12,
-  },
-  primaryBtn: {
-    borderRadius: metrics.radius.full,
-    paddingVertical: metrics.spacing.smMd,
-    paddingHorizontal: metrics.spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: metrics.button.height,
-  },
-  primaryBtnIconCircle: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(4.5),
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: metrics.spacing.smMd,
-  },
-  primaryBtnLabel: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
-    flex: 1,
-    textAlign: 'center',
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DayCTA } from '../components/common/DayCTA';
+import { GradientButton } from '../components/common/GradientButton';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView,
@@ -53,52 +53,60 @@ export const Day2MoodFollowUp: React.FC = () => {
       question,
       trimmed
     );
-    setShowJarModal(true);
-  };
-
-  const handleModalNext = () => {
-    setShowJarModal(false);
-    navigation.navigate('Home');
+    navigation.navigate('Day2Result');
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScreenWrapper>
         <ProgressStrip currentDay={2} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <DayHeader eyebrow="Day 2 · Reflection" />
+          <DayHeader eyebrow="A little deeper" />
           
           {moodData && (
-            <View style={styles.moodBadge}>
-              <View style={styles.moodIconCircle}>
-                <Text style={styles.moodEmoji}>{moodData.emoji}</Text>
-              </View>
-              <View>
-                <Text style={styles.moodLabel}>CURRENT MOOD</Text>
-                <Text style={[styles.moodText, { color: moodData.color }]}>{moodData.label} ✨</Text>
+            <View style={styles.badgeRow}>
+              <View style={styles.trackBadge}>
+                <Text style={styles.trackBadgeEmoji}>🤍</Text>
+                <Text style={styles.trackBadgeText}>Happiness track · {moodData.label} mood</Text>
               </View>
             </View>
           )}
 
+          <View style={styles.privacyBadge}>
+            <Text style={styles.privacyBadgeText}>🔒 This answer stays private — only you can see it.</Text>
+          </View>
+
           <View style={styles.questionContainer}>
-            <MessageCircle size={metrics.iconSize.sm} color={colors.primary} style={{marginBottom: 8}} />
-            <Text style={styles.question}>{question}</Text>
+            <Text style={styles.question}>"{question}"</Text>
           </View>
 
           <TextInput
             style={styles.input}
-            placeholder="Write whatever comes to mind…"
+            placeholder="Write freely — this is just for you..."
             placeholderTextColor={colors.textHint}
             value={answer}
             onChangeText={setAnswer}
             multiline
             textAlignVertical="top"
-            autoFocus
           />
-          <Text style={styles.privacy}>🔒 Stored only on this phone. Never shared.</Text>
-        </ScrollView>
+          
+          <View style={styles.helperBox}>
+            <Text style={styles.helperTitle}>3 ROTATING QUESTIONS FOR THIS SEGMENT</Text>
+            <Text style={styles.helperText}>
+              Q1 (shown) · Q2 · Q3 — rotate from pool of 3 per mood segment (Happiness / Sadness / Saturated)
+            </Text>
+          </View>
 
-        <DayCTA title={answer.trim() ? 'Save & continue' : 'Skip for today'} onPress={handleSave} />
+        </ScrollView>
+        <View style={{ paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.xl }}>
+          <GradientButton
+            text="Complete Day 2"
+            onPress={handleSave}
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={colors.gradientBtn}
+          />
+        </View>
       </ScreenWrapper>
 
       <DayEndJarModal 
@@ -113,41 +121,38 @@ export const Day2MoodFollowUp: React.FC = () => {
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.lg, paddingTop: metrics.spacing.md },
-  moodBadge: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    gap: metrics.spacing.md, 
-    marginBottom: metrics.spacing.lg,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    padding: metrics.spacing.smMd,
-    borderRadius: metrics.radius.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
-  },
-  moodIconCircle: {
-    width: responsiveWidth(12),
-    height: responsiveWidth(12),
-    borderRadius: responsiveWidth(6),
-    backgroundColor: '#FFFFFF',
+  badgeRow: { marginBottom: metrics.spacing.sm },
+  trackBadge: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: 'rgba(45,212,191,0.1)',
+    paddingHorizontal: metrics.spacing.md,
+    paddingVertical: metrics.spacing.xs,
+    borderRadius: metrics.radius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(45,212,191,0.2)',
+    gap: 6,
   },
-  moodEmoji: { fontSize: responsiveFontSize(3.5) },
-  moodLabel: { ...typography.captionSmall, color: c.textHint, letterSpacing: 1 },
-  moodText: { ...typography.bodyBold, fontSize: responsiveFontSize(2.2) },
+  trackBadgeEmoji: { fontSize: 12 },
+  trackBadgeText: { ...typography.captionSmall, color: c.primary, fontFamily: 'Inter-SemiBold' },
+  privacyBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    paddingHorizontal: metrics.spacing.md,
+    paddingVertical: metrics.spacing.xs,
+    borderRadius: metrics.radius.full,
+    marginBottom: metrics.spacing.xl,
+  },
+  privacyBadgeText: { ...typography.captionSmall, color: c.textSecondary },
   questionContainer: {
-    marginBottom: metrics.spacing.md,
+    marginBottom: metrics.spacing.lg,
   },
   question: {
     ...typography.displaySmall, 
     color: c.text, 
-    fontFamily: 'PlayfairDisplay-Italic',
-    lineHeight: responsiveFontSize(4),
+    fontFamily: 'PlayfairDisplay-Bold',
+    lineHeight: responsiveFontSize(3.8),
   },
   input: {
     color: c.text, 
@@ -159,12 +164,15 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     padding: metrics.spacing.md, 
     minHeight: responsiveHeight(20), 
     lineHeight: 24, 
-    marginBottom: metrics.spacing.sm,
-    shadowColor: '#2DD4BF',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 1,
+    marginBottom: metrics.spacing.xl,
   },
-  privacy: { color: c.textHint, ...typography.caption, textAlign: 'center', marginTop: metrics.spacing.xs },
+  helperBox: {
+    padding: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    borderRadius: metrics.radius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.8)',
+  },
+  helperTitle: { ...typography.captionSmall, color: c.textHint, fontFamily: 'Inter-SemiBold', letterSpacing: 1, marginBottom: 4 },
+  helperText: { ...typography.captionSmall, color: c.textSecondary, lineHeight: 18 },
 });

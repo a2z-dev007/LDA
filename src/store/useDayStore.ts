@@ -37,6 +37,7 @@ export interface Day2Data {
   followUpQuestion: string;
   followUpAnswer: string;
   followUpLength: number;
+  oneGoodThing: string | null;
 }
 
 export interface Day3Data {
@@ -109,6 +110,7 @@ interface DayStore {
   // Day 2
   setDay2IntentionWord: (word: string) => void;
   setB2ThisOrThat: (rounds: ThisOrThatRound[]) => void;
+  setDay2OneGoodThing: (text: string) => void;
   completeDay2: (mood: Day2Data['mood'], moodScore: number, followUpQuestion: string, followUpAnswer: string) => void;
 
   // Day 3
@@ -182,6 +184,7 @@ const defaultDay2: Day2Data = {
   followUpQuestion: '',
   followUpAnswer: '',
   followUpLength: 0,
+  oneGoodThing: null,
 };
 
 const defaultDay3: Day3Data = {
@@ -276,6 +279,9 @@ export const useDayStore = create<DayStore>()(
 
       setB2ThisOrThat: (rounds) =>
         set((s) => ({ day2: { ...s.day2, b2_tot_rounds: rounds, b2_tot_complete: true } })),
+
+      setDay2OneGoodThing: (text) =>
+        set((s) => ({ day2: { ...s.day2, oneGoodThing: text } })),
 
       completeDay2: (mood, moodScore, followUpQuestion, followUpAnswer) =>
         set((s) => ({

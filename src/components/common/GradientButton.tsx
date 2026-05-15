@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, View, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useAppColors } from '../../theme';
 import { metrics } from '../../theme/metrics';
@@ -75,6 +75,28 @@ interface GradientButtonProps {
   gradientStart?: string;
   /** Custom gradient end color (overrides variant and theme) */
   gradientEnd?: string;
+  /** Custom array of gradient colors (overrides gradientStart, gradientEnd, and variant) */
+  gradientColors?: string[];
+  /** Optional subtitle text rendered above the main text */
+  subtitle?: string;
+  /** Optional icon to render on the left */
+  icon?: React.ReactNode;
+  /** Custom text style */
+  textStyle?: StyleProp<TextStyle>;
+  /** Custom subtitle style */
+  subtitleStyle?: StyleProp<TextStyle>;
+  /** Custom container style for the inner content */
+  contentStyle?: StyleProp<ViewStyle>;
+  /** Custom style for the icon wrapper */
+  iconContainerStyle?: StyleProp<ViewStyle>;
+  /** Gradient start coordinates (defaults to {x:0, y:0}) */
+  gradientStartPosition?: { x: number, y: number };
+  /** Gradient end coordinates (defaults to {x:1, y:0}) */
+  gradientEndPosition?: { x: number, y: number };
+  /** Custom shadow color */
+  shadowColor?: string;
+  /** Hide the top glossy shine effect */
+  hideGlossyOverlay?: boolean;
 }
 
 // 3-stop gradient matching the LDA logo: lime green → teal → cyan blue
@@ -90,6 +112,17 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   variant = 'default',
   gradientStart,
   gradientEnd,
+  gradientColors: customGradientColors,
+  subtitle,
+  icon,
+  textStyle,
+  subtitleStyle,
+  contentStyle,
+  iconContainerStyle,
+  gradientStartPosition = { x: 0, y: 0 },
+  gradientEndPosition = { x: 1, y: 0 },
+  shadowColor,
+  hideGlossyOverlay = false,
 }) => {
   const colors = useAppColors();
 
@@ -99,6 +132,8 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   let gradientColors: string[];
   if (disabled) {
     gradientColors = ['#E8D5D8', '#D4D0E8'];
+  } else if (customGradientColors && customGradientColors.length > 0) {
+    gradientColors = customGradientColors;
   } else if (gradientStart && gradientEnd) {
     gradientColors = [gradientStart, gradientEnd];
   } else if (isSageBlue) {
@@ -121,34 +156,54 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
       ]}
     >
       {/* Shadow container */}
-      <View style={[styles.shadowContainer, disabled && styles.shadowContainerDisabled]}>
+      <View style={[
+        styles.shadowContainer, 
+        disabled && styles.shadowContainerDisabled,
+        shadowColor ? { shadowColor } : null,
+      ]}>
         {/* Button body with gradient */}
         <LinearGradient
           colors={gradientColors as any}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          start={gradientStartPosition}
+          end={gradientEndPosition}
           style={styles.gradient}
         >
           {/* Top glossy shine */}
-          <LinearGradient
-            colors={[
-              'rgba(255,255,255,0.5)',
-              'rgba(255,255,255,0.25)',
-              'rgba(255,255,255,0.05)',
-              'rgba(255,255,255,0)',
-            ]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.glossOverlay}
-          />
+          {!hideGlossyOverlay && (
+            <LinearGradient
+              colors={[
+                'rgba(255,255,255,0.5)',
+                'rgba(255,255,255,0.25)',
+                'rgba(255,255,255,0.05)',
+                'rgba(255,255,255,0)',
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.glossOverlay}
+            />
+          )}
           
           {/* Content */}
-          <View style={styles.content}>
-            <Text style={[styles.text, disabled && styles.textDisabled]}>
-              {text}
-            </Text>
+          <View style={[styles.content, subtitle ? styles.contentWithSubtitle : null, contentStyle]}>
+            {icon && (
+              <View style={[styles.iconContainer, iconContainerStyle]}>
+                {icon}
+              </View>
+            )}
+            
+            <View style={styles.textContainer}>
+              {subtitle && (
+                <Text style={[styles.subtitle, disabled && styles.textDisabled, subtitleStyle]}>
+                  {subtitle}
+                </Text>
+              )}
+              <Text style={[styles.text, disabled && styles.textDisabled, subtitle && styles.textWithSubtitle, textStyle]}>
+                {text}
+              </Text>
+            </View>
+
             {showArrow && (
-              <Text style={[styles.icon, disabled && styles.textDisabled]}>
+              <Text style={[styles.arrow, disabled && styles.textDisabled]}>
                 →
               </Text>
             )}
@@ -213,6 +268,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: metrics.spacing.lg,
     zIndex: 10,
   },
+  contentWithSubtitle: {
+    justifyContent: 'space-between',
+  },
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: metrics.spacing.xs,
+  },
+  textContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subtitle: {
+    ...typography.captionSmall,
+    color: 'rgba(255,255,255,0.8)',
+    fontFamily: 'Inter-SemiBold',
+    letterSpacing: 1.2,
+    marginBottom: 2,
+  },
   text: {
     ...typography.buttonLarge,
     color: '#FFFFFF',
@@ -220,13 +299,18 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
-  icon: {
+  textWithSubtitle: {
+    ...typography.bodyMedium,
+    fontFamily: 'Inter-SemiBold',
+  },
+  arrow: {
     fontSize: metrics.fontSize.button * 1.3,
     fontFamily: 'DMSans-Bold',
     color: '#FFFFFF',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+    marginLeft: metrics.spacing.xs,
   },
   textDisabled: {
     color: 'rgba(80, 70, 90, 0.6)',

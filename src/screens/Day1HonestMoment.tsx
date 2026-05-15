@@ -13,6 +13,8 @@ import { typography } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { getHonestMomentCopy, getHonestMomentMeta, resolveSegment } from '../data/day1Service';
 import { haptics } from '../utils/haptics';
+import { useJournalStore } from '../store/useJournalStore';
+
 import { Heart, Lightbulb, Sparkles } from 'lucide-react-native';
 import {
   responsiveWidth,
@@ -20,6 +22,9 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import { ICONS } from '../assets/image/icons';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { GradientButton } from '../components/common/GradientButton';
+
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day1HonestMoment'>;
 type RouteProps = StackScreenProps<RootStackParamList, 'Day1HonestMoment'>['route'];
@@ -48,15 +53,19 @@ export const Day1HonestMoment: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const route = useRoute<RouteProps>();
   const { sliderScore } = route.params;
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
 
   const segment = resolveSegment(sliderScore);
+
   const bodyText = getHonestMomentCopy(segment, sliderScore);
   const { dividerText, cta: ctaLabel, ctaSub } = getHonestMomentMeta();
   const headline = SEGMENT_HEADLINE[segment] ?? "You're here.";
   const tip = SEGMENT_TIP[segment] ?? 'Keep going.';
 
   // Staggered entrance animations
+  const jarRef = useRef<JarEnvelopeHandle>(null);
   const scoreAnim  = useRef(new Animated.Value(0)).current;
+
   const cardAnim   = useRef(new Animated.Value(0)).current;
   const tipAnim    = useRef(new Animated.Value(0)).current;
   const ctaAnim    = useRef(new Animated.Value(0)).current;
@@ -70,8 +79,17 @@ export const Day1HonestMoment: React.FC = () => {
 
   useEffect(() => {
     haptics.medium();
+    jarRef.current?.triggerEnvelope(() => {
+      addJarMemory({
+        content: `Honest Moment Score: ${sliderScore}`,
+        type: 'text',
+        tinyCompliment: null,
+        dayColor: '#2DD4BF',
+      });
+    });
 
     // Entrance sequence
+
     Animated.sequence([
       Animated.parallel([
         Animated.timing(scoreAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
@@ -82,6 +100,8 @@ export const Day1HonestMoment: React.FC = () => {
       Animated.timing(ctaAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
     ]).start(() => {
       // After entrance — start continuous animations
+
+
 
       // Pulse on score card
       Animated.loop(
@@ -133,7 +153,13 @@ export const Day1HonestMoment: React.FC = () => {
 
       <View style={styles.body}>
 
+        {/* ── Jar Animation ── */}
+        <Animated.View style={[styles.jarWrapper, { opacity: scoreAnim }]}>
+          <JarEnvelopeAnimation ref={jarRef} />
+        </Animated.View>
+
         {/* ── YOUR SCORE label ── */}
+
         <Animated.View style={[styles.scoreLabelRow, { opacity: scoreAnim }]}>
           <Text style={styles.scoreLabelPlus}>+</Text>
           <Text style={styles.scoreLabel}>YOUR SCORE</Text>
@@ -257,30 +283,18 @@ export const Day1HonestMoment: React.FC = () => {
 
       {/* ── CTA button ── */}
       <Animated.View style={[styles.ctaWrapper, { opacity: ctaAnim }]}>
-        <TouchableOpacity
-          style={styles.ctaTouch}
-          activeOpacity={0.88}
+        <GradientButton
+          text={ctaLabel}
+          subtitle={ctaSub}
+          icon={<Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />}
           onPress={() => {
             haptics.medium();
             navigation.navigate('Day1Quiz', { sliderScore });
           }}
-        >
-          <LinearGradient
-            colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.cta}
-          >
-            <View style={styles.ctaIconCircle}>
-              <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-            </View>
-            <View style={styles.ctaTextCol}>
-              <Text style={styles.ctaLabel}>{ctaLabel}</Text>
-              <Text style={styles.ctaSub}>{ctaSub}</Text>
-            </View>
-            <Text style={styles.ctaArrow}>→</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+        />
       </Animated.View>
     </ScreenWrapper>
   );
@@ -291,7 +305,18 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     flex: 1,
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.lg,
+    position: 'relative',
   },
+  jarWrapper: {
+    position: 'absolute',
+    top: -metrics.spacing.sm,
+    right: metrics.layout.screenPaddingHz - 10,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
+  },
+
+
+
 
   // ── Score label ───────────────────────────────────────────
   scoreLabelRow: {
@@ -330,23 +355,25 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     elevation: 8,
   },
   scoreGradientMask: {
-    width: responsiveWidth(38),
-    height: responsiveWidth(44),
+    width: responsiveWidth(30),
+    height: responsiveWidth(36),
     borderRadius: metrics.radius.xl,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
+
   scoreNumber: {
-    fontSize: responsiveFontSize(16),
+    fontSize: responsiveFontSize(12),
     fontFamily: 'PlayfairDisplay-Bold',
     color: '#FFFFFF',
-    lineHeight: responsiveFontSize(23),
+    lineHeight: responsiveFontSize(16),
     includeFontPadding: false,
     textShadowColor: 'rgba(0,0,0,0.2)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
   },
+
   heartBadge: {
     position: 'absolute',
     bottom: -responsiveWidth(2),
@@ -486,48 +513,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   ctaWrapper: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingBottom: responsiveHeight(4),
-  },
-  ctaTouch: {
-    borderRadius: metrics.radius.full,
-    backgroundColor: '#1A9B7A',
-    shadowColor: '#0D5C4A',
-    shadowOffset: { width: 0, height: responsiveHeight(1.0) },
-    shadowOpacity: 0.5,
-    shadowRadius: responsiveWidth(5),
-    elevation: 14,
-  },
-  cta: {
-    borderRadius: metrics.radius.full,
-    paddingVertical: metrics.spacing.smMd,
-    paddingHorizontal: metrics.spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: metrics.button.height,
-  },
-  ctaIconCircle: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(4.5),
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: metrics.spacing.smMd,
-  },
-  ctaTextCol: {
-    flex: 1,
-    gap: metrics.spacing.xxs,
-  },
-  ctaLabel: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
-    fontSize: metrics.fontSize.bodyLg,
-  },
-  ctaSub: {
-    ...typography.caption,
-    color: 'rgba(255,255,255,0.75)',
-  },
-  ctaArrow: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
   },
 });

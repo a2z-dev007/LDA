@@ -21,6 +21,7 @@ import {
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
+import { GradientButton } from '../components/common/GradientButton';
 type Nav = StackNavigationProp<RootStackParamList, 'Day1Slider'>;
 
 const { width } = Dimensions.get('window');
@@ -189,24 +190,14 @@ export const Day1ConnectionSlider: React.FC = () => {
 
       {/* ── CTA button ── */}
       <View style={[styles.ctaWrapper, { paddingBottom: responsiveHeight(3) }]}>
-        <TouchableOpacity
-          style={styles.ctaTouch}
-          activeOpacity={0.88}
+        <GradientButton
+          text="That's my number"
+          icon={<Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />}
           onPress={handleNext}
-        >
-          <LinearGradient
-            colors={colors.gradientBtn2}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.cta}
-          >
-            <View style={styles.ctaLeft}>
-              <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-            </View>
-            <Text style={styles.ctaLabel}>That's my number</Text>
-            <Text style={styles.ctaArrow}>→</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn2}
+        />
       </View>
     </ScreenWrapper>
   );

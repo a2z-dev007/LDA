@@ -1,5 +1,5 @@
 export type RootStackParamList = {
-  // ── Intro slider (shown once, before Splash) ──────
+  // ── Intro slider ───────────────────────────────────
   Intro: undefined;
 
   // ── Onboarding ───────────────────────────────────
@@ -19,10 +19,14 @@ export type RootStackParamList = {
 
   // ── Bridge 1→2 ───────────────────────────────────
   Bridge1to2: undefined;
+  SetYourIntention: undefined;
+  ThisOrThat: undefined;
 
   // ── Day 2 ────────────────────────────────────────
   Day2MoodPicker: undefined;
+  Day2OneGoodThing: undefined;
   Day2MoodFollowUp: undefined;
+  Day2Result: undefined;
 
   // ── Bridge 2→3 ───────────────────────────────────
   Bridge2to3: undefined;

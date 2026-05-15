@@ -389,8 +389,8 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       lidTranslateY.value = withDelay(
         400,
         withSequence(
-          withSpring(-LID_H * 1.5, { damping: 12, stiffness: 180 }),
-          withDelay(450,
+          withTiming(-LID_H * 1.5, { duration: 250, easing: Easing.out(Easing.quad) }),
+          withDelay(70,
             withTiming(0, { duration: 150, easing: Easing.out(Easing.quad) })
           ),
         ),
@@ -399,12 +399,15 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       lidRotate.value = withDelay(
         400,
         withSequence(
-          withSpring(-10, { damping: 15, stiffness: 150 }),
-          withDelay(450,
+          withTiming(-10, { duration: 250, easing: Easing.out(Easing.quad) }),
+          withDelay(70,
             withTiming(0, { duration: 150, easing: Easing.out(Easing.quad) })
           ),
         ),
       );
+
+
+
 
       // Glow pulse and hearts removed for clarity
 

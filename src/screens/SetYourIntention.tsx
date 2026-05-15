@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated, FlatList,
 } from 'react-native';
@@ -6,125 +6,75 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { RootStackParamList } from '../navigation/types';
-import { ProgressStrip } from '../components/common/ProgressStrip';
+
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
 import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
-import { Sparkles, ChevronRight, ArrowRight } from 'lucide-react-native';
-import { GradientButton } from '../components/common/GradientButton';
+import { intentionWords } from '../data/quizData';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react-native';
 import {
   responsiveWidth,
-
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
+import { RootStackParamList } from '../navigation/types';
 
-type Nav = StackNavigationProp<RootStackParamList, 'Day1VibeCheck'>;
+type Nav = StackNavigationProp<RootStackParamList, 'SetYourIntention'>;
 
-interface VibeOption {
-  id: string;
-  label: string;
-  emoji: string;
-  category: 'positive' | 'tender' | 'heavy';
-}
-
-const VIBE_OPTIONS: VibeOption[] = [
-  { id: 'Growing', label: 'Growing', emoji: '🌱', category: 'positive' },
-  { id: 'Drifting', label: 'Drifting', emoji: '🌊', category: 'heavy' },
-  { id: 'Passionate', label: 'Passionate', emoji: '🔥', category: 'positive' },
-  { id: 'Quiet', label: 'Quiet', emoji: '🌙', category: 'tender' },
-  { id: 'Tired', label: 'Tired', emoji: '😮💨', category: 'heavy' },
-  { id: 'Hopeful', label: 'Hopeful', emoji: '💫', category: 'positive' },
-  { id: 'Tender', label: 'Tender', emoji: '🤍', category: 'tender' },
-  { id: 'Energised', label: 'Energised', emoji: '⚡', category: 'positive' },
-  { id: 'Playful', label: 'Playful', emoji: '✨', category: 'positive' },
-  { id: 'Connected', label: 'Connected', emoji: '🤝', category: 'positive' },
-  { id: 'Stagnant', label: 'Stagnant', emoji: '🕯️', category: 'heavy' },
-  { id: 'Peaceful', label: 'Peaceful', emoji: '🍃', category: 'tender' },
-];
-
-export const Day1VibeCheck: React.FC = () => {
+export const SetYourIntention: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
-  const setDay1Vibe = useDayStore((s) => s.setDay1Vibe);
-  const completeDay1 = useDayStore((s) => s.completeDay1);
+  const setIntentionWord = useDayStore((s) => s.setDay2IntentionWord);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const fadeAnims = useRef(VIBE_OPTIONS.map(() => new Animated.Value(0))).current;
-
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const fadeAnims = useRef(intentionWords.map(() => new Animated.Value(0))).current;
   const ctaTranslateY = useRef(new Animated.Value(120)).current;
   const ctaOpacity    = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Staggered entrance for tiles
-    Animated.stagger(40, fadeAnims.map(anim => 
-      Animated.timing(anim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      })
+    Animated.stagger(40, fadeAnims.map(anim =>
+      Animated.timing(anim, { toValue: 1, duration: 350, useNativeDriver: true })
     )).start();
   }, []);
 
   useEffect(() => {
-    if (selectedId) {
+    if (selectedWord) {
       Animated.parallel([
-        Animated.timing(ctaOpacity, {
-          toValue: 1,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-        Animated.spring(ctaTranslateY, {
-          toValue: 0,
-          friction: 8,
-          tension: 80,
-          useNativeDriver: true,
-        }),
+        Animated.timing(ctaOpacity, { toValue: 1, duration: 280, useNativeDriver: true }),
+        Animated.spring(ctaTranslateY, { toValue: 0, friction: 8, tension: 80, useNativeDriver: true }),
       ]).start();
     }
-  }, [selectedId]);
+  }, [selectedWord]);
 
-  const handleSelect = (option: VibeOption) => {
-    setSelectedId(option.id);
+  const handleSelect = (word: string) => {
+    setSelectedWord(word);
     haptics.medium();
-    setDay1Vibe(option.id, option.category);
+    setIntentionWord(word);
   };
 
-  const handleNext = () => {
-    if (!selectedId) return;
+  const handleConfirm = () => {
+    if (!selectedWord) return;
     haptics.heavy();
-    completeDay1();
-    navigation.navigate('Bridge1to2');
+    navigation.navigate('ThisOrThat');
   };
 
-
-  const handleComeBack = () => {
-    haptics.light();
-    navigation.navigate('Home');
-  };
-
-  const renderItem = ({ item, index }: { item: VibeOption; index: number }) => {
-    const isSelected = selectedId === item.id;
-
+  const renderItem = ({ item, index }: { item: typeof intentionWords[0]; index: number }) => {
+    const isSelected = selectedWord === item.word;
     return (
       <Animated.View style={{ opacity: fadeAnims[index], flex: 1 }}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => handleSelect(item)}
-          style={[
-            styles.tile,
-            isSelected && styles.tileSelected,
-          ]}
+          onPress={() => handleSelect(item.word)}
+          style={[styles.tile, isSelected && styles.tileSelected]}
         >
           {isSelected && (
             <LinearGradient
-              colors={['rgba(110,232,122,0.1)', 'rgba(45,212,191,0.1)']}
+              colors={['rgba(110,232,122,0.12)', 'rgba(45,212,191,0.12)']}
               style={StyleSheet.absoluteFill}
             />
           )}
@@ -132,7 +82,7 @@ export const Day1VibeCheck: React.FC = () => {
             <Text style={styles.tileEmoji}>{item.emoji}</Text>
           </View>
           <Text style={[styles.tileLabel, isSelected && styles.tileLabelSelected]}>
-            {item.label}
+            {item.word}
           </Text>
           {isSelected && (
             <View style={styles.selectedBadge}>
@@ -146,15 +96,25 @@ export const Day1VibeCheck: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ProgressStrip currentDay={1} />
+      {/* Back button */}
+      <TouchableOpacity
+        style={[styles.backBtn, { top: insets.top + metrics.spacing.sm }]}
+        onPress={() => navigation.goBack()}
+        activeOpacity={0.7}
+      >
+        <ChevronLeft size={22} color={colors.text} />
+      </TouchableOpacity>
 
       <FlatList
-        data={VIBE_OPTIONS}
+        data={intentionWords}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.word}
         numColumns={2}
         style={styles.list}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingTop: insets.top + responsiveFontSize(2.5) },
+        ]}
         columnWrapperStyle={styles.columnWrapper}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
@@ -162,14 +122,15 @@ export const Day1VibeCheck: React.FC = () => {
           <View style={styles.header}>
             <View style={styles.eyebrowPill}>
               <Sparkles size={metrics.iconSize.xs} color={colors.primary} />
-              <Text style={styles.eyebrow}>VIBE CHECK</Text>
+              <Text style={styles.eyebrow}>SET YOUR INTENTION</Text>
             </View>
             <Text style={styles.title}>
-              One card that captures how your relationship feels right now.
+              {'"One word you want to bring into your relationship today."'}
             </Text>
+            <Text style={styles.hint}>Tap to select · No confirmation needed</Text>
           </View>
         }
-        // ListFooterComponent={<View style={styles.listFooterSpacer} />}
+        ListFooterComponent={<View style={{ height: responsiveHeight(14) }} />}
       />
 
       <Animated.View
@@ -181,23 +142,24 @@ export const Day1VibeCheck: React.FC = () => {
             paddingBottom: Math.max(insets.bottom, responsiveHeight(7)),
           },
         ]}
-        pointerEvents={selectedId ? 'auto' : 'none'}
+        pointerEvents={selectedWord ? 'auto' : 'none'}
       >
-        <GradientButton
-          text="Next"
-          onPress={handleNext}
-          showArrow={true}
-          fullWidth={true}
-          gradientColors={colors.gradientBtn}
-        />
-
         <TouchableOpacity
-          style={styles.ghostBtn}
-          onPress={handleComeBack}
-          activeOpacity={0.7}
+          style={styles.confirmBtnTouch}
+          onPress={handleConfirm}
+          activeOpacity={0.9}
         >
-          <Text style={styles.ghostBtnText}>Come back tomorrow</Text>
-          <ArrowRight size={16} color={colors.textHint} />
+          <LinearGradient
+            colors={colors.gradientBtn}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.confirmBtn}
+          >
+            <Text style={styles.confirmBtnText}>
+              {selectedWord ? `Confirm ${selectedWord}` : 'Confirm'}
+            </Text>
+            <ChevronRight size={20} color="#FFF" />
+          </LinearGradient>
         </TouchableOpacity>
       </Animated.View>
     </ScreenWrapper>
@@ -205,12 +167,22 @@ export const Day1VibeCheck: React.FC = () => {
 };
 
 const makeStyles = (c: any) => StyleSheet.create({
-  list: {
-    flex: 1,
+  list: { flex: 1 },
+  backBtn: {
+    position: 'absolute',
+    left: metrics.layout.screenPaddingHz,
+    zIndex: 10,
+    width: responsiveWidth(10),
+    height: responsiveWidth(10),
+    borderRadius: responsiveWidth(5),
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingTop: metrics.spacing.lg,
     marginBottom: metrics.spacing.xl,
   },
   eyebrowPill: {
@@ -236,12 +208,14 @@ const makeStyles = (c: any) => StyleSheet.create({
     color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: metrics.fontSize.h3 * 1.3,
+    marginBottom: metrics.spacing.sm,
+  },
+  hint: {
+    ...typography.caption,
+    color: c.textHint,
   },
   listContent: {
-    paddingBottom: responsiveHeight(20)
-  },
-  listFooterSpacer: {
-    // height: responsiveHeight(2),
+    paddingBottom: metrics.spacing.md,
   },
   columnWrapper: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
@@ -259,18 +233,12 @@ const makeStyles = (c: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: metrics.spacing.md,
-    // shadowColor: '#2DD4BF',
-    // shadowOffset: { width: 0, height: 4 },
-    // shadowOpacity: 0.05,
-    // shadowRadius: 10,
-    // elevation: 3,
     overflow: 'hidden',
   },
   tileSelected: {
     borderColor: c.primary,
     backgroundColor: '#FFFFFF',
     shadowOpacity: 0.1,
-    // elevation: 6,
   },
   emojiContainer: {
     width: responsiveWidth(14),
@@ -308,18 +276,25 @@ const makeStyles = (c: any) => StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.85)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.5)',
-    gap: metrics.spacing.md,
   },
-  ghostBtn: {
+  confirmBtnTouch: {
+    borderRadius: metrics.radius.full,
+    shadowColor: '#2DD4BF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  confirmBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: metrics.spacing.xs,
-    paddingVertical: metrics.spacing.xs,
+    paddingVertical: metrics.spacing.md,
+    borderRadius: metrics.radius.full,
+    gap: metrics.spacing.sm,
   },
-  ghostBtnText: {
-    ...typography.bodySmall,
-    color: c.textHint,
-    fontFamily: fonts.dmSansMedium,
+  confirmBtnText: {
+    ...typography.buttonLarge,
+    color: '#FFFFFF',
   },
 });

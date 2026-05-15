@@ -18,6 +18,7 @@ import { useStreakStore } from '../store/useStreakStore';
 import { resolveRoute } from '../services/dayRouter';
 import { haptics } from '../utils/haptics';
 import { Heart, Sparkles, Lock } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -135,15 +136,11 @@ export const HomeScreen = () => {
             return (
               <TouchableOpacity
                 key={day.number}
-                activeOpacity={isLocked ? 1 : 0.8}
+                activeOpacity={0.8} // DEV MODE: originally isLocked ? 1 : 0.8
                 onPress={() => {
-                  if (isActive) {
-                    haptics.light();
-                    navigation.navigate(day.route as any);
-                  } else if (isCompleted) {
-                    // Prevent re-entry to completed days
-                    haptics.warning();
-                  }
+                  // DEV MODE: Allow visiting any day (locked or completed)
+                  haptics.light();
+                  navigation.navigate(day.route as any);
                 }}
                 style={[
                   styles.card,
@@ -210,50 +207,23 @@ export const HomeScreen = () => {
       {/* ── Fixed bottom CTA ───────────────────────────── */}
       <View style={[styles.ctaContainer]}>
         {completed < 5 ? (
-          <TouchableOpacity
-            activeOpacity={0.88}
+          <GradientButton
+            text={`Day ${nextDay} · ${activeDay?.title ?? 'The Reveal'}`}
+            subtitle="CONTINUE"
+            icon={<Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />}
             onPress={handleContinue}
-            style={styles.continueBtnTouch}
-          >
-            <LinearGradient
-              colors={colors.gradientBtn}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.continueBtn}
-            >
-              <View style={styles.continueBtnLeft}>
-                <View style={styles.sparkleCircle}>
-                  <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-                </View>
-              </View>
-              <View style={styles.continueBtnCenter}>
-                <Text style={styles.continueBtnSub}>CONTINUE</Text>
-                <Text style={styles.continueBtnTitle}>
-                  Day {nextDay} · {activeDay?.title ?? 'The Reveal'}
-                </Text>
-              </View>
-              <View style={styles.continueBtnRight}>
-                <Text style={styles.continueBtnArrow}>→</Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={colors.gradientBtn}
+          />
         ) : (
-          // <TouchableOpacity
-          //   activeOpacity={0.88}
-          //   onPress={() => navigation.navigate('Day5PartnerInvite')}
-          //   style={styles.continueBtnTouch}
-          // >
-          //   <LinearGradient
-          //     colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-          //     start={{ x: 0, y: 0 }}
-          //     end={{ x: 1, y: 0 }}
-          //     style={styles.continueBtn}
-          //   >
-          //     <Text style={styles.continueBtnTitle}>Invite your partner</Text>
-          //     <Text style={styles.continueBtnArrow}>→</Text>
-          //   </LinearGradient>
-          // </TouchableOpacity>
-          <></>
+          <GradientButton
+            text="Invite your partner"
+            onPress={() => navigation.navigate('Day5PartnerInvite')}
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={['#6EE87A', '#1E90FF']}
+          />
         )}
       </View>
     </ScreenWrapper>
@@ -458,37 +428,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   btnShadowLayer: {
     display: 'none' as any,
-  },
-  continueBtnLeft: {
-    marginRight: metrics.spacing.smMd,
-  },
-  sparkleCircle: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(4.5),
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  continueBtnCenter: {
-    flex: 1,
-    gap: metrics.spacing.xxs,
-  },
-  continueBtnSub: {
-    ...typography.captionSmall,
-    color: 'rgba(255,255,255,0.8)',
-    letterSpacing: 2,
-  },
-  continueBtnTitle: {
-    ...typography.displaySmall,
-    color: '#FFFFFF',
-    fontFamily: 'PlayfairDisplay-Bold',
-  },
-  continueBtnRight: {
-    marginLeft: metrics.spacing.sm,
-  },
-  continueBtnArrow: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
   },
 });

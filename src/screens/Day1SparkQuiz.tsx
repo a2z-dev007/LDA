@@ -334,13 +334,13 @@ export const Day1SparkQuiz: React.FC = () => {
                 end={{ x: 1, y: 1 }}
                 style={styles.optionIconCircle}
               >
-                <OptionAIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+                <OptionAIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
               </LinearGradient>
               <Text style={[styles.optionText, selectedOption === 'A' && styles.optionTextSelected]}>
                 {question.optionA}
               </Text>
-              <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'A' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </View>
+
           </SwipeableOption>
 
           {/* Or divider */}
@@ -364,13 +364,13 @@ export const Day1SparkQuiz: React.FC = () => {
                 end={{ x: 1, y: 1 }}
                 style={styles.optionIconCircle}
               >
-                <OptionBIcon size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
+                <OptionBIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
               </LinearGradient>
               <Text style={[styles.optionText, selectedOption === 'B' && styles.optionTextSelected]}>
                 {question.optionB}
               </Text>
-              <ChevronRight size={metrics.iconSize.sm} color={selectedOption === 'B' ? colors.primary : colors.textHint} strokeWidth={1.5} />
             </View>
+
           </SwipeableOption>
         </View>
 
@@ -490,15 +490,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: 0,
   },
   option: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    gap: metrics.spacing.smMd,
+    gap: metrics.spacing.md,
     backgroundColor: 'rgba(255,255,255,0.72)',
     borderRadius: metrics.radius.lg,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.9)',
-    paddingVertical: metrics.spacing.smMd,
-    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.lg,
+    paddingHorizontal: metrics.spacing.md,
+
     // shadowColor: '#2DD4BF',
     // shadowOffset: { width: 0, height: responsiveHeight(0.2) },
     // shadowOpacity: 0.06,
@@ -513,19 +514,22 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     elevation: 4,
   },
   optionIconCircle: {
-    width: responsiveWidth(11),
-    height: responsiveWidth(11),
-    borderRadius: responsiveWidth(5.5),
+    width: responsiveWidth(16),
+    height: responsiveWidth(16),
+    borderRadius: responsiveWidth(8),
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+    marginBottom: metrics.spacing.xs,
   },
   optionText: {
     ...typography.bodyMedium,
     color: c.text,
-    flex: 1,
+    textAlign: 'center',
     lineHeight: metrics.fontSize.body * 1.4,
+    fontSize: responsiveFontSize(2),
   },
+
   optionTextSelected: {
     color: c.primary,
     fontFamily: 'DMSans-SemiBold',

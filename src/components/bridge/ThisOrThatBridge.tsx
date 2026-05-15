@@ -45,33 +45,37 @@ export const ThisOrThatBridge: React.FC<ThisOrThatBridgeProps> = ({ onComplete }
   const styles = makeStyles(colors);
   const setB2ThisOrThat = useDayStore(s => s.setB2ThisOrThat);
 
-  const [currentRoundIdx, setCurrentRoundIdx] = useState(0);
-  const [step, setStep] = useState<'pick' | 'predict'>('pick');
-  const [selections, setSelections] = useState<ThisOrThatRound[]>([]);
-  const [currentPick, setCurrentPick] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [picks, setPicks] = useState<string[]>([]);
+  const [predictions, setPredictions] = useState<string[]>([]);
 
+  const isPredicting = currentStep >= ROUNDS.length;
+  const currentRoundIdx = isPredicting ? currentStep - ROUNDS.length : currentStep;
   const currentRound = ROUNDS[currentRoundIdx];
 
   const handleSelect = (optionId: string) => {
     haptics.light();
-    if (step === 'pick') {
-      setCurrentPick(optionId);
-      setStep('predict');
+    
+    if (!isPredicting) {
+      const newPicks = [...picks];
+      newPicks[currentStep] = optionId;
+      setPicks(newPicks);
+      setCurrentStep(currentStep + 1);
     } else {
-      const newRound: ThisOrThatRound = {
-        round: currentRound.id,
-        my_pick: currentPick!,
-        my_pred_of_partner: optionId,
-      };
-      const updatedSelections = [...selections, newRound];
-      setSelections(updatedSelections);
-
-      if (currentRoundIdx < ROUNDS.length - 1) {
-        setStep('pick');
-        setCurrentPick(null);
-        setCurrentRoundIdx(currentRoundIdx + 1);
+      const questionIdx = currentStep - ROUNDS.length;
+      const newPredictions = [...predictions];
+      newPredictions[questionIdx] = optionId;
+      setPredictions(newPredictions);
+      
+      if (currentStep < 2 * ROUNDS.length - 1) {
+        setCurrentStep(currentStep + 1);
       } else {
-        setB2ThisOrThat(updatedSelections);
+        const finalRounds = ROUNDS.map((r, idx) => ({
+          round: r.id,
+          my_pick: picks[idx],
+          my_pred_of_partner: newPredictions[idx],
+        }));
+        setB2ThisOrThat(finalRounds);
         onComplete();
       }
     }
@@ -80,28 +84,34 @@ export const ThisOrThatBridge: React.FC<ThisOrThatBridgeProps> = ({ onComplete }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>3 quick rounds. Pick yours — then predict theirs.</Text>
-        <Text style={styles.subtitle}>Your partner's answer is locked until they join.</Text>
+        <Text style={styles.title}>
+          {!isPredicting ? 'Pick yours' : 'What would they pick?'}
+        </Text>
+        <Text style={styles.subtitle}>
+          {!isPredicting ? 'Round ' + (currentRoundIdx + 1) + ' · Choose your preference' : 'Round ' + (currentRoundIdx + 1) + ' · Predict their choice'}
+        </Text>
       </View>
 
       <View style={styles.roundCard}>
         <Text style={styles.prompt}>{currentRound.prompt}</Text>
-        <Text style={styles.stepIndicator}>
-          {step === 'pick' ? 'Pick yours' : 'Predict theirs'}
-        </Text>
+        <View style={[styles.stepIndicatorContainer, { backgroundColor: isPredicting ? 'rgba(45,212,191,0.1)' : 'rgba(0,0,0,0.05)' }]}>
+          <Text style={[styles.stepIndicatorText, { color: isPredicting ? colors.primary : colors.textSecondary }]}>
+            {!isPredicting ? 'MY PICK' : 'MY PREDICTION'}
+          </Text>
+        </View>
 
         <View style={styles.optionsRow}>
           <OptionCard
             option={currentRound.optionA}
             onPress={() => handleSelect('A')}
-            isSelected={step === 'predict' && currentPick === 'A'}
-            isPredicting={step === 'predict'}
+            isSelected={!isPredicting ? picks[currentRoundIdx] === 'A' : predictions[currentRoundIdx] === 'A'}
+            isPredicting={isPredicting}
           />
           <OptionCard
             option={currentRound.optionB}
             onPress={() => handleSelect('B')}
-            isSelected={step === 'predict' && currentPick === 'B'}
-            isPredicting={step === 'predict'}
+            isSelected={!isPredicting ? picks[currentRoundIdx] === 'B' : predictions[currentRoundIdx] === 'B'}
+            isPredicting={isPredicting}
           />
         </View>
       </View>
@@ -188,13 +198,17 @@ const makeStyles = (c: any) => StyleSheet.create({
     textAlign: 'center',
     marginBottom: metrics.spacing.sm,
   },
-  stepIndicator: {
-    ...typography.labelBold,
-    color: c.primary,
-    textAlign: 'center',
-    textTransform: 'uppercase',
+  stepIndicatorContainer: {
+    alignSelf: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: metrics.spacing.md,
+  },
+  stepIndicatorText: {
+    fontSize: metrics.fontSize.caption,
+    fontFamily: fonts.dmSansBold,
     letterSpacing: 1,
-    marginBottom: metrics.spacing.lg,
   },
   optionsRow: {
     flexDirection: 'row',

@@ -1,272 +1,346 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { DayCTA } from '../components/common/DayCTA';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
 import { useAppColors } from '../theme';
-import { bridgeQuotes } from '../data/quizData';
+import { fonts, typography } from '../theme/typography';
+import { metrics } from '../theme/metrics';
+import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
+import { useUserStore } from '../store/useUserStore';
 import { personalityTypes } from '../data/personalityTypes';
-import { haptics } from '../utils/haptics';
-import { DayHeader } from '../components/common/DayHeader';
+import { bridgeQuotes } from '../data/quizData';
+import { Flame, ChevronRight } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
 import {
   responsiveWidth,
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import { metrics } from '../theme/metrics';
-import { fonts, typography } from '../theme/typography';
-import { 
-  ShieldCheck, Heart, Target, Star, Waves, Sparkles
-} from 'lucide-react-native';
-import { ThisOrThatBridge } from '../components/bridge/ThisOrThatBridge';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge1to2'>;
+
+const TRAIT_EMOJIS: Record<string, string> = {
+  'Emotionally present': '🧠',
+  'Acts of care': '🤲',
+  'Values depth': '🌊',
+  'Loyal': '🛡️',
+  'Adventure-driven': '🚀',
+  'Expressive': '🗣️',
+  'Spontaneous': '✨',
+  'Enthusiastic': '🔋',
+  'Reflective': '🪞',
+  'Intentional': '🎯',
+  'Emotionally intelligent': '💡',
+  'Patient': '⏳',
+  'Direct communicator': '🗣️',
+  'Adaptable': '🔄',
+  'Honest': '✨',
+  'Growth-focused': '🌱',
+};
 
 export const Bridge1to2: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
+
   const day1 = useDayStore((s) => s.day1);
-  const setIntentionWord = useDayStore((s) => s.setDay2IntentionWord);
-  const b2_tot_complete = useDayStore((s) => s.day2.b2_tot_complete);
   const streakCount = useStreakStore((s) => s.streakCount);
-  const shieldUsed = useStreakStore((s) => s.shieldUsed);
+  const name = useUserStore((s) => s.name);
 
-  const [intentionSelected, setIntentionSelected] = useState(false);
+  const personality = personalityTypes.find((p) => p.id === day1.personalityType)
+    ?? personalityTypes[0];
 
-  const personality = personalityTypes.find((p) => p.id === day1.personalityType);
-
-  const getDerivedMood = (score: number) => {
-    if (score >= 9) return { emoji: '🔥', label: 'Inspired', color: '#FEF3C7' };
-    if (score >= 7) return { emoji: '😊', label: 'Hopeful', color: '#D1FAE5' };
-    if (score >= 5) return { emoji: '🌿', label: 'Open', color: '#ECFDF5' };
-    if (score >= 3) return { emoji: '🙏', label: 'Honest', color: '#F3F4F6' };
-    return { emoji: '🛡️', label: 'Brave', color: '#FEE2E2' };
-  };
-
-  const derivedMood = getDerivedMood(day1.sliderScore);
-
-  const renderStars = (score: number) => {
-    const stars = [];
-    const normalizedScore = Math.round(score / 2);
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Star 
-          key={i} 
-          size={14} 
-          color={i <= normalizedScore ? '#FBBF24' : '#E5E7EB'} 
-          fill={i <= normalizedScore ? '#FBBF24' : 'transparent'} 
-          style={{marginHorizontal: 1}}
-        />
-      );
-    }
-    return stars;
+  const handleContinue = () => {
+    haptics.medium();
+    navigation.navigate('SetYourIntention');
   };
 
   return (
     <ScreenWrapper>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <DayHeader eyebrow="BRIDGE · TO DAY 2" />
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          // { paddingTop: insets.top + metrics.spacing.md },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Eyebrow pill ── */}
+        <View style={styles.eyebrowPill}>
+          <Text style={styles.eyebrowText}>Day 1 → Day 2 Bridge</Text>
+        </View>
 
-        {/* Zone 1 — Journey Visualization */}
-        <View style={styles.journeyZone}>
-          <Text style={styles.journeyTitle}>Your Journey</Text>
-          <View style={styles.ringInner}>
-            <View style={styles.dayHexagon}>
-              <Text style={styles.dayNumber}>{streakCount}</Text>
-              <Text style={styles.dayLabel}>DAY</Text>
+        {/* ── Streak card ── */}
+        <View style={styles.streakCard}>
+          <View style={styles.streakCircle}>
+            <Text style={styles.streakNumber}>{streakCount}</Text>
+            <View style={styles.streakFireBadge}>
+              <Flame size={12} color="#F97316" fill="#FED7AA" />
             </View>
-            <View style={styles.ringProgress} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.streakTitle}>Welcome back, {name || 'there'}</Text>
+            <Text style={styles.streakSub}>
+              Day {streakCount} streak · You're building something real.
+            </Text>
           </View>
         </View>
 
-        {/* Zone 2 — Recap Card */}
-        <View style={styles.zone2}>
-          <Text style={styles.recapLabel}>Yesterday you said</Text>
-          <View style={styles.richRecapCard}>
-            <View style={styles.recapCol}>
-              <View style={[styles.moodFace]}>
-                <Text style={{ fontSize: responsiveFontSize(4) }}>{derivedMood.emoji}</Text>
-              </View>
-              <Text style={styles.moodLabelSmall}>Mood</Text>
-              <Text style={styles.moodValueText}>{derivedMood.label}</Text>
-            </View>
-            <View style={styles.recapDivider} />
-            <View style={[styles.recapCol, { flex: 1.2 }]}>
-              <Text style={styles.scoreLabelSmall}>Your Score</Text>
-              <View style={styles.scoreRow}>
-                <Text style={styles.scoreBig}>{day1.sliderScore}</Text>
-                <Text style={styles.scoreOf}>/ 10</Text>
-              </View>
-              <View style={styles.starsRow}>{renderStars(day1.sliderScore)}</View>
-            </View>
-            <View style={styles.recapDivider} />
-            <View style={styles.quoteBox}>
-              <Text style={styles.quoteMiniText}>{bridgeQuotes.bridge_1to2}</Text>
-            </View>
+        {/* ── Day 1 Result card ── */}
+        <View style={styles.resultCard}>
+          <Text style={styles.resultLabel}>YOUR DAY 1 RESULT</Text>
+
+          {/* Personality pill */}
+          <View style={[styles.personalityPill, { borderColor: personality.color + '50' }]}>
+            <Text style={styles.personalityEmoji}>
+              {personality.id === 'steady_flame' ? '🔥'
+                : personality.id === 'electric_spark' ? '⚡'
+                : personality.id === 'deep_current' ? '🌊'
+                : '🌀'}
+            </Text>
+            <Text style={[styles.personalityPillName, { color: personality.color }]}>
+              {personality.name}
+            </Text>
           </View>
 
-          {personality && (
-            <View style={styles.personalityCard}>
-              <View style={[styles.personalityIconBox, { backgroundColor: personality.color + '15' }]}>
-                <Waves size={20} color={personality.color} />
+          {/* Traits */}
+          <View style={styles.traitsContainer}>
+            {personality.traits.slice(0, 3).map((trait) => (
+              <View key={trait} style={[styles.traitPill, { backgroundColor: personality.color + '15' }]}>
+                <Text style={styles.traitEmoji}>{TRAIT_EMOJIS[trait] || '✨'}</Text>
+                <Text style={[styles.traitText, { color: personality.color }]}>{trait}</Text>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.personalityName, { color: personality.color }]}>{personality.name}</Text>
-                <Text style={styles.personalitySub}>{personality.subLabel}</Text>
-              </View>
-            </View>
-          )}
-
-          {shieldUsed && (
-            <View style={styles.shieldCard}>
-              <ShieldCheck size={metrics.iconSize.xs} color={colors.primary} style={{marginRight: 6}} />
-              <Text style={styles.shieldText}>Life happened today. Your streak is safe.</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Zone 3 — Intention Word */}
-        <View style={styles.zoneIntention}>
-          <IntentionWordSelector 
-            accentColor={colors.day2} 
-            onSelect={(word) => {
-              setIntentionWord(word);
-              setIntentionSelected(true);
-            }} 
-          />
-        </View>
-
-        {/* Zone 4 — Game 06: This or That */}
-        {intentionSelected && (
-          <View style={styles.zoneGame}>
-            <ThisOrThatBridge onComplete={() => haptics.success()} />
+            ))}
           </View>
-        )}
+
+          {/* Divider */}
+          <View style={styles.divider} />
+
+          {/* Description */}
+          <Text style={styles.descriptionText}>
+            {bridgeQuotes.bridge_1to2}
+          </Text>
+        </View>
+
+        {/* ── Teaser line ── */}
+        <Text style={styles.teaserText}>
+          Ready for Day 2? One quick intention before we dive in.
+        </Text>
+
+        {/* ── Progress dots ── */}
+        <View style={styles.dotsRow}>
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+        </View>
       </ScrollView>
 
-      <DayCTA 
-        title="Continue to Day 2" 
-        disabled={!intentionSelected || !b2_tot_complete}
-        onPress={() => { haptics.medium(); navigation.navigate('Day2MoodPicker');} } 
-      />
+      {/* ── Continue CTA ── */}
+      <View
+        style={[
+          styles.ctaWrapper,
+          { paddingBottom:  insets.bottom+responsiveFontSize(3) },
+        ]}
+      >
+        <GradientButton
+          text="Continue"
+          onPress={handleContinue}
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
+      </View>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.lg, gap: metrics.spacing.md, paddingTop: metrics.spacing.sm },
-  journeyZone: { alignItems: 'center', marginBottom: metrics.spacing.md },
-  journeyTitle: { 
-    color: c.textSecondary, 
-    ...typography.labelBold,
-    textTransform: 'uppercase', 
-    marginBottom: responsiveHeight(2)
+  content: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: responsiveHeight(16),
+    gap: metrics.spacing.lg,
   },
-  ringInner: { 
-    width: responsiveWidth(28), height: responsiveWidth(28), borderRadius: responsiveWidth(14),
-    backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 1,
-    borderWidth: 6, borderColor: '#F0F9F9'
+
+  // ── Eyebrow ────────────────────────────────────────────
+  eyebrowPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: metrics.radius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(45,95,93,0.18)',
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
+    marginTop: metrics.spacing.md,
   },
-  dayHexagon: { alignItems: 'center', justifyContent: 'center' },
-  dayNumber: { 
-    fontSize: metrics.fontSize.h1 * 1.5, 
-    fontFamily: fonts.dmSansBold, 
-    color: c.text 
+  eyebrowText: {
+    ...typography.captionSmall,
+    color: c.text,
+    letterSpacing: 0.3,
   },
-  dayLabel: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    marginBottom: -2 
+
+  // ── Streak card ────────────────────────────────────────
+  streakCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    borderRadius: metrics.radius.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(45,212,191,0.2)',
+    padding: metrics.spacing.md,
+    // shadowColor: '#2DD4BF',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.06,
+    // shadowRadius: 12,
+    // elevation: 2,
   },
-  ringProgress: {
-    position: 'absolute', width: responsiveWidth(32), height: responsiveWidth(32),
-    borderRadius: responsiveWidth(16), borderWidth: 3, borderColor: c.primary,
-    opacity: 0.7,
+  streakCircle: {
+    width: responsiveWidth(14),
+    height: responsiveWidth(14),
+    borderRadius: responsiveWidth(7),
+    borderWidth: 2.5,
+    borderColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    position: 'relative',
   },
-  zone2: { gap: metrics.spacing.sm },
-  recapLabel: { 
-    color: c.primary, 
-    ...typography.labelBold,
-    textTransform: 'uppercase' 
+  streakFireBadge: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    padding: 2,
   },
-  richRecapCard: {
-    flexDirection: 'row', backgroundColor: '#FFF', borderRadius: metrics.radius.xl, padding: metrics.spacing.md,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 15, elevation: 1,
-    alignItems: 'center'
+  streakNumber: {
+    fontSize: responsiveFontSize(3.5),
+    fontFamily: fonts.dmSansBold,
+    color: c.text,
+    lineHeight: responsiveFontSize(4.2),
   },
-  recapCol: { alignItems: 'center', gap: 4, flex: 1 },
-  moodFace: { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
-  moodLabelSmall: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    textTransform: 'uppercase' 
-  },
-  moodValueText: { 
+  streakTitle: {
     ...typography.bodyBold,
-    fontSize: metrics.fontSize.bodySm,
-    color: c.text 
+    color: c.text,
+    marginBottom: 2,
   },
-  recapDivider: { width: 1, height: '60%', backgroundColor: '#F3F4F6', marginHorizontal: 8 },
-  scoreLabelSmall: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    textTransform: 'uppercase' 
+  streakSub: {
+    ...typography.bodySmall,
+    color: c.textSecondary,
   },
-  scoreRow: { flexDirection: 'row', alignItems: 'baseline' },
-  scoreBig: { 
-    fontSize: metrics.fontSize.h1 * 1.2, 
-    fontFamily: fonts.playfairSemiBold, 
-    color: c.text 
+
+  // ── Result card ────────────────────────────────────────
+  resultCard: {
+    backgroundColor: 'rgba(255,255,255,0.82)',
+    borderRadius: metrics.radius.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.9)',
+    padding: metrics.spacing.md,
+    // shadowColor: '#2DD4BF',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.06,
+    // shadowRadius: 12,
+    // elevation: 2,
   },
-  scoreOf: { 
+  resultLabel: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 1.8,
+    marginBottom: metrics.spacing.sm,
+  },
+  personalityPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.xs,
+    alignSelf: 'flex-start',
+    borderWidth: 1.5,
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    marginBottom: metrics.spacing.sm,
+  },
+  personalityEmoji: {
+    fontSize: responsiveFontSize(2.2),
+  },
+  personalityPillName: {
+    ...typography.bodyBold,
+  },
+  traitsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: metrics.spacing.xs,
+    marginBottom: metrics.spacing.md,
+  },
+  traitPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: metrics.spacing.sm,
+    paddingVertical: metrics.spacing.xs / 2,
+    borderRadius: metrics.radius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.8)',
+  },
+  traitEmoji: {
+    fontSize: responsiveFontSize(1.6),
+  },
+  traitText: {
+    fontSize: metrics.fontSize.caption * 0.9,
+    fontFamily: fonts.dmSansBold,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.06)',
+    marginBottom: metrics.spacing.md,
+  },
+  descriptionText: {
     ...typography.bodyMedium,
-    fontSize: metrics.fontSize.caption,
-    color: c.textHint, 
-    marginLeft: 2 
+    color: c.text,
+    lineHeight: metrics.fontSize.body * 1.6,
+    fontFamily: 'PlayfairDisplay-Italic',
   },
-  starsRow: { flexDirection: 'row', marginTop: 2 },
-  quoteBox: { flex: 1.5, backgroundColor: '#F0FDF4', borderRadius: metrics.radius.md, padding: metrics.spacing.sm, position: 'relative' },
-  quoteMiniText: { 
-    ...typography.quoteItalic,
-    fontSize: metrics.fontSize.caption,
-    color: '#064E3B', 
+
+  // ── Teaser ─────────────────────────────────────────────
+  teaserText: {
+    ...typography.bodyMedium,
+    color: c.textSecondary,
+    textAlign: 'center',
+    lineHeight: metrics.fontSize.body * 1.5,
   },
-  personalityCard: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#FFF', borderRadius: 100, padding: 10,
-    borderWidth: 1, borderColor: '#F3F4F6',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 4, elevation: 2, gap: 12
+
+  // ── Progress dots ──────────────────────────────────────
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: metrics.spacing.xs,
   },
-  personalityIconBox: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
-  personalityName: { 
-    ...typography.bodyBold,
-    color: c.text 
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(45,212,191,0.25)',
   },
-  personalitySub: { 
-    ...typography.caption,
-    fontSize: metrics.fontSize.micro,
-    color: c.textSecondary 
+  dotActive: {
+    width: 24,
+    backgroundColor: c.primary,
   },
-  shieldCard: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: `${c.primary}10`, borderRadius: metrics.radius.md, padding: 6,
-    borderWidth: 1, borderColor: `${c.primary}20`
+
+  // ── CTA ────────────────────────────────────────────────
+  ctaWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
-  shieldText: { 
-    ...typography.quoteItalic,
-    fontSize: metrics.fontSize.micro,
-    color: c.textSecondary 
-  },
-  zoneIntention: { marginTop: metrics.spacing.xs },
-  zoneGame: { marginTop: metrics.spacing.md },
 });
+

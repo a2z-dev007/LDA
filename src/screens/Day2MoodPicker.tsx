@@ -19,6 +19,7 @@ import {
 import { metrics } from '../theme/metrics';
 import { typography } from '../theme/typography';
 import { Sparkles, Flame } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodPicker'>;
 
@@ -33,11 +34,14 @@ export const Day2MoodPicker: React.FC = () => {
   const handleSelect = (id: MoodId) => {
     haptics.light();
     setSelectedMood(id);
-    // Navigate after 400ms (candle animation time per PRD)
-    setTimeout(() => {
-      recordMood(id);
-      navigation.navigate('Day2MoodFollowUp');
-    }, 400);
+  };
+
+  const handleContinue = () => {
+    if (selectedMood) {
+      haptics.success();
+      recordMood(selectedMood);
+      navigation.navigate('Day2OneGoodThing');
+    }
   };
 
   return (
@@ -84,6 +88,19 @@ export const Day2MoodPicker: React.FC = () => {
           );
         })}
       </ScrollView>
+
+      {/* Footer Button */}
+      <View style={styles.footer}>
+        <GradientButton
+          text="Continue"
+          onPress={handleContinue}
+          disabled={!selectedMood}
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
+      
+      </View>
     </ScreenWrapper>
   );
 };
@@ -104,10 +121,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: metrics.layout.screenPaddingHz, gap: metrics.spacing.sm, paddingBottom: responsiveHeight(4) },
   moodCard: {
     width: '48%', borderWidth: 1.5, borderRadius: metrics.radius.lg, padding: metrics.spacing.md,
-    alignItems: 'center', gap: metrics.spacing.sm, backgroundColor: 'rgba(255,255,255,0.7)',
-    shadowColor: c.primary, shadowOffset: { width: 0, height: responsiveHeight(0.2) },
-    shadowOpacity: 0.05, shadowRadius: responsiveWidth(2), elevation: 1,
+    alignItems: 'center', gap: metrics.spacing.sm, backgroundColor: 'rgba(255,255,255,0.5)',
+    
   },
   moodEmoji: { fontSize: responsiveFontSize(4.5) },
   moodLabel: { color: c.textSecondary, ...typography.bodySmall, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
+  footer: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.xl, paddingTop: metrics.spacing.md },
 });

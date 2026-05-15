@@ -47,31 +47,13 @@ export const DayEndJarModal: React.FC<DayEndJarModalProps> = ({
   const [animationFinished, setAnimationFinished] = useState(false);
   const [modalActive, setModalActive] = useState(false);
 
-  // For independent background animation
-  const bgOpacity = useSharedValue(0);
-
   useEffect(() => {
     if (visible) {
-      setModalActive(true);
-      bgOpacity.value = withTiming(1, { duration: 500 });
-      setAnimationFinished(false);
-      // Wait for modal transition then trigger jar
-      const timer = setTimeout(() => {
-        jarRef.current?.triggerEnvelope(() => {
-          setAnimationFinished(true);
-          haptics.success();
-        });
-      }, 1200); // Slower entrance timing for premium feel
-      return () => clearTimeout(timer);
-    } else {
-      bgOpacity.value = withSpring(0);
-      setModalActive(false);
+      onNext();
     }
   }, [visible]);
 
-  const animatedBgStyle = useAnimatedStyle(() => ({
-    opacity: bgOpacity.value,
-  }));
+  if (visible) return null;
 
   if (!visible && !modalActive) return null;
 

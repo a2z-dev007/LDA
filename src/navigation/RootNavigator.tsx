@@ -22,18 +22,22 @@ import { Bridge1to2 } from '../screens/Bridge1to2';
 import { Bridge2to3 } from '../screens/Bridge2to3';
 import { Bridge3to4 } from '../screens/Bridge3to4';
 import { Bridge4to5 } from '../screens/Bridge4to5';
+import { SetYourIntention } from '../screens/SetYourIntention';
+import { ThisOrThatScreen } from '../screens/ThisOrThatScreen';
 
 // Day 2
 import { Day2MoodPicker } from '../screens/Day2MoodPicker';
+import { Day2OneGoodThing } from '../screens/Day2OneGoodThing';
 import { Day2MoodFollowUp } from '../screens/Day2MoodFollowUp';
+import { Day2ResultScreen } from '../screens/Day2ResultScreen';
 
 // Day 3
 import { Day3AppreciationSnap } from '../screens/Day3AppreciationSnap';
 import { Day3FinishMySentence } from '../screens/Day3FinishMySentence';
 import { Day3AssumptionsTest } from '../screens/Day3AssumptionsTest';
+import { Day3MirrorResults } from '../screens/Day3MirrorResults';
 import { Day3MoodBoard } from '../screens/Day3MoodBoard';
 import { Day3OneCertainty } from '../screens/Day3OneCertainty';
-import { Day3MirrorResults } from '../screens/Day3MirrorResults';
 
 // Day 4
 import { Day4MemoryJar } from '../screens/Day4MemoryJar';
@@ -96,13 +100,17 @@ export const RootNavigator = () => {
 
       {/* Bridges */}
       <Stack.Screen name="Bridge1to2" component={Bridge1to2} />
+      <Stack.Screen name="SetYourIntention" component={SetYourIntention} />
+      <Stack.Screen name="ThisOrThat" component={ThisOrThatScreen} />
       <Stack.Screen name="Bridge2to3" component={Bridge2to3} />
       <Stack.Screen name="Bridge3to4" component={Bridge3to4} />
       <Stack.Screen name="Bridge4to5" component={Bridge4to5} />
 
       {/* Day 2 */}
       <Stack.Screen name="Day2MoodPicker" component={Day2MoodPicker} />
+      <Stack.Screen name="Day2OneGoodThing" component={Day2OneGoodThing} />
       <Stack.Screen name="Day2MoodFollowUp" component={Day2MoodFollowUp} />
+      <Stack.Screen name="Day2Result" component={Day2ResultScreen} />
 
       {/* Day 3 */}
       <Stack.Screen name="Day3AppreciationSnap" component={Day3AppreciationSnap} />
