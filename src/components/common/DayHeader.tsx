@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
 import {
   responsiveWidth,
@@ -10,9 +10,10 @@ import { typography } from '../../theme/typography';
 
 interface DayHeaderProps {
   eyebrow: string;
+  onAction?: () => void;
 }
 
-export const DayHeader: React.FC<DayHeaderProps> = ({ eyebrow }) => {
+export const DayHeader: React.FC<DayHeaderProps> = ({ eyebrow, onAction }) => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
 
@@ -22,9 +23,15 @@ export const DayHeader: React.FC<DayHeaderProps> = ({ eyebrow }) => {
         <Sparkles size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
         <Text style={styles.eyebrow}>{eyebrow.toUpperCase()}</Text>
       </View>
-      <View style={styles.sparkleCircle}>
-        <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
-      </View>
+      {onAction ? (
+        <TouchableOpacity style={styles.sparkleCircle} onPress={onAction} activeOpacity={0.7}>
+          <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.sparkleCircle}>
+          <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
+        </View>
+      )}
     </View>
   );
 };

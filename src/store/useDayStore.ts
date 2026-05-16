@@ -111,6 +111,7 @@ interface DayStore {
   setDay2IntentionWord: (word: string) => void;
   setB2ThisOrThat: (rounds: ThisOrThatRound[]) => void;
   setDay2OneGoodThing: (text: string) => void;
+  setDay2Mood: (mood: Day2Data['mood']) => void;
   completeDay2: (mood: Day2Data['mood'], moodScore: number, followUpQuestion: string, followUpAnswer: string) => void;
 
   // Day 3
@@ -282,6 +283,9 @@ export const useDayStore = create<DayStore>()(
 
       setDay2OneGoodThing: (text) =>
         set((s) => ({ day2: { ...s.day2, oneGoodThing: text } })),
+
+      setDay2Mood: (mood) =>
+        set((s) => ({ day2: { ...s.day2, mood } })),
 
       completeDay2: (mood, moodScore, followUpQuestion, followUpAnswer) =>
         set((s) => ({

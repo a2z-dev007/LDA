@@ -63,47 +63,45 @@ export const ThisOrThatScreen: React.FC = () => {
   const [picks, setPicks] = useState<string[]>([]);
   const [showQuote, setShowQuote] = useState(false);
   const jarRef = useRef<any>(null);
-  const resultHeaderAnim = useRef(new Animated.Value(0)).current;
+  const jarEntranceAnim = useRef(new Animated.Value(0)).current;
 
   const jarMemories = useJournalStore((s) => s.jarMemories);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
   const initialJarCount = jarMemories.length;
 
 
-  // Animation for the jar when finished
-  useEffect(() => {
-    if (isFinished && jarRef.current) {
-      // Animate the jar wrapper opacity/position
-      Animated.timing(resultHeaderAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
 
-      setTimeout(() => {
-        jarRef.current?.triggerEnvelope(() => {
-          // Persist to store when animation slip enters jar
-          addJarMemory({
-            content: `This or That: ${intentionWord} Edition Complete`,
-            type: 'text',
-            tinyCompliment: null,
-            dayColor: colors.primary,
-          });
-        });
-      }, 700);
-    }
-  }, [isFinished]);
-
-
-
-
-
-
-  
   const totalQuestions = thisOrThatQuestions.length;
   const isFinished = currentRound >= totalQuestions;
   const currentQuestionIndex = currentRound;
 
+  // Animation for the jar when finished
+  useEffect(() => {
+    if (isFinished) {
+      // 1. Reset and Fade in the jar first
+      jarEntranceAnim.setValue(0);
+      Animated.timing(jarEntranceAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start();
+
+      // 2. Trigger the envelope animation after it has appeared
+      const timer = setTimeout(() => {
+        if (jarRef.current) {
+          jarRef.current.triggerEnvelope(() => {
+            addJarMemory({
+              content: `This or That: ${intentionWord} Edition Complete`,
+              type: 'text',
+              tinyCompliment: null,
+              dayColor: colors.primary,
+            });
+          });
+        }
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isFinished]);
 
   const currentQuestion = thisOrThatQuestions[currentQuestionIndex];
 
@@ -191,11 +189,7 @@ export const ThisOrThatScreen: React.FC = () => {
         <Text style={styles.headerTitle}>This or That: Us Edition</Text>
       </View>
 
-      <View style={styles.jarContainer}>
-        <Animated.View style={[styles.jarWrapper, { opacity: resultHeaderAnim }]}>
-          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-        </Animated.View>
-      </View>
+
 
 
       <Animated.ScrollView
@@ -276,6 +270,22 @@ export const ThisOrThatScreen: React.FC = () => {
 
             {/* Results Screen */}
             <View style={styles.header}>
+              <Animated.View 
+                style={[
+                  styles.resultJarPos, 
+                  { 
+                    opacity: jarEntranceAnim,
+                    transform: [{ 
+                      translateY: jarEntranceAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [20, 0]
+                      })
+                    }]
+                  }
+                ]}
+              >
+                <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+              </Animated.View>
               <Text style={styles.title}>All 3 rounds done 🎉</Text>
               <Text style={styles.subtitle}>Their answers are sealed — reveal when they join.</Text>
               
@@ -364,19 +374,11 @@ const makeStyles = (c: any) => StyleSheet.create({
     height: 60,
     zIndex: 20,
   },
-  jarContainer: {
-    position: 'absolute',
-    top: responsiveHeight(3),
-    right: 3,
-    left: 0,
-    zIndex: 100,
-    pointerEvents: 'none',
-  },
-  jarWrapper: {
-    position: 'absolute',
-    right: metrics.layout.screenPaddingHz - 25,
-    top: 0,
-    transform: [{ scale: 0.55 }],
+  resultJarPos: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 120,
+    marginBottom: 10,
   },
 
 

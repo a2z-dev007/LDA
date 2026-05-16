@@ -15,7 +15,7 @@ import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
-import { Check, BookOpen } from 'lucide-react-native';
+import { Check, BookOpen, Sparkles } from 'lucide-react-native';
 import { GradientButton } from '../components/common/GradientButton';
 import {
   responsiveHeight,
@@ -49,7 +49,10 @@ export const Day2OneGoodThing: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={2} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <DayHeader eyebrow="One Good Thing" />
+          <DayHeader 
+            eyebrow="One Good Thing" 
+            onAction={text.length >= 10 ? () => haptics.light() : undefined}
+          />
           
           <Text style={styles.prompt}>
             "Before anything else — name one thing about your partner that made you feel something good recently. It can be tiny."
@@ -141,6 +144,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderTopColor: 'rgba(0,0,0,0.05)',
     paddingTop: metrics.spacing.sm,
   },
+
   charCountText: {
     ...typography.captionSmall,
     color: c.textHint,

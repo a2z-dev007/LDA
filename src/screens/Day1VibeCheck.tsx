@@ -137,7 +137,7 @@ export const Day1VibeCheck: React.FC = () => {
     // 3. Redirect only after the jar animation (open -> slip -> close) is finished
     setTimeout(() => {
       completeDay1();
-      navigation.navigate('Bridge1to2');
+      navigation.navigate('Home');
     }, 2000); // 2 seconds covers the full cinematic sequence
   };
 

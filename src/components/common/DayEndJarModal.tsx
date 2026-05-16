@@ -27,6 +27,7 @@ import { haptics } from '../../utils/haptics';
 import { useAppColors } from '../../theme';
 import { metrics } from '../../theme/metrics';
 import { typography, fonts } from '../../theme/typography';
+import { useJournalStore } from '../../store/useJournalStore';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 
@@ -46,14 +47,31 @@ export const DayEndJarModal: React.FC<DayEndJarModalProps> = ({
   const jarRef = useRef<JarEnvelopeHandle>(null);
   const [animationFinished, setAnimationFinished] = useState(false);
   const [modalActive, setModalActive] = useState(false);
+  const initialCount = useRef(useJournalStore.getState().jarMemories.length).current;
+
+  const bgOpacity = useSharedValue(0);
+
+  const animatedBgStyle = useAnimatedStyle(() => ({
+    opacity: bgOpacity.value,
+  }));
 
   useEffect(() => {
     if (visible) {
-      onNext();
+      setModalActive(true);
+      bgOpacity.value = withTiming(1, { duration: 600 });
+      setAnimationFinished(false);
+      // Brief delay to allow modal entrance to finish
+      setTimeout(() => {
+        jarRef.current?.triggerEnvelope(() => {
+          setAnimationFinished(true);
+          haptics.success();
+        });
+      }, 800);
+    } else {
+      bgOpacity.value = withTiming(0, { duration: 300 });
+      setModalActive(false);
     }
   }, [visible]);
-
-  if (visible) return null;
 
   if (!visible && !modalActive) return null;
 
@@ -81,7 +99,7 @@ export const DayEndJarModal: React.FC<DayEndJarModalProps> = ({
           <View style={styles.jarWrapper}>
             <JarEnvelopeAnimation 
               ref={jarRef} 
-              initialCount={currentDay - 1} 
+              initialCount={initialCount} 
             />
           </View>
 

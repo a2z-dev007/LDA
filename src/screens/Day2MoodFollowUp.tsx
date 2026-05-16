@@ -22,8 +22,8 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import { metrics } from '../theme/metrics';
-import { typography } from '../theme/typography';
-import { Sparkles, MessageCircle } from 'lucide-react-native';
+import { typography, fonts } from '../theme/typography';
+import { Sparkles, MessageCircle, Heart, Lock, ArrowRight } from 'lucide-react-native';
 import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodFollowUp'>;
@@ -38,8 +38,18 @@ export const Day2MoodFollowUp: React.FC = () => {
   const [answer, setAnswer] = useState('');
   const [showJarModal, setShowJarModal] = useState(false);
 
-  const moodData = moodOptions.find((m) => m.id === day2.mood);
-  const question = moodData?.followUpQuestion ?? "What's on your mind today?";
+  const moodData = React.useMemo(() => 
+    moodOptions.find((m) => m.id === day2.mood), 
+    [day2.mood]
+  );
+
+  const question = React.useMemo(() => {
+    if (day2.mood === 'connected') {
+      return "What is it about how they show up for you lately that's made you feel most seen?";
+    }
+    if (!moodData) return "What's on your mind today?";
+    return moodData.followUpQuestion;
+  }, [moodData, day2.mood]);
 
   const handleSave = () => {
     haptics.success();
@@ -53,7 +63,19 @@ export const Day2MoodFollowUp: React.FC = () => {
       question,
       trimmed
     );
-    navigation.navigate('Day2Result');
+    setShowJarModal(true);
+  };
+
+  const handleModalNext = () => {
+    setShowJarModal(false);
+    // Add the day 2 completion to the jar store
+    useJournalStore.getState().addJarMemory({
+      content: `Day 2 Reflection: ${moodData?.label || 'Unknown'}`,
+      type: 'text',
+      tinyCompliment: null,
+      dayColor: colors.primary,
+    });
+    navigation.navigate('Home');
   };
 
   return (
@@ -66,39 +88,44 @@ export const Day2MoodFollowUp: React.FC = () => {
           {moodData && (
             <View style={styles.badgeRow}>
               <View style={styles.trackBadge}>
-                <Text style={styles.trackBadgeEmoji}>🤍</Text>
+                <Heart size={14} color={colors.primary} fill={colors.primary} opacity={0.6} />
                 <Text style={styles.trackBadgeText}>Happiness track · {moodData.label} mood</Text>
               </View>
             </View>
           )}
 
-          <View style={styles.privacyBadge}>
-            <Text style={styles.privacyBadgeText}>🔒 This answer stays private — only you can see it.</Text>
-          </View>
+
+
+
 
           <View style={styles.questionContainer}>
             <Text style={styles.question}>"{question}"</Text>
           </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Write freely — this is just for you..."
-            placeholderTextColor={colors.textHint}
-            value={answer}
-            onChangeText={setAnswer}
-            multiline
-            textAlignVertical="top"
-          />
-          
-          <View style={styles.helperBox}>
-            <Text style={styles.helperTitle}>3 ROTATING QUESTIONS FOR THIS SEGMENT</Text>
-            <Text style={styles.helperText}>
-              Q1 (shown) · Q2 · Q3 — rotate from pool of 3 per mood segment (Happiness / Sadness / Saturated)
-            </Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Write freely — this is just for you..."
+              placeholderTextColor={colors.textHint}
+              value={answer}
+              onChangeText={setAnswer}
+              multiline
+              textAlignVertical="top"
+            />
+            <View style={styles.charCountRow}>
+              <Text style={styles.charCountText}>
+                {answer.length} / — chars · Goal ≥ 60 for Expressive signal
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.privacyBadge}>
+            <Lock size={14} color={colors.textSecondary} opacity={0.6} />
+            <Text style={styles.privacyBadgeText}>This answer stays private — only you can see it.</Text>
           </View>
 
         </ScrollView>
-        <View style={{ paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.xl }}>
+        <View style={styles.footer}>
           <GradientButton
             text="Complete Day 2"
             onPress={handleSave}
@@ -126,25 +153,27 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(45,212,191,0.1)',
+    backgroundColor: 'rgba(45,212,191,0.08)',
     paddingHorizontal: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
     borderRadius: metrics.radius.full,
     borderWidth: 1,
-    borderColor: 'rgba(45,212,191,0.2)',
-    gap: 6,
+    borderColor: 'rgba(45,212,191,0.15)',
+    gap: 8,
   },
-  trackBadgeEmoji: { fontSize: 12 },
-  trackBadgeText: { ...typography.captionSmall, color: c.primary, fontFamily: 'Inter-SemiBold' },
+  trackBadgeText: { ...typography.captionSmall, color: c.primary, fontFamily: 'Inter-SemiBold', letterSpacing: 0 },
   privacyBadge: {
     alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.03)',
     paddingHorizontal: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
     borderRadius: metrics.radius.full,
     marginBottom: metrics.spacing.xl,
+    gap: 8,
   },
-  privacyBadgeText: { ...typography.captionSmall, color: c.textSecondary },
+  privacyBadgeText: { ...typography.captionSmall, color: c.textSecondary, letterSpacing: 0 },
   questionContainer: {
     marginBottom: metrics.spacing.lg,
   },
@@ -154,25 +183,41 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Bold',
     lineHeight: responsiveFontSize(3.8),
   },
+  inputContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: metrics.radius.xl,
+    padding: metrics.spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
+    marginBottom: metrics.spacing.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 10,
+    elevation: 1,
+  },
   input: {
     color: c.text, 
     ...typography.bodyMedium,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderWidth: 1.5, 
-    borderColor: 'rgba(255,255,255,0.9)', 
-    borderRadius: metrics.radius.lg,
-    padding: metrics.spacing.md, 
-    minHeight: responsiveHeight(20), 
+    minHeight: responsiveHeight(15), 
     lineHeight: 24, 
-    marginBottom: metrics.spacing.xl,
+    textAlignVertical: 'top',
   },
-  helperBox: {
-    padding: metrics.spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.5)',
-    borderRadius: metrics.radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.8)',
+  charCountRow: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    paddingTop: metrics.spacing.sm,
+    marginTop: metrics.spacing.sm,
   },
-  helperTitle: { ...typography.captionSmall, color: c.textHint, fontFamily: 'Inter-SemiBold', letterSpacing: 1, marginBottom: 4 },
-  helperText: { ...typography.captionSmall, color: c.textSecondary, lineHeight: 18 },
+  charCountText: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 0,
+    textAlign: 'center',
+  },
+  footer: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: metrics.spacing.xl,
+  },
+
 });

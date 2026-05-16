@@ -29,6 +29,7 @@ export const Day2MoodPicker: React.FC = () => {
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day2 = useDayStore((s) => s.day2);
+  const setDay2Mood = useDayStore((s) => s.setDay2Mood);
   const recordMood = useStreakStore((s) => s.recordMood);
   const [selectedMood, setSelectedMood] = useState<MoodId | null>(null);
   
@@ -64,6 +65,7 @@ export const Day2MoodPicker: React.FC = () => {
     if (selectedMood) {
       haptics.success();
       recordMood(selectedMood);
+      setDay2Mood(selectedMood);
       navigation.navigate('Day2OneGoodThing');
     }
   };

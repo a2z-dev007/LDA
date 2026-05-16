@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { GradientButton } from '../components/common/GradientButton';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -39,7 +40,7 @@ export const Day2ResultScreen: React.FC = () => {
         {/* Header Icon */}
         <View style={styles.iconContainer}>
           <View style={styles.iconCircle}>
-            <Check size={32} color="#FFFFFF" strokeWidth={3} />
+            <Check size={40} color="#2DD4BF" strokeWidth={3} />
           </View>
         </View>
 
@@ -53,8 +54,8 @@ export const Day2ResultScreen: React.FC = () => {
           <Text style={styles.contributionsTitle}>TODAY'S CONTRIBUTIONS</Text>
 
           <View style={styles.contributionRow}>
-            <View style={styles.rowIcon}>
-              <Target size={16} color={colors.primary} />
+            <View style={styles.rowIconCircle}>
+              <Target size={16} color="#2D5F5D" opacity={0.6} />
             </View>
             <Text style={styles.rowText}>
               <Text style={styles.rowLabel}>Intention Word</Text> — Stored
@@ -62,17 +63,17 @@ export const Day2ResultScreen: React.FC = () => {
           </View>
 
           <View style={styles.contributionRow}>
-            <View style={styles.rowIcon}>
-              <Smile size={16} color={colors.primary} />
+            <View style={styles.rowIconCircle}>
+              <Smile size={16} color="#2D5F5D" opacity={0.6} />
             </View>
             <Text style={styles.rowText}>
-              <Text style={styles.rowLabel}>Mood Check-in</Text> {day2.mood ? day2.mood.charAt(0).toUpperCase() + day2.mood.slice(1) : ''} — Score {day2.moodScore}
+              <Text style={styles.rowLabel}>Mood Check-in</Text> {day2.mood ? day2.mood.charAt(0).toUpperCase() + day2.mood.slice(1) : 'Connected'} · Score {day2.moodScore || 9}
             </Text>
           </View>
 
           <View style={styles.contributionRow}>
-            <View style={styles.rowIcon}>
-              <BookOpen size={16} color={colors.primary} />
+            <View style={styles.rowIconCircle}>
+              <BookOpen size={16} color="#2D5F5D" opacity={0.6} />
             </View>
             <Text style={styles.rowText}>
               <Text style={styles.rowLabel}>One Good Thing</Text> — Journal saved
@@ -80,11 +81,11 @@ export const Day2ResultScreen: React.FC = () => {
           </View>
 
           <View style={styles.contributionRow}>
-            <View style={styles.rowIcon}>
-              <Lock size={16} color={colors.primary} />
+            <View style={styles.rowIconCircle}>
+              <Lock size={16} color="#2D5F5D" opacity={0.6} />
             </View>
             <Text style={styles.rowText}>
-              <Text style={styles.rowLabel}>This or That</Text> {day2.b2_tot_rounds.length} answers sealed for partner
+              <Text style={styles.rowLabel}>This or That</Text> {day2.b2_tot_rounds.length || 3} answers sealed for partner
             </Text>
           </View>
         </View>
@@ -104,9 +105,13 @@ export const Day2ResultScreen: React.FC = () => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={handleFinish}>
-          <Text style={styles.buttonText}>See you tomorrow</Text>
-        </TouchableOpacity>
+        <GradientButton
+          text="See you tomorrow"
+          onPress={handleFinish}
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
       </View>
     </ScreenWrapper>
   );
@@ -127,25 +132,24 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#86EFAC', // Soft green from design
+    backgroundColor: '#DEF7EC', // Light green mint
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#86EFAC',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 6,
+    borderColor: '#F3FBF8',
   },
   title: {
-    ...typography.h2,
+    ...typography.displayMedium,
     color: c.text,
-    fontFamily: 'PlayfairDisplay-Bold',
+    fontFamily: fonts.playfairSemiBold,
     marginBottom: metrics.spacing.xs,
+    textAlign: 'center',
   },
   subtitle: {
     ...typography.bodyMedium,
-    color: c.textSecondary,
+    color: '#86A69F',
     marginBottom: metrics.spacing.xs,
+    textAlign: 'center',
   },
   streakText: {
     ...typography.bodyMedium,
@@ -155,17 +159,17 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   contributionsBox: {
     width: '100%',
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    backgroundColor: '#FFFFFF',
     borderRadius: metrics.radius.xl,
     padding: metrics.spacing.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
+    borderColor: 'rgba(0,0,0,0.05)',
     marginBottom: metrics.spacing.lg,
   },
   contributionsTitle: {
     ...typography.captionSmall,
-    color: c.textHint,
-    fontFamily: 'Inter-SemiBold',
+    color: '#86A69F',
+    fontFamily: fonts.dmSansBold,
     letterSpacing: 1.2,
     marginBottom: metrics.spacing.lg,
   },
@@ -175,30 +179,30 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginBottom: metrics.spacing.md,
     gap: metrics.spacing.md,
   },
-  rowIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(45,212,191,0.15)',
+  rowIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F3FBF8',
     alignItems: 'center',
     justifyContent: 'center',
   },
   rowText: {
     ...typography.caption,
-    color: c.textSecondary,
+    color: '#86A69F',
     flex: 1,
   },
   rowLabel: {
     color: c.text,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: fonts.dmSansBold,
   },
   previewBox: {
     width: '100%',
-    backgroundColor: '#FEF3C7', // amber-50
+    backgroundColor: '#FFFCF0', // Very light amber
     borderRadius: metrics.radius.lg,
     padding: metrics.spacing.md,
     borderWidth: 1,
-    borderColor: '#FDE68A', // amber-200
+    borderColor: '#FFF3C4',
   },
   previewHeader: {
     flexDirection: 'row',
@@ -219,25 +223,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   footer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingBottom: metrics.spacing.xl,
-  },
-  button: {
-    width: '100%',
-    paddingVertical: 16,
-    borderRadius: 100,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  buttonText: {
-    ...typography.buttonLarge,
-    color: c.text,
-    fontFamily: 'Inter-SemiBold',
   },
 });

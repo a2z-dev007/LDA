@@ -18,7 +18,9 @@ import React, {
   forwardRef,
   useState,
   useRef,
+  useMemo,
 } from 'react';
+import { useJournalStore } from '../../store/useJournalStore';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -288,8 +290,9 @@ export interface JarEnvelopeHandle {
 // Main component
 // ─────────────────────────────────────────────────────────────
 export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount?: number }>(
-  ({ initialCount = 0 }, ref) => {
-    const [answerCount, setAnswerCount] = useState(initialCount);
+  ({ initialCount }, ref) => {
+    const jarMemoriesCount = useJournalStore((s) => s.jarMemories.length);
+    const displayCount = initialCount !== undefined ? initialCount : jarMemoriesCount;
     const [showEnvelope, setShowEnvelope] = useState(false);
     const insets = useSafeAreaInsets();
 
@@ -311,11 +314,10 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
   const jarScale  = useSharedValue(1);
   const jarRotate = useSharedValue(0);
 
-  const doIncrementCount = () => setAnswerCount(c => c + 1);
   const doHideEnvelope   = () => setShowEnvelope(false);
 
   useImperativeHandle(ref, () => ({
-    incrementCount: doIncrementCount,
+    incrementCount: () => {}, // No-op, uses store now
 
     triggerEnvelope: (onComplete?: () => void, skipCount?: boolean) => {
       // ── Reset all ──
@@ -381,7 +383,6 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
         withTiming(0, { duration: 100 }, (finished) => {
           if (finished) {
             runOnJS(doHideEnvelope)();
-            if (!skipCount) runOnJS(doIncrementCount)();
           }
         }),
       );
@@ -467,7 +468,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
   // Per-heart animated styles removed
 
   return (
-    <>
+    <View style={styles.rootRelative}>
       {/* ── Jar assembly (lid + body stacked) ── */}
       <Animated.View
         style={[styles.jarWrapper, jarBodyStyle]}
@@ -480,22 +481,22 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
 
         {/* Body with shake */}
         <Animated.View style={[styles.bodyContainer, jarBodyStyle]}>
-          <JarBodySvg fillCount={answerCount} />
+          <JarBodySvg fillCount={displayCount} />
         </Animated.View>
 
         {/* Count badge */}
-        {answerCount > 0 && (
-          <Animated.Text style={styles.countBadge}>{answerCount}</Animated.Text>
+        {displayCount > 0 && (
+          <Animated.Text style={styles.countBadge}>{displayCount}</Animated.Text>
         )}
       </Animated.View>
 
-      {/* ── Flying paper slip (absolute, full-screen) ── */}
+      {/* ── Flying paper slip (absolute, local to this relative parent) ── */}
       {showEnvelope && (
         <Animated.View style={[styles.flySlip, envStyle]} pointerEvents="none">
           <PaperSlipSvg />
         </Animated.View>
       )}
-    </>
+    </View>
   );
 });
 
@@ -503,6 +504,11 @@ JarEnvelopeAnimation.displayName = 'JarEnvelopeAnimation';
 
 // ── Styles ────────────────────────────────────────────────────
 const styles = StyleSheet.create({
+  rootRelative: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   // Wrapper contains glow + lid + body stacked
   jarWrapper: {
     width: JAR_W,
