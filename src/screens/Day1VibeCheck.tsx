@@ -16,9 +16,10 @@ import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { Sparkles, ChevronRight, ArrowRight } from 'lucide-react-native';
+import { Day1Scoring } from '../services/scoring/day1Scoring';
 
 import { GradientButton } from '../components/common/GradientButton';
-import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { DayEndJarModal } from '../components/common/DayEndJarModal';
 
 import {
   responsiveWidth,
@@ -58,20 +59,17 @@ export const Day1VibeCheck: React.FC = () => {
   const insets = useSafeAreaInsets();
   const setDay1Vibe = useDayStore((s) => s.setDay1Vibe);
   const completeDay1 = useDayStore((s) => s.completeDay1);
-  const jarMemories = useJournalStore((s) => s.jarMemories);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
-  const initialJarCount = jarMemories.length;
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const [showJarModal, setShowJarModal] = useState(false);
   const fadeAnims = VIBE_OPTIONS.map(() => useRef(new Animated.Value(0)).current);
 
   const ctaTranslateY = useRef(new Animated.Value(120)).current;
   const ctaOpacity    = useRef(new Animated.Value(0)).current;
-  const headerAnim    = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Entrance animations for content (Jar remains hidden until Next is clicked)
+    // Entrance animations for content
     Animated.stagger(40, fadeAnims.map(anim => 
       Animated.timing(anim, {
         toValue: 1,
@@ -80,9 +78,6 @@ export const Day1VibeCheck: React.FC = () => {
       })
     )).start();
   }, []);
-
-
-
 
   useEffect(() => {
     if (selectedId) {
@@ -110,39 +105,36 @@ export const Day1VibeCheck: React.FC = () => {
 
   const handleNext = () => {
     if (!selectedId) return;
-    const selectedOption = VIBE_OPTIONS.find(o => o.id === selectedId);
-    
     haptics.heavy();
-
-    // 1. Show the Jar first
-    Animated.timing(headerAnim, {
-      toValue: 1,
-      duration: 400,
-      useNativeDriver: true,
-    }).start();
-
-    // 2. Trigger the envelope animation after a brief delay so user sees the jar appearing
-    setTimeout(() => {
-      jarRef.current?.triggerEnvelope(() => {
-        // Callback after slip is in (usually ~1s into animation)
-        addJarMemory({
-          content: `Felt ${selectedId} ${selectedOption?.emoji || ''}`,
-          type: 'text',
-          tinyCompliment: null,
-          dayColor: colors.primary,
-        });
-      });
-    }, 450);
-
-    // 3. Redirect only after the jar animation (open -> slip -> close) is finished
-    setTimeout(() => {
-      completeDay1();
-      navigation.navigate('Home');
-    }, 2000); // 2 seconds covers the full cinematic sequence
+    setShowJarModal(true);
   };
 
+  const handleModalNext = () => {
+    setShowJarModal(false);
+    const selectedOption = VIBE_OPTIONS.find(o => o.id === selectedId);
 
+    // 1. Add the day 1 vibe reflection memory to the jar store
+    addJarMemory({
+      content: `Felt ${selectedId} ${selectedOption?.emoji || ''}`,
+      type: 'text',
+      tinyCompliment: null,
+      dayColor: colors.primary,
+    });
 
+    // 2. Mark Day 1 complete
+    completeDay1();
+
+    // 3. Calculate and Log Day 1 Scoring output for debugging
+    const updatedDay1 = useDayStore.getState().day1;
+    const scoringResult = Day1Scoring.calculate(updatedDay1);
+    console.log('=== [DEBUG] Day 1 Completion Scoring & Local Storage Log ===');
+    console.log('Day 1 Data in Local Storage:', JSON.stringify(updatedDay1, null, 2));
+    console.log('Day 1 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
+    console.log('===========================================================');
+
+    // 4. Redirect to Home to allow beginning Day 2
+    navigation.navigate('Home');
+  };
 
   const handleComeBack = () => {
     haptics.light();
@@ -188,12 +180,8 @@ export const Day1VibeCheck: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={1} />
 
-      {/* Jar moved into ListHeaderComponent below for consistent scrolling */}
-
-
       <FlatList
         data={VIBE_OPTIONS}
-
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -204,11 +192,6 @@ export const Day1VibeCheck: React.FC = () => {
         scrollEventThrottle={16}
         ListHeaderComponent={
           <View style={styles.header}>
-            <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1), position: 'absolute', right: -10 }]}>
-              <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-            </Animated.View>
-
-
             <View style={styles.eyebrowPill}>
               <Sparkles size={metrics.iconSize.xs} color={colors.primary} />
               <Text style={styles.eyebrow}>VIBE CHECK</Text>
@@ -217,9 +200,7 @@ export const Day1VibeCheck: React.FC = () => {
               One card that captures how your relationship feels right now.
             </Text>
           </View>
-
         }
-        // ListFooterComponent={<View style={styles.listFooterSpacer} />}
       />
 
       <Animated.View
@@ -250,6 +231,12 @@ export const Day1VibeCheck: React.FC = () => {
           <ArrowRight size={16} color={colors.textHint} />
         </TouchableOpacity>
       </Animated.View>
+
+      <DayEndJarModal
+        visible={showJarModal}
+        currentDay={1}
+        onNext={handleModalNext}
+      />
     </ScreenWrapper>
   );
 };

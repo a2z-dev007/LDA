@@ -5,7 +5,7 @@ import { metrics } from '../../theme/metrics';
 import { typography, fonts } from '../../theme/typography';
 import { haptics } from '../../utils/haptics';
 import { responsiveWidth, responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
-import { PalmTree, Mountain, Coffee, Car, User, Heart, Lock } from 'lucide-react-native';
+import { Lock } from 'lucide-react-native';
 import { useDayStore, ThisOrThatRound } from '../../store/useDayStore';
 
 interface Round {

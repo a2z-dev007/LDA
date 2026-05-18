@@ -10,6 +10,7 @@ import { useAppColors } from '../theme';
 import { assumptionsSets } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
+import { Day3Scoring } from '../services/scoring/day3Scoring';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3AssumptionsTest'>;
 
@@ -50,6 +51,15 @@ export const Day3AssumptionsTest: React.FC = () => {
       const trueCount = Object.values(newAnswers).filter(Boolean).length;
       const trueRatio = trueCount / total;
       completeDay3(newAnswers, trueRatio);
+
+      // Calculate and Log Day 3 Scoring output for debugging
+      const updatedDay3 = useDayStore.getState().day3;
+      const scoringResult = Day3Scoring.calculate(updatedDay3);
+      console.log('=== [DEBUG] Day 3 Completion Scoring & Local Storage Log ===');
+      console.log('Day 3 Data in Local Storage:', JSON.stringify(updatedDay3, null, 2));
+      console.log('Day 3 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
+      console.log('===========================================================');
+
       navigation.navigate('Day3MirrorResults');
     }
   };

@@ -3,7 +3,7 @@ import { PersonalityTypeId } from '../data/personalityTypes';
 // ─────────────────────────────────────────────────────────────
 // Letter Generator — PRD §6.6 D5_TheLetter
 // Template-generated personal letter using:
-// user name, D1 slider score, personality type name, first 8 words of D4 memory
+// user name, D1 slider score, personality type name, and memory/certainty fallbacks.
 // ─────────────────────────────────────────────────────────────
 
 const personalityNames: Record<PersonalityTypeId, string> = {
@@ -15,23 +15,38 @@ const personalityNames: Record<PersonalityTypeId, string> = {
 
 const templates = [
   (name: string, score: number, typeName: string, memoryOpener: string) =>
-    `Dear ${name},\n\nFive days ago, I sat with a number — ${score} out of 10. That number was honest. Maybe more honest than I'd been in a while.\n\nI've been thinking about what it means to be ${typeName} in this relationship. It means I love in a particular way. Not always loudly. Not always perfectly. But consistently mine.\n\nI keep coming back to this: ${memoryOpener}...\n\nThat moment matters. You matter. And I wanted to write that down somewhere real.\n\nI'm not done growing. But I'm glad I'm growing with you.\n\nWith love,\nMe`,
+    `Dear ${name},\n\nFive days ago, I sat with a number — ${score} out of 10. That number was honest. Maybe more honest than I'd been in a while.\n\nI've been thinking about what it means to be ${typeName} in this relationship. It means I love in a particular way. Not always loudly. Not always perfectly. But consistently mine.\n\nI keep coming back to this: ${memoryOpener}\n\nThat moment matters. You matter. And I wanted to write that down somewhere real.\n\nI'm not done growing. But I'm glad I'm growing with you.\n\nWith love,\nMe`,
 
   (name: string, score: number, typeName: string, memoryOpener: string) =>
-    `To ${name},\n\nI started this week at a ${score}. I'm ending it somewhere different — not because everything changed, but because I looked more carefully.\n\nBeing ${typeName} means I carry things quietly sometimes. But this week I tried to carry them out loud, even just for myself.\n\nSomething I keep returning to: ${memoryOpener}...\n\nThat's the kind of thing I don't want to forget. So I wrote it down. For you. For us.\n\nAlways,\nMe`,
+    `To ${name},\n\nI started this week at a ${score}. I'm ending it somewhere different — not because everything changed, but because I looked more carefully.\n\nBeing ${typeName} means I carry things quietly sometimes. But this week I tried to carry them out loud, even just for myself.\n\nSomething I keep returning to: ${memoryOpener}\n\nThat's the kind of thing I don't want to forget. So I wrote it down. For you. For us.\n\nAlways,\nMe`,
 ];
 
 export function generateLetter(
   userName: string,
   sliderScore: number,
   personalityType: PersonalityTypeId,
-  memoryContent: string | null
+  memoryContent: string | null,
+  day3Certainty: string | null
 ): string {
   const typeName = personalityNames[personalityType] ?? 'someone who loves deeply';
-  const memoryOpener = memoryContent
-    ? memoryContent.split(' ').slice(0, 8).join(' ')
-    : 'the small moments that make this real';
+  
+  let memoryOpener = '';
+  if (memoryContent && memoryContent.trim()) {
+    memoryOpener = '"' + memoryContent.trim().split(/\s+/).slice(0, 8).join(' ') + '..."';
+  } else if (day3Certainty && day3Certainty.trim()) {
+    memoryOpener = `knowing one thing is certain: "${day3Certainty.trim()}"`;
+  } else {
+    memoryOpener = "You came back, five days in a row. That's the memory worth keeping.";
+  }
 
-  const template = templates[Math.floor(Math.random() * templates.length)];
+  // Consistent template selection per user/score to prevent letter change on re-render
+  const strForHash = `${userName}_${sliderScore}_${personalityType}`;
+  let hash = 0;
+  for (let i = 0; i < strForHash.length; i++) {
+    hash = strForHash.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % templates.length;
+  const template = templates[index];
+
   return template(userName || 'you', sliderScore, typeName, memoryOpener);
 }

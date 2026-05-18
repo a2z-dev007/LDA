@@ -22,6 +22,7 @@ export const Day5TheLetter: React.FC = () => {
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const day1 = useDayStore((s) => s.day1);
+  const day3 = useDayStore((s) => s.day3);
   const day4 = useDayStore((s) => s.day4);
   const completeDay5 = useDayStore((s) => s.completeDay5);
   const day5 = useDayStore((s) => s.day5);
@@ -31,7 +32,8 @@ export const Day5TheLetter: React.FC = () => {
     userName,
     day1.sliderScore,
     day1.personalityType ?? 'steady_flame',
-    day4.memoryContent
+    day4.memoryContent,
+    day3.oneCertainty
   );
 
   const letterOpacity = useRef(new Animated.Value(0)).current;
@@ -57,6 +59,8 @@ export const Day5TheLetter: React.FC = () => {
         badgeName: day5.badgeName,
         badgeTier: day5.badgeTier,
         dedicationScore: day5.dedicationScore,
+        connectionScore: day5.connectionScore,
+        partnerKnowledgeScore: day5.partnerKnowledgeScore,
         promise: day5.promise,
         letterGenerated: true,
         averageScore: day5.averageScore,

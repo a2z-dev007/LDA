@@ -14,6 +14,7 @@ import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
 import { reframeTextAsync } from '../services/toneReframer';
 import { haptics } from '../utils/haptics';
+import { Day4Scoring } from '../services/scoring/day4Scoring';
 import { metrics } from '../theme/metrics';
 import { typography, fonts } from '../theme/typography';
 import { Lock, Sparkles, Send } from 'lucide-react-native';
@@ -54,6 +55,16 @@ export const Day4DropBox: React.FC = () => {
       ...day4,
       dropBoxUsed: true,
     });
+
+    // Calculate and Log Day 4 Scoring output for debugging
+    const updatedDay4 = useDayStore.getState().day4;
+    const day1Slider = useDayStore.getState().day1.sliderScore;
+    const scoringResult = Day4Scoring.calculate(updatedDay4, day1Slider);
+    console.log('=== [DEBUG] Day 4 Completion Scoring & Local Storage Log ===');
+    console.log('Day 4 Data in Local Storage:', JSON.stringify(updatedDay4, null, 2));
+    console.log('Day 4 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
+    console.log('===========================================================');
+
     setShowJarModal(true);
   };
 
@@ -69,6 +80,16 @@ export const Day4DropBox: React.FC = () => {
       dropBoxUsed: true,
       dropBoxReframedText: reframed,
     });
+
+    // Calculate and Log Day 4 Scoring output for debugging
+    const updatedDay4 = useDayStore.getState().day4;
+    const day1Slider = useDayStore.getState().day1.sliderScore;
+    const scoringResult = Day4Scoring.calculate(updatedDay4, day1Slider);
+    console.log('=== [DEBUG] Day 4 Completion Scoring & Local Storage Log ===');
+    console.log('Day 4 Data in Local Storage:', JSON.stringify(updatedDay4, null, 2));
+    console.log('Day 4 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
+    console.log('===========================================================');
+
     setShowJarModal(true);
   };
 

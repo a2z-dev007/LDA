@@ -39,7 +39,7 @@ export const Day2OneGoodThing: React.FC = () => {
       haptics.success();
       const trimmed = text.trim();
       setDay2OneGoodThing(trimmed);
-      addEntry({ day: 2, type: 'one_good_thing', content: trimmed });
+      addEntry({ day: 2, type: 'appreciation', content: trimmed });
       navigation.navigate('Day2MoodFollowUp');
     }
   };

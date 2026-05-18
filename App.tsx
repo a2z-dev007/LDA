@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ThemeProvider, useAppColors } from './src/theme';
+import { initializeConsoleLogger } from './src/utils/consoleLogger';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -12,6 +13,10 @@ function AppContent() {
   // StatusBar + NavigationContainer background — whenever the
   // system switches light ↔ dark.
   const colors = useAppColors();
+
+  useEffect(() => {
+    initializeConsoleLogger();
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

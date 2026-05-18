@@ -20,6 +20,7 @@ import {
 } from '../components/icons/NameKeeperIcons';
 import { GradientButton } from '../components/common/GradientButton';
 import { IMAGE } from '../assets/image/bg-images';
+import { Sparkle, WandSparkles } from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'NameKeeper'>;
 
@@ -153,7 +154,7 @@ export const NameKeeperScreen: React.FC = () => {
                   }
                 ]}
               >
-                <SparkleIcon size={20} color={colors.primary} />
+                <WandSparkles size={20} color={colors.primary} />
               </Animated.View>
             </View>
 

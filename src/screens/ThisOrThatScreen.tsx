@@ -418,7 +418,7 @@ const makeStyles = (c: any) => StyleSheet.create({
     marginBottom: metrics.spacing.xl,
   },
   title: {
-    ...typography.h3,
+    ...typography.displayMedium,
     color: c.text,
     fontFamily: fonts.dmSansBold,
     textAlign: 'center',

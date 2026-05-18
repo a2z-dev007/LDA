@@ -16,6 +16,7 @@ import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
 import { DayHeader } from '../components/common/DayHeader';
+import { Day2Scoring } from '../services/scoring/day2Scoring';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -63,6 +64,15 @@ export const Day2MoodFollowUp: React.FC = () => {
       question,
       trimmed
     );
+
+    // Calculate and Log Day 2 Scoring output for debugging
+    const updatedDay2 = useDayStore.getState().day2;
+    const scoringResult = Day2Scoring.calculate(updatedDay2);
+    console.log('=== [DEBUG] Day 2 Completion Scoring & Local Storage Log ===');
+    console.log('Day 2 Data in Local Storage:', JSON.stringify(updatedDay2, null, 2));
+    console.log('Day 2 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
+    console.log('===========================================================');
+
     setShowJarModal(true);
   };
 

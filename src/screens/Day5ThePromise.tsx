@@ -16,6 +16,7 @@ import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { calculateBadge } from '../services/badgeCalculator';
 import { haptics } from '../utils/haptics';
+import { Day5Scoring } from '../services/scoring/day5Scoring';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5ThePromise'>;
 
@@ -33,7 +34,8 @@ export const Day5ThePromise: React.FC = () => {
   const addEntry = useJournalStore((s) => s.addEntry);
   const [promise, setPromise] = useState('');
 
-  const dedicationScore = getDedicationScore() + (promise.trim() ? 0.5 : 0);  const badgeResult = calculateBadge(day1, day2, day3, day4, dedicationScore);
+  // Pre-calculate badge based on current data for local state reference if needed
+  const preCalculated = calculateBadge(day1, day2, day3, day4);
 
   const handleContinue = () => {
     haptics.success();
@@ -45,10 +47,15 @@ export const Day5ThePromise: React.FC = () => {
     const moodScores = [day1.moodScore, day2.moodScore];
     const avg = moodScores.reduce((a, b) => a + b, 0) / moodScores.length;
 
+    // Run consolidated scoring with the saved Day 5 Promise
+    const report = Day5Scoring.consolidate(day1, day2, day3, day4, trimmed || null);
+
     completeDay5({
-      badgeName: badgeResult.badge.name,
-      badgeTier: badgeResult.tier,
-      dedicationScore,
+      badgeName: report.badge.name,
+      badgeTier: report.badgeTier,
+      dedicationScore: report.dedicationScore,
+      connectionScore: report.connectionScore,
+      partnerKnowledgeScore: report.partnerKnowledgeScore,
       promise: trimmed || null,
       letterGenerated: false,
       averageScore: avg,

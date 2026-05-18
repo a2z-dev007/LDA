@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Calibri, Arial, sans-serif; background: #fff; padding: 24px; font-size: 13px; color: #1A1A1A; }
+
+.sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sheet-sub { font-size: 12px; color: #666; margin-bottom: 16px; }
+.btn-row { margin-bottom: 14px; }
+.btn { background: #217346; color: white; padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #1a5c38; }
+
+table { width: 100%; border-collapse: collapse; border: 1.5px solid #B0B0B0; }
+
+thead tr th {
+  background: #1F6B3A;
+  color: white;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border: 1px solid #166030;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.bridge-row td {
+  background: #E2E2E2;
+  font-weight: 700;
+  font-size: 12px;
+  color: #444;
+  padding: 7px 11px;
+  border: 1px solid #B0B0B0;
+}
+
+.group-row td {
+  background: #D6E4F0;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #1A1A1A;
+  padding: 8px 11px;
+  border: 1px solid #B0B0B0;
+}
+
+.data-row td {
+  padding: 7px 11px;
+  border: 1px solid #D0D0D0;
+  vertical-align: top;
+  line-height: 1.55;
+  font-size: 12px;
+}
+.data-row:nth-child(odd) td { background: #FFFFFF; }
+.data-row:nth-child(even) td { background: #F5F9F6; }
+.data-row:hover td { background: #EBF5FF; }
+
+.type-score   { color: #1F6B3A; font-weight: 700; }
+.type-display { color: #1F4E79; font-weight: 700; }
+.type-exp     { color: #7B2D8B; font-weight: 700; }
+.type-route   { color: #833C00; font-weight: 700; }
+
+.pts { font-weight: 700; color: #1F6B3A; }
+.none { color: #999; font-style: italic; }
+
+.axis { font-weight: 700; }
+.a { color: #1F6B3A; }
+.b { color: #1F4E79; }
+.c { color: #833C00; }
+.ded { color: #6B3291; }
+
+@media print {
+  .btn-row { display: none; }
+  body { padding: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet-title">LDA — Day 3: The Mirror Game</div>
+<div class="sheet-sub">Bridge 2→3 + Day 3 Activities · What scores · What it feeds on Day 5 · How it calculates · Plain explanation</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:13%">Activity</th>
+      <th style="width:9%">Activity Type</th>
+      <th style="width:13%">Linked to Day 5</th>
+      <th style="width:13%">Day 5 Section Name</th>
+      <th style="width:10%">Score / Points</th>
+      <th style="width:16%">How the Score Works</th>
+      <th style="width:22%">What This Means (Plain English)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- BRIDGE SECTION -->
+    <tr class="bridge-row">
+      <td colspan="8">BRIDGE 2→3 &nbsp;—&nbsp; The re-entry screen before Day 3 begins. Shows Day 2 recap, one new intention word, and a teaser line for the Mirror Game.</td>
+    </tr>
+
+    <tr class="group-row">
+      <td>B1</td>
+      <td colspan="7">Return + Recap + Mirror Prep &nbsp;—&nbsp; Streak ring shows 3. Day 2 mood card + One Good Thing card shown back in exact words. Intention word pill. Mirror Prep teaser line. Bridge quote. Day 3 intention word selector.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Return + Recap</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 link</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>Displays stored data. No new calculation.</td>
+      <td>Shows the user their Day 2 mood and One Good Thing in exact words — creating a sense that the app remembers. The Mirror Prep line adapts: "Yesterday you felt [Grateful]. Today we find out how well you actually know them." — directly bridges yesterday's mood to today's game.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Day 3 Intention Word</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 3 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Word stored and shown. No calculation.</td>
+      <td>The intention word the user picks here (same 8 options as Day 2) appears on the Day 3 card in the Day 5 Week in Moments timeline. No score — emotional intention-setting only.</td>
+    </tr>
+
+
+    <!-- DAY 3 ACTIVITIES -->
+    <tr class="bridge-row">
+      <td colspan="8">DAY 3 MAIN ACTIVITIES &nbsp;—&nbsp; The Mirror Game. Theme: Playful + Provocative. Purpose: Strongest conversion day · Most partner invite hooks · Highest retention.</td>
+    </tr>
+
+    <!-- Activity 1 — Appreciation Snap -->
+    <tr class="group-row">
+      <td>1</td>
+      <td colspan="7">The Appreciation Snap &nbsp;—&nbsp; "Before we test what you know about them — what do you want them to know about you right now?" One open sentence. Card animates into the journal on save. Optional.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Appreciation Snap</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Completing this screen (not skipping) = +0.5 Dedication points toward the Day 3 complete bonus.</td>
+      <td>Counts toward the Day 3 Dedication point. Day 3 is fully complete when all three Day 3 sub-activities (Appreciation Snap + Mirror Game + Mood Board + FMS) are done — together earning 1 full Dedication point.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Appreciation Snap</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 3 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words shown. No calculation. If skipped, slot reads "Day 3 — you noticed them" with no personal quote.</td>
+      <td>The user's exact words are shown on the Day 3 card in the Week in Moments timeline. This is the only self-expressive moment before the Mirror Game — its arc: "What I want them to know" → "How well do I actually know them?"</td>
+    </tr>
+
+    <!-- Activity 2 — Finish My Sentence -->
+    <tr class="group-row">
+      <td>2</td>
+      <td colspan="7">Finish My Sentence — Game 02 (NEW) &nbsp;—&nbsp; A sentence stem appears ("The thing I love most about us is…"). User picks one of 4 illustrated tap cards to complete it. No typing. Partner's version is shown as a sealed/locked card beside theirs.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Finish My Sentence (G02)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Card tag = Expressive or Deep → Expressive +1. Card tag = Active or Playful → Active +1.</td>
+      <td>Each of the 4 completion cards carries a hidden emotional tag. Picking a card about quiet safety or deep knowing suggests Expressive. Picking a card about laughter or doing things together suggests Active.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Finish My Sentence (G02)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Card tag = Deep or Resilience → Deep +1. Card tag = Present or Playful → Present +1.</td>
+      <td>Choosing a card about getting through hard times together or knowing each other deeply suggests Deep. Choosing a card about laughter or ordinary present moments suggests Present.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Finish My Sentence (G02)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Card tag = Protective → Protecting +1. Card tag = Building or Active → Building +1.</td>
+      <td>A card about safety and protection suggests the user wants to guard what they have. A card about growth, action, or something new suggests Building.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Finish My Sentence (G02)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Completing this screen = +0.5 Dedication points.</td>
+      <td>Counts toward the Day 3 Dedication point alongside the Appreciation Snap and Mood Board.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Finish My Sentence (G02)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline + Couple Mode Unlock</td>
+      <td>Section 5 — Week in Moments · Section 8 — Couple Mode</td>
+      <td><span class="none">No score</span></td>
+      <td>Selected sentence shown in report. Partner's sealed card shown alongside in Section 8. No calculation.</td>
+      <td>The selected sentence appears in Playfair italic on the Day 3 timeline card. In Section 8, the user's answer is visible with the partner's side sealed — "1 of 2 sides complete." When partner joins and completes Day 3, both sides reveal simultaneously.</td>
+    </tr>
+
+    <!-- Activity 3 — Mirror Game -->
+    <tr class="group-row">
+      <td>3</td>
+      <td colspan="7">Mirror Game — 10 True/False Statements &nbsp;—&nbsp; "You think you know your partner. Let's test that." One statement per full screen. Tap TRUE or FALSE. Auto-advances. Progress bar at bottom. Statement set is determined by Day 1 personality type.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mirror Game T/F</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score</td>
+      <td>Section 1 — Mood Journey (Partner Knowledge component)</td>
+      <td><span class="pts">Max 10 pts</span></td>
+      <td>Number of TRUE answers out of 10. Each TRUE answer = 1 point. Maximum 10 pts.</td>
+      <td>The count of TRUE answers directly contributes to the Connection Score. It also becomes the Partner Knowledge Score shown on the Day 5 report. When the partner joins, this score is recalibrated — showing what percentage of the user's predictions actually matched what the partner said about themselves.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mirror Game T/F</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts to one side</span></td>
+      <td>7 to 10 TRUE answers = Deep +2. 0 to 4 TRUE answers = Present +2.</td>
+      <td>Answering TRUE to most statements suggests someone deeply invested in knowing their partner's inner world — a Deep signal. Answering FALSE to most suggests someone more focused on the present and less certain about accumulated depth — a Present signal.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mirror Game T/F</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt</span></td>
+      <td>7 or more TRUE answers = Protecting +1.</td>
+      <td>A user who answers TRUE to 7 or more statements believes they know a lot about their partner — suggesting they feel the relationship is solid and worth protecting.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mirror Game T/F</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Partner Knowledge Score</td>
+      <td>Section 7 — Your Badge (sub-score display)</td>
+      <td><span class="none">No score (displayed as-is)</span></td>
+      <td>TRUE count shown directly as X out of 10.</td>
+      <td>The Partner Knowledge Score is shown on the Day 5 report as a standalone figure alongside the Connection Score. It is the only score that can change after Day 5 — when the partner joins, accuracy is recalibrated based on their actual answers.</td>
+    </tr>
+
+    <!-- Activity 4 — Mirror Results -->
+    <tr class="group-row">
+      <td>4</td>
+      <td colspan="7">Mirror Results — Open Loop &nbsp;—&nbsp; Split screen. User's 10 answers visible on the left. Partner's side completely frosted and locked on the right. Invite CTA. Pre-written WhatsApp message. Screenshot icon.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mirror Results Screen</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 score link</td>
+      <td>Does not score · Records partner invite if tapped</td>
+      <td><span class="none">No score</span></td>
+      <td>No calculation. If user taps Invite Partner, that action is recorded and Bridge 3→4 adapts accordingly.</td>
+      <td>This is the most important conversion screen in the entire app. No new scoring happens here. The user has invested 3 minutes answering questions and cannot see if they were right — the only resolution is inviting the partner. The open loop is intentional.</td>
+    </tr>
+
+    <!-- Activity 5 — Mood Board Match -->
+    <tr class="group-row">
+      <td>5</td>
+      <td colspan="7">Mood Board Match — Game 07 (NEW) &nbsp;—&nbsp; "Pick 3 tiles that describe your relationship this week." 10 illustrated icon tiles to choose from: Comfort · Fresh start · Our world · Under cloud · Intimate · Peaceful · Up &amp; down · Figuring out · Blossoming · Safe home. Save unlocks only when exactly 3 are selected.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score</td>
+      <td>Section 1 — Mood Journey (Mood Board component)</td>
+      <td><span class="pts">Max 10 pts</span></td>
+      <td>Each tile carries a hidden tag: Present, Protecting, Deep, or Building. Count of tiles tagged Present or Protecting ÷ 3 × 10 = points. E.g. 2 warm tiles = 6.7 pts. 3 warm tiles = 10 pts.</td>
+      <td>The 3 tiles chosen contribute to the Connection Score based on their emotional warmth. Tiles like Comfort, Safe Home, and Peaceful are tagged Present or Protecting (warm). Tiles like Up &amp; down and Figuring out are tagged Building (growth-oriented, less warm). More warm tiles = more points.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>2 or more of the 3 tiles carry an Expressive tag = Expressive +1. 2 or more carry an Active tag = Active +1.</td>
+      <td>The majority tag across the 3 chosen tiles decides the Axis A signal. Tiles like Comfort and Intimate lean Expressive. Tiles like Fresh Start and Blossoming lean Active.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>2 or more tiles carry a Deep tag = Deep +1. 2 or more carry a Present tag = Present +1.</td>
+      <td>Tiles like Our World and Intimate lean Deep. Tiles like Comfort and Peaceful lean Present. The majority across 3 chosen tiles decides.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>2 or more tiles carry a Protecting tag = Protecting +1. 2 or more carry a Building tag = Building +1.</td>
+      <td>This is the only single activity in the entire app that simultaneously feeds all 3 badge axes from one gesture. The 3 tiles chosen in under 30 seconds shape three separate badge decisions at once.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Completing this screen = +0.5 Dedication points.</td>
+      <td>Counts toward the Day 3 Dedication point. Together with Appreciation Snap (+0.5) and Finish My Sentence (+0.5), Day 3 is capable of contributing 1.5 Dedication points when all three are completed.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Mood Board Match (G07)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Emotional Weather + Week Timeline</td>
+      <td>Section 2 — Emotional Weather · Section 5 — Week in Moments</td>
+      <td><span class="none">No score</span></td>
+      <td>3 tile icons and theme name shown in report. No calculation.</td>
+      <td>The 3 tiles are grouped into one of 5 named emotional themes (Safe &amp; Steady, Growing &amp; Open, Navigating Together, Deeply Connected, Mixed &amp; Moving). This theme appears as the Day 3 panel in the Emotional Weather section of the report.</td>
+    </tr>
+
+    <!-- Activity 6 — One Certainty -->
+    <tr class="group-row">
+      <td>6</td>
+      <td colspan="7">The One Certainty &nbsp;—&nbsp; "Despite everything you're not sure about — what's the one thing you know for certain?" Open text. Approximately 15 seconds. Positioned after the Mood Board — converting uncertainty back to warmth. Optional.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>The One Certainty</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Completing this screen = +0.5 Dedication points.</td>
+      <td>Counts toward the Day 3 Dedication total. Also earns the Day 3 complete bonus when combined with the other Day 3 sub-activities.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>The One Certainty</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline + Bridge 3→4 + The Letter (fallback)</td>
+      <td>Section 5 — Week in Moments (Day 3 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words shown in 3 places. No calculation.</td>
+      <td>The user's exact words appear on: (1) the Bridge 3→4 recap the following day as an emotional anchor into Day 4, (2) the Day 3 card in the Week in Moments timeline, and (3) the personalised Letter on Day 5 — but only as a fallback if the Day 4 memory was skipped.</td>
+    </tr>
+
+
+    <!-- SUMMARY -->
+    <tr>
+      <td colspan="8" style="background:#E2EFDA;padding:10px 11px;border:1px solid #B0B0B0;font-size:12px">
+        <strong>Day 3 Summary:</strong> &nbsp;
+        6 Scoring activities &nbsp;|&nbsp;
+        2 Experience-only or display-only activities &nbsp;|&nbsp;
+        <strong style="color:#1F6B3A">Up to 23 Connection Score points available in Day 3</strong> &nbsp;|&nbsp;
+        Only day where one game (G07 Mood Board) feeds all 3 badge axes simultaneously &nbsp;|&nbsp;
+        Day 1 personality type directly routes the T/F statement set on this day &nbsp;|&nbsp;
+        Game 02 (FMS) sealed — simultaneous reveal when partner joins &nbsp;|&nbsp;
+        Most important partner conversion day in the app
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

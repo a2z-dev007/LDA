@@ -292,7 +292,9 @@ export interface JarEnvelopeHandle {
 export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount?: number }>(
   ({ initialCount }, ref) => {
     const jarMemoriesCount = useJournalStore((s) => s.jarMemories.length);
-    const displayCount = initialCount !== undefined ? initialCount : jarMemoriesCount;
+    const [localCount, setLocalCount] = useState<number | null>(null);
+    const displayCount = localCount !== null ? localCount : (initialCount !== undefined ? initialCount : jarMemoriesCount);
+    
     const [showEnvelope, setShowEnvelope] = useState(false);
     const insets = useSafeAreaInsets();
 
@@ -320,6 +322,10 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
     incrementCount: () => {}, // No-op, uses store now
 
     triggerEnvelope: (onComplete?: () => void, skipCount?: boolean) => {
+      // ── Initialize localCount to represent start count before flight ──
+      const startCount = initialCount !== undefined ? initialCount : jarMemoriesCount;
+      setLocalCount(startCount);
+
       // ── Reset all ──
       envX.value       = ENV_START_X;
       envY.value       = ENV_START_Y;
@@ -408,8 +414,10 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
         ),
       );
 
-
-
+      // ── Increment badge and slips count dynamically at 800ms when paper drops in ──
+      setTimeout(() => {
+        setLocalCount((prev) => (prev !== null ? prev + 1 : startCount + 1));
+      }, 800);
 
       // Glow pulse and hearts removed for clarity
 

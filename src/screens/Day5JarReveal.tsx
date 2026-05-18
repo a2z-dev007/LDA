@@ -94,7 +94,22 @@ export const Day5JarReveal: React.FC = () => {
               )}
             </Animated.View>
           ))}
-          {jarMemories.length === 0 && (
+
+          {day4.dropBoxUsed && (
+            <View style={[styles.note, { borderColor: '#E67E22', backgroundColor: '#FDF2F0' }]}>
+              <Text style={[styles.noteText, { color: '#E67E22', fontWeight: 'bold' }]}>🌹 Drop Box Note</Text>
+              <Text style={styles.noteText}>"Something you found the words for."</Text>
+            </View>
+          )}
+
+          {day4.loveDropUsed && (
+            <View style={[styles.note, { borderColor: '#FFD700', backgroundColor: '#FFFDF0' }]}>
+              <Text style={[styles.noteText, { color: '#B07010', fontWeight: 'bold' }]}>✨ Love Drop Note</Text>
+              <Text style={styles.noteText}>"Something waiting for them."</Text>
+            </View>
+          )}
+
+          {jarMemories.length === 0 && !day4.dropBoxUsed && !day4.loveDropUsed && (
             <View style={styles.emptyJar}>
               <Text style={styles.emptyText}>Your jar holds this week's journey.</Text>
             </View>
