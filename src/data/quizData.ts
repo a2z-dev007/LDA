@@ -151,8 +151,7 @@ export const moodOptions: MoodOption[] = [
     id: 'playful',
     label: 'Playful',
     emoji: '✨',
-
-     color: '#D4A843',
+    color: '#D4A843',
     moodScore: 7,
     candleVariant: 'flicker',
     followUpQuestion: 'What would a playful evening with them look like right now?',
@@ -192,7 +191,7 @@ export const moodOptions: MoodOption[] = [
     id: 'missed',
     label: 'Missing Them',
     emoji: '🌙',
-    color: '#9B8EC4',
+    color: '#D4A843',
     moodScore: 5,
     candleVariant: 'warm_small',
     followUpQuestion: 'What do you miss most about them right now?',

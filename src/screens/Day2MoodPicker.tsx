@@ -13,14 +13,14 @@ import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { haptics } from '../utils/haptics';
 import {
-  responsiveWidth,
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import { metrics } from '../theme/metrics';
 import { typography } from '../theme/typography';
-import { Sparkles, Flame } from 'lucide-react-native';
+import { Flame } from 'lucide-react-native';
 import { GradientButton } from '../components/common/GradientButton';
+import { AnimatedCandle } from '../components/common/AnimatedCandle';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodPicker'>;
 
@@ -32,9 +32,9 @@ export const Day2MoodPicker: React.FC = () => {
   const setDay2Mood = useDayStore((s) => s.setDay2Mood);
   const recordMood = useStreakStore((s) => s.recordMood);
   const [selectedMood, setSelectedMood] = useState<MoodId | null>(null);
-  
-  // Animation for the button
-  const slideAnim = useRef(new Animated.Value(100)).current; // Start off-screen (100px below)
+
+  // Button slide-in animation
+  const slideAnim = useRef(new Animated.Value(100)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -60,7 +60,6 @@ export const Day2MoodPicker: React.FC = () => {
     setSelectedMood(id);
   };
 
-
   const handleContinue = () => {
     if (selectedMood) {
       haptics.success();
@@ -73,11 +72,12 @@ export const Day2MoodPicker: React.FC = () => {
   return (
     <ScreenWrapper>
       <ProgressStrip currentDay={2} />
+
       <View style={styles.header}>
         <DayHeader eyebrow="Day 2 · The Mood Room" />
         {day2.intentionWord ? (
           <View style={[styles.intentionPill, { borderColor: colors.day2 }]}>
-            <Flame size={metrics.iconSize.xs} color={colors.day2} style={{marginRight: 4}}/>
+            <Flame size={metrics.iconSize.xs} color={colors.day2} style={{ marginRight: 4 }} />
             <Text style={[styles.intentionText, { color: colors.day2 }]}>{day2.intentionWord}</Text>
           </View>
         ) : null}
@@ -85,16 +85,19 @@ export const Day2MoodPicker: React.FC = () => {
         <Text style={styles.subtitle}>No right answer · Only your truth</Text>
       </View>
 
-      {/* SVG Candle placeholder — shows selected mood */}
-      {selectedMood && (
-        <View style={styles.candleContainer}>
-          <Text style={styles.candleEmoji}>
-            {moodOptions.find((m) => m.id === selectedMood)?.emoji ?? '🕯️'}
-          </Text>
-        </View>
-      )}
+      {/* ── Animated Candle ── */}
+      <View style={styles.candleContainer}>
+        <AnimatedCandle
+          moodId={selectedMood}
+          size={110}
+        />
+      </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.grid}
+        showsVerticalScrollIndicator={false}
+      >
         {moodOptions.map((mood) => {
           const isSelected = selectedMood === mood.id;
           return (
@@ -109,57 +112,94 @@ export const Day2MoodPicker: React.FC = () => {
               onPress={() => handleSelect(mood.id as MoodId)}
             >
               <Text style={styles.moodEmoji}>{mood.emoji}</Text>
-              <Text style={[styles.moodLabel, isSelected && { color: mood.color }]}>{mood.label}</Text>
+              <Text style={[styles.moodLabel, isSelected && { color: mood.color }]}>
+                {mood.label}
+              </Text>
             </TouchableOpacity>
           );
         })}
       </ScrollView>
 
-      {/* Footer Button - Animated */}
+      {/* Footer Button — animated slide-up */}
       {selectedMood && (
-        <Animated.View 
+        <Animated.View
           style={[
             styles.footer,
-            {
-              opacity: opacityAnim,
-              transform: [{ translateY: slideAnim }]
-            }
+            { opacity: opacityAnim, transform: [{ translateY: slideAnim }] },
           ]}
         >
           <GradientButton
             text="Continue"
             onPress={handleContinue}
-            showArrow={true}
-            fullWidth={true}
+            showArrow
+            fullWidth
             gradientColors={colors.gradientBtn}
           />
         </Animated.View>
       )}
-
     </ScreenWrapper>
   );
 };
 
-const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  header: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingTop: metrics.spacing.md, paddingBottom: metrics.spacing.sm, gap: metrics.spacing.sm },
-  intentionPill: {
-    alignSelf: 'flex-start', borderWidth: 1.5, borderRadius: metrics.radius.full,
-    paddingHorizontal: metrics.spacing.smMd, paddingVertical: metrics.spacing.xs,
-    flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.7)',
-  },
-  intentionText: { ...typography.labelSmall, fontFamily: 'Inter-SemiBold' },
-  title: { ...typography.displayMedium, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: metrics.fontSize.h2 * 1.35 },
-  subtitle: { ...typography.bodySmall, color: c.textSecondary, marginBottom: metrics.spacing.sm },
-  candleContainer: { alignItems: 'center', paddingVertical: metrics.spacing.md },
-  candleEmoji: { fontSize: responsiveFontSize(8) },
-  scroll: { flex: 1, marginTop: metrics.spacing.xs },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: metrics.layout.screenPaddingHz, gap: metrics.spacing.sm, paddingBottom: responsiveHeight(4) },
-  moodCard: {
-    width: '48%', borderWidth: 1.5, borderRadius: metrics.radius.lg, padding: metrics.spacing.md,
-    alignItems: 'center', gap: metrics.spacing.sm, backgroundColor: 'rgba(255,255,255,0.5)',
-    
-  },
-  moodEmoji: { fontSize: responsiveFontSize(4.5) },
-  moodLabel: { color: c.textSecondary, ...typography.bodySmall, fontFamily: 'Inter-SemiBold', textAlign: 'center' },
-  footer: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.xl, paddingTop: metrics.spacing.md },
-});
+const makeStyles = (c: ReturnType<typeof useAppColors>) =>
+  StyleSheet.create({
+    header: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+      paddingTop: metrics.spacing.md,
+      paddingBottom: metrics.spacing.sm,
+      gap: metrics.spacing.sm,
+    },
+    intentionPill: {
+      alignSelf: 'flex-start',
+      borderWidth: 1.5,
+      borderRadius: metrics.radius.full,
+      paddingHorizontal: metrics.spacing.smMd,
+      paddingVertical: metrics.spacing.xs,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'rgba(255,255,255,0.7)',
+    },
+    intentionText: { ...typography.labelSmall, fontFamily: 'Inter-SemiBold' },
+    title: {
+      ...typography.displayMedium,
+      color: c.text,
+      fontFamily: 'PlayfairDisplay-Bold',
+      lineHeight: metrics.fontSize.h2 * 1.35,
+    },
+    subtitle: { ...typography.bodySmall, color: c.textSecondary, marginBottom: metrics.spacing.sm },
+    candleContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: metrics.spacing.sm,
+      height: responsiveHeight(18),
+    },
+    scroll: { flex: 1, marginTop: metrics.spacing.xs },
+    grid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+      gap: metrics.spacing.sm,
+      paddingBottom: responsiveHeight(4),
+    },
+    moodCard: {
+      width: '48%',
+      borderWidth: 1.5,
+      borderRadius: metrics.radius.lg,
+      padding: metrics.spacing.md,
+      alignItems: 'center',
+      gap: metrics.spacing.sm,
+      backgroundColor: 'rgba(255,255,255,0.5)',
+    },
+    moodEmoji: { fontSize: responsiveFontSize(4.5) },
+    moodLabel: {
+      color: c.textSecondary,
+      ...typography.bodySmall,
+      fontFamily: 'Inter-SemiBold',
+      textAlign: 'center',
+    },
+    footer: {
+      paddingHorizontal: metrics.layout.screenPaddingHz,
+      paddingBottom: metrics.spacing.xl,
+      paddingTop: metrics.spacing.md,
+    },
+  });
