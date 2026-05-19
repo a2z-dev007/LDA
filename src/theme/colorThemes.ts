@@ -29,7 +29,7 @@ export interface ColorTheme {
   surfaceBorder: string;  // card / input border
   onPrimary: string;      // text/icon ON a primary-colored button
   // ─────────────────────────────────────────────────────────
-
+glassCardBg?: string;
   // Gradients
   gradientStart: string;
   gradientMid: string;
@@ -154,7 +154,7 @@ export const sageGardenTheme: ColorTheme = {
   glassLight: 'rgba(45,95,93,0.08)',
   glassBorder: 'rgba(143,184,168,0.25)',
   glassHeavy: 'rgba(45,95,93,0.12)',
-
+  glassCardBg:'rgba(255,255,255,0.7)',
   textDark: '#1A3635',
   textLight: '#FFFFFF',
   textMuted: 'rgba(26,54,53,0.65)',

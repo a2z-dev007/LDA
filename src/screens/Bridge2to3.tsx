@@ -1,25 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { DayCTA } from '../components/common/DayCTA';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { IntentionWordSelector } from '../components/common/IntentionWordSelector';
-import { useAppColors } from '../theme';
-import { bridgeQuotes, moodOptions } from '../data/quizData';
+import { colors, useAppColors } from '../theme';
+import { moodOptions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
+import { useUserStore } from '../store/useUserStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { haptics } from '../utils/haptics';
-import { DayHeader } from '../components/common/DayHeader';
-import {
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
 import { metrics } from '../theme/metrics';
 import { fonts, typography } from '../theme/typography';
-import { 
-  Leaf, Heart, Target, ChevronRight, Waves
-} from 'lucide-react-native';
+import { Heart } from 'lucide-react-native';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
+import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge2to3'>;
 
@@ -27,195 +23,356 @@ export const Bridge2to3: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
+  
   const day2 = useDayStore((s) => s.day2);
-  const setIntentionWord = useDayStore((s) => s.setDay3IntentionWord);
   const streakCount = useStreakStore((s) => s.streakCount);
-
+  const name = useUserStore((s) => s.name) || 'Maya';
+  
+  const displayStreak = Math.max(streakCount, 3);
   const moodData = moodOptions.find((m) => m.id === day2.mood);
 
-  const pillars = [
-    { label: 'Reflection', Icon: Leaf, color: colors.day1, pos: styles.satLeft },
-    { label: 'Growth', Icon: Heart, color: '#E85C7A', pos: styles.satRight },
-    { label: 'Intention', Icon: Target, color: colors.primary, pos: styles.satBottom },
-  ];
+  const handleConfirm = () => {
+    haptics.heavy();
+    navigation.navigate('SetYourIntention', { day: 3 });
+  };
 
   return (
     <ScreenWrapper>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <DayHeader eyebrow="BRIDGE · TO DAY 3" />
+      <ScrollView 
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.content,
+        ]} 
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Eyebrow pill */}
+        <View style={styles.eyebrowPill}>
+          <Text style={styles.eyebrowText}>Day 2 → Day 3 Bridge</Text>
+        </View>
 
-        {/* Zone 1 — Journey Visualization */}
-        <View style={styles.journeyZone}>
-          <Text style={styles.journeyTitle}>Your Journey ✨</Text>
-          <View style={styles.ringWrapper}>
-            <View style={styles.orbitalPath} />
-
-            {pillars.map((item, idx) => (
-              <View key={idx} style={[styles.satellite, item.pos]}>
-                <View style={styles.satIconBox}><item.Icon size={16} color={item.color} /></View>
-                <Text style={styles.satLabel}>{item.label}</Text>
+        {/* ZONE 1: STREAK */}
+        <View style={styles.card}>
+          <Text style={styles.cardZoneTitle}>ZONE 1 · STREAK</Text>
+          <View style={styles.streakRow}>
+            <View style={styles.streakRingContainer}>
+              <View style={styles.streakRing}>
+                <Text style={styles.streakNumber}>{displayStreak}</Text>
               </View>
-            ))}
-
-            <View style={styles.ringInner}>
-              <View style={styles.dayHexagon}>
-                <Text style={styles.dayNumber}>{streakCount}</Text>
-                <Text style={styles.dayLabel}>DAY</Text>
+              <View style={styles.streakFlameBadge}>
+                <Text style={{ fontSize: 10 }}>🔥</Text>
               </View>
-              <View style={styles.ringProgress} />
+            </View>
+            <View style={styles.streakInfo}>
+              <Text style={styles.welcomeText}>Welcome back, {name}</Text>
+              <Text style={styles.streakSubtext}>{displayStreak}-day streak · Keep going</Text>
             </View>
           </View>
         </View>
 
-        {/* Zone 2 — Rich Recap Card */}
-        <View style={styles.zone2}>
-          <Text style={styles.recapLabel}>Yesterday you said</Text>
-          <View style={styles.richRecapCard}>
-            {/* Mood Section */}
-            <View style={styles.recapCol}>
-              <View style={[styles.moodFace, { backgroundColor: moodData?.color || '#F3F4F6' }]}>
-                <Text style={{ fontSize: 24 }}>{moodData?.emoji || '😊'}</Text>
+        {/* ZONE 2: DAY 2 RECAP */}
+        <View style={styles.card}>
+          <Text style={styles.cardZoneTitle}>ZONE 2 · DAY 2 RECAP</Text>
+          
+          <View style={styles.recapContainer}>
+            {/* Mood pill */}
+            <View style={styles.moodPill}>
+              <Heart size={14} color="#0D9488" fill="#CCFBF1" style={{ marginRight: 6 }} />
+              <Text style={styles.moodText}>
+                {moodData?.label || 'Connected'} · Score {day2.moodScore || 9}
+              </Text>
+            </View>
+
+            {/* One Good Thing text box */}
+            <View style={styles.oneGoodThingBox}>
+              <Text style={styles.oneGoodThingText}>
+                "{day2.oneGoodThing || 'The way they laughed at my terrible joke last night.'}"
+              </Text>
+            </View>
+
+            {/* Intention Word pill */}
+            {day2.intentionWord && (
+              <View style={styles.intentionWordPill}>
+                <Text style={styles.intentionWordIcon}>✦</Text>
+                <Text style={styles.intentionWordText}>{day2.intentionWord}</Text>
               </View>
-              <Text style={styles.moodLabelSmall}>Mood</Text>
-              <Text style={styles.moodValueText}>{moodData?.label || 'Unknown'}</Text>
-            </View>
-
-            <View style={styles.recapDivider} />
-
-            {/* Answer Section */}
-            <View style={[styles.recapCol, { flex: 1.2, alignItems: 'flex-start' }]}>
-              <Text style={styles.scoreLabelSmall}>You wrote</Text>
-              <Text style={styles.answerPreview} numberOfLines={3}>
-                {day2.followUpAnswer || "Deep reflection on the journey."}
-              </Text>
-            </View>
-
-            <View style={styles.recapDivider} />
-
-            {/* Quote Section */}
-            <View style={styles.quoteBox}>
-              <Text style={styles.quoteMiniText}>
-                {bridgeQuotes.bridge_2to3}
-              </Text>
-            </View>
+            )}
           </View>
         </View>
 
-        {/* Zone 3 — Intention Word */}
-        <View style={styles.zone2b}>
-          <IntentionWordSelector accentColor={colors.day3} onSelect={setIntentionWord} />
+        {/* Teaser section */}
+        <View style={styles.teaserCard}>
+          <Text style={styles.teaserText}>
+            Today we test what you think you know about each other. Get ready — it might surprise you. 💍
+          </Text>
         </View>
+
+        {/* Dots row */}
+        <View style={styles.dotsRow}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={styles.dot} />
+        </View>
+
+        {/* ZONE 3: BRIDGE QUOTE */}
+        <View style={styles.quoteZone}>
+          <Text style={styles.cardZoneTitle}>ZONE 3 · BRIDGE QUOTE</Text>
+          <View style={styles.quoteCard}>
+            <Text style={styles.quoteText}>
+              "The couples who know each other best aren't the ones who've been together longest — they're the ones who keep asking."
+            </Text>
+          </View>
+        </View>
+        
+
+        <View style={{ height: metrics.spacing.xl }} />
       </ScrollView>
 
-      <DayCTA title="Continue to Day 3" onPress={() => { haptics.medium(); navigation.navigate('Day3AppreciationSnap');} } />
+      {/* Continue CTA */}
+      <View style={[styles.ctaWrapper, { paddingBottom: Math.max(insets.bottom + 8, metrics.spacing.md) }]}>
+        <GradientButton
+          text="Set today's intention"
+          onPress={handleConfirm}
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
+      </View>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.lg, gap: metrics.spacing.md, paddingTop: metrics.spacing.sm },
-  
-  journeyZone: { alignItems: 'center', marginVertical: metrics.spacing.sm },
-  journeyTitle: { 
-    color: c.textSecondary, 
-    ...typography.labelBold,
-    textTransform: 'uppercase', 
-    marginBottom: metrics.spacing.lg 
+  scroll: { flex: 1 },
+  content: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingBottom: responsiveHeight(14),
+    gap: metrics.spacing.md,
   },
-  ringWrapper: { width: responsiveWidth(75), height: responsiveWidth(65), justifyContent: 'center', alignItems: 'center' },
-  
-  orbitalPath: {
-    position: 'absolute', width: responsiveWidth(55), height: responsiveWidth(55),
-    borderRadius: responsiveWidth(27.5), borderWidth: 1, borderColor: `${c.primary}20`,
-    borderStyle: 'dashed',
+  eyebrowPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: metrics.radius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(45,95,93,0.18)',
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
+    marginTop: metrics.spacing.xs,
   },
-
-  ringInner: { 
-    width: responsiveWidth(28), height: responsiveWidth(28), borderRadius: responsiveWidth(14),
-    backgroundColor: '#FFF', justifyContent: 'center', alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 1,
-    borderWidth: 6, borderColor: '#F0F9F9'
+  eyebrowText: {
+    ...typography.captionSmall,
+    color: c.text,
+    letterSpacing: 0.3,
   },
-  dayHexagon: { alignItems: 'center', justifyContent: 'center' },
-  dayNumber: { 
-    fontSize: metrics.fontSize.h1 * 1.5, 
-    fontFamily: fonts.dmSansBold, 
-    color: c.text 
+  card: {
+    backgroundColor:"rgba(255,255,255,0.5)" ,
+    borderRadius: metrics.radius.xl,
+    borderWidth: 1.5,
+    borderColor: colors.glassBorder,
+    padding: metrics.spacing.md,
+    gap: metrics.spacing.sm,
   },
-  dayLabel: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    marginBottom: -2 
+  cardZoneTitle: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    marginBottom: metrics.spacing.xs,
   },
-  ringProgress: {
-    position: 'absolute', width: responsiveWidth(32), height: responsiveWidth(32),
-    borderRadius: responsiveWidth(16), borderWidth: 3, borderColor: c.primary,
-    opacity: 0.7,
+  streakRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: metrics.spacing.md,
   },
-  
-  satellite: { position: 'absolute', alignItems: 'center', gap: 4 },
-  satIconBox: { 
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFF', 
-    justifyContent: 'center', alignItems: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 2,
-    borderWidth: 1, borderColor: '#F0F9F9'
+  streakRingContainer: {
+    position: 'relative',
+    width: 64,
+    height: 64,
   },
-  satLabel: { 
-    ...typography.labelSmall,
-    fontSize: metrics.fontSize.micro,
-    color: c.textSecondary 
+  streakRing: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 3,
+    borderColor: '#0D9488',
+    backgroundColor: 'rgba(13, 148, 136, 0.05)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  satLeft: { left: metrics.spacing.sm, top: '35%' },
-  satRight: { right: metrics.spacing.sm, top: '35%' },
-  satBottom: { bottom: 0, alignSelf: 'center' },
-
-  zone2: { gap: metrics.spacing.sm },
-  recapLabel: { 
-    color: c.primary, 
-    ...typography.labelBold,
-    textTransform: 'uppercase' 
+  streakNumber: {
+    fontSize: 24,
+    fontFamily: fonts.dmSansBold,
+    color: c.text,
   },
-  richRecapCard: {
-    flexDirection: 'row', backgroundColor: '#FFF', borderRadius: metrics.radius.xl, padding: metrics.spacing.md,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 15, elevation: 1,
-    alignItems: 'center'
+  streakFlameBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 1,
   },
-  recapCol: { alignItems: 'center', gap: 4, flex: 1 },
-  moodFace: { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
-  moodLabelSmall: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    textTransform: 'uppercase' 
+  streakInfo: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  moodValueText: { 
+  welcomeText: {
     ...typography.bodyBold,
-    fontSize: metrics.fontSize.label,
-    color: c.text 
+    fontFamily: fonts.playfairSemiBold,
+    fontSize: metrics.fontSize.h3 * 0.9,
+    color: c.text,
   },
-  
-  recapDivider: { width: 1, height: '60%', backgroundColor: '#F3F4F6', marginHorizontal: 8 },
-  
-  scoreLabelSmall: { 
-    ...typography.labelBold,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint, 
-    textTransform: 'uppercase' 
-  },
-  answerPreview: {
+  streakSubtext: {
     ...typography.bodySmall,
+    color: c.textSecondary,
+    marginTop: 2,
+  },
+  recapContainer: {
+    gap: metrics.spacing.sm,
+    alignItems: 'flex-start',
+  },
+  moodPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E6FBF7',
+    borderWidth: 1,
+    borderColor: '#CCFBF1',
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
+  },
+  moodText: {
+    ...typography.captionSmall,
+    color: '#0D9488',
+    fontFamily: fonts.dmSansBold,
+  },
+  oneGoodThingBox: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: metrics.radius.lg,
+    padding: metrics.spacing.md,
+    width: '100%',
+  },
+  oneGoodThingText: {
+    ...typography.bodyMedium,
     color: c.text,
     fontFamily: fonts.playfairItalic,
-    lineHeight: 16
+    lineHeight: 20,
   },
-  
-  quoteBox: { flex: 1.5, backgroundColor: '#F0FDF4', borderRadius: metrics.radius.md, padding: metrics.spacing.sm, position: 'relative' },
-  quoteMiniText: { 
-    ...typography.quoteItalic,
-    fontSize: metrics.fontSize.caption,
-    color: '#064E3B', 
+  intentionWordPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    borderRadius: metrics.radius.full,
+    paddingHorizontal: metrics.spacing.smMd,
+    paddingVertical: metrics.spacing.xs,
   },
-
-  zone2b: { marginTop: metrics.spacing.xs },
+  intentionWordIcon: {
+    fontSize: 10,
+    color: '#78350F',
+    marginRight: 6,
+  },
+  intentionWordText: {
+    ...typography.captionSmall,
+    color: '#78350F',
+    fontFamily: fonts.dmSansBold,
+  },
+  teaserCard: {
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1.5,
+    borderColor: '#FDE68A',
+    borderRadius: metrics.radius.lg,
+    padding: metrics.spacing.md,
+  },
+  teaserText: {
+    ...typography.bodyMedium,
+    color: '#78350F',
+    fontFamily: fonts.playfairItalic,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: metrics.spacing.xs,
+    marginVertical: metrics.spacing.xs,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(45,212,191,0.25)',
+  },
+  dotActive: {
+    width: 24,
+    backgroundColor: '#0D9488',
+  },
+  quoteZone: {
+    gap: metrics.spacing.xs,
+    width: '100%',
+  },
+  quoteCard: {
+    backgroundColor: '#F8FAFC',
+    borderLeftWidth: 4,
+    borderLeftColor: '#0D9488',
+    padding: metrics.spacing.md,
+    borderRadius: metrics.radius.md,
+    width: '100%',
+  },
+  quoteText: {
+    ...typography.bodyMedium,
+    color: c.textSecondary,
+    fontFamily: fonts.playfairItalic,
+    lineHeight: 22,
+  },
+  storageHintCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#DCFCE7',
+    borderRadius: metrics.radius.lg,
+    padding: metrics.spacing.md,
+    gap: metrics.spacing.sm,
+    width: '100%',
+  },
+  databaseIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E8F5E9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  storageHintText: {
+    flex: 1,
+    ...typography.captionSmall,
+    color: '#1B5E20',
+  },
+  ctaWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.5)',
+  },
 });

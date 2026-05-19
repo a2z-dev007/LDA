@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
@@ -10,7 +11,8 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
-import { Sparkles } from 'lucide-react-native';
+import { ChevronLeft } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -24,19 +26,50 @@ interface FMSOption {
   label: string;
   emoji: string;
   tag: string;
+  axisA: string;
+  axisB: string;
 }
 
 const OPTIONS: FMSOption[] = [
-  { id: '1', label: 'Stay in bed all day', emoji: '🛌', tag: 'Cozy' },
-  { id: '2', label: 'Go on a random adventure', emoji: '🏔️', tag: 'Explorer' },
-  { id: '3', label: 'Spend it at a cute cafe', emoji: '☕', tag: 'Chill' },
-  { id: '4', label: 'Try a new fancy restaurant', emoji: '🍱', tag: 'Foodie' },
+  { 
+    id: '1', 
+    label: '...the way we find each other after every storm', 
+    emoji: '🌊', 
+    tag: 'resilience', 
+    axisA: 'Deep +1', 
+    axisB: 'Deep +1' 
+  },
+  { 
+    id: '2', 
+    label: '...the ordinary moments that feel like enough', 
+    emoji: '☕', 
+    tag: 'simple', 
+    axisA: 'Present +1', 
+    axisB: 'Present +1' 
+  },
+  { 
+    id: '3', 
+    label: '...the way we make each other laugh without trying', 
+    emoji: '⚡', 
+    tag: 'laughter', 
+    axisA: 'Active +1', 
+    axisB: 'Playful +1' 
+  },
+  { 
+    id: '4', 
+    label: '...the quiet safety of knowing they\'re there', 
+    emoji: '🕯️', 
+    tag: 'safety', 
+    axisA: 'Deep +1', 
+    axisB: 'Protective +1' 
+  },
 ];
 
 export const Day3FinishMySentence: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const setDay3FMS = useDayStore(s => s.setDay3FMS);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -45,137 +78,258 @@ export const Day3FinishMySentence: React.FC = () => {
     setSelectedId(option.id);
     haptics.medium();
     setDay3FMS(parseInt(option.id), option.label, option.tag);
-    
-    setTimeout(() => {
-      navigation.navigate('Day3AssumptionsTest');
-    }, 400);
+  };
+
+  const handleContinue = () => {
+    haptics.success();
+    navigation.navigate('Day3AssumptionsTest');
+  };
+
+  const selectedOption = OPTIONS.find(o => o.id === selectedId);
+
+  const renderCard = (option: FMSOption) => {
+    const isSelected = selectedId === option.id;
+    return (
+      <TouchableOpacity
+        key={option.id}
+        activeOpacity={0.85}
+        onPress={() => handleSelect(option)}
+        style={[
+          styles.optionCard,
+          isSelected && styles.optionCardSelected,
+        ]}
+      >
+        <Text style={styles.optionEmoji}>{option.emoji}</Text>
+        <Text style={[
+          styles.optionLabel,
+          isSelected && styles.optionLabelSelected
+        ]}>
+          {option.label}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
       
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.eyebrowPill}>
-            <Sparkles size={metrics.iconSize.xs} color={colors.day3} />
-            <Text style={[styles.eyebrow, { color: colors.day3 }]}>GAME 02 · FINISH MY SENTENCE</Text>
-          </View>
-          <Text style={styles.prompt}>
-            "If we had a whole day with no responsibilities, I'd want us to..."
-          </Text>
+      <ScrollView 
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.content,
+          // { paddingTop: Math.max(insets.top + metrics.spacing.xs, metrics.spacing.sm) }
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header row */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+          >
+            <ChevronLeft size={20} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Finish My Sentence</Text>
         </View>
 
-        <View style={styles.optionsList}>
-          {OPTIONS.map((option) => {
-            const isSelected = selectedId === option.id;
-            return (
-              <TouchableOpacity
-                key={option.id}
-                activeOpacity={0.8}
-                onPress={() => handleSelect(option)}
-                style={[
-                  styles.optionCard,
-                  isSelected && styles.optionCardSelected,
-                ]}
-              >
-                <Text style={styles.optionEmoji}>{option.emoji}</Text>
-                <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                  {option.label}
-                </Text>
-                <View style={[styles.tagPill, isSelected && styles.tagPillSelected]}>
-                  <Text style={[styles.tagText, isSelected && styles.tagTextSelected]}>{option.tag}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+        {/* Eyebrow */}
+        <Text style={styles.eyebrow}>
+          GAME 02 · SOLO MODE · ~25 SECONDS
+        </Text>
+
+        {/* Prompt */}
+        <Text style={styles.prompt}>
+          "The thing I love most about us is..."
+        </Text>
+
+        {/* Stems rotators sub-info */}
+        <Text style={styles.stemsSubtitle}>
+          Stem #1 of bank · 6 stems rotate across the week
+        </Text>
+
+        {/* 2x2 Grid */}
+        <View style={styles.gridContainer}>
+          <View style={styles.gridRow}>
+            {renderCard(OPTIONS[0])}
+            {renderCard(OPTIONS[1])}
+          </View>
+          <View style={styles.gridRow}>
+            {renderCard(OPTIONS[2])}
+            {renderCard(OPTIONS[3])}
+          </View>
         </View>
+
+      
+
+        <View style={{ height: responsiveHeight(14) }} />
+      </ScrollView>
+
+      {/* Floating Footer CTA */}
+      <View style={[
+        styles.footer,
+        { paddingBottom: Math.max(insets.bottom + 8, metrics.spacing.md) }
+      ]}>
+        <GradientButton
+          text="Continue to Mirror Game"
+          onPress={handleContinue}
+          disabled={!selectedId}
+          showArrow={true}
+          fullWidth={true}
+          gradientColors={colors.gradientBtn}
+        />
       </View>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: any) => StyleSheet.create({
-  container: {
+  scroll: {
     flex: 1,
+  },
+  content: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingTop: metrics.spacing.lg,
+    paddingBottom: metrics.spacing.xl,
   },
-  header: {
-    marginBottom: metrics.spacing.xl,
-  },
-  eyebrowPill: {
+  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: metrics.spacing.xs,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: metrics.radius.full,
-    paddingHorizontal: metrics.spacing.smMd,
-    paddingVertical: metrics.spacing.xs,
-    borderWidth: 1,
-    borderColor: 'rgba(232,92,122,0.15)',
-    alignSelf: 'flex-start',
+    gap: 12,
     marginBottom: metrics.spacing.md,
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 20,
+    color: c.text,
+    fontFamily: fonts.playfairSemiBold,
   },
   eyebrow: {
     ...typography.captionSmall,
+    color: c.textHint,
     letterSpacing: 1.5,
+    marginBottom: metrics.spacing.sm,
   },
   prompt: {
-    ...typography.displaySmall,
+    fontSize: 24,
     color: c.text,
     fontFamily: 'PlayfairDisplay-Italic',
-    lineHeight: metrics.fontSize.h3 * 1.4,
+    lineHeight: 34,
+    marginBottom: 6,
   },
-  optionsList: {
-    gap: metrics.spacing.md,
+  stemsSubtitle: {
+    ...typography.caption,
+    color: c.textHint,
+    marginBottom: metrics.spacing.lg,
+  },
+  gridContainer: {
+    gap: 12,
+  },
+  gridRow: {
+    flexDirection: 'row',
+    gap: 12,
   },
   optionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
     backgroundColor: '#FFFFFF',
-    borderRadius: metrics.radius.lg,
-    padding: metrics.spacing.md,
+    borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.05)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    borderColor: 'rgba(0,0,0,0.06)',
+    paddingVertical: 20,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 124,
   },
   optionCardSelected: {
-    borderColor: '#E85C7A',
-    backgroundColor: 'rgba(232,92,122,0.05)',
+    borderColor: '#0D9488',
+    backgroundColor: '#E6FBF7',
   },
   optionEmoji: {
-    fontSize: responsiveFontSize(3),
-    marginRight: metrics.spacing.md,
+    fontSize: 28,
+    marginBottom: 8,
   },
   optionLabel: {
-    ...typography.bodyMedium,
+    ...typography.bodySmall,
     fontFamily: fonts.dmSansBold,
-    color: c.text,
-    flex: 1,
+    color: c.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
   },
   optionLabelSelected: {
-    color: '#E85C7A',
+    color: '#0F766E',
   },
-  tagPill: {
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: metrics.spacing.sm,
-    paddingVertical: 2,
+  selectedFeedback: {
+    marginTop: metrics.spacing.md,
+    gap: metrics.spacing.sm,
+    alignItems: 'flex-start',
+  },
+  selectedStatusText: {
+    ...typography.captionSmall,
+    color: '#15803D',
+    fontFamily: fonts.dmSansBold,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  feedbackTagPill: {
+    backgroundColor: '#F1F5F9',
+    borderColor: '#E2E8F0',
+    borderWidth: 1,
     borderRadius: metrics.radius.full,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
-  tagPillSelected: {
-    backgroundColor: 'rgba(232,92,122,0.1)',
+  feedbackTagText: {
+    ...typography.captionSmall,
+    color: '#475569',
+    fontFamily: fonts.dmSansRegular,
   },
-  tagText: {
-    ...typography.caption,
-    fontSize: metrics.fontSize.micro,
-    color: c.textHint,
+  storageHintCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#DCFCE7',
+    borderRadius: metrics.radius.lg,
+    padding: metrics.spacing.md,
+    gap: metrics.spacing.sm,
+    width: '100%',
+    marginTop: metrics.spacing.xl,
   },
-  tagTextSelected: {
-    color: '#E85C7A',
+  databaseIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E8F5E9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  storageHintText: {
+    flex: 1,
+    ...typography.captionSmall,
+    color: '#1B5E20',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.5)',
   },
 });

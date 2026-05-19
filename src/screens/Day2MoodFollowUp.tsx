@@ -25,7 +25,7 @@ import {
 import { metrics } from '../theme/metrics';
 import { typography, fonts } from '../theme/typography';
 import { Sparkles, MessageCircle, Heart, Lock, ArrowRight } from 'lucide-react-native';
-import { DayEndJarModal } from '../components/common/DayEndJarModal';
+
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day2MoodFollowUp'>;
 
@@ -37,7 +37,6 @@ export const Day2MoodFollowUp: React.FC = () => {
   const completeDay2 = useDayStore((s) => s.completeDay2);
   const addEntry = useJournalStore((s) => s.addEntry);
   const [answer, setAnswer] = useState('');
-  const [showJarModal, setShowJarModal] = useState(false);
 
   const moodData = React.useMemo(() => 
     moodOptions.find((m) => m.id === day2.mood), 
@@ -73,19 +72,7 @@ export const Day2MoodFollowUp: React.FC = () => {
     console.log('Day 2 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
     console.log('===========================================================');
 
-    setShowJarModal(true);
-  };
-
-  const handleModalNext = () => {
-    setShowJarModal(false);
-    // Add the day 2 completion to the jar store
-    useJournalStore.getState().addJarMemory({
-      content: `Day 2 Reflection: ${moodData?.label || 'Unknown'}`,
-      type: 'text',
-      tinyCompliment: null,
-      dayColor: colors.primary,
-    });
-    navigation.navigate('Home');
+    navigation.navigate('Day2Result');
   };
 
   return (
@@ -146,11 +133,7 @@ export const Day2MoodFollowUp: React.FC = () => {
         </View>
       </ScreenWrapper>
 
-      <DayEndJarModal 
-        visible={showJarModal}
-        currentDay={2}
-        onNext={handleModalNext}
-      />
+
     </KeyboardAvoidingView>
   );
 };

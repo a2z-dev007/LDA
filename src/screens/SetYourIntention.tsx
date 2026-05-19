@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, Animated, FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -25,13 +25,19 @@ import {
 import { RootStackParamList } from '../navigation/types';
 
 type Nav = StackNavigationProp<RootStackParamList, 'SetYourIntention'>;
+type SetYourIntentionRouteProp = RouteProp<RootStackParamList, 'SetYourIntention'>;
 
 export const SetYourIntention: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const route = useRoute<SetYourIntentionRouteProp>();
   const insets = useSafeAreaInsets();
-  const setIntentionWord = useDayStore((s) => s.setDay2IntentionWord);
+
+  const targetDay = route.params?.day ?? 2;
+  const setDay2Intention = useDayStore((s) => s.setDay2IntentionWord);
+  const setDay3Intention = useDayStore((s) => s.setDay3IntentionWord);
+  const setIntentionWord = targetDay === 3 ? setDay3Intention : setDay2Intention;
 
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const fadeAnims = useRef(intentionWords.map(() => new Animated.Value(0))).current;
@@ -62,7 +68,11 @@ export const SetYourIntention: React.FC = () => {
   const handleConfirm = () => {
     if (!selectedWord) return;
     haptics.heavy();
-    navigation.navigate('ThisOrThat');
+    if (targetDay === 3) {
+      navigation.navigate('Day3AppreciationSnap');
+    } else {
+      navigation.navigate('ThisOrThat');
+    }
   };
 
   const renderItem = ({ item, index }: { item: typeof intentionWords[0]; index: number }) => {

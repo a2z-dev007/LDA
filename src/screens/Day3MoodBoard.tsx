@@ -17,6 +17,7 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import { DayCTA } from '../components/common/DayCTA';
+import { DayHeader } from '../components/common/DayHeader';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3MoodBoard'>;
 
@@ -110,10 +111,11 @@ export const Day3MoodBoard: React.FC = () => {
       
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.eyebrowPill}>
+          {/* <View style={styles.eyebrowPill}>
             <Sparkles size={metrics.iconSize.xs} color={colors.day3} />
             <Text style={[styles.eyebrow, { color: colors.day3 }]}>GAME 07 · MOOD BOARD MATCH</Text>
-          </View>
+          </View> */}
+          <DayHeader eyebrow="GAME 07 · MOOD BOARD MATCH" />
           <Text style={styles.title}>
             3 tiles that match how you want to feel with your partner this month.
           </Text>

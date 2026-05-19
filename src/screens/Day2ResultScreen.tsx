@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useRef, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { GradientButton } from '../components/common/GradientButton';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,6 +10,10 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { useDayStore } from '../store/useDayStore';
 import { useStreakStore } from '../store/useStreakStore';
+import { useJournalStore } from '../store/useJournalStore';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { moodOptions } from '../data/quizData';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Check, Target, Smile, BookOpen, Lock, Hourglass } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -24,9 +28,50 @@ export const Day2ResultScreen: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   
   const day2 = useDayStore(s => s.day2);
   const streakCount = useStreakStore(s => s.streakCount);
+  const completedCount = useDayStore(s => s.completedDayCount());
+  const displayStreak = Math.max(streakCount, completedCount);
+  const recordActivity = useStreakStore(s => s.recordActivity);
+  const jarMemories = useJournalStore(s => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
+
+  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const headerAnim = useRef(new Animated.Value(0)).current;
+
+  const moodData = useMemo(() => 
+    moodOptions.find((m) => m.id === day2.mood), 
+    [day2.mood]
+  );
+
+  useEffect(() => {
+    haptics.success();
+    recordActivity();
+
+    // Fade in
+    Animated.timing(headerAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    // Trigger the envelope animation on mount
+    const timer = setTimeout(() => {
+      if (jarRef.current) {
+        jarRef.current.triggerEnvelope(() => {
+          useJournalStore.getState().addJarMemory({
+            content: `Day 2 Reflection: ${moodData?.label || 'Unknown'}`,
+            type: 'text',
+            tinyCompliment: null,
+            dayColor: colors.primary,
+          });
+        });
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFinish = () => {
     haptics.heavy();
@@ -35,7 +80,17 @@ export const Day2ResultScreen: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scroll} 
+        contentContainerStyle={[
+          styles.content,
+          { paddingTop: Math.max(insets.top + responsiveHeight(1), responsiveHeight(6)) }
+        ]} 
+        showsVerticalScrollIndicator={false}
+      >
+        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </Animated.View>
         
         {/* Header Icon */}
         <View style={styles.iconContainer}>
@@ -47,7 +102,7 @@ export const Day2ResultScreen: React.FC = () => {
         {/* Title Section */}
         <Text style={styles.title}>Day 2 Complete</Text>
         <Text style={styles.subtitle}>The Mood Room was yours today.</Text>
-        <Text style={styles.streakText}>Streak: {streakCount} days 🔥</Text>
+        <Text style={styles.streakText}>Streak: {displayStreak} days 🔥</Text>
 
         {/* Contributions Box */}
         <View style={styles.contributionsBox}>
@@ -223,5 +278,11 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   footer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingBottom: metrics.spacing.xl,
+  },
+  jarWrapper: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 15,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
   },
 });

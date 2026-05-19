@@ -44,8 +44,11 @@ export const Day3OneCertainty: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper>
+    <ScreenWrapper>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }} 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ProgressStrip currentDay={3} />
         <View style={styles.body}>
           <DayHeader eyebrow="Day 3 · Quick Win 2" />
@@ -59,7 +62,7 @@ export const Day3OneCertainty: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="I know for certain that…"
-        placeholderTextColor={colors.textHint}
+            placeholderTextColor={colors.textHint}
             value={text}
             onChangeText={setText}
             multiline
@@ -70,14 +73,14 @@ export const Day3OneCertainty: React.FC = () => {
         </View>
 
         <DayCTA title={text.trim() ? 'Save this ' : 'Skip '} onPress={handleSave} />
-      </ScreenWrapper>
+      </KeyboardAvoidingView>
 
       <DayEndJarModal 
         visible={showJarModal}
         currentDay={3}
         onNext={handleModalNext}
       />
-    </KeyboardAvoidingView>
+    </ScreenWrapper>
   );
 };
 
@@ -88,8 +91,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   subtitle: { fontSize: 16, color: c.textSecondary, fontFamily: 'Inter-Regular', lineHeight: 24, marginBottom: 28 },
   input: {
     color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
+    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.9)', borderRadius: 12,
     padding: 16, minHeight: 120, lineHeight: 24, marginBottom: 12,
+    backgroundColor: 'rgba(255,255,255,0.8)',
   },
   hint: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular' },
 });

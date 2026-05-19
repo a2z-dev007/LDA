@@ -19,7 +19,7 @@ export type RootStackParamList = {
 
   // ── Bridge 1→2 ───────────────────────────────────
   Bridge1to2: undefined;
-  SetYourIntention: undefined;
+  SetYourIntention: { day?: number } | undefined;
   ThisOrThat: undefined;
 
   // ── Day 2 ────────────────────────────────────────

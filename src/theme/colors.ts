@@ -49,11 +49,15 @@ export const colors = {
   glassLight: _t.glassLight,
   glassBorder: _t.glassBorder,
   glassHeavy: _t.glassHeavy,
+  glassWhite: _t.glassWhite,
+  glassCardBg: _t.glassCardBg,
+  
 
   textDark: _t.textDark,
   textLight: _t.textLight,
   textMuted: _t.textMuted,
   textSubtle: _t.textSubtle,
+
 
   glowPrimary: _t.glowPrimary,
   glowSecondary: _t.glowSecondary,
@@ -64,6 +68,7 @@ export const colors = {
   day4: _t.day4,
   day5: _t.day5,
 
+  
   error: _t.error,
   success: _t.success,
 

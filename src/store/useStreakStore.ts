@@ -31,8 +31,12 @@ export const useStreakStore = create<StreakState>()(
         const now = new Date();
         const last = get().lastActiveDate ? new Date(get().lastActiveDate!) : null;
 
+        // Lazy import to prevent circular dependencies
+        const { useDayStore } = require('./useDayStore');
+        const completedDays = useDayStore.getState().completedDayCount();
+
         if (!last) {
-          set({ streakCount: 1, lastActiveDate: now.toISOString() });
+          set({ streakCount: Math.max(1, completedDays), lastActiveDate: now.toISOString() });
           return;
         }
 
@@ -46,7 +50,12 @@ export const useStreakStore = create<StreakState>()(
           set({ streakCount: get().streakCount + 1, lastActiveDate: now.toISOString() });
         } else {
           // Missed — streak resets (shield logic handled separately)
-          set({ streakCount: 1, lastActiveDate: now.toISOString() });
+          set({ streakCount: Math.max(1, completedDays), lastActiveDate: now.toISOString() });
+        }
+
+        // Ensure streakCount is at least completedDays
+        if (get().streakCount < completedDays) {
+          set({ streakCount: completedDays });
         }
       },
 

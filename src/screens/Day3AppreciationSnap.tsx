@@ -45,11 +45,14 @@ export const Day3AppreciationSnap: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScreenWrapper>
+    <ScreenWrapper>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }} 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ProgressStrip currentDay={3} />
         <View style={styles.body}>
-          <DayHeader eyebrow="Day 3 · Quick Win" />
+          <DayHeader eyebrow="Day 3 · The Mirror Game" />
           <Text style={styles.title}>
             Before we test what you know about them —
           </Text>
@@ -84,9 +87,9 @@ export const Day3AppreciationSnap: React.FC = () => {
           </Text>
         </View>
 
-        <DayCTA title={text.trim() ? "Save this" : "Skip for now"} onPress={handleSave} />
-      </ScreenWrapper>
-    </KeyboardAvoidingView>
+        <DayCTA title={text.trim() ? "Save to Journal" : "Skip for now"} onPress={handleSave} />
+      </KeyboardAvoidingView>
+    </ScreenWrapper>
   );
 };
 
@@ -97,8 +100,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   inputCard: {},
   input: {
     color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
+    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.9)', borderRadius: 12,
     padding: 16, minHeight: 120, lineHeight: 24,
+    backgroundColor: 'rgba(255,255,255,0.8)',
   },
   savedNote: { color: c.day3, fontSize: 14, fontFamily: 'Inter-SemiBold', marginTop: 12 },
   hint: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 16 },
