@@ -36,8 +36,10 @@ export type RootStackParamList = {
   Day3FinishMySentence: undefined;
   Day3AssumptionsTest: undefined;
   Day3MoodBoard: undefined;
+  Day3MoodBoardResult: undefined;
   Day3OneCertainty: undefined;
   Day3MirrorResults: undefined;
+  Day3Complete: undefined;
 
   // ── Bridge 3→4 ───────────────────────────────────
   Bridge3to4: undefined;

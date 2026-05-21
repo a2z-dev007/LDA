@@ -33,14 +33,16 @@ export const Day3Scoring = {
    * Axis C (Protecting/Building), and a general Warmth flag (Present/Protecting).
    */
   MOOD_BOARD_TAGS: {
-    protected: { axisA: 'expressive', axisB: 'deep', axisC: 'protecting', isWarm: true },
-    grounded:  { axisA: 'active',     axisB: 'deep', axisC: 'protecting', isWarm: true },
-    valued:    { axisA: 'expressive', axisB: 'deep', axisC: 'protecting', isWarm: true },
-    fluid:     { axisA: 'expressive', axisB: 'present', axisC: 'protecting', isWarm: true },
-    light:     { axisA: 'expressive', axisB: 'present', axisC: 'protecting', isWarm: true },
-    natural:   { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: false },
-    inspired:  { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: false },
-    alive:     { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: false }
+    comfort:      { axisA: 'expressive', axisB: 'present', axisC: 'protecting', isWarm: true },
+    fresh_start:  { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: false },
+    our_world:    { axisA: 'expressive', axisB: 'deep',    axisC: 'protecting', isWarm: true },
+    under_cloud:  { axisA: 'expressive', axisB: 'deep',    axisC: 'building',   isWarm: false },
+    intimate:     { axisA: 'expressive', axisB: 'deep',    axisC: 'protecting', isWarm: true },
+    peaceful:     { axisA: 'expressive', axisB: 'present', axisC: 'protecting', isWarm: true },
+    up_down:      { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: false },
+    figuring_out: { axisA: 'active',     axisB: 'deep',    axisC: 'building',   isWarm: false },
+    blossoming:   { axisA: 'active',     axisB: 'present', axisC: 'building',   isWarm: true },
+    safe_home:    { axisA: 'expressive', axisB: 'present', axisC: 'protecting', isWarm: true }
   } as Record<string, { axisA: 'expressive' | 'active'; axisB: 'deep' | 'present'; axisC: 'protecting' | 'building'; isWarm: boolean }>,
 
   /**

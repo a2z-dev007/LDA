@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
@@ -10,14 +10,10 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
-import { Sparkles, Check } from 'lucide-react-native';
-import {
-  responsiveWidth,
-  responsiveHeight,
-  responsiveFontSize,
-} from 'react-native-responsive-dimensions';
-import { DayCTA } from '../components/common/DayCTA';
-import { DayHeader } from '../components/common/DayHeader';
+import { Check, Database } from 'lucide-react-native';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
+import { GradientButton } from '../components/common/GradientButton';
+import { ScreenHeader } from '../components/common/ScreenHeader';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3MoodBoard'>;
 
@@ -25,18 +21,19 @@ interface MoodTile {
   id: string;
   label: string;
   emoji: string;
-  group: 'safety' | 'flow' | 'spark';
 }
 
 const MOOD_TILES: MoodTile[] = [
-  { id: 'protected', label: 'Protected', emoji: '🛡️', group: 'safety' },
-  { id: 'fluid', label: 'Fluid', emoji: '🌊', group: 'flow' },
-  { id: 'inspired', label: 'Inspired', emoji: '🔥', group: 'spark' },
-  { id: 'grounded', label: 'Grounded', emoji: '🏔️', group: 'safety' },
-  { id: 'light', label: 'Light', emoji: '☁️', group: 'flow' },
-  { id: 'valued', label: 'Valued', emoji: '💎', group: 'safety' },
-  { id: 'natural', label: 'Natural', emoji: '🌿', group: 'flow' },
-  { id: 'alive', label: 'Alive', emoji: '⚡', group: 'spark' },
+  { id: 'comfort', label: 'Comfort', emoji: '☕' },
+  { id: 'fresh_start', label: 'Fresh start', emoji: '🌅' },
+  { id: 'our_world', label: 'Our world', emoji: '🎧' },
+  { id: 'under_cloud', label: 'Under cloud', emoji: '🌧️' },
+  { id: 'intimate', label: 'Intimate', emoji: '🕯️' },
+  { id: 'peaceful', label: 'Peaceful', emoji: '🌿' },
+  { id: 'up_down', label: 'Up & down', emoji: '📈' },
+  { id: 'figuring_out', label: 'Figuring out', emoji: '🧩' },
+  { id: 'blossoming', label: 'Blossoming', emoji: '🌻' },
+  { id: 'safe_home', label: 'Safe home', emoji: '🏠' },
 ];
 
 export const Day3MoodBoard: React.FC = () => {
@@ -57,184 +54,234 @@ export const Day3MoodBoard: React.FC = () => {
     }
   };
 
-  const calculateTheme = () => {
-    const counts = { safety: 0, flow: 0, spark: 0 };
-    selectedIds.forEach(id => {
-      const tile = MOOD_TILES.find(t => t.id === id);
-      if (tile) counts[tile.group]++;
-    });
+  const calculateTheme = (ids: string[]) => {
+    // Count matches for Deeply Connected: intimate, our_world, comfort
+    const deeplyConnectedCount = ids.filter(id => ['intimate', 'our_world', 'comfort'].includes(id)).length;
+    if (deeplyConnectedCount >= 2) return 'Deeply Connected';
 
-    if (counts.safety >= 2) return 'Safety';
-    if (counts.flow >= 2) return 'Flow';
-    if (counts.spark >= 2) return 'Spark';
-    return 'Clarity'; // Default for mixed
+    // Count matches for Safe & Steady: safe_home, comfort, peaceful
+    const safeSteadyCount = ids.filter(id => ['safe_home', 'comfort', 'peaceful'].includes(id)).length;
+    if (safeSteadyCount >= 2) return 'Safe & Steady';
+
+    // Count matches for Growing & Open: fresh_start, blossoming, peaceful
+    const growingOpenCount = ids.filter(id => ['fresh_start', 'blossoming', 'peaceful'].includes(id)).length;
+    if (growingOpenCount >= 2) return 'Growing & Open';
+
+    // Count matches for Navigating Together: up_down, figuring_out, under_cloud
+    const navigatingTogetherCount = ids.filter(id => ['up_down', 'figuring_out', 'under_cloud'].includes(id)).length;
+    if (navigatingTogetherCount >= 2) return 'Navigating Together';
+
+    return 'Mixed & Moving';
   };
 
   const handleNext = () => {
-    const theme = calculateTheme();
+    const theme = calculateTheme(selectedIds);
     setDay3MoodBoard(selectedIds, theme);
     haptics.success();
-    navigation.navigate('Day3OneCertainty');
-  };
-
-  const renderItem = ({ item }: { item: MoodTile }) => {
-    const isSelected = selectedIds.includes(item.id);
-    const isDisabled = !isSelected && selectedIds.length >= 3;
-
-    return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => handleToggle(item.id)}
-        disabled={isDisabled}
-        style={[
-          styles.tile,
-          isSelected && styles.tileSelected,
-          isDisabled && styles.tileDisabled,
-        ]}
-      >
-        <Text style={styles.tileEmoji}>{item.emoji}</Text>
-        <Text style={[styles.tileLabel, isSelected && styles.tileLabelSelected]}>
-          {item.label}
-        </Text>
-        {isSelected && (
-          <View style={styles.checkBadge}>
-            <Check size={12} color="#FFFFFF" strokeWidth={3} />
-          </View>
-        )}
-      </TouchableOpacity>
-    );
+    navigation.navigate('Day3MoodBoardResult');
   };
 
   return (
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
-      
-      <View style={styles.container}>
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
-          {/* <View style={styles.eyebrowPill}>
-            <Sparkles size={metrics.iconSize.xs} color={colors.day3} />
-            <Text style={[styles.eyebrow, { color: colors.day3 }]}>GAME 07 · MOOD BOARD MATCH</Text>
-          </View> */}
-          <DayHeader eyebrow="GAME 07 · MOOD BOARD MATCH" />
-          <Text style={styles.title}>
-            3 tiles that match how you want to feel with your partner this month.
+          <ScreenHeader
+            title="Mood Board Match"
+            eyebrow=""
+          />
+
+          <Text style={styles.italicInstruction}>
+            "You just answered 10 questions about them. Now — pick 3 tiles that describe your relationship this week."
           </Text>
-          <Text style={styles.subtitle}>
-            Selection: {selectedIds.length}/3
+          <Text style={styles.statusLabel}>
+            Selected: {selectedIds.length} / 3 · CTA unlocks at exactly 3
           </Text>
         </View>
 
-        <FlatList
-          data={MOOD_TILES}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          contentContainerStyle={styles.listContent}
-          columnWrapperStyle={styles.columnWrapper}
-          scrollEnabled={false}
-        />
-      </View>
+        {/* Grid of 10 items */}
+        <View style={styles.gridContainer}>
+          {MOOD_TILES.map((item) => {
+            const isSelected = selectedIds.includes(item.id);
+            const isDisabled = !isSelected && selectedIds.length >= 3;
+            return (
+              <TouchableOpacity
+                key={item.id}
+                activeOpacity={0.8}
+                onPress={() => handleToggle(item.id)}
+                disabled={isDisabled}
+                style={[
+                  styles.tile,
+                  isSelected && styles.tileSelected,
+                  isDisabled && styles.tileDisabled,
+                ]}
+              >
+                <View style={styles.tileContent}>
+                  <Text style={styles.tileEmoji}>{item.emoji}</Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.tileLabel, isSelected && styles.tileLabelSelected]}
+                  >
+                    {item.label}
+                  </Text>
+                </View>
+                {isSelected && (
+                  <View style={styles.checkBadge}>
+                    <Check size={10} color="#FFFFFF" strokeWidth={3} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-      <DayCTA 
-        title="Lock it in" 
-        disabled={selectedIds.length < 3}
-        onPress={handleNext} 
-      />
+        <Text style={styles.tapNote}>Tap to select · Tap again to deselect</Text>
+
+        {/* Database indicator banner */}
+        {/* <View style={styles.databaseBanner}>
+          <Database size={16} color={colors.textHint} />
+          <Text style={styles.databaseBannerText}>
+            Stores: d3_mood_board (array 3) · d3_mood_board_theme
+          </Text>
+        </View> */}
+
+        {/* Action Button */}
+        <View style={styles.buttonContainer}>
+          <GradientButton
+            text={selectedIds.length === 3 ? "Save these 3 →" : "Save and unlocks at 3 selected"}
+            disabled={selectedIds.length < 3}
+            onPress={handleNext}
+            fullWidth
+            showArrow={false}
+
+          />
+        </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: any) => StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingTop: metrics.spacing.lg,
+  scrollContent: {
+    paddingBottom: metrics.spacing.xl,
   },
   header: {
-    marginBottom: metrics.spacing.xl,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginTop: metrics.spacing.md,
+    marginBottom: metrics.spacing.lg,
   },
-  eyebrowPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: metrics.spacing.xs,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderRadius: metrics.radius.full,
-    paddingHorizontal: metrics.spacing.smMd,
-    paddingVertical: metrics.spacing.xs,
-    borderWidth: 1,
-    borderColor: 'rgba(232,92,122,0.15)',
-    alignSelf: 'flex-start',
-    marginBottom: metrics.spacing.md,
-  },
-  eyebrow: {
-    ...typography.captionSmall,
-    letterSpacing: 1.5,
-  },
-  title: {
-    ...typography.displaySmall,
-    color: c.text,
+  italicInstruction: {
+    ...typography.bodyMedium,
+    color: c.textSecondary,
     fontFamily: 'PlayfairDisplay-Italic',
-    lineHeight: metrics.fontSize.h3 * 1.4,
+    lineHeight: metrics.fontSize.body * 1.4,
+    marginVertical: metrics.spacing.sm,
   },
-  subtitle: {
-    ...typography.labelBold,
+  statusLabel: {
+    ...typography.captionSmall,
     color: c.textHint,
-    marginTop: metrics.spacing.sm,
+    fontFamily: fonts.dmSansBold,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
+    marginTop: metrics.spacing.xs,
   },
-  listContent: {
-    gap: metrics.spacing.md,
-  },
-  columnWrapper: {
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
+    paddingHorizontal: metrics.layout.screenPaddingHz,
     gap: metrics.spacing.md,
   },
   tile: {
+    // 2 columns, accounting for padding and gap spacing
     width: (responsiveWidth(100) - metrics.layout.screenPaddingHz * 2 - metrics.spacing.md) / 2,
-    aspectRatio: 1,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderRadius: metrics.radius.xl,
+    height: 64,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.05)',
+    borderColor: 'rgba(45, 95, 93, 0.12)',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: metrics.spacing.sm,
-    shadowColor: '#000',
+    paddingHorizontal: metrics.spacing.md,
+    shadowColor: '#1A2E2A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOpacity: 0.02,
+    shadowRadius: 4,
+    elevation: 1,
     position: 'relative',
   },
   tileSelected: {
-    borderColor: '#E85C7A',
-    backgroundColor: 'rgba(232,92,122,0.03)',
+    borderColor: '#2D5F5D',
+    backgroundColor: '#EBFDF5',
     borderWidth: 2,
   },
   tileDisabled: {
     opacity: 0.4,
   },
+  tileContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: metrics.spacing.sm,
+  },
   tileEmoji: {
-    fontSize: responsiveFontSize(4.5),
-    marginBottom: metrics.spacing.sm,
+    fontSize: 20,
   },
   tileLabel: {
-    ...typography.bodyMedium,
-    color: c.textSecondary,
+    fontSize: 14,
     fontFamily: fonts.dmSansBold,
+    color: '#1F3E3C', // Dark forest teal
+    flex: 1,
   },
   tileLabelSelected: {
-    color: '#E85C7A',
+    color: '#2D5F5D', // Selected green text
   },
   checkBadge: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#E85C7A',
+    top: -6,
+    right: -6,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#2D5F5D',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+    zIndex: 10,
+  },
+  tapNote: {
+    ...typography.captionSmall,
+    color: c.textHint,
+    textAlign: 'center',
+    marginTop: metrics.spacing.md,
+    marginBottom: metrics.spacing.xl,
+  },
+  databaseBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(45, 95, 93, 0.05)',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginHorizontal: metrics.layout.screenPaddingHz,
+    marginBottom: metrics.spacing.xl,
+    borderWidth: 1,
+    borderColor: 'rgba(45, 95, 93, 0.08)',
+  },
+  databaseBannerText: {
+    ...typography.captionSmall,
+    color: c.textSecondary,
+    fontFamily: fonts.dmSansMedium,
+  },
+  buttonContainer: {
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginBottom: metrics.spacing.lg,
   },
 });

@@ -37,7 +37,9 @@ import { Day3FinishMySentence } from '../screens/Day3FinishMySentence';
 import { Day3AssumptionsTest } from '../screens/Day3AssumptionsTest';
 import { Day3MirrorResults } from '../screens/Day3MirrorResults';
 import { Day3MoodBoard } from '../screens/Day3MoodBoard';
+import { Day3MoodBoardResult } from '../screens/Day3MoodBoardResult';
 import { Day3OneCertainty } from '../screens/Day3OneCertainty';
+import { Day3Complete } from '../screens/Day3Complete';
 
 // Day 4
 import { Day4MemoryJar } from '../screens/Day4MemoryJar';
@@ -118,7 +120,9 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day3AssumptionsTest" component={Day3AssumptionsTest} />
       <Stack.Screen name="Day3MirrorResults" component={Day3MirrorResults} />
       <Stack.Screen name="Day3MoodBoard" component={Day3MoodBoard} />
+      <Stack.Screen name="Day3MoodBoardResult" component={Day3MoodBoardResult} />
       <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
+      <Stack.Screen name="Day3Complete" component={Day3Complete} />
 
       {/* Day 4 */}
       <Stack.Screen name="Day4MemoryJar" component={Day4MemoryJar} />
