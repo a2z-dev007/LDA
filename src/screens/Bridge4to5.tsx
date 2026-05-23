@@ -29,6 +29,8 @@ export const Bridge4to5: React.FC = () => {
   const day4 = useDayStore((s) => s.day4);
   const streakCount = useStreakStore((s) => s.streakCount);
 
+  const displayStreak = Math.max(streakCount, 5);
+
   const pillars = [
     { label: 'Reflection', Icon: Leaf, color: colors.day1, pos: styles.satLeft },
     { label: 'Growth', Icon: Heart, color: '#E85C7A', pos: styles.satRight },
@@ -55,7 +57,7 @@ export const Bridge4to5: React.FC = () => {
 
             <View style={styles.ringInner}>
               <View style={styles.dayHexagon}>
-                <Text style={styles.dayNumber}>{streakCount}</Text>
+                <Text style={styles.dayNumber}>{displayStreak}</Text>
                 <Text style={styles.dayLabel}>DAY</Text>
               </View>
               <View style={styles.ringProgress} />

@@ -44,17 +44,17 @@ const TYPE_ICON: Record<string, any> = {
 
 export const Day1ResultScreen: React.FC = () => {
   const colors = useAppColors();
-  const styles = makeStyles(colors);
-  const navigation = useNavigation<Nav>();
-  const insets = useSafeAreaInsets();
   const day1 = useDayStore((s) => s.day1);
   const recordActivity = useStreakStore((s) => s.recordActivity);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
 
-
   const personality = getPersonalityType(
     (day1.personalityType as PersonalityTypeId) ?? 'shifting_tide'
   );
+
+  const styles = makeStyles(colors);
+  const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
 
   const TypeIcon = TYPE_ICON[personality.id] ?? Star;
 
@@ -80,13 +80,11 @@ export const Day1ResultScreen: React.FC = () => {
         content: `Relationship Type: ${personality.name}`,
         type: 'text',
         tinyCompliment: null,
-        dayColor: personality.color,
+        dayColor: colors.primary,
       });
     });
 
     Animated.sequence([
-
-
       Animated.timing(headerAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       Animated.parallel([
         Animated.timing(badgeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
@@ -138,13 +136,12 @@ export const Day1ResultScreen: React.FC = () => {
         </Animated.View>
 
         <Animated.View style={[styles.header, { opacity: headerAnim }]}>
-
           <View style={styles.achievementBadgeRow}>
-            <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
-            <Text style={[styles.achievementLabel, { color: personality.color }]}>
+            <Award size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
+            <Text style={[styles.achievementLabel, { color: colors.primary }]}>
               DAY 1 COMPLETE
             </Text>
-            <Award size={metrics.iconSize.xs} color={personality.color} strokeWidth={2} />
+            <Award size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
           </View>
           <Text style={styles.headerTitle}>Your relationship type is</Text>
         </Animated.View>
@@ -158,8 +155,8 @@ export const Day1ResultScreen: React.FC = () => {
             },
           ]}
         >
-          <View style={[styles.badgeGlowRing, { borderColor: `${personality.color}30` }]} />
-          <View style={[styles.badgeMidRing, { borderColor: `${personality.color}50` }]} />
+          <View style={[styles.badgeGlowRing, { borderColor: 'rgba(45,212,191,0.15)' }]} />
+          <View style={[styles.badgeMidRing, { borderColor: 'rgba(45,212,191,0.3)' }]} />
           <LinearGradient
             colors={['#6EE87A', '#2DD4BF']}
             start={{ x: 0, y: 0 }}
@@ -171,7 +168,7 @@ export const Day1ResultScreen: React.FC = () => {
         </Animated.View>
 
         <Animated.View style={[styles.typeNameContainer, { opacity: badgeAnim }]}>
-          <Text style={[styles.typeName, { color: personality.color }]}>
+          <Text style={[styles.typeName, { color: colors.primary }]}>
             {personality.name}
           </Text>
           <Text style={styles.typeSubLabel}>{personality.subLabel}</Text>
@@ -183,7 +180,7 @@ export const Day1ResultScreen: React.FC = () => {
             {
               opacity: cardAnim,
               transform: [{ translateY: cardSlide }],
-              borderColor: `${personality.color}30`,
+              borderColor: 'rgba(45,212,191,0.3)',
             },
           ]}
         >
@@ -205,9 +202,9 @@ export const Day1ResultScreen: React.FC = () => {
                 colors={['rgba(110,232,122,0.15)', 'rgba(45,212,191,0.15)']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={[styles.pill, { borderColor: `${personality.color}50` }]}
+                style={[styles.pill, { borderColor: 'rgba(45,212,191,0.5)' }]}
               >
-                <Text style={[styles.pillText, { color: personality.color }]}>{trait}</Text>
+                <Text style={[styles.pillText, { color: colors.primary }]}>{trait}</Text>
               </LinearGradient>
             ))}
           </View>
@@ -215,8 +212,8 @@ export const Day1ResultScreen: React.FC = () => {
 
         <Animated.View style={[styles.growthCard, { opacity: growthAnim }]}>
           <View style={styles.growthIconRow}>
-            <View style={[styles.growthIconCircle, { backgroundColor: `${personality.color}15` }]}>
-              <Heart size={metrics.iconSize.sm} color={personality.color} strokeWidth={1.5} />
+            <View style={[styles.growthIconCircle, { backgroundColor: 'rgba(45,212,191,0.15)' }]}>
+              <Heart size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
             </View>
             <Text style={styles.growthLabel}>ONE INVITATION FOR YOU</Text>
           </View>

@@ -54,6 +54,8 @@ export const Bridge1to2: React.FC = () => {
   const streakCount = useStreakStore((s) => s.streakCount);
   const name = useUserStore((s) => s.name);
 
+  const displayStreak = Math.max(streakCount, 2);
+
   const personality = personalityTypes.find((p) => p.id === day1.personalityType)
     ?? personalityTypes[0];
 
@@ -79,7 +81,7 @@ export const Bridge1to2: React.FC = () => {
         {/* ── Streak card ── */}
         <View style={styles.streakCard}>
           <View style={styles.streakCircle}>
-            <Text style={styles.streakNumber}>{streakCount}</Text>
+            <Text style={styles.streakNumber}>{displayStreak}</Text>
             <View style={styles.streakFireBadge}>
               <Flame size={12} color="#F97316" fill="#FED7AA" />
             </View>
@@ -87,7 +89,7 @@ export const Bridge1to2: React.FC = () => {
           <View style={{ flex: 1 }}>
             <Text style={styles.streakTitle}>Welcome back, {name || 'there'}</Text>
             <Text style={styles.streakSub}>
-              Day {streakCount} streak · You're building something real.
+              Day {displayStreak} streak · You're building something real.
             </Text>
           </View>
         </View>
@@ -97,14 +99,14 @@ export const Bridge1to2: React.FC = () => {
           <Text style={styles.resultLabel}>YOUR DAY 1 RESULT</Text>
 
           {/* Personality pill */}
-          <View style={[styles.personalityPill, { borderColor: personality.color + '50' }]}>
+          <View style={[styles.personalityPill, { borderColor: colors.primary + '50' }]}>
             <Text style={styles.personalityEmoji}>
               {personality.id === 'steady_flame' ? '🔥'
                 : personality.id === 'electric_spark' ? '⚡'
                 : personality.id === 'deep_current' ? '🌊'
                 : '🌀'}
             </Text>
-            <Text style={[styles.personalityPillName, { color: personality.color }]}>
+            <Text style={[styles.personalityPillName, { color: colors.primary }]}>
               {personality.name}
             </Text>
           </View>
@@ -112,9 +114,9 @@ export const Bridge1to2: React.FC = () => {
           {/* Traits */}
           <View style={styles.traitsContainer}>
             {personality.traits.slice(0, 3).map((trait) => (
-              <View key={trait} style={[styles.traitPill, { backgroundColor: personality.color + '15' }]}>
+              <View key={trait} style={[styles.traitPill, { backgroundColor: colors.primary + '15' }]}>
                 <Text style={styles.traitEmoji}>{TRAIT_EMOJIS[trait] || '✨'}</Text>
-                <Text style={[styles.traitText, { color: personality.color }]}>{trait}</Text>
+                <Text style={[styles.traitText, { color: colors.primary }]}>{trait}</Text>
               </View>
             ))}
           </View>

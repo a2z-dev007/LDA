@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Animated,
+  View, Text, StyleSheet, TouchableOpacity,
   ImageBackground, Image,
 } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -10,8 +10,8 @@ import Reanimated, {
   withSpring, 
   runOnJS,
   withTiming,
-  interpolate,
-  Extrapolate
+  Easing,
+  withDelay,
 } from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -156,9 +156,10 @@ const SwipeableOption: React.FC<SwipeableOptionProps> = ({
     return {
       transform: [
         { translateX: translateX.value },
-        { scale: isPressed.value ? 0.98 : 1 }
+        { scale: withTiming(isPressed.value ? 0.97 : 1, { duration: 150 }) }
       ],
-      opacity: withTiming(opacity, { duration: 200 })
+      opacity: withTiming(opacity, { duration: 200 }),
+      overflow: 'hidden' as const,
     };
   });
 
@@ -186,11 +187,15 @@ export const Day1SparkQuiz: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, 'A' | 'B'>>({});
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const segment = resolveSegment(sliderScore);
   const questions = getQuizQuestions(segment);
 
-  const fadeIn    = useRef(new Animated.Value(0)).current;
+  // Reanimated shared values for smooth content transition
+  const contentOpacity = useSharedValue(1);
+  const contentTranslateY = useSharedValue(0);
+  const optionScale = useSharedValue(1);
 
   const question = questions[currentIndex];
   const total    = questions.length;
@@ -199,22 +204,54 @@ export const Day1SparkQuiz: React.FC = () => {
   const OptionAIcon = meta.optionAIcon;
   const OptionBIcon = meta.optionBIcon;
 
+  // Animated styles for the content area (question + options only)
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+    transform: [
+      { translateY: contentTranslateY.value },
+    ],
+  }));
+
+  const optionAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: optionScale.value },
+    ],
+  }));
+
+  // Enter animation — called after state updates
+  const animateIn = useCallback(() => {
+    contentOpacity.value = 0;
+    contentTranslateY.value = 18;
+    optionScale.value = 0.96;
+
+    const easingConfig = { duration: 320, easing: Easing.out(Easing.cubic) };
+
+    contentOpacity.value = withTiming(1, easingConfig);
+    contentTranslateY.value = withTiming(0, easingConfig);
+    optionScale.value = withDelay(60, withTiming(1, { duration: 350, easing: Easing.out(Easing.back(1.3)) }));
+  }, []);
+
   useEffect(() => {
     const existing = answers[question.id] ?? null;
     setSelectedOption(existing);
-    
-    // Simple fade in only — no slide
-    fadeIn.setValue(0);
-    Animated.timing(fadeIn, {
-      toValue: 1,
-      duration: 250,
-      useNativeDriver: true,
-    }).start();
+    animateIn();
   }, [currentIndex]);
 
 
 
+  // Exit animation — fades out, then updates index
+  const animateOutThenAdvance = useCallback((nextIndex: number) => {
+    'worklet';
+    const easingConfig = { duration: 200, easing: Easing.in(Easing.cubic) };
+    contentOpacity.value = withTiming(0, easingConfig);
+    contentTranslateY.value = withTiming(-12, easingConfig, () => {
+      runOnJS(setCurrentIndex)(nextIndex);
+      runOnJS(setIsTransitioning)(false);
+    });
+  }, []);
+
   const handleSelect = (value: 'A' | 'B') => {
+    if (isTransitioning) return; // Guard against rapid taps
     haptics.light();
     setSelectedOption(value);
 
@@ -222,10 +259,11 @@ export const Day1SparkQuiz: React.FC = () => {
     setAnswers(newAnswers);
 
     if (currentIndex < total - 1) {
-      // Short delay to let user see selection
+      setIsTransitioning(true);
+      // Short delay to let user see selection, then animate out
       setTimeout(() => {
-        setCurrentIndex((i) => i + 1);
-      }, 300);
+        animateOutThenAdvance(currentIndex + 1);
+      }, 280);
     } else {
       const personality = calculatePersonalityType(newAnswers);
       saveDay1Quiz(newAnswers, personality.id);
@@ -234,11 +272,10 @@ export const Day1SparkQuiz: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (currentIndex > 0) {
+    if (currentIndex > 0 && !isTransitioning) {
       haptics.light();
-      Animated.timing(fadeIn, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
-        setCurrentIndex((i) => i - 1);
-      });
+      setIsTransitioning(true);
+      animateOutThenAdvance(currentIndex - 1);
     }
   };
 
@@ -248,12 +285,11 @@ export const Day1SparkQuiz: React.FC = () => {
       style={styles.root}
       resizeMode="cover"
     >
-      {/* Main content — scrollable area with safe area top */}
-      <Animated.View
+      {/* Main content — safe area top */}
+      <View
         style={[
           styles.body,
           {
-            opacity: fadeIn,
             paddingTop: Math.max(insets.top + responsiveHeight(1), responsiveHeight(5)),
           },
         ]}
@@ -294,85 +330,88 @@ export const Day1SparkQuiz: React.FC = () => {
           <Text style={styles.counter}>{currentIndex + 1} of {total}</Text>
         </View>
 
-        {/* ── Mood badge with icon ── */}
-        <View style={styles.moodBadge}>
-          <BadgeIcon size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
-          <Text style={styles.moodBadgeText}>{question.moodBadge}</Text>
-        </View>
-
-        {/* ── Question with teal keyword + heart ── */}
-        <View style={styles.questionRow}>
-          {renderPrompt(question.prompt, meta.tealWord, styles.question, styles.questionTeal)}
-          <Heart
-            size={metrics.iconSize.sm}
-            color={colors.primary}
-            strokeWidth={1.5}
-            style={styles.questionHeart}
-          />
-        </View>
-
-        {/* ── Swipe/Tap hint ── */}
-        <View style={styles.hintRow}>
-          <Text style={styles.hintArrow}>«</Text>
-          <Text style={styles.hintText}>Swipe or Tap to choose</Text>
-          <Text style={styles.hintArrow}>»</Text>
-        </View>
-
-        {/* ── Options ── */}
-        <View style={styles.options}>
-          {/* Option A */}
-          <SwipeableOption
-            onSelect={() => handleSelect('A')}
-            isDimmed={selectedOption === 'B'}
-            isSelected={selectedOption === 'A'}
-            colors={colors}
-          >
-            <View style={[styles.option, selectedOption === 'A' && styles.optionSelected]}>
-              <LinearGradient
-                colors={['#6EE87A', '#2DD4BF']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.optionIconCircle}
-              >
-                <OptionAIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
-              </LinearGradient>
-              <Text style={[styles.optionText, selectedOption === 'A' && styles.optionTextSelected]}>
-                {question.optionA}
-              </Text>
-            </View>
-
-          </SwipeableOption>
-
-          {/* Or divider */}
-          <View style={styles.orDivider}>
-            <View style={styles.orLine} />
-            <Text style={styles.orText}>or</Text>
-            <View style={styles.orLine} />
+        {/* ── Animated content area (only this part transitions) ── */}
+        <Reanimated.View style={contentAnimatedStyle}>
+          {/* ── Mood badge with icon ── */}
+          <View style={styles.moodBadge}>
+            <BadgeIcon size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
+            <Text style={styles.moodBadgeText}>{question.moodBadge}</Text>
           </View>
 
-          {/* Option B */}
-          <SwipeableOption
-            onSelect={() => handleSelect('B')}
-            isDimmed={selectedOption === 'A'}
-            isSelected={selectedOption === 'B'}
-            colors={colors}
-          >
-            <View style={[styles.option, selectedOption === 'B' && styles.optionSelected]}>
-              <LinearGradient
-                colors={['#6EE87A', '#2DD4BF']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.optionIconCircle}
-              >
-                <OptionBIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
-              </LinearGradient>
-              <Text style={[styles.optionText, selectedOption === 'B' && styles.optionTextSelected]}>
-                {question.optionB}
-              </Text>
+          {/* ── Question with teal keyword + heart ── */}
+          <View style={styles.questionRow}>
+            {renderPrompt(question.prompt, meta.tealWord, styles.question, styles.questionTeal)}
+            <Heart
+              size={metrics.iconSize.sm}
+              color={colors.primary}
+              strokeWidth={1.5}
+              style={styles.questionHeart}
+            />
+          </View>
+
+          {/* ── Swipe/Tap hint ── */}
+          <View style={styles.hintRow}>
+            <Text style={styles.hintArrow}>«</Text>
+            <Text style={styles.hintText}>Swipe or Tap to choose</Text>
+            <Text style={styles.hintArrow}>»</Text>
+          </View>
+        </Reanimated.View>
+
+        {/* ── Options (animated with scale for a polished feel) ── */}
+        <Reanimated.View style={[contentAnimatedStyle, optionAnimatedStyle]}>
+          <View style={styles.options}>
+            {/* Option A */}
+            <SwipeableOption
+              onSelect={() => handleSelect('A')}
+              isDimmed={selectedOption === 'B'}
+              isSelected={selectedOption === 'A'}
+              colors={colors}
+            >
+              <View style={[styles.option, selectedOption === 'A' && styles.optionSelected]}>
+                <LinearGradient
+                  colors={['#6EE87A', '#2DD4BF']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.optionIconCircle}
+                >
+                  <OptionAIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
+                </LinearGradient>
+                <Text style={[styles.optionText, selectedOption === 'A' && styles.optionTextSelected]}>
+                  {question.optionA}
+                </Text>
+              </View>
+            </SwipeableOption>
+
+            {/* Or divider */}
+            <View style={styles.orDivider}>
+              <View style={styles.orLine} />
+              <Text style={styles.orText}>or</Text>
+              <View style={styles.orLine} />
             </View>
 
-          </SwipeableOption>
-        </View>
+            {/* Option B */}
+            <SwipeableOption
+              onSelect={() => handleSelect('B')}
+              isDimmed={selectedOption === 'A'}
+              isSelected={selectedOption === 'B'}
+              colors={colors}
+            >
+              <View style={[styles.option, selectedOption === 'B' && styles.optionSelected]}>
+                <LinearGradient
+                  colors={['#6EE87A', '#2DD4BF']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.optionIconCircle}
+                >
+                  <OptionBIcon size={responsiveWidth(7)} color="#FFFFFF" strokeWidth={2} />
+                </LinearGradient>
+                <Text style={[styles.optionText, selectedOption === 'B' && styles.optionTextSelected]}>
+                  {question.optionB}
+                </Text>
+              </View>
+            </SwipeableOption>
+          </View>
+        </Reanimated.View>
 
         {/* ── Decorative sparkles + leaves ── */}
         <View style={styles.decorContainer} pointerEvents="none">
@@ -380,7 +419,7 @@ export const Day1SparkQuiz: React.FC = () => {
           <Text style={styles.sparkle2}>✦</Text>
           <Image source={ICONS.leaves} style={styles.leavesDecor} resizeMode="contain" />
         </View>
-      </Animated.View>
+      </View>
 
     </ImageBackground>
   );
@@ -495,23 +534,18 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.md,
     backgroundColor: 'rgba(255,255,255,0.72)',
     borderRadius: metrics.radius.lg,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.9)',
     paddingVertical: metrics.spacing.lg,
     paddingHorizontal: metrics.spacing.md,
-
-    // shadowColor: '#2DD4BF',
-    // shadowOffset: { width: 0, height: responsiveHeight(0.2) },
-    // shadowOpacity: 0.06,
-    // shadowRadius: responsiveWidth(2),
-    // elevation: 1,
+    elevation: 0,
+    shadowOpacity: 0,
   },
   optionSelected: {
-    borderColor: c.primary,
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    shadowColor: c.primary,
-    shadowOpacity: 0.15,
-    elevation: 4,
+    borderColor: 'rgba(45, 212, 191, 0.45)',
+    backgroundColor: 'rgba(255,255,255,0.88)',
+    elevation: 0,
+    shadowOpacity: 0,
   },
   optionIconCircle: {
     width: responsiveWidth(16),

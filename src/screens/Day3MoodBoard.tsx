@@ -14,6 +14,7 @@ import { Check, Database } from 'lucide-react-native';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { GradientButton } from '../components/common/GradientButton';
 import { ScreenHeader } from '../components/common/ScreenHeader';
+import { getMoodBoardCombo } from '../data/moodBoardCombos';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3MoodBoard'>;
 
@@ -75,7 +76,8 @@ export const Day3MoodBoard: React.FC = () => {
   };
 
   const handleNext = () => {
-    const theme = calculateTheme(selectedIds);
+    const combo = getMoodBoardCombo(selectedIds);
+    const theme = combo ? combo.title : calculateTheme(selectedIds);
     setDay3MoodBoard(selectedIds, theme);
     haptics.success();
     navigation.navigate('Day3MoodBoardResult');

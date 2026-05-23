@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  View, Text, StyleSheet, Animated, PanResponder, Dimensions,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
+import { ScreenHeader } from '../components/common/ScreenHeader';
 import { useAppColors } from '../theme';
 import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
@@ -12,15 +14,18 @@ import { assumptionsSets } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { haptics } from '../utils/haptics';
 import { Day3Scoring } from '../services/scoring/day3Scoring';
-import { ChevronLeft } from 'lucide-react-native';
+import { CheckCircle, XCircle, ArrowLeft, ArrowRight } from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3AssumptionsTest'>;
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.25;
+const SWIPE_OUT_DURATION = 300;
 
 export const Day3AssumptionsTest: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
-  const insets = useSafeAreaInsets();
   const day1 = useDayStore((s) => s.day1);
   const completeDay3 = useDayStore((s) => s.completeDay3);
 
@@ -30,32 +35,54 @@ export const Day3AssumptionsTest: React.FC = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(20)).current;
+  const [showInstruction, setShowInstruction] = useState(true);
 
-  useEffect(() => {
-    fadeAnim.setValue(0);
-    slideAnim.setValue(20);
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
-      Animated.spring(slideAnim, { toValue: 0, friction: 8, useNativeDriver: true }),
-    ]).start();
-  }, [currentIndex]);
+  // Swipe animation
+  const position = useRef(new Animated.ValueXY()).current;
+  const cardOpacity = useRef(new Animated.Value(1)).current;
+  const nextCardScale = useRef(new Animated.Value(0.92)).current;
+  const nextCardOpacity = useRef(new Animated.Value(0.5)).current;
 
-  const handleAnswer = (value: boolean) => {
-    haptics.light();
+  // Derived rotation & overlay opacities from position.x
+  const rotate = position.x.interpolate({
+    inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+    outputRange: ['-12deg', '0deg', '12deg'],
+    extrapolate: 'clamp',
+  });
+
+  const trueOverlayOpacity = position.x.interpolate({
+    inputRange: [0, SWIPE_THRESHOLD],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
+  const falseOverlayOpacity = position.x.interpolate({
+    inputRange: [-SWIPE_THRESHOLD, 0],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  // Haptic feedback on crossing threshold
+  const hasTriggeredHaptic = useRef(false);
+
+  const handleSwipeComplete = useCallback((isTrue: boolean) => {
     const question = questions[currentIndex];
-    const newAnswers = { ...answers, [question.id]: value };
+    const newAnswers = { ...answers, [question.id]: isTrue };
     setAnswers(newAnswers);
 
     if (currentIndex < total - 1) {
       setCurrentIndex((i) => i + 1);
+      // Reset animations for next card
+      position.setValue({ x: 0, y: 0 });
+      cardOpacity.setValue(1);
+      nextCardScale.setValue(0.92);
+      nextCardOpacity.setValue(0.5);
     } else {
+      // Last question — complete
       const trueCount = Object.values(newAnswers).filter(Boolean).length;
       const trueRatio = trueCount / total;
       completeDay3(newAnswers, trueRatio);
 
-      // Calculate and Log Day 3 Scoring output for debugging
       const updatedDay3 = useDayStore.getState().day3;
       const scoringResult = Day3Scoring.calculate(updatedDay3);
       console.log('=== [DEBUG] Day 3 Completion Scoring & Local Storage Log ===');
@@ -65,51 +92,102 @@ export const Day3AssumptionsTest: React.FC = () => {
 
       navigation.navigate('Day3MirrorResults');
     }
-  };
+  }, [currentIndex, answers, questions, total]);
+
+  const swipeOut = useCallback((direction: 'left' | 'right') => {
+    const toX = direction === 'right' ? SCREEN_WIDTH * 1.2 : -SCREEN_WIDTH * 1.2;
+    haptics.success();
+
+    Animated.parallel([
+      Animated.timing(position, {
+        toValue: { x: toX, y: 0 },
+        duration: SWIPE_OUT_DURATION,
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardOpacity, {
+        toValue: 0,
+        duration: SWIPE_OUT_DURATION,
+        useNativeDriver: true,
+      }),
+      Animated.spring(nextCardScale, {
+        toValue: 1,
+        friction: 6,
+        useNativeDriver: true,
+      }),
+      Animated.timing(nextCardOpacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      handleSwipeComplete(direction === 'right');
+    });
+  }, [handleSwipeComplete]);
+
+  // Keep a ref to the latest swipeOut so PanResponder always calls the current version
+  const swipeOutRef = useRef(swipeOut);
+  useEffect(() => {
+    swipeOutRef.current = swipeOut;
+  }, [swipeOut]);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gs) => Math.abs(gs.dx) > 8,
+      onPanResponderGrant: () => {
+        hasTriggeredHaptic.current = false;
+        setShowInstruction(false);
+      },
+      onPanResponderMove: (_, gs) => {
+        position.setValue({ x: gs.dx, y: gs.dy * 0.15 });
+
+        // Light haptic when crossing threshold
+        const past = Math.abs(gs.dx) > SWIPE_THRESHOLD;
+        if (past && !hasTriggeredHaptic.current) {
+          haptics.selection();
+          hasTriggeredHaptic.current = true;
+        } else if (!past && hasTriggeredHaptic.current) {
+          hasTriggeredHaptic.current = false;
+        }
+      },
+      onPanResponderRelease: (_, gs) => {
+        if (gs.dx > SWIPE_THRESHOLD) {
+          swipeOutRef.current('right');
+        } else if (gs.dx < -SWIPE_THRESHOLD) {
+          swipeOutRef.current('left');
+        } else {
+          // Snap back
+          Animated.spring(position, {
+            toValue: { x: 0, y: 0 },
+            friction: 6,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   const question = questions[currentIndex];
+  const nextQuestion = currentIndex < total - 1 ? questions[currentIndex + 1] : null;
   const progress = (currentIndex + 1) / total;
 
-  const formatPersonalityType = (key: string) => {
-    return key
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
+  const formatPersonalityType = (key: string) =>
+    key.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
   const formattedPersonality = formatPersonalityType(personalityKey);
 
   return (
     <ScreenWrapper>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.content,
-          // { paddingTop: Math.max(insets.top + metrics.spacing.xs, metrics.spacing.sm) }
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header row */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity 
-            style={styles.backButton} 
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <ChevronLeft size={20} color={colors.text} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>The Assumptions Test</Text>
-        </View>
+      <View style={styles.content}>
+        {/* Header */}
+        <ScreenHeader title="The Assumptions Test" />
 
-        {/* Title */}
-        {/* <Text style={styles.mainTitle}>The Assumptions Test.</Text> */}
-        
         {/* Subtitle */}
         <Text style={styles.subtitle}>
-          10 statements · One per screen · TRUE or FALSE
+          10 statements · Swipe to answer
         </Text>
 
-        {/* Dynamic Personality Pill Row */}
+        {/* Personality Pill */}
         <View style={styles.personalityPillRow}>
           <View style={styles.personalityPill}>
             <Text style={styles.flameIcon}>🔥</Text>
@@ -117,10 +195,9 @@ export const Day3AssumptionsTest: React.FC = () => {
               {formattedPersonality} set
             </Text>
           </View>
-          {/* <Text style={styles.personalitySubtext}>Based on d1_personality_type</Text> */}
         </View>
 
-        {/* Question Progress Bar */}
+        {/* Progress */}
         <View style={styles.progressContainer}>
           <View style={styles.progressTrack}>
             <Animated.View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
@@ -130,108 +207,124 @@ export const Day3AssumptionsTest: React.FC = () => {
           </Text>
         </View>
 
-        {/* Question Card */}
-        <Animated.View style={[
-          styles.questionCard,
-          { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }
-        ]}>
-          <Text style={styles.statementNumber}>
-            STATEMENT {currentIndex + 1} OF {total}
-          </Text>
-          
-          <Text style={styles.statementText}>
-            "{question.statement}"
-          </Text>
+        {/* Card Stack Area */}
+        <View style={styles.cardArea}>
+          {/* Next card (behind) */}
+          {nextQuestion && (
+            <Animated.View style={[
+              styles.questionCard,
+              styles.nextCard,
+              {
+                transform: [{ scale: nextCardScale }],
+                opacity: nextCardOpacity,
+              },
+            ]}>
+              <Text style={styles.statementNumber}>
+                STATEMENT {currentIndex + 2} OF {total}
+              </Text>
+              <Text style={styles.statementText} numberOfLines={4}>
+                "{nextQuestion.statement}"
+              </Text>
+            </Animated.View>
+          )}
 
-          {/* Answer buttons inside card */}
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={[styles.answerBtn, styles.trueBtn]}
-              activeOpacity={0.8}
-              onPress={() => handleAnswer(true)}
-            >
-              <Text style={[styles.answerBtnLabel, styles.trueBtnLabel]}>TRUE</Text>
-            </TouchableOpacity>
+          {/* Current card (swipeable) */}
+          <Animated.View
+            style={[
+              styles.questionCard,
+              {
+                transform: [
+                  { translateX: position.x },
+                  { translateY: position.y },
+                  { rotate },
+                ],
+                opacity: cardOpacity,
+              },
+            ]}
+            {...panResponder.panHandlers}
+          >
+            {/* TRUE overlay (right swipe) */}
+            <Animated.View style={[styles.swipeOverlay, styles.trueOverlay, { opacity: trueOverlayOpacity }]}>
+              <CheckCircle size={28} color="#065F46" strokeWidth={2.5} />
+              <Text style={styles.trueOverlayText}>TRUE</Text>
+            </Animated.View>
 
-            <TouchableOpacity
-              style={[styles.answerBtn, styles.falseBtn]}
-              activeOpacity={0.8}
-              onPress={() => handleAnswer(false)}
-            >
-              <Text style={[styles.answerBtnLabel, styles.falseBtnLabel]}>FALSE</Text>
-            </TouchableOpacity>
+            {/* FALSE overlay (left swipe) */}
+            <Animated.View style={[styles.swipeOverlay, styles.falseOverlay, { opacity: falseOverlayOpacity }]}>
+              <XCircle size={28} color="#991B1B" strokeWidth={2.5} />
+              <Text style={styles.falseOverlayText}>FALSE</Text>
+            </Animated.View>
+
+            <Text style={styles.statementNumber}>
+              STATEMENT {currentIndex + 1} OF {total}
+            </Text>
+
+            <Text style={styles.statementText}>
+              "{question.statement}"
+            </Text>
+          </Animated.View>
+        </View>
+
+        {/* Swipe instruction */}
+        {showInstruction && (
+          <View style={styles.instructionRow}>
+            <View style={styles.instructionItem}>
+              <View style={[styles.instructionCircle, { backgroundColor: 'rgba(254,226,226,0.7)' }]}>
+                <ArrowLeft size={14} color="#991B1B" />
+              </View>
+              <Text style={[styles.instructionLabel, { color: '#991B1B' }]}>FALSE</Text>
+            </View>
+
+            <Text style={styles.instructionDivider}>swipe</Text>
+
+            <View style={styles.instructionItem}>
+              <Text style={[styles.instructionLabel, { color: '#065F46' }]}>TRUE</Text>
+              <View style={[styles.instructionCircle, { backgroundColor: 'rgba(167,243,208,0.5)' }]}>
+                <ArrowRight size={14} color="#065F46" />
+              </View>
+            </View>
           </View>
-        </Animated.View>
+        )}
 
-        {/* Auto-advance helper note */}
-        <Text style={styles.helperNote}>
-          Tap → auto-advance to next statement
-        </Text>
-
-        {/* Storage capsule hint */}
-        {/* <View style={styles.storageHintCard}>
-          <View style={styles.databaseIconContainer}>
-            <Text style={{ fontSize: 14 }}>📂</Text>
-          </View>
-          <Text style={styles.storageHintText}>
-            Stores: d3_mirror_q[{currentIndex + 1}] · d3_true_ratio (running count)
-          </Text>
-        </View> */}
-
-      </ScrollView>
+        {/* Dots */}
+        <View style={styles.dotsRow}>
+          {questions.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                i < currentIndex
+                  ? (answers[questions[i].id] ? styles.dotTrue : styles.dotFalse)
+                  : i === currentIndex
+                    ? styles.dotActive
+                    : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
+      </View>
     </ScreenWrapper>
   );
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  scroll: {
-    flex: 1,
-  },
   content: {
+    flex: 1,
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    paddingBottom: metrics.spacing.xl,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: metrics.spacing.md,
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    color: c.text,
-    fontFamily: fonts.playfairSemiBold,
-  },
-  mainTitle: {
-    fontSize: 26,
-    color: c.text,
-    fontFamily: 'PlayfairDisplay-Bold',
-    textAlign: 'center',
-    marginTop: metrics.spacing.sm,
-    marginBottom: 6,
+    paddingBottom: metrics.spacing.md,
   },
   subtitle: {
     ...typography.caption,
     color: c.textHint,
     textAlign: 'center',
-    marginBottom: metrics.spacing.md,
+    marginBottom: metrics.spacing.sm,
   },
   personalityPillRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginBottom: metrics.spacing.lg,
+    marginBottom: metrics.spacing.md,
   },
   personalityPill: {
     flexDirection: 'row',
@@ -251,10 +344,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     ...typography.captionSmall,
     color: c.text,
     fontFamily: fonts.dmSansBold,
-  },
-  personalitySubtext: {
-    ...typography.captionSmall,
-    color: c.textHint,
   },
   progressContainer: {
     paddingHorizontal: 8,
@@ -277,19 +366,32 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textHint,
     textAlign: 'right',
   },
+
+  // Card stack
+  cardArea: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   questionCard: {
+    position: 'absolute',
+    width: SCREEN_WIDTH - metrics.layout.screenPaddingHz * 2 - 8,
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderRadius: 24,
     borderWidth: 1.5,
     borderColor: 'rgba(0,0,0,0.06)',
-    padding: metrics.spacing.lg,
+    padding: 28,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 260,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-    marginBottom: metrics.spacing.md,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 5,
+  },
+  nextCard: {
+    zIndex: -1,
   },
   statementNumber: {
     ...typography.captionSmall,
@@ -303,69 +405,103 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 32,
     textAlign: 'center',
-    marginBottom: metrics.spacing.xl,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
   },
-  buttonsContainer: {
+
+  // Swipe overlays
+  swipeOverlay: {
+    position: 'absolute',
+    top: 16,
     flexDirection: 'row',
-    gap: 12,
-    width: '100%',
-  },
-  answerBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 100,
+    borderWidth: 2,
+    zIndex: 10,
   },
-  trueBtn: {
+  trueOverlay: {
+    right: 16,
+    backgroundColor: 'rgba(236,253,245,0.95)',
     borderColor: '#A7F3D0',
-    backgroundColor: '#ECFDF5',
   },
-  falseBtn: {
+  falseOverlay: {
+    left: 16,
+    backgroundColor: 'rgba(254,242,242,0.95)',
     borderColor: '#FECACA',
-    backgroundColor: '#FEF2F2',
   },
-  answerBtnLabel: {
+  trueOverlayText: {
     fontSize: 16,
     fontFamily: fonts.dmSansBold,
+    color: '#065F46',
     letterSpacing: 1,
   },
-  trueBtnLabel: {
-    color: '#065F46',
-  },
-  falseBtnLabel: {
+  falseOverlayText: {
+    fontSize: 16,
+    fontFamily: fonts.dmSansBold,
     color: '#991B1B',
+    letterSpacing: 1,
   },
-  helperNote: {
-    ...typography.caption,
-    color: c.textHint,
-    textAlign: 'center',
-    marginBottom: metrics.spacing.lg,
-  },
-  storageHintCard: {
+
+  // Instruction row
+  instructionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#DCFCE7',
-    borderRadius: metrics.radius.lg,
-    padding: metrics.spacing.md,
-    gap: metrics.spacing.sm,
-    width: '100%',
+    justifyContent: 'center',
+    gap: 16,
+    paddingVertical: 14,
+    marginTop: 8,
   },
-  databaseIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#E8F5E9',
+  instructionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  instructionCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  storageHintText: {
-    flex: 1,
-    ...typography.captionSmall,
-    color: '#1B5E20',
+  instructionLabel: {
+    fontSize: 13,
+    fontFamily: fonts.dmSansBold,
+    letterSpacing: 0.5,
+  },
+  instructionDivider: {
+    fontSize: 12,
+    fontFamily: fonts.dmSansRegular,
+    color: c.textHint,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+  },
+
+  // Dots
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  dotActive: {
+    backgroundColor: '#0D9488',
+    width: 20,
+    borderRadius: 4,
+  },
+  dotTrue: {
+    backgroundColor: '#A7F3D0',
+  },
+  dotFalse: {
+    backgroundColor: '#FECACA',
+  },
+  dotInactive: {
+    backgroundColor: 'rgba(0,0,0,0.08)',
   },
 });

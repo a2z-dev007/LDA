@@ -33,7 +33,7 @@ export const NameKeeperScreen: React.FC = () => {
 
   const [userName, setUserNameInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  
+
   const shake = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -117,10 +117,10 @@ export const NameKeeperScreen: React.FC = () => {
     >
       <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
         <KeyboardAvoidingView style={styles.inner} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Animated.View 
+          <Animated.View
             style={[
-              styles.container, 
-              { 
+              styles.container,
+              {
                 opacity: fadeAnim,
                 transform: [
                   { translateY: slideAnim },
@@ -131,7 +131,7 @@ export const NameKeeperScreen: React.FC = () => {
           >
             {/* Decorative floating elements */}
             <View style={styles.decorativeContainer}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.floatingIcon,
                   styles.floatingIcon1,
@@ -140,17 +140,17 @@ export const NameKeeperScreen: React.FC = () => {
               >
                 <HeartIcon size={24} color={colors.primary} />
               </Animated.View>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.floatingIcon,
                   styles.floatingIcon2,
-                  { 
-                    transform: [{ 
+                  {
+                    transform: [{
                       scale: pulseAnim.interpolate({
                         inputRange: [1, 1.1],
                         outputRange: [1, 1.15]
                       })
-                    }] 
+                    }]
                   }
                 ]}
               >
@@ -182,7 +182,7 @@ export const NameKeeperScreen: React.FC = () => {
 
               {/* Input section */}
               <View style={styles.inputSection}>
-                <Animated.View 
+                <Animated.View
                   style={[
                     styles.inputCard,
                     isFocused && styles.inputCardFocused,
@@ -271,7 +271,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: metrics.spacing.xl,
     paddingBottom: metrics.spacing.md,
   },
-  
+
   // Decorative elements
   decorativeContainer: {
     position: 'absolute',
@@ -360,7 +360,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.md,
   },
   inputCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: metrics.radius.xl,
     borderWidth: 2,
     borderColor: 'rgba(45, 95, 93, 0.2)',
@@ -368,20 +368,20 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    // shadowColor: '#000000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.06,
+    // shadowRadius: 8,
+    // elevation: 2,
   },
   inputCardFocused: {
     borderColor: c.primary,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 4,
+    // shadowColor: c.primary,
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 16,
+    // elevation: 4,
   },
   inputIconWrapper: {
     width: 48,

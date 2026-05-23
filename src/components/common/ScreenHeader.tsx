@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppColors } from '../../theme';
 import { fonts } from '../../theme/typography';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 interface ScreenHeaderProps {
   /** The text to display as the primary screen title */
@@ -84,9 +85,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderColor: 'rgba(45, 95, 93, 0.1)',
   },
   headerTitle: {
-    fontSize: 26,
+    fontSize: responsiveFontSize(2.4),
     color: c.text,
-    fontFamily: fonts.playfairSemiBold,
+    // fontFamily: fonts.playfairSemiBold,
   },
   titleNoButton: {
     marginLeft: 0,

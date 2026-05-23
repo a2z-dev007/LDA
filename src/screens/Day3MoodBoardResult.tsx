@@ -15,6 +15,7 @@ import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
 import { Check, Lock, ArrowRight } from 'lucide-react-native';
+import { getMoodBoardCombo } from '../data/moodBoardCombos';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3MoodBoardResult'>;
 
@@ -61,7 +62,9 @@ export const Day3MoodBoardResult: React.FC = () => {
   const day3 = useDayStore(s => s.day3);
 
   const selectedTiles = day3.d3_mood_board;
-  const theme = day3.d3_mood_board_theme ?? 'Mixed & Moving';
+  const combo = getMoodBoardCombo(selectedTiles);
+  const theme = combo?.title ?? day3.d3_mood_board_theme ?? 'Mixed & Moving';
+  const themeDesc = combo?.emotionalRead ?? THEME_DESCRIPTION[theme] ?? '';
 
   const handleContinue = () => {
     haptics.success();
@@ -110,7 +113,7 @@ export const Day3MoodBoardResult: React.FC = () => {
         <View style={styles.themeCard}>
           <Text style={styles.themeEyebrow}>COMPUTED EMOTIONAL THEME</Text>
           <Text style={styles.themeName}>{theme}</Text>
-          <Text style={styles.themeDesc}>{THEME_DESCRIPTION[theme]}</Text>
+          <Text style={styles.themeDesc}>{themeDesc}</Text>
         </View>
 
         {/* Day 5 Feed */}

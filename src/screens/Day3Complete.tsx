@@ -17,6 +17,7 @@ import { useStreakStore } from '../store/useStreakStore';
 import {
   CheckCircle, Heart, Lock, Grid2x2, Anchor, Star,
 } from 'lucide-react-native';
+import { JarEnvelopeAnimation } from '../components/common/JarEnvelopeAnimation';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3Complete'>;
 
@@ -76,7 +77,7 @@ export const Day3Complete: React.FC = () => {
 
   const handleContinue = () => {
     haptics.success();
-    navigation.navigate('Bridge3to4');
+    navigation.navigate('Home');
   };
 
   return (
@@ -86,6 +87,11 @@ export const Day3Complete: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Hero */}
         <View style={styles.heroSection}>
+          {/* Animated Jar — top right */}
+          <View style={styles.jarContainer}>
+            <JarEnvelopeAnimation />
+          </View>
+
           <View style={styles.checkCircle}>
             <CheckCircle size={44} color="#2D5F5D" strokeWidth={1.5} />
           </View>
@@ -147,6 +153,14 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: metrics.spacing.xl,
     paddingBottom: metrics.spacing.xl,
     paddingHorizontal: metrics.layout.screenPaddingHz,
+    position: 'relative',
+  },
+  jarContainer: {
+    position: 'absolute',
+    top: metrics.spacing.md,
+    right: metrics.layout.screenPaddingHz - 15,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
   },
   checkCircle: {
     width: 88,

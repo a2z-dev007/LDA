@@ -37,7 +37,14 @@ export const SetYourIntention: React.FC = () => {
   const targetDay = route.params?.day ?? 2;
   const setDay2Intention = useDayStore((s) => s.setDay2IntentionWord);
   const setDay3Intention = useDayStore((s) => s.setDay3IntentionWord);
-  const setIntentionWord = targetDay === 3 ? setDay3Intention : setDay2Intention;
+  const setDay4Intention = useDayStore((s) => s.setDay4IntentionWord);
+  const setIntentionWord = targetDay === 4 ? setDay4Intention : targetDay === 3 ? setDay3Intention : setDay2Intention;
+
+  const filteredWords = React.useMemo(() => {
+    return targetDay === 3
+      ? intentionWords.filter(item => ['patient', 'present', 'honest', 'playful', 'open', 'brave'].includes(item.word.toLowerCase()))
+      : intentionWords;
+  }, [targetDay]);
 
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const fadeAnims = useRef(intentionWords.map(() => new Animated.Value(0))).current;
@@ -45,10 +52,10 @@ export const SetYourIntention: React.FC = () => {
   const ctaOpacity    = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.stagger(40, fadeAnims.map(anim =>
+    Animated.stagger(40, fadeAnims.slice(0, filteredWords.length).map(anim =>
       Animated.timing(anim, { toValue: 1, duration: 350, useNativeDriver: true })
     )).start();
-  }, []);
+  }, [filteredWords.length]);
 
   useEffect(() => {
     if (selectedWord) {
@@ -68,7 +75,9 @@ export const SetYourIntention: React.FC = () => {
   const handleConfirm = () => {
     if (!selectedWord) return;
     haptics.heavy();
-    if (targetDay === 3) {
+    if (targetDay === 4) {
+      navigation.navigate('Day4MemoryJar');
+    } else if (targetDay === 3) {
       navigation.navigate('Day3AppreciationSnap');
     } else {
       navigation.navigate('ThisOrThat');
@@ -118,7 +127,7 @@ export const SetYourIntention: React.FC = () => {
       </TouchableOpacity>
 
       <FlatList
-        data={intentionWords}
+        data={filteredWords}
         renderItem={renderItem}
         keyExtractor={(item) => item.word}
         numColumns={2}
