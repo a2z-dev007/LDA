@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
 import {
+  responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import { useAppColors } from '../../theme';
@@ -20,7 +21,8 @@ export const DayHeader: React.FC<DayHeaderProps> = ({ eyebrow, onAction }) => {
   return (
     <View style={styles.topRow}>
       <View style={styles.eyebrowPill}>
-        <Sparkles size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} />
+        {/* <Sparkles size={metrics.iconSize.xs} color={colors.primary} strokeWidth={2} /> */}
+        <Text >✨</Text>
         <Text style={styles.eyebrow}>{eyebrow.toUpperCase()}</Text>
       </View>
       {onAction ? (
@@ -29,7 +31,8 @@ export const DayHeader: React.FC<DayHeaderProps> = ({ eyebrow, onAction }) => {
         </TouchableOpacity>
       ) : (
         <View style={styles.sparkleCircle}>
-          <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
+          {/* <Sparkles size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} /> */}
+          <Text style={{ fontSize: responsiveFontSize(2) }}>✨</Text>
         </View>
       )}
     </View>
@@ -63,9 +66,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: responsiveWidth(11),
     height: responsiveWidth(11),
     borderRadius: responsiveWidth(5.5),
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderWidth: 1,
-    borderColor: 'rgba(45,95,93,0.15)',
+    // backgroundColor: 'rgba(255,255,255,0.8)',
+    // borderWidth: 1,
+    // borderColor: 'rgba(45,95,93,0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -88,11 +88,11 @@ export const Day3OneCertainty: React.FC = () => {
               <Star size={12} color="#6B3291" fill="#6B3291" />
               <Text style={styles.dedicationText}>Dedication +0.5</Text>
             </View>
-            <Text style={styles.openTextLabel}>Open text</Text>
+            {/* <Text style={styles.openTextLabel}>Open text</Text> */}
           </View>
 
           {/* Narrative arc of Day 3 */}
-          <View style={styles.narrativeCard}>
+          {/* <View style={styles.narrativeCard}>
             <Text style={styles.narrativeEyebrow}>Narrative arc of Day 3</Text>
             <View style={styles.chipsGrid}>
               <View style={styles.arcFlow}>
@@ -122,7 +122,7 @@ export const Day3OneCertainty: React.FC = () => {
                 <Text style={[styles.chipText, { color: '#2D5F5D' }]}>Anchoring</Text>
               </View>
             </View>
-          </View>
+          </View> */}
 
           {/* Storage banner */}
           {/* <View style={styles.storageBanner}>

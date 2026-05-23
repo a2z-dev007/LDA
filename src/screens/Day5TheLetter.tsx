@@ -11,6 +11,7 @@ import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
+import { useStreakStore } from '../store/useStreakStore';
 import { useUserStore } from '../store/useUserStore';
 import { generateLetter } from '../services/letterGenerator';
 import { haptics } from '../utils/haptics';
@@ -25,6 +26,7 @@ export const Day5TheLetter: React.FC = () => {
   const day3 = useDayStore((s) => s.day3);
   const day4 = useDayStore((s) => s.day4);
   const completeDay5 = useDayStore((s) => s.completeDay5);
+  const recordActivity = useStreakStore((s) => s.recordActivity);
   const day5 = useDayStore((s) => s.day5);
   const userName = useUserStore((s) => s.name);
 
@@ -55,6 +57,7 @@ export const Day5TheLetter: React.FC = () => {
   const handleSave = () => {
     haptics.success();
     if (!day5.letterGenerated) {
+      recordActivity();
       completeDay5({
         badgeName: day5.badgeName,
         badgeTier: day5.badgeTier,

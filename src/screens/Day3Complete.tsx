@@ -34,6 +34,7 @@ export const Day3Complete: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const day3 = useDayStore(s => s.day3);
   const streakCount = useStreakStore(s => s.streakCount);
+  const recordActivity = useStreakStore(s => s.recordActivity);
 
   const trueCount = Object.values(day3.mirrorAnswers).filter(Boolean).length;
   const theme = day3.d3_mood_board_theme ?? 'Mixed & Moving';
@@ -73,6 +74,7 @@ export const Day3Complete: React.FC = () => {
 
   useEffect(() => {
     haptics.success();
+    recordActivity();
   }, []);
 
   const handleContinue = () => {

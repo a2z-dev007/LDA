@@ -184,7 +184,7 @@ export const AnimatedCandle: React.FC<AnimatedCandleProps> = ({
             borderRadius: W,
             opacity: warmGlowOpacity,
             backgroundColor: '#FFAA0060',
-            top: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [W * 0.25, W * -0.1] }),
+            top: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [W * 0.18, W * -0.19] }),
             alignSelf: 'center',
           },
         ]}
@@ -200,7 +200,7 @@ export const AnimatedCandle: React.FC<AnimatedCandleProps> = ({
             borderRadius: W,
             opacity: blueGlowOpacity,
             backgroundColor: '#7090FF60',
-            top: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [W * 0.25, W * -0.1] }),
+            top: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [W * 0.18, W * -0.19] }),
             alignSelf: 'center',
           },
         ]}
@@ -211,6 +211,7 @@ export const AnimatedCandle: React.FC<AnimatedCandleProps> = ({
         style={[
           styles.flameContainer,
           {
+            bottom: CANDLE_H + 12,
             height: flameHeightAnim.interpolate({
               inputRange: [0, 1],
               outputRange: [MIN_FLAME, MAX_FLAME],
@@ -422,7 +423,6 @@ const styles = StyleSheet.create({
   },
   flameContainer: {
     position: 'absolute',
-    bottom: '52%', // sits just above candle top
     zIndex: 2,
     alignSelf: 'center',
   },

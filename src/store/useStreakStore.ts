@@ -40,16 +40,18 @@ export const useStreakStore = create<StreakState>()(
           return;
         }
 
-        const diffHours = (now.getTime() - last.getTime()) / (1000 * 60 * 60);
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastDay = new Date(last.getFullYear(), last.getMonth(), last.getDate());
+        const diffDays = Math.floor((today.getTime() - lastDay.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (diffHours < 24) {
-          // Same day — just update timestamp
+        if (diffDays === 0) {
+          // Same calendar day — just update timestamp
           set({ lastActiveDate: now.toISOString() });
-        } else if (diffHours < 48) {
-          // Next day — increment streak
+        } else if (diffDays === 1) {
+          // Next calendar day — increment streak
           set({ streakCount: get().streakCount + 1, lastActiveDate: now.toISOString() });
         } else {
-          // Missed — streak resets (shield logic handled separately)
+          // Missed a day (gap > 1) — streak resets (shield logic handled separately)
           set({ streakCount: Math.max(1, completedDays), lastActiveDate: now.toISOString() });
         }
 

@@ -12,6 +12,7 @@ import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
 import { useDayStore } from '../store/useDayStore';
+import { useStreakStore } from '../store/useStreakStore';
 import { reframeTextAsync } from '../services/toneReframer';
 import { haptics } from '../utils/haptics';
 import { Day4Scoring } from '../services/scoring/day4Scoring';
@@ -29,6 +30,8 @@ export const Day4DropBox: React.FC = () => {
   const day4 = useDayStore((s) => s.day4);
   const completeDay4 = useDayStore((s) => s.completeDay4);
   const setLoveDrop = useDayStore((s) => s.setLoveDrop);
+
+  const recordActivity = useStreakStore(s => s.recordActivity);
 
   const [mode, setMode] = useState<'reframe' | 'seal'>('reframe');
   const [rawText, setRawText] = useState('');
@@ -65,6 +68,7 @@ export const Day4DropBox: React.FC = () => {
     console.log('Day 4 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
     console.log('===========================================================');
 
+    recordActivity();
     setShowJarModal(true);
   };
 
@@ -90,6 +94,7 @@ export const Day4DropBox: React.FC = () => {
     console.log('Day 4 Calculated Scoring Result:', JSON.stringify(scoringResult, null, 2));
     console.log('===========================================================');
 
+    recordActivity();
     setShowJarModal(true);
   };
 

@@ -71,18 +71,18 @@ export const Day2MoodPicker: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ProgressStrip currentDay={2} />
+      {/* <ProgressStrip currentDay={2} /> */}
 
       <View style={styles.header}>
         <DayHeader eyebrow="Day 2 · The Mood Room" />
-        {day2.intentionWord ? (
+        {/* {day2.intentionWord ? (
           <View style={[styles.intentionPill, { borderColor: colors.day2 }]}>
             <Flame size={metrics.iconSize.xs} color={colors.day2} style={{ marginRight: 4 }} />
             <Text style={[styles.intentionText, { color: colors.day2 }]}>{day2.intentionWord}</Text>
           </View>
-        ) : null}
-        <Text style={styles.title}>How do you feel about{'\n'}your relationship today? ☁️</Text>
-        <Text style={styles.subtitle}>No right answer · Only your truth</Text>
+        ) : null} */}
+        {/* <Text style={styles.title}>How do you feel about{'\n'}your relationship today? ☁️</Text>
+        <Text style={styles.subtitle}>No right answer · Only your truth</Text> */}
       </View>
 
       {/* ── Animated Candle ── */}
@@ -92,7 +92,10 @@ export const Day2MoodPicker: React.FC = () => {
           size={110}
         />
       </View>
-
+      <View style={{ marginHorizontal: metrics.layout.screenPaddingHz, paddingBottom: metrics.spacing.xs }}>
+        <Text style={styles.title}>How do you feel about your relationship today?</Text>
+        <Text style={styles.subtitle}>No right answer · Only your truth</Text>
+      </View>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.grid}
@@ -145,8 +148,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) =>
   StyleSheet.create({
     header: {
       paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingTop: metrics.spacing.md,
-      paddingBottom: metrics.spacing.sm,
+      // paddingTop: metrics.spacing.md,
+      // paddingBottom: metrics.spacing.sm,
       gap: metrics.spacing.sm,
     },
     intentionPill: {
@@ -161,17 +164,19 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) =>
     },
     intentionText: { ...typography.labelSmall, fontFamily: 'Inter-SemiBold' },
     title: {
-      ...typography.displayMedium,
+      // ...typography.displayMedium,
       color: c.text,
+      fontSize: responsiveFontSize(1.8),
+      textAlign: 'center',
       fontFamily: 'PlayfairDisplay-Bold',
       lineHeight: metrics.fontSize.h2 * 1.35,
     },
-    subtitle: { ...typography.bodySmall, color: c.textSecondary, marginBottom: metrics.spacing.sm },
+    subtitle: { fontSize: responsiveFontSize(1.4), color: c.textSecondary, marginBottom: metrics.spacing.sm, textAlign: 'center', },
     candleContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: metrics.spacing.sm,
-      height: responsiveHeight(18),
+      paddingVertical: metrics.spacing.lg,
+      // height: responsiveHeight(18),
     },
     scroll: { flex: 1, marginTop: metrics.spacing.xs },
     grid: {
@@ -187,19 +192,21 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) =>
       borderRadius: metrics.radius.lg,
       padding: metrics.spacing.md,
       alignItems: 'center',
+      flexDirection: "row",
       gap: metrics.spacing.sm,
       backgroundColor: 'rgba(255,255,255,0.5)',
     },
-    moodEmoji: { fontSize: responsiveFontSize(4.5) },
+    moodEmoji: { fontSize: responsiveFontSize(3.5) },
     moodLabel: {
       color: c.textSecondary,
-      ...typography.bodySmall,
+      // ...typography.bodySmall,
+      fontSize: responsiveFontSize(1.4),
       fontFamily: 'Inter-SemiBold',
       textAlign: 'center',
     },
     footer: {
       paddingHorizontal: metrics.layout.screenPaddingHz,
-      paddingBottom: metrics.spacing.xl,
+      paddingBottom: metrics.spacing.md,
       paddingTop: metrics.spacing.md,
     },
   });
