@@ -49,11 +49,11 @@ export const Day2OneGoodThing: React.FC = () => {
       <ScreenWrapper>
         <ProgressStrip currentDay={2} />
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <DayHeader 
-            eyebrow="One Good Thing" 
+          <DayHeader
+            eyebrow="One Good Thing"
             onAction={text.length >= 10 ? () => haptics.light() : undefined}
           />
-          
+
           <Text style={styles.prompt}>
             "Before anything else — name one thing about your partner that made you feel something good recently. It can be tiny."
           </Text>
@@ -91,11 +91,11 @@ export const Day2OneGoodThing: React.FC = () => {
             <View style={[styles.hintIconBox, { backgroundColor: 'rgba(45,212,191,0.1)' }]}>
               <BookOpen size={20} color={colors.primary} />
             </View>
-            <Text style={styles.hintDesc}>animates to journal</Text>
+            {/* <Text style={styles.hintDesc}>animates to journal</Text> */}
           </View>
 
         </ScrollView>
-        
+
         <View style={styles.footer}>
           <GradientButton
             text="Save to Journal"
