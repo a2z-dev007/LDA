@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +17,7 @@ import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { resolveRoute } from '../services/dayRouter';
 import { haptics } from '../utils/haptics';
-import { Heart, Sparkles, Lock } from 'lucide-react-native';
+import { Heart, Sparkles, Lock, CheckCheckIcon, BadgeCheckIcon } from 'lucide-react-native';
 import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -74,6 +74,24 @@ export const HomeScreen = () => {
   const completed = useDayStore((s) => s.completedDayCount());
   const streakCount = useStreakStore((s) => s.streakCount);
   const insets = useSafeAreaInsets();
+  const pulseAnim = React.useRef(new Animated.Value(1)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.18,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1.0,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
 
   const handleContinue = () => {
     haptics.medium();
@@ -144,7 +162,7 @@ export const HomeScreen = () => {
                 }}
                 style={[
                   styles.card,
-                  isActive && styles.cardActive,
+                  isActive && [styles.cardActive, { borderColor: day.iconColors[0] }],
                   isLocked && styles.cardLocked,
                 ]}
               >
@@ -155,7 +173,13 @@ export const HomeScreen = () => {
                   end={{ x: 1, y: 1 }}
                   style={styles.iconCircle}
                 >
-                  <Text style={styles.iconEmoji}>{day.iconEmoji}</Text>
+                  {isActive ? (
+                    <Animated.Text style={[styles.iconEmoji, { transform: [{ scale: pulseAnim }] }]}>
+                      {day.iconEmoji}
+                    </Animated.Text>
+                  ) : (
+                    <Text style={styles.iconEmoji}>{day.iconEmoji}</Text>
+                  )}
                 </LinearGradient>
 
                 {/* Card content */}
@@ -183,13 +207,11 @@ export const HomeScreen = () => {
                 {/* Right status */}
                 <View style={styles.cardRight}>
                   {isCompleted && (
-                    <View style={[styles.checkCircle, { backgroundColor: '#2DD4BF' }]}>
-                      <Text style={styles.checkIcon}>✓</Text>
-                    </View>
+                      <BadgeCheckIcon size={metrics.iconSize.sm} strokeWidth={2} color="#2DD4BF" />
                   )}
                   {isActive && (
-                    <View style={[styles.activeDotOuter, { borderColor: '#2DD4BF' }]}>
-                      <View style={[styles.activeDotInner, { backgroundColor: '#2DD4BF' }]} />
+                    <View style={[styles.activeDotOuter, { borderColor: day.iconColors[0] }]}>
+                      <View style={[styles.activeDotInner, { backgroundColor: day.iconColors[0] }]} />
                     </View>
                   )}
                   {isLocked && (

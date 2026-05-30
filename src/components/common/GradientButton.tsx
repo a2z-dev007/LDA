@@ -99,8 +99,6 @@ interface GradientButtonProps {
   hideGlossyOverlay?: boolean;
 }
 
-// 3-stop gradient matching the theme: forest teal → medium sage → soft sage
-const SAGE_BLUE_GRADIENT: [string, string, string] = ['#2D5F5D', '#5A8A7F', '#8FB8A8'];
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
   text,
@@ -124,7 +122,9 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   shadowColor,
   hideGlossyOverlay = false,
 }) => {
+  // 3-stop gradient matching the theme: forest teal → medium sage → soft sage
   const colors = useAppColors();
+  const SAGE_BLUE_GRADIENT: [string, string, string] = colors.gradientBtn;
 
   // Determine gradient colors — sageBlue and default use 3-stop gradient
   const isSageBlue = variant === 'sageBlue' || (variant === 'default' && !gradientStart);

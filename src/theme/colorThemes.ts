@@ -120,61 +120,229 @@ export const midnightGardenTheme: ColorTheme = {
 };
 
 // ── Sage Garden (LIGHT) ──────────────────────────────────
-export const sageGardenTheme: ColorTheme = {
-  name: 'Sage Garden',
-  description: 'Soft sage & mint — natural, calming, and grounded',
+// export const sageGardenTheme: ColorTheme = {
+//   name: 'Sage Garden',
+//   description: 'Soft sage & mint — natural, calming, and grounded',
+//   isDark: false,
+
+//   primary: '#2D5F5D',           // forest teal — main text, icons
+//   secondary: '#8FB8A8',         // sage green — secondary actions
+//   accent: '#A8C9BC',            // soft mint — highlights
+
+//   dark: '#1A3635',              // deep forest — darkest text
+//   darkMid: '#F5FAF9',           // mint cream — card surfaces
+//   light: '#FFFFFF',             // pure white
+//   white: '#FFFFFF',
+
+//   text: '#1A3635',              // deep forest — primary text
+//   textSecondary: 'rgba(26,54,53,0.65)',
+//   textHint: 'rgba(26,54,53,0.38)',
+
+//   surface: 'rgba(45,95,93,0.06)',
+//   surfaceBorder: 'rgba(45,95,93,0.15)',
+
+//   onPrimary: '#FFFFFF',
+
+//   gradientStart: '#F5FAF9',
+//   gradientMid: '#E8F3F1',
+//   gradientEnd: '#E0F0ED',
+//   gradientBtn: ["#2DD4BF", "#60A5FA", "#8B5CF6"],
+//   gradientBtn2: ["#2DD4BF", "#60A5FA", "#8B5CF6"],
+//   buttonGradientStart: '#2D5F5D',
+//   buttonGradientEnd: '#8FB8A8',
+//   glassWhite: 'rgba(255,255,255,0.3)',
+//   glassLight: 'rgba(45,95,93,0.08)',
+//   glassBorder: 'rgba(143,184,168,0.25)',
+//   glassHeavy: 'rgba(45,95,93,0.12)',
+//   glassCardBg: 'rgba(255,255,255,0.8)',
+//   textDark: '#1A3635',
+//   textLight: '#FFFFFF',
+//   textMuted: 'rgba(26,54,53,0.65)',
+//   textSubtle: 'rgba(26,54,53,0.38)',
+
+//   glowPrimary: 'rgba(45,95,93,0.25)',
+//   glowSecondary: 'rgba(143,184,168,0.20)',
+
+//   day1: '#2D5F5D',   // forest teal
+//   day2: '#5A8A7F',   // medium sage
+//   day3: '#8FB8A8',   // soft sage
+//   day4: '#A8C9BC',   // mint green
+//   day5: '#6BA8B8',   // sky teal
+
+//   error: '#C85A54',
+//   success: '#5A8A7F',
+// };
+// export const auroraLoveTheme: ColorTheme = {
+//   name: 'Aurora Love',
+//   description: 'Dreamy emotional gradients with soft glass romance',
+//   isDark: false,
+
+//   // Core Brand
+//   primary: '#214E5A',           // deep emotional teal
+//   secondary: '#7BC8C4',         // mint cyan
+//   accent: '#B794F6',            // soft lavender
+
+//   dark: '#16343D',
+//   darkMid: '#F6FBFF',
+//   light: '#FFFFFF',
+//   white: '#FFFFFF',
+
+//   // Typography
+//   text: '#183642',
+//   textSecondary: 'rgba(24,54,66,0.68)',
+//   textHint: 'rgba(24,54,66,0.42)',
+
+//   textDark: '#183642',
+//   textLight: '#FFFFFF',
+//   textMuted: 'rgba(24,54,66,0.68)',
+//   textSubtle: 'rgba(24,54,66,0.42)',
+
+//   // Surfaces
+//   surface: 'rgba(255,255,255,0.28)',
+//   surfaceBorder: 'rgba(255,255,255,0.35)',
+
+//   glassWhite: 'rgba(255,255,255,0.32)',
+//   glassLight: 'rgba(255,255,255,0.18)',
+//   glassBorder: 'rgba(255,255,255,0.30)',
+//   glassHeavy: 'rgba(255,255,255,0.40)',
+//   glassCardBg: 'rgba(255,255,255,0.72)',
+
+//   // Main Background Gradient
+//   gradientStart: '#E8FFF8',
+//   gradientMid: '#EEF6FF',
+//   gradientEnd: '#F4EEFF',
+
+//   // CTA Gradients
+//   gradientBtn: ['#2DD4BF', '#60A5FA', '#8B5CF6'],
+//   gradientBtn2: ['#34D399', '#3B82F6', '#A855F7'],
+
+//   buttonGradientStart: '#2DD4BF',
+//   buttonGradientEnd: '#8B5CF6',
+
+//   onPrimary: '#FFFFFF',
+
+//   // Glow Effects
+//   glowPrimary: 'rgba(96,165,250,0.28)',
+//   glowSecondary: 'rgba(168,85,247,0.22)',
+
+//   // Day Colors
+//   day1: '#4ECDC4',
+//   day2: '#60A5FA',
+//   day3: '#8B5CF6',
+//   day4: '#22C7D6',
+//   day5: '#4ADE80',
+
+//   // Status
+//   error: '#F87171',
+//   success: '#34D399',
+// };
+
+// export const dreamyAuroraTheme: ColorTheme = {
+//   name: 'Dreamy Aurora',
+//   description: 'Soft emotional aurora gradients with dreamy romance',
+//   isDark: false,
+
+//   primary: '#183B56',
+//   secondary: '#72D6C9',
+//   accent: '#A78BFA',
+
+//   dark: '#102A43',
+//   darkMid: '#F8FBFF',
+//   light: '#FFFFFF',
+//   white: '#FFFFFF',
+
+//   text: '#183B56',
+//   textSecondary: 'rgba(24,59,86,0.68)',
+//   textHint: 'rgba(24,59,86,0.42)',
+
+//   surface: 'rgba(255,255,255,0.22)',
+//   surfaceBorder: 'rgba(255,255,255,0.35)',
+
+//   gradientStart: '#E6FFF9',
+//   gradientMid: '#EEF5FF',
+//   gradientEnd: '#F5EDFF',
+
+//   gradientBtn: ['#2DD4BF', '#60A5FA', '#8B5CF6'],
+//   gradientBtn2: ['#34D399', '#3B82F6', '#A855F7'],
+
+//   buttonGradientStart: '#2DD4BF',
+//   buttonGradientEnd: '#8B5CF6',
+
+//   glassWhite: 'rgba(255,255,255,0.30)',
+//   glassLight: 'rgba(255,255,255,0.18)',
+//   glassBorder: 'rgba(255,255,255,0.28)',
+//   glassHeavy: 'rgba(255,255,255,0.40)',
+//   glassCardBg: 'rgba(255,255,255,0.72)',
+
+//   glowPrimary: 'rgba(96,165,250,0.22)',
+//   glowSecondary: 'rgba(168,85,247,0.18)',
+
+//   day1: '#4ECDC4',
+//   day2: '#60A5FA',
+//   day3: '#8B5CF6',
+//   day4: '#22C7D6',
+//   day5: '#4ADE80',
+
+//   error: '#F87171',
+//   success: '#34D399',
+// };
+
+export const healingTherapyTheme: ColorTheme = {
+  name: 'Healing Therapy',
+  description: 'Safe emotional support and calm healing',
   isDark: false,
 
-  primary: '#2D5F5D',           // forest teal — main text, icons
-  secondary: '#8FB8A8',         // sage green — secondary actions
-  accent: '#A8C9BC',            // soft mint — highlights
+  primary: '#215A6D',
+  secondary: '#4ECDC4',
+  accent: '#7DD3FC',
 
-  dark: '#1A3635',              // deep forest — darkest text
-  darkMid: '#F5FAF9',           // mint cream — card surfaces
-  light: '#FFFFFF',             // pure white
+  dark: '#12313D',
+  darkMid: '#F5FBFC',
+  light: '#FFFFFF',
   white: '#FFFFFF',
 
-  text: '#1A3635',              // deep forest — primary text
-  textSecondary: 'rgba(26,54,53,0.65)',
-  textHint: 'rgba(26,54,53,0.38)',
-
-  surface: 'rgba(45,95,93,0.06)',
-  surfaceBorder: 'rgba(45,95,93,0.15)',
-
+  text: '#183642',
+  textSecondary: 'rgba(24,54,66,0.68)',
+  textHint: 'rgba(24,54,66,0.42)',
   onPrimary: '#FFFFFF',
-
-  gradientStart: '#F5FAF9',
-  gradientMid: '#E8F3F1',
-  gradientEnd: '#E0F0ED',
-  gradientBtn: ['#2D5F5D', '#5A8A7F', '#8FB8A8'],
-  gradientBtn2: ['#2D5F5D', '#5A8A7F', '#6BA8B8'],
-  buttonGradientStart: '#2D5F5D',
-  buttonGradientEnd: '#8FB8A8',
-  glassWhite: 'rgba(255,255,255,0.3)',
-  glassLight: 'rgba(45,95,93,0.08)',
-  glassBorder: 'rgba(143,184,168,0.25)',
-  glassHeavy: 'rgba(45,95,93,0.12)',
-  glassCardBg: 'rgba(255,255,255,0.8)',
-  textDark: '#1A3635',
+  textDark: '#183642',
   textLight: '#FFFFFF',
-  textMuted: 'rgba(26,54,53,0.65)',
-  textSubtle: 'rgba(26,54,53,0.38)',
+  textMuted: 'rgba(24,54,66,0.68)',
+  textSubtle: 'rgba(24,54,66,0.42)',
 
-  glowPrimary: 'rgba(45,95,93,0.25)',
-  glowSecondary: 'rgba(143,184,168,0.20)',
+  surface: 'rgba(255,255,255,0.24)',
+  surfaceBorder: 'rgba(255,255,255,0.30)',
 
-  day1: '#2D5F5D',   // forest teal
-  day2: '#5A8A7F',   // medium sage
-  day3: '#8FB8A8',   // soft sage
-  day4: '#A8C9BC',   // mint green
-  day5: '#6BA8B8',   // sky teal
+  gradientStart: '#F0FDFA',
+  gradientMid: '#E0F2FE',
+  gradientEnd: '#F8FAFC',
 
-  error: '#C85A54',
-  success: '#5A8A7F',
+  gradientBtn: ['#43CEA2', '#185A9D'],
+  gradientBtn2: ['#4ECDC4', '#3B82F6'],
+
+  buttonGradientStart: '#43CEA2',
+  buttonGradientEnd: '#185A9D',
+
+  glassWhite: 'rgba(255,255,255,0.32)',
+  glassLight: 'rgba(255,255,255,0.18)',
+  glassBorder: 'rgba(255,255,255,0.28)',
+  glassHeavy: 'rgba(255,255,255,0.42)',
+  glassCardBg: 'rgba(255,255,255,0.78)',
+
+  glowPrimary: 'rgba(78,205,196,0.20)',
+  glowSecondary: 'rgba(59,130,246,0.18)',
+
+  day1: '#43CEA2',
+  day2: '#4ECDC4',
+  day3: '#3B82F6',
+  day4: '#7DD3FC',
+  day5: '#22C55E',
+
+  error: '#F87171',
+  success: '#10B981',
 };
-
 export const lightThemes = {
-  sageGarden: sageGardenTheme,
+  sageGarden: healingTherapyTheme,
 } as const;
 
 export const darkThemes = {

@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import { metrics } from '../../theme/metrics';
 import { typography } from '../../theme/typography';
+import { useAppColors } from '../../theme';
 
 interface DayCTAProps {
   title: string;

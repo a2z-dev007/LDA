@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,6 +10,9 @@ import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { ScreenHeader } from '../components/common/ScreenHeader';
 import { GradientButton } from '../components/common/GradientButton';
 import { useAppColors } from '../theme';
+import { useJournalStore } from '../store/useJournalStore';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
@@ -66,6 +69,36 @@ export const Day3MoodBoardResult: React.FC = () => {
   const theme = combo?.title ?? day3.d3_mood_board_theme ?? 'Mixed & Moving';
   const themeDesc = combo?.emotionalRead ?? THEME_DESCRIPTION[theme] ?? '';
 
+  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const headerAnim = useRef(new Animated.Value(0)).current;
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
+
+  useEffect(() => {
+    // Fade in
+    Animated.timing(headerAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    // Trigger envelope animation
+    const timer = setTimeout(() => {
+      if (jarRef.current) {
+        jarRef.current.triggerEnvelope(() => {
+          addJarMemory({
+            content: `Mood Board Theme: ${theme}`,
+            type: 'text',
+            tinyCompliment: null,
+            dayColor: colors.day3,
+          });
+        });
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleContinue = () => {
     haptics.success();
     navigation.navigate('Day3OneCertainty');
@@ -76,6 +109,10 @@ export const Day3MoodBoardResult: React.FC = () => {
       <ProgressStrip currentDay={3} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </Animated.View>
+
         <View style={styles.header}>
           <ScreenHeader title="Mood Board Match" />
           {/* Confirmation badge */}
@@ -148,6 +185,13 @@ export const Day3MoodBoardResult: React.FC = () => {
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scrollContent: {
     paddingBottom: metrics.spacing.xl,
+    position: 'relative',
+  },
+  jarWrapper: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 15,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
   },
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,

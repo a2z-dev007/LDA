@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Linking,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Linking, Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,6 +10,10 @@ import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
 import { assumptionsSets } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
+import { useJournalStore } from '../store/useJournalStore';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { metrics } from '../theme/metrics';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { haptics } from '../utils/haptics';
 import { GradientButton } from '../components/common/GradientButton';
 import { Lock, UserPlus } from 'lucide-react-native';
@@ -51,6 +55,36 @@ export const Day3MirrorResults: React.FC = () => {
   const questions = assumptionsSets[personalityKey] ?? assumptionsSets['default'];
   const trueCount = Object.values(day3.mirrorAnswers).filter(Boolean).length;
   const totalCount = questions.length || 10;
+
+  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const headerAnim = useRef(new Animated.Value(0)).current;
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
+
+  useEffect(() => {
+    // Fade in
+    Animated.timing(headerAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    // Trigger envelope animation
+    const timer = setTimeout(() => {
+      if (jarRef.current) {
+        jarRef.current.triggerEnvelope(() => {
+          addJarMemory({
+            content: `Mirror Game Score: ${trueCount}/${totalCount}`,
+            type: 'text',
+            tinyCompliment: null,
+            dayColor: colors.day3,
+          });
+        });
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleWhatsAppInvite = async () => {
     haptics.medium();
@@ -114,6 +148,10 @@ export const Day3MirrorResults: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </Animated.View>
+
         <ScreenHeader 
           title="Your Results" 
           eyebrow="D3-2 · SPLIT SCREEN · OPEN LOOP"
@@ -214,7 +252,13 @@ export const Day3MirrorResults: React.FC = () => {
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
-  content: { padding: 20, paddingBottom: 16 },
+  content: { padding: 20, paddingBottom: 16, position: 'relative' },
+  jarWrapper: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 15,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
+  },
   captureContainer: {
     backgroundColor: '#F5FAF9',
     borderRadius: 24,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { DayHeader } from '../components/common/DayHeader';
 import { DayCTA } from '../components/common/DayCTA';
 import {
@@ -17,6 +17,8 @@ import { useJournalStore } from '../store/useJournalStore';
 import { calculateBadge } from '../services/badgeCalculator';
 import { haptics } from '../utils/haptics';
 import { Day5Scoring } from '../services/scoring/day5Scoring';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { metrics } from '../theme/metrics';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5ThePromise'>;
 
@@ -32,6 +34,10 @@ export const Day5ThePromise: React.FC = () => {
   const day3 = useDayStore((s) => s.day3);
   const day4 = useDayStore((s) => s.day4);
   const addEntry = useJournalStore((s) => s.addEntry);
+  const addJarMemory = useJournalStore((s) => s.addJarMemory);
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
+  const jarRef = useRef<JarEnvelopeHandle>(null);
   const [promise, setPromise] = useState('');
 
   // Pre-calculate badge based on current data for local state reference if needed
@@ -50,24 +56,45 @@ export const Day5ThePromise: React.FC = () => {
     // Run consolidated scoring with the saved Day 5 Promise
     const report = Day5Scoring.consolidate(day1, day2, day3, day4, trimmed || null);
 
-    completeDay5({
-      badgeName: report.badge.name,
-      badgeTier: report.badgeTier,
-      dedicationScore: report.dedicationScore,
-      connectionScore: report.connectionScore,
-      partnerKnowledgeScore: report.partnerKnowledgeScore,
-      promise: trimmed || null,
-      letterGenerated: false,
-      averageScore: avg,
-    });
+    const completeAndNavigate = () => {
+      completeDay5({
+        badgeName: report.badge.name,
+        badgeTier: report.badgeTier,
+        dedicationScore: report.dedicationScore,
+        connectionScore: report.connectionScore,
+        partnerKnowledgeScore: report.partnerKnowledgeScore,
+        promise: trimmed || null,
+        letterGenerated: false,
+        averageScore: avg,
+      });
+      navigation.navigate('Day5JarReveal');
+    };
 
-    navigation.navigate('Day5JarReveal');
+    if (jarRef.current) {
+      jarRef.current.triggerEnvelope(() => {
+        addJarMemory({
+          content: trimmed ? `Promise: ${trimmed}` : 'Day 5 Promise',
+          type: 'text',
+          tinyCompliment: null,
+          dayColor: colors.day5,
+        });
+        completeAndNavigate();
+      });
+    } else {
+      completeAndNavigate();
+    }
   };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScreenWrapper>
         <ProgressStrip currentDay={5} />
+
+        {/* Animated Jar — top right corner */}
+        <View style={styles.jarWrapper}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </View>
+
         <View style={styles.body}>
           <DayHeader eyebrow="Day 5 · The Promise" />
           <Text style={styles.title}>
@@ -101,6 +128,13 @@ export const Day5ThePromise: React.FC = () => {
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
+  jarWrapper: {
+    position: 'absolute',
+    top: 48,
+    right: metrics.layout.screenPaddingHz - 15,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
+  },
   body: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
   eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 32, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 42, marginBottom: 8 },

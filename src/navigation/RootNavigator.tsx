@@ -48,6 +48,7 @@ import { Day4PriorityShuffle } from '../screens/Day4PriorityShuffle';
 import { Day4DailyTwo } from '../screens/Day4DailyTwo';
 import { Day4TriviaFact } from '../screens/Day4TriviaFact';
 import { Day4DropBox } from '../screens/Day4DropBox';
+import { Day4Complete } from '../screens/Day4Complete'
 
 // Day 5
 import { Day5Celebration } from '../screens/Day5Celebration';
@@ -131,6 +132,7 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day4DailyTwo" component={Day4DailyTwo} />
       <Stack.Screen name="Day4TriviaFact" component={Day4TriviaFact} />
       <Stack.Screen name="Day4DropBox" component={Day4DropBox} />
+      <Stack.Screen name="Day4Complete" component={Day4Complete} />
 
       {/* Day 5 */}
       <Stack.Screen name="Day5Celebration" component={Day5Celebration} />

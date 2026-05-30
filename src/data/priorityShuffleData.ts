@@ -1,0 +1,285 @@
+export interface PriorityCard {
+  icon: string;
+  title: string;
+}
+
+export interface IntentionConfig {
+  label: string;
+  color: string;
+  bg: string;
+  textColor: string;
+  cards: PriorityCard[];
+  facts: Record<string, string>;
+}
+
+export const SHUFFLE_INTENTIONS: Record<string, IntentionConfig> = {
+  patient: {
+    label: 'Patient',
+    color: '#B07010',
+    bg: '#FAEEDA',
+    textColor: '#633806',
+    cards: [
+      { icon: '⏳', title: 'More room to finish my thoughts' },
+      { icon: '👂', title: 'Being listened to — not just heard' },
+      { icon: '🔇', title: 'Silence that feels okay' },
+      { icon: '🌿', title: 'A slower pace on hard days' },
+      { icon: '🌙', title: 'One slow evening together' },
+    ],
+    facts: {
+      '123': "Gottman's research shows couples who allow natural pauses report 43% higher satisfaction — the brain needs processing time to form authentic responses. Being truly heard, not just received, is the primary driver of felt security. Silence between people who trust each other is not emptiness — it is its own form of intimacy.",
+      '124': "Partners who slow down during stress cycles show measurably lower cortisol in each other's presence. Dr. Sue Johnson's EFT research found that being truly heard is the primary driver of attachment security. Slowing the pace during hard days is not accommodation — it is co-regulation.",
+      '125': "Research from the University of Rochester found that deliberate, unscheduled time together predicts relationship satisfaction better than planned dates. When couples create space to talk without agenda — and genuinely listen — meaningful conversations emerge that couldn't be scheduled.",
+      '134': "The Japanese concept of 'ma' — meaningful pause — maps closely to attachment researchers' 'secure base' response. Couples who tolerate silence together show higher trust scores. A slower pace on hard days combined with comfortable silence is the nervous system's signal that safety is present.",
+      '135': "Gottman's 40-year research found that 'low-key togetherness' — shared silence in comfortable proximity — is a stronger predictor of relationship longevity than active communication. One slow, silent evening together is not absence of connection. It is its highest form.",
+      '145': "Chronobiology research shows couples who synchronize their pace — especially during evenings — have lower allostatic stress loads. Finishing thoughts, slowing down, and one unhurried evening are three forms of the same underlying need: to not be rushed through your own life.",
+      '234': "Dr. Brené Brown identifies 'being truly heard' as one of the top three needs humans carry in intimate relationships. What feels like a simple request for patience is a request for emotional safety — and comfortable silence is the proof that safety is real.",
+      '235': "Studies on 'dyadic synchrony' show that couples who sit in comfortable silence together show physiological alignment — heart rates sync, cortisol levels match. Presence without performance, listening without agenda, one slow evening — these are three ways of saying the same thing.",
+      '245': "Research on emotional attunement shows partners who feel unhurried together report stronger felt connection even when less is said. Being listened to, a slower pace, and a slow evening together are all asking for the relationship to exist outside the calendar.",
+      '345': "Leisure researchers at the University of Minnesota found that unstructured shared time — where neither partner is performing or producing — is the single highest predictor of 'relationship renewal.' Silence, slowness, and one unhurried evening are the architecture of rest — and rest together is not wasted time.",
+    },
+  },
+  present: {
+    label: 'Present',
+    color: '#0F6E56',
+    bg: '#E1F5EE',
+    textColor: '#085041',
+    cards: [
+      { icon: '📵', title: 'Phones away during meals' },
+      { icon: '🎯', title: 'Undivided attention — even briefly' },
+      { icon: '👁️', title: 'Noticed without having to ask' },
+      { icon: '💬', title: 'A real question about my day' },
+      { icon: '🌙', title: 'One real conversation before sleep' },
+    ],
+    facts: {
+      '123': "Sherry Turkle's MIT research found that the mere presence of a phone on a table reduces conversation depth by measurable degrees. Full presence combined with undivided attention and being noticed unprompted creates what Barbara Fredrickson calls a 'micro-moment of positivity resonance' — brief, but neurologically significant.",
+      '124': "Gottman found that 'turning toward' — genuinely responding to a partner's bid for connection — is the cornerstone habit of lasting couples. Phones away and a real question about your day are two forms of the same thing: choosing your partner over everything else competing for your attention.",
+      '125': "Sleep researchers at UC Berkeley found that the last conversation before sleep has disproportionate emotional weight — the brain consolidates it as the relationship's overnight tone. Phones away at meals and a real conversation before sleep bookend the day with presence.",
+      '134': "Eye contact during meals activates the same oxytocin pathways as physical touch. Research on 'joint attention' shows couples who notice each other without prompting report significantly higher felt closeness. Undivided attention and being noticed unprompted are two forms of oxytocin that don't require touch.",
+      '135': "The science of 'micro-moments of connection' — Barbara Fredrickson's work — shows small moments of felt attention accumulate into lasting feelings of closeness. Undivided attention, being noticed, and one real conversation are three deposits into the same emotional account.",
+      '145': "Research on relationship quality found that end-of-day conversation quality is a stronger predictor of next-day mood than sleep quality itself. Being noticed unprompted, a real question, and a real conversation before sleep are three versions of one need: to be someone's priority at the end of the day.",
+      '234': "Daniel Stern's research on 'moments of meeting' found unplanned moments of genuine mutual attention are disproportionately important to felt intimacy. A real question about your day — specific, curious, unrehearsed — creates one of these moments every single time.",
+      '235': "Gottman's research on 'positive sentiment override' shows couples with high connection perceive neutral interactions positively. Being noticed without asking builds this reserve — every unprompted moment of attention is a deposit that changes how everything else feels.",
+      '245': "The '20-second rule' from neuroscience — a moment of focused attention lasting 20+ seconds triggers oxytocin release. Undivided attention, a real question, and a final conversation are three separate oxytocin events in one day. Presence is not one thing — it is cumulative.",
+      '345': "Research on relationship maintenance behaviors found 'proactive attentiveness' — noticing, asking real questions, ending the day connected — is the most consistent predictor of relationship stability in dual-career couples. These are not romantic gestures. They are the daily minimum for a relationship that stays alive.",
+    },
+  },
+  honest: {
+    label: 'Honest',
+    color: '#534AB7',
+    bg: '#EEEDFE',
+    textColor: '#3C3489',
+    cards: [
+      { icon: '🗝️', title: 'Space to say the difficult thing' },
+      { icon: '🤍', title: 'Received without judgment' },
+      { icon: '💬', title: 'The conversation we keep avoiding' },
+      { icon: '🪟', title: 'Feeling fully known — not just liked' },
+      { icon: '💎', title: 'Knowing what they actually think' },
+    ],
+    facts: {
+      '123': "Gottman's concept of 'successful conflict' shows couples who can say the difficult thing and receive it without defensiveness have 94% lower rates of relationship gridlock. The conversation you keep not having rarely gets easier by being avoided — it only gets heavier.",
+      '124': "Research on 'authenticity in relationships' shows that feeling fully known — including the parts you're uncertain about — is the highest predictor of relationship security. It is not agreement that creates safety. It is acceptance of the actual person.",
+      '125': "Interpersonal neurobiology research shows that true disclosure activates the brain's reward center in the listener as well as the speaker. Knowing what someone actually thinks — not their performed version — creates neurological bonding that curated self-presentation cannot.",
+      '134': "Dr. Harriet Lerner's research shows the average couple delays addressing a known problem for 2.7 years. The energy used to manage around the unsaid thing is almost always greater than the energy used to say it. Feeling fully known requires having had the avoided conversation.",
+      '135': "Research on relational transparency found couples who know each other's genuine thoughts — not edited versions — show higher conflict recovery rates. The conversation you keep not having is protecting a surface while eroding the foundation beneath it.",
+      '145': "Psychological safety research shows that the ability to say something uncomfortable without social consequence is the single highest predictor of team performance — and the same applies in intimate relationships. Being fully known requires exactly this: safety without consequence.",
+      '234': "Research by James Pennebaker on expressive writing found that putting words to held feelings reduces physiological stress markers within hours. The conversation you keep not having isn't just emotionally heavy — it is physically held in the body, and being received without judgment is how it releases.",
+      '235': "Gottman's Four Horsemen research shows that stonewalling — withholding genuine thoughts — is the most corrosive pattern in long-term relationships. Receiving honestly and knowing what someone really thinks directly counteracts this pattern. Transparency is not risk — it is antidote.",
+      '245': "Research on 'epistemic intimacy' — knowing how a partner actually thinks — shows it predicts relationship satisfaction more strongly than sexual satisfaction at the 5-year mark. Being received and truly known are two sides of the same felt safety that makes a relationship feel like home.",
+      '345': "Studies on relationship longevity show couples who regularly clear avoided topics report 60% lower resentment scores over time. Feeling known, knowing what they actually think, and having the avoided conversation are three forms of the same commitment: to be real with each other, not just comfortable.",
+    },
+  },
+  warm: {
+    label: 'Warm',
+    color: '#993556',
+    bg: '#FBEAF0',
+    textColor: '#72243E',
+    cards: [
+      { icon: '🫂', title: 'Warmth in ordinary moments' },
+      { icon: '☕', title: 'Thought of without asking' },
+      { icon: '🤍', title: 'Affection that feels chosen' },
+      { icon: '👁️', title: 'Noticed when struggling' },
+      { icon: '💫', title: 'Chosen — not just stayed with' },
+    ],
+    facts: {
+      '123': "Research on 'capitalization' in relationships shows warmth shown unprompted creates stronger bonds than warmth shown in response to distress. Ordinary moments of care combined with being thought of and affection that feels chosen — these are not the same as grand gestures. They are more durable.",
+      '124': "Dr. John Cacioppo's loneliness research found that being noticed without having to signal distress is the core of felt belonging. Partners who anticipate each other's needs show lower mutual stress markers than those who wait to be asked. Warmth in ordinary moments and being seen when struggling are two sides of the same attentiveness.",
+      '125': "Relationship commitment research distinguishes 'constraint commitment' — staying because leaving is hard — from 'dedication commitment' — choosing actively. Feeling chosen, not just retained, activates the latter. Warmth in ordinary moments and feeling chosen are the daily evidence that dedication is real.",
+      '134': "Berscheid and Walster's research on 'responsive attunement' shows that affection felt as genuinely chosen — rather than habitual — triggers different neurochemical responses than routine affection. The warmth you're asking for is not more affection. It is more intentional affection. There is a biological difference.",
+      '135': "Research on 'love withdrawal' and its opposite — active choosing — shows partners who express love as a choice rather than a default have significantly higher rates of felt security. Being thought of unprompted and being actively chosen are two ways of saying: I would pick you again today.",
+      '145': "Studies on emotional attunement show that being seen during difficulty — without having to announce it — is one of the top three predictors of secure attachment in adult relationships. Being noticed when struggling, warmth in ordinary moments, and actively being chosen are three forms of the same radical attention.",
+      '234': "The concept of 'proactive care' — acting before a need is expressed — is associated with higher partner satisfaction than reactive care. Being thought of, noticed when struggling, and affection that feels chosen are three forms of proactive love. They cannot be faked and they cannot be forgotten.",
+      '235': "Sternberg's Triangular Theory of Love identifies intimacy — closeness, feeling cared for unprompted — as the most durable component of long-term love. Being thought of and having affection that feels chosen is intimacy made visible — not in declarations but in consistent small evidence.",
+      '245': "Research on attachment styles shows the most effective signal of secure love is consistent unprompted warmth. Affection that feels chosen, being noticed when struggling, and feeling actively chosen are three forms of the same message: you are not something I maintain — you are someone I keep choosing.",
+      '345': "Dr. Helen Fisher's neuroscience research found that the brain areas associated with early romantic love reactivate when partners deliberately choose each other in small daily acts. Feeling chosen is not nostalgia. It is biologically activatable through intentional behavior — and you are right to want it.",
+    },
+  },
+  playful: {
+    label: 'Playful',
+    color: '#3B6D11',
+    bg: '#EAF3DE',
+    textColor: '#27500A',
+    cards: [
+      { icon: '😂', title: 'Laughing until it goes too long' },
+      { icon: '🎲', title: 'Something spontaneous together' },
+      { icon: '🎭', title: 'The silly version of us' },
+      { icon: '🏃', title: 'An inside joke that lands' },
+      { icon: '🎮', title: "Something we haven't done in too long" },
+    ],
+    facts: {
+      '123': "Research by Doris Bazzini found shared laughter — especially uncontrolled laughter — is the strongest predictor of relationship satisfaction, stronger even than shared values. Spontaneity keeps the brain's play system active, and silliness is the external sign that the play system is still online between you.",
+      '124': "The 'play system' in the brain — identified by Jaak Panksepp — is the same circuitry that activates in early romantic bonding. Couples who retain shared private language (inside jokes) show higher oxytocin levels than those who don't. Laughter and spontaneity feed this system. Inside jokes prove it is still alive.",
+      '125': "Research on 'hedonic adaptation' shows new shared experiences reset the baseline more effectively than repeated familiar ones. Spontaneous novelty fights adaptation through surprise. Recovered activities fight it through restoration. Uncontrolled laughter is the proof that both are working.",
+      '134': "Laughter research at the University of North Carolina shows that couples who laugh together — especially at shared references — show measurably stronger social bonds and higher conflict resilience. Silliness is not immature. Gottman would call it a repair attempt. It works.",
+      '135': "Studies on relationship maintenance found 'shared humor' and 'recreation' to be the two most cited behaviors in couples who describe themselves as 'still in love' after 10+ years. The silly version of each other and the recovered activity are both core maintenance behaviors — not indulgences.",
+      '145': "Gottman's research on 'positive affect' during conflict shows couples with a rich history of playful experiences de-escalate tension 40% faster. Inside jokes are infrastructure. Laughter is emergency equipment. The things you haven't done in too long are the reserves you draw on when things get hard.",
+      '234': "Research on 'expansion of self-concept' through relationships — Arthur Aron's work — shows that novel shared experiences expand each partner's sense of self. Spontaneity, silliness, and private language all contribute to this expansion. When couples stop playing, they stop growing through each other.",
+      '235': "Research on adult play behavior by Stuart Brown found that couples who deliberately introduce novelty and spontaneity show lower rates of relationship boredom than those who rely on comfortable routine. Play is not optional. Silliness is not a phase you outgrow. They are a biological need at every age.",
+      '245': "Studies on 'relationship novelty' show doing something new together activates the same dopamine pathways as early attraction. Spontaneity and returning to abandoned activities are two forms of dopamine renewal — and an inside joke that still lands is the proof that the original connection is still retrievable.",
+      '345': "Research on 'playful intimacy' — characterized by silliness, private references, and recovered activities — found it predicts relationship longevity better than reported conflict frequency. Couples who play together stay together is not a cliché. It is one of the most replicated findings in relationship science.",
+    },
+  },
+  open: {
+    label: 'Open',
+    color: '#185FA5',
+    bg: '#E6F1FB',
+    textColor: '#0C447C',
+    cards: [
+      { icon: '🪟', title: 'Access to their inner world' },
+      { icon: '🔓', title: 'A door that usually stays closed' },
+      { icon: '🌊', title: 'Let in when things are hard' },
+      { icon: '🤝', title: 'Mutual openness — not just mine' },
+      { icon: '🔍', title: 'Getting curious again' },
+    ],
+    facts: {
+      '123': "Research on 'self-disclosure reciprocity' — the Jourard model — shows one partner's vulnerability consistently increases the other's willingness to disclose. Openness is not a personality trait. It is a relational response to felt safety. Access to their inner world during hard times creates that safety.",
+      '124': "Dr. Brené Brown's research found that 'mutual vulnerability' — where both partners reveal without one always leading — is the rarest and most bonding form of intimacy. A door opening both ways, access to each other's inner world — this is qualitatively different from one-directional disclosure.",
+      '125': "Research on 'relationship curiosity' found couples who actively wonder about each other — not just report to each other — show higher intimacy scores at every relationship stage. Getting curious is not a Phase 1 behavior. Openness and curiosity together are a lifelong maintenance practice.",
+      '134': "Interpersonal process research shows being let in during difficulty — not being kept at arm's length — is the primary differentiator between 'supportive partner' and 'intimate partner.' Access during hard times and mutual openness are the two behaviors that define the depth of the relationship.",
+      '135': "Studies on attachment security show partners who feel they can access each other's inner world — especially during difficulty — show lower anxious attachment scores over time. Curiosity and openness are the behavioral mechanisms of earned secure attachment. They are practiced, not given.",
+      '145': "Research on 'relational depth' — Mearns and Cooper — identifies mutual curiosity and willingness to be known as the two factors most associated with felt closeness. When both partners get curious about each other again, depth is not recalled — it is rebuilt. Rebuilt is better than remembered.",
+      '234': "Studies on avoidance in relationships show that the 'closed door' dynamic — certain topics implicitly off-limits — creates relationship gridlock more reliably than active conflict. Being let in during difficulty and mutual openness directly reverse this pattern simultaneously.",
+      '235': "Research on 'interpersonal openness' found that couples who can access previously closed emotional territory show significantly higher relationship satisfaction within 3 months. The door being opened — even once — changes the felt landscape. Curiosity keeps it from closing again.",
+      '245': "Gottman's research on 'open vs. closed' relationship systems found that curiosity about each other — genuine interest in the evolving person, not the familiar one — is the primary defense against complacency. Mutual curiosity reopens closed doors without forcing them.",
+      '345': "Research on 'relationship renewal' found that couples who become genuinely curious about each other — combined with mutual willingness to be vulnerable and access during difficulty — show the same neurological activation patterns as couples in the first year. Depth is renewable. You are not too late.",
+    },
+  },
+  gentle: {
+    label: 'Gentle',
+    color: '#534AB7',
+    bg: '#CECBF6',
+    textColor: '#26215C',
+    cards: [
+      { icon: '🌸', title: 'Being spoken to more softly' },
+      { icon: '🤍', title: "Feedback that doesn't sting" },
+      { icon: '🌊', title: "Conflict that doesn't leave marks" },
+      { icon: '🫂', title: 'Repair that happens quickly' },
+      { icon: '🔇', title: "Tone that doesn't trigger defence" },
+    ],
+    facts: {
+      '123': "Research on physiological arousal during conflict — Gottman's 'flooding' concept — shows that harsh tone triggers a fight-or-flight response that makes meaningful conversation neurologically impossible. Softness isn't politeness. It is access. Conflict without marks requires a tone that keeps the nervous system open.",
+      '124': "Studies on 'apology effectiveness' show that the speed of repair matters as much as its sincerity. Couples who repair quickly — before the nervous system has consolidated the injury — show 60% lower resentment accumulation over time. Soft tone and fast repair are the two highest-leverage interventions.",
+      '125': "Gottman's research identifies 'harsh startup' — the tone of the first sentence in a conflict — as the single highest predictor of how the conversation ends. Softness in how something begins changes everything that follows. The same truth, said differently, is a different conversation entirely.",
+      '134': "Research on 'post-conflict affect' shows couples who experience conflict without lasting emotional injury describe their relationships as 'safe' at a rate 3x higher than those who don't. Gentle conflict and quick repair are not conflict avoidance. They are conflict competence.",
+      '135': "Research on 'criticism vs. complaint' — Gottman's distinction — shows tone shifts this boundary more than content. The same sentence said softly is a complaint. Said sharply, it becomes a criticism. Tone is not packaging. It is meaning. A non-triggering tone changes what is actually being communicated.",
+      '145': "Research on the 'negativity bias' shows a single harsh interaction requires five positive interactions to neutralize emotionally. Quick repair and non-triggering tone reduce the negativity debt that accumulates between partners. Gentleness is not softness of character — it is financial management of the relationship's emotional balance.",
+      '234': "Studies on 'constructive conflict' show feedback received without defensiveness leads to behavioral change 3x more often than feedback delivered harshly. Conflict that doesn't leave marks is not softer — it is more effective. The gentler approach is also the more powerful one.",
+      '235': "The 'soft startup' research from Gottman found that 96% of the time, the way a conversation begins predicts its outcome. Non-triggering tone and clean feedback are the two variables a couple controls most directly in how a hard conversation lands — and how quickly it heals.",
+      '245': "Research on 'repair attempts' — Gottman's term for de-escalation moves during conflict — shows partners who accept repair attempts quickly show lower cumulative physiological stress. Quick repair and gentle tone are the two highest-leverage interventions. Together they compound.",
+      '345': "Research on 'relationship resilience' found the ability to have conflict without lasting injury — combined with fast repair and non-defensive tone — predicts 10-year relationship satisfaction better than compatibility scores. Gentleness is not the softer path. It is the more skilled one.",
+    },
+  },
+  brave: {
+    label: 'Brave',
+    color: '#993C1D',
+    bg: '#FAECE7',
+    textColor: '#712B13',
+    cards: [
+      { icon: '🔥', title: 'Starting the avoided conversation' },
+      { icon: '🌱', title: 'Saying what I actually need' },
+      { icon: '⚡', title: "Showing a part they haven't seen" },
+      { icon: '🤲', title: 'Admitting I got it wrong' },
+      { icon: '💌', title: 'Saying "I miss us" out loud' },
+    ],
+    facts: {
+      '123': "Research on 'self-disclosure and intimacy' — Reis and Shaver — shows revealing an unguarded part of yourself and asking directly for what you need are the two behaviors most strongly associated with felt closeness. Beginning the avoided conversation while revealing yourself creates compound intimacy — the kind that can't be undone.",
+      '124': "Studies on 'accountability in relationships' show admitting fault without deflection — combined with directly asking for what you need — creates more trust than conflict avoidance. Partners who can say 'I got it wrong AND I need this' show the highest relationship satisfaction scores in longitudinal research.",
+      '125': "Dr. John Gottman found that 'positive nostalgia' — expressing longing for the relationship — is a protective factor against disconnection even during difficult periods. Beginning the avoided conversation and saying 'I miss us' are not opposite moves. Together they say: I want this, and I'm willing to work for it.",
+      '134': "Research on 'vulnerability and trust' — Brené Brown — found showing an unguarded part of yourself is the primary mechanism through which trust is built, not just tested. Beginning the avoided conversation while revealing something new creates double intimacy: truth-telling and self-disclosure simultaneously.",
+      '135': "Studies on relationship risk-taking show couples who take emotional risks together show higher felt security afterward, not lower. Beginning the avoided conversation, showing yourself, and saying you miss each other are three forms of the same act: investing in the relationship visibly, without guarantee.",
+      '145': "Research on apology impact found that 'full accountability apologies' — admitting fault without qualification — are the single most effective relationship repair tool available. Combined with saying 'I miss us,' they create both accountability and longing — the two things that motivate real, lasting change.",
+      '234': "Research on 'needs expression' shows directly stating a need increases the likelihood of it being met by 400% versus hinting or withdrawing. Saying what you need, showing who you are, and acknowledging fault are the three acts that signal a relationship is actively being chosen — not just maintained.",
+      '235': "Studies on 'emotional courage' in relationships found partners who say what they need AND show their authentic selves AND express longing create what researchers call 'transformative vulnerability' — a state where both partners feel simultaneously seen and invited. This is where relationships change.",
+      '245': "Research on relationship renewal found couples who combine direct needs expression with genuine accountability and expressed longing show the fastest recovery from difficult periods. These three behaviors together create a credible signal of investment — not just words, but the three hardest words to say.",
+      '345': "Research by Arthur Aron on 'self-expansion' shows when a partner reveals something new and genuine, it reactivates the neural pathways of early-stage attraction. Saying what you miss, admitting fault, and showing something unseen are all forms of self-expansion. They are biologically activating — and they are available to you right now.",
+    },
+  },
+};
+
+// Maps specific card index of chosen intention back to the 5 baseline category needs
+export const CARD_CATEGORY_MAPPING: Record<string, Record<number, string>> = {
+  patient: {
+    0: 'Deeper conversations', // "More room to finish my thoughts"
+    1: 'Deeper conversations', // "Being listened to — not just heard"
+    2: 'More calm, less stress', // "Silence that feels okay"
+    3: 'More calm, less stress', // "A slower pace on hard days"
+    4: 'Dedicated time together', // "One slow evening together"
+  },
+  present: {
+    0: 'Dedicated time together', // "Phones away during meals"
+    1: 'Dedicated time together', // "Undivided attention — even briefly"
+    2: 'More warmth & affection', // "Noticed without having to ask"
+    3: 'Deeper conversations', // "A real question about my day"
+    4: 'Deeper conversations', // "One real conversation before sleep"
+  },
+  honest: {
+    0: 'Deeper conversations', // "Space to say the difficult thing"
+    1: 'More calm, less stress', // "Received without judgment"
+    2: 'Deeper conversations', // "The conversation we keep avoiding"
+    3: 'More warmth & affection', // "Feeling fully known — not just liked"
+    4: 'Deeper conversations', // "Knowing what they actually think"
+  },
+  warm: {
+    0: 'More warmth & affection', // "Warmth in ordinary moments"
+    1: 'More warmth & affection', // "Thought of without asking"
+    2: 'More warmth & affection', // "Affection that feels chosen"
+    3: 'More calm, less stress', // "Noticed when struggling"
+    4: 'More warmth & affection', // "Chosen — not just stayed with"
+  },
+  playful: {
+    0: 'Laughter & lightness', // "Laughing until it goes too long"
+    1: 'Dedicated time together', // "Something spontaneous together"
+    2: 'Laughter & lightness', // "The silly version of us"
+    3: 'Laughter & lightness', // "An inside joke that lands"
+    4: 'Dedicated time together', // "Something we haven't done in too long"
+  },
+  open: {
+    0: 'Deeper conversations', // "Access to their inner world"
+    1: 'Deeper conversations', // "A door that usually stays closed"
+    2: 'More calm, less stress', // "Let in when things are hard"
+    3: 'Deeper conversations', // "Mutual openness — not just mine"
+    4: 'Deeper conversations', // "Getting curious again"
+  },
+  gentle: {
+    0: 'More calm, less stress', // "Being spoken to more softly"
+    1: 'More calm, less stress', // "Feedback that doesn't sting"
+    2: 'More calm, less stress', // "Conflict that doesn't leave marks"
+    3: 'More calm, less stress', // "Repair that happens quickly"
+    4: 'More calm, less stress', // "Tone that doesn't trigger defence"
+  },
+  brave: {
+    0: 'Deeper conversations', // "Starting the avoided conversation"
+    1: 'Deeper conversations', // "Saying what I actually need"
+    2: 'Deeper conversations', // "Showing a part they haven't seen"
+    3: 'Deeper conversations', // "Admitting I got it wrong"
+    4: 'More warmth & affection', // "Saying 'I miss us' out loud"
+  },
+};
+
+/**
+ * Given the lowercase intention key and array of selected card indexes (e.g. [0, 1, 2]),
+ * returns the mapped category names in order (e.g. ['Deeper conversations', 'Deeper conversations', 'More calm, less stress']).
+ */
+export function mapPicksToCategories(intention: string, picks: number[]): string[] {
+  const mapping = CARD_CATEGORY_MAPPING[intention] || {};
+  return picks.map(p => mapping[p] || 'More warmth & affection');
+}

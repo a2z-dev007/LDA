@@ -125,8 +125,11 @@ interface DayStore {
   // Day 4
   setDay4IntentionWord: (word: string) => void;
   setTinyCompliment: (word: string) => void;
+  setDay4Memory: (content: string | null, type: Day4Data['memoryType']) => void;
   setDay4PriorityShuffle: (picks: string[], topNeed: string) => void;
   setLoveDrop: (type: NonNullable<Day4Data['loveDropType']>, content: string) => void;
+  setDay4DailyTwo: (q1: string, q2: string, status: Day4Data['daily2Status']) => void;
+  setDay4DropBoxUsed: (used: boolean, reframedText: string | null) => void;
   completeDay4: (payload: {
     memoryContent: string | null;
     memoryType: Day4Data['memoryType'];
@@ -333,11 +336,33 @@ export const useDayStore = create<DayStore>()(
       setTinyCompliment: (word: string) =>
         set((s) => ({ day4: { ...s.day4, tinyComplimentWord: word } })),
 
+      setDay4Memory: (content, type) =>
+        set((s) => ({ day4: { ...s.day4, memoryContent: content, memoryType: type } })),
+
       setDay4PriorityShuffle: (picks, topNeed) =>
         set((s) => ({ day4: { ...s.day4, d4_priority_picks: picks, d4_top_need: topNeed } })),
 
       setLoveDrop: (type, content) =>
         set((s) => ({ day4: { ...s.day4, loveDropUsed: true, loveDropType: type, loveDropContent: content } })),
+
+      setDay4DailyTwo: (q1, q2, status) =>
+        set((s) => ({
+          day4: {
+            ...s.day4,
+            daily2Q1: q1,
+            daily2Q2: q2,
+            daily2Status: status,
+          },
+        })),
+
+      setDay4DropBoxUsed: (used, reframedText) =>
+        set((s) => ({
+          day4: {
+            ...s.day4,
+            dropBoxUsed: used,
+            dropBoxReframedText: reframedText,
+          },
+        })),
 
       completeDay4: (payload) =>
         set((s) => ({

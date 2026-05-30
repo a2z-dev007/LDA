@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet, ScrollView, Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -13,11 +13,13 @@ import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
 import { useDayStore } from '../store/useDayStore';
+import { useJournalStore } from '../store/useJournalStore';
 import { useStreakStore } from '../store/useStreakStore';
 import {
   CheckCircle, Heart, Lock, Grid2x2, Anchor, Star,
 } from 'lucide-react-native';
-import { JarEnvelopeAnimation } from '../components/common/JarEnvelopeAnimation';
+import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../components/common/JarEnvelopeAnimation';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3Complete'>;
 
@@ -35,9 +37,16 @@ export const Day3Complete: React.FC = () => {
   const day3 = useDayStore(s => s.day3);
   const streakCount = useStreakStore(s => s.streakCount);
   const recordActivity = useStreakStore(s => s.recordActivity);
+  const addJarMemory = useJournalStore(s => s.addJarMemory);
+  const jarMemories = useJournalStore(s => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
+
+  const jarRef = useRef<JarEnvelopeHandle>(null);
+  const headerAnim = useRef(new Animated.Value(0)).current;
 
   const trueCount = Object.values(day3.mirrorAnswers).filter(Boolean).length;
   const theme = day3.d3_mood_board_theme ?? 'Mixed & Moving';
+  const certainty = day3.oneCertainty ?? '';
 
   const contributions: ContributionItem[] = [
     {
@@ -75,6 +84,28 @@ export const Day3Complete: React.FC = () => {
   useEffect(() => {
     haptics.success();
     recordActivity();
+
+    // Fade in header
+    Animated.timing(headerAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    // Trigger jar envelope animation
+    const timer = setTimeout(() => {
+      if (jarRef.current) {
+        jarRef.current.triggerEnvelope(() => {
+          addJarMemory({
+            content: certainty ? `One Certainty: ${certainty}` : 'Day 3 Complete',
+            type: 'text',
+            tinyCompliment: null,
+            dayColor: colors.day3,
+          });
+        });
+      }
+    }, 600);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleContinue = () => {
@@ -90,9 +121,9 @@ export const Day3Complete: React.FC = () => {
         {/* Hero */}
         <View style={styles.heroSection}>
           {/* Animated Jar — top right */}
-          <View style={styles.jarContainer}>
-            <JarEnvelopeAnimation />
-          </View>
+          <Animated.View style={[styles.jarContainer, { opacity: headerAnim }]}>
+            <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+          </Animated.View>
 
           <View style={styles.checkCircle}>
             <CheckCircle size={44} color="#2D5F5D" strokeWidth={1.5} />

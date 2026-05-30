@@ -51,6 +51,7 @@ export type RootStackParamList = {
   Day4DailyTwo: undefined;
   Day4TriviaFact: undefined;
   Day4DropBox: undefined;
+  Day4Complete: undefined;
 
   // ── Bridge 4→5 ───────────────────────────────────
   Bridge4to5: undefined;

@@ -20,6 +20,7 @@ export interface JarMemory {
   tinyCompliment: string | null;
   dayColor: string;
   createdAt: string;
+  photoUri?: string;
 }
 
 interface JournalState {

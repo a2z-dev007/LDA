@@ -26,6 +26,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useJournalStore } from '../../store/useJournalStore';
+import { useAppColors } from '../../theme';
 import {
   View,
   StyleSheet,
@@ -68,35 +69,104 @@ const LID_H  = responsiveWidth(6);
 const ENV_W  = responsiveWidth(14);
 const ENV_H  = responsiveWidth(11);
 
-// ── Palette (Teal/Green magical theme) ───────────────────────
-const C = {
-  // Glass
-  glassStroke:  '#2DD4BF',
-  glassShine:   '#FFFFFF',
-  glassShadow:  '#14B8A6',
-  // Lid
-  lidTop:       '#99F6E4',
-  lidBot:       '#2DD4BF',
-  lidRim:       '#0D9488',
-  lidKnob:      '#E6FFFA',
-  // Paper
-  paperBase:    '#F0FDFA',
-  paperShadow:  '#CCFBF1',
-  paperLine:    '#99F6E4',
-  // Hearts
-  heartPrimary: '#2DD4BF',
-  heartDeep:    '#14B8A6',
-  // Particles
-  sparkTeal:    '#2DD4BF',
-  sparkGreen:   '#6EE87A',
-  sparkGold:    '#FFD700',
-  sparkWhite:   '#FFFFFF',
-  sparkMint:    '#A7F3D0',
-  // Glow
-  glow:         'rgba(45,212,191,0.35)',
-  badge:        '#2DD4BF',
-  badgeShadow:  '#14B8A6',
-};
+// ── Palette (Dynamic theme-based magical colors) ─────────────
+// function getJarColors(colors: ReturnType<typeof useAppColors>) {
+//   const isDark = colors.isDark;
+
+//   // Magical Celestial Purple & Luxury Gold Theme
+//   return {
+//     // Glass
+//     glassStroke:  isDark ? 'rgba(168, 85, 247, 0.85)' : 'rgba(139, 92, 246, 0.75)', // Neon violet/purple stroke
+//     glassShine:   '#FFFFFF',
+//     glassShadow:  isDark ? 'rgba(124, 58, 237, 0.35)' : 'rgba(124, 58, 237, 0.25)', // Deep violet glass shadow
+//     glassInsideBgStart: isDark ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.88)',
+//     glassInsideBgEnd: isDark ? 'rgba(124, 58, 237, 0.04)' : 'rgba(245, 243, 255, 0.7)',
+    
+//     // Lid (Luxury Metallic Gold Crown)
+//     lidTop:       '#FEF3C7', // Soft warm gold
+//     lidBot:       '#F59E0B', // Rich amber gold
+//     lidRim:       '#D97706', // Burnished bronze gold
+//     lidKnob:      '#FEF3C7',
+//     lidAccent:    '#FBBF24', // Shimmering gold
+    
+//     // Paper (Golden-edged warm parchment)
+//     paperBase:    '#FEFCE8',
+//     paperShadow:  '#FEF9C3',
+//     paperLine:    '#FDE047',
+    
+//     // Hearts (Glowing Golden Hearts)
+//     heartPrimary: '#F59E0B', // Vibrant gold
+//     heartDeep:    '#D97706', // Rich bronze gold
+    
+//     // Particles / Sparkles (Celestial Amber & Diamond White)
+//     sparkPrimary: '#FBBF24', // Shimmering gold
+//     sparkSecondary:'#F59E0B', // Warm gold
+//     sparkAccent:  '#FEF3C7', // White gold
+//     sparkWhite:   '#FFFFFF', // Diamond shine
+//     sparkGlow:    '#FCD34D', // Golden glow aura
+    
+//     // Glow (Magic Golden Aura)
+//     glow:         isDark ? 'rgba(245, 158, 11, 0.32)' : 'rgba(245, 158, 11, 0.25)',
+//     badge:        '#F59E0B', // Rich gold badge
+//     badgeShadow:  'rgba(245, 158, 11, 0.45)',
+//   };
+// }
+
+function getJarColors(colors: ReturnType<typeof useAppColors>) {
+  const isDark = colors.isDark;
+
+  return {
+    // Glass
+    glassStroke: isDark
+      ? 'rgba(196, 181, 253, 0.9)'
+      : 'rgba(139, 92, 246, 0.7)',
+
+    glassShine: 'rgba(255,255,255,0.95)',
+
+    glassShadow: isDark
+      ? 'rgba(91, 33, 182, 0.45)'
+      : 'rgba(124, 58, 237, 0.18)',
+
+    glassInsideBgStart: isDark
+      ? 'rgba(139, 92, 246, 0.18)'
+      : 'rgba(255,255,255,0.9)',
+
+    glassInsideBgEnd: isDark
+      ? 'rgba(76, 29, 149, 0.08)'
+      : 'rgba(243,232,255,0.6)',
+
+    // Lid
+    lidTop: '#E9D5FF',
+    lidBot: '#8B5CF6',
+    lidRim: '#6D28D9',
+    lidKnob: '#F5F3FF',
+    lidAccent: '#C084FC',
+
+    // Paper
+    paperBase: '#FFF7FF',
+    paperShadow: '#F3E8FF',
+    paperLine: '#D8B4FE',
+
+    // Hearts
+    heartPrimary: '#FB7185',
+    heartDeep: '#EC4899',
+
+    // Sparkles
+    sparkPrimary: '#C084FC',
+    sparkSecondary: '#A78BFA',
+    sparkAccent: '#F0ABFC',
+    sparkWhite: '#FFFFFF',
+    sparkGlow: '#E9D5FF',
+
+    // Glow
+    glow: isDark
+      ? 'rgba(168,85,247,0.35)'
+      : 'rgba(168,85,247,0.22)',
+
+    badge: '#A855F7',
+    badgeShadow: 'rgba(168,85,247,0.5)',
+  };
+}
 
 // ── Heart path ────────────────────────────────────────────────
 const heartD = (s: number) =>
@@ -113,34 +183,29 @@ const PAPERS = [
 
 // ── Burst sparkle config ──────────────────────────────────────
 const BURST_DEFS = [
-  { dx: -36, dy: -28, color: C.sparkTeal,  size: 8 },
-  { dx:  36, dy: -30, color: C.sparkGold,  size: 7 },
-  { dx: -42, dy:   8, color: C.sparkWhite, size: 6 },
-  { dx:  40, dy:  10, color: C.sparkMint,  size: 8 },
-  { dx: -18, dy: -44, color: C.sparkGreen, size: 6 },
-  { dx:  20, dy: -40, color: C.sparkGold,  size: 7 },
-  { dx:   4, dy: -50, color: C.sparkTeal,  size: 6 },
-  { dx:  46, dy: -18, color: C.sparkWhite, size: 5 },
-  { dx: -46, dy: -15, color: C.sparkGreen, size: 5 },
-  { dx:   0, dy: -56, color: C.sparkGold,  size: 7 },
-];
+  { dx: -36, dy: -28, colorKey: 'sparkPrimary',   size: 8 },
+  { dx:  36, dy: -30, colorKey: 'sparkSecondary', size: 7 },
+  { dx: -42, dy:   8, colorKey: 'sparkWhite',     size: 6 },
+  { dx:  40, dy:  10, colorKey: 'sparkGlow',      size: 8 },
+  { dx: -18, dy: -44, colorKey: 'sparkAccent',    size: 6 },
+  { dx:  20, dy: -40, colorKey: 'sparkSecondary', size: 7 },
+  { dx:   4, dy: -50, colorKey: 'sparkPrimary',   size: 6 },
+  { dx:  46, dy: -18, colorKey: 'sparkWhite',     size: 5 },
+  { dx: -46, dy: -15, colorKey: 'sparkAccent',    size: 5 },
+  { dx:   0, dy: -56, colorKey: 'sparkSecondary', size: 7 },
+] as const;
 
 // ── Float hearts config ───────────────────────────────────────
 const FLOAT_DEFS = [
-  { dx: -70, dy:  -60, size: 13, color: C.sparkTeal,  delay:   0 },
-  { dx:  72, dy:  -80, size: 11, color: C.sparkGold,  delay:  80 },
-  { dx: -40, dy: -100, size:  9, color: C.sparkWhite, delay: 150 },
-  { dx:  45, dy:  -90, size: 11, color: C.sparkGreen, delay:  50 },
-  { dx:  -5, dy: -115, size:  9, color: C.sparkTeal,  delay: 120 },
-  { dx:  60, dy:  -45, size: 13, color: C.sparkMint,  delay: 200 },
-];
+  { dx: -70, dy:  -60, size: 13, colorKey: 'heartPrimary',   delay:   0 },
+  { dx:  72, dy:  -80, size: 11, colorKey: 'sparkSecondary', delay:  80 },
+  { dx: -40, dy: -100, size:  9, colorKey: 'sparkWhite',     delay: 150 },
+  { dx:  45, dy:  -90, size: 11, colorKey: 'sparkGlow',      delay:  50 },
+  { dx:  -5, dy: -115, size:  9, colorKey: 'heartPrimary',  delay: 120 },
+  { dx:  60, dy:  -45, size: 13, colorKey: 'sparkGlow',      delay: 200 },
+] as const;
 
-// ── Ambient particle colors ───────────────────────────────────
-const AMBIENT_COLORS = [C.sparkTeal, C.sparkMint, C.sparkGreen, C.sparkGold, C.sparkWhite];
-
-// ─────────────────────────────────────────────────────────────
-// Easing helpers (matching HTML exactly)
-// ─────────────────────────────────────────────────────────────
+// ── Easing helpers (matching HTML exactly) ───────────────────
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInCubic  = (t: number) => Math.pow(t, 3);
@@ -183,22 +248,25 @@ function raf(
 // ─────────────────────────────────────────────────────────────
 const JarBodySvg: React.FC<{ fillCount: number }> = ({ fillCount }) => {
   const visible = Math.min(fillCount, PAPERS.length);
+  const colors = useAppColors();
+  const c = getJarColors(colors);
+
   return (
     <Svg width={JAR_W} height={JAR_H - LID_H} viewBox="0 0 100 98">
       <Defs>
         <SvgLinearGradient id="jbGlassH" x1="0" y1="0" x2="1" y2="0">
-          <Stop offset="0"    stopColor="#E6FFFA" stopOpacity="0.97" />
-          <Stop offset="0.30" stopColor="#F0FDFA" stopOpacity="0.88" />
-          <Stop offset="0.65" stopColor="#E6FFFA" stopOpacity="0.92" />
-          <Stop offset="1"    stopColor="#CCFBF1" stopOpacity="0.97" />
+          <Stop offset="0"    stopColor={c.glassInsideBgStart} stopOpacity={colors.isDark ? 0.45 : 0.97} />
+          <Stop offset="0.30" stopColor={c.glassInsideBgEnd} stopOpacity={colors.isDark ? 0.15 : 0.88} />
+          <Stop offset="0.65" stopColor={c.glassInsideBgStart} stopOpacity={colors.isDark ? 0.25 : 0.92} />
+          <Stop offset="1"    stopColor={c.glassInsideBgEnd} stopOpacity={colors.isDark ? 0.45 : 0.97} />
         </SvgLinearGradient>
         <SvgRadialGradient id="jbGlow" cx="35%" cy="25%" r="58%">
           <Stop offset="0"   stopColor="#FFFFFF" stopOpacity="0.55" />
-          <Stop offset="1"   stopColor="#2DD4BF" stopOpacity="0"   />
+          <Stop offset="1"   stopColor={c.glassStroke} stopOpacity="0"   />
         </SvgRadialGradient>
         <SvgLinearGradient id="jbPaperG" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0" stopColor="#FFFFFF"  />
-          <Stop offset="1" stopColor="#F0FDFA"  />
+          <Stop offset="0" stopColor={c.paperBase}  />
+          <Stop offset="1" stopColor={c.paperShadow}  />
         </SvgLinearGradient>
         <ClipPath id="jbInside">
           <Path d="M12 10 Q5 13 4 22 L2 90 Q1 98 10 98 L90 98 Q99 98 98 90 L96 22 Q95 13 88 10 Z" />
@@ -210,14 +278,14 @@ const JarBodySvg: React.FC<{ fillCount: number }> = ({ fillCount }) => {
 
       {/* Neck collar */}
       <Rect x="14" y="0" width="72" height="9" rx="4"
-        fill="url(#jbGlassH)" stroke={C.glassStroke} strokeWidth="0.8" />
+        fill="url(#jbGlassH)" stroke={c.glassStroke} strokeWidth="0.8" />
       <Rect x="12" y="7" width="76" height="4" rx="2"
-        fill={C.glassShadow} opacity={0.3} />
+        fill={c.glassShadow} opacity={0.3} />
 
       {/* Body */}
       <Path
         d="M12 10 Q5 13 4 22 L2 90 Q1 98 10 98 L90 98 Q99 98 98 90 L96 22 Q95 13 88 10 Z"
-        fill="url(#jbGlassH)" stroke={C.glassStroke} strokeWidth="1.5"
+        fill="url(#jbGlassH)" stroke={c.glassStroke} strokeWidth="1.5"
       />
       <Path
         d="M12 10 Q5 13 4 22 L2 90 Q1 98 10 98 L90 98 Q99 98 98 90 L96 22 Q95 13 88 10 Z"
@@ -236,16 +304,16 @@ const JarBodySvg: React.FC<{ fillCount: number }> = ({ fillCount }) => {
           <G key={i} clipPath="url(#jbInside)">
             <G transform={`rotate(${p.rot}, ${cx}, ${cy})`}>
               <Rect x={p.x + 2} y={p.y + 2} width={p.w} height={p.h} rx="3"
-                fill={C.paperShadow} opacity={0.45} />
+                fill={c.paperShadow} opacity={0.45} />
               <Rect x={p.x} y={p.y} width={p.w} height={p.h} rx="3"
-                fill="url(#jbPaperG)" stroke={C.paperLine} strokeWidth="0.7" />
+                fill="url(#jbPaperG)" stroke={c.paperLine} strokeWidth="0.7" />
               <Line x1={p.x + 5} y1={p.y + p.h * 0.38} x2={p.x + p.w - 5} y2={p.y + p.h * 0.38}
-                stroke={C.paperLine} strokeWidth="0.8" />
+                stroke={c.paperLine} strokeWidth="0.8" />
               <Line x1={p.x + 5} y1={p.y + p.h * 0.62} x2={p.x + p.w - 5} y2={p.y + p.h * 0.62}
-                stroke={C.paperLine} strokeWidth="0.8" />
+                stroke={c.paperLine} strokeWidth="0.8" />
               <G transform={`translate(${cx}, ${cy - 1})`}>
                 <Path d={heartD(p.big ? 5.5 : 3.8)}
-                  fill={p.big ? C.heartPrimary : C.heartDeep}
+                  fill={p.big ? c.heartPrimary : c.heartDeep}
                   opacity={p.big ? 0.95 : 0.75} />
               </G>
             </G>
@@ -254,19 +322,19 @@ const JarBodySvg: React.FC<{ fillCount: number }> = ({ fillCount }) => {
       })}
 
       {/* Glass shine stripes */}
-      <Path d="M13 18 Q10 50 12 88" stroke={C.glassShine} strokeWidth="5.5"
+      <Path d="M13 18 Q10 50 12 88" stroke={c.glassShine} strokeWidth="5.5"
         strokeLinecap="round" opacity={0.52} clipPath="url(#jbFull)" />
-      <Path d="M21 16 Q18 46 20 80" stroke={C.glassShine} strokeWidth="2"
+      <Path d="M21 16 Q18 46 20 80" stroke={c.glassShine} strokeWidth="2"
         strokeLinecap="round" opacity={0.28} clipPath="url(#jbFull)" />
-      <Path d="M89 18 Q92 50 90 88" stroke={C.glassShadow} strokeWidth="5"
+      <Path d="M89 18 Q92 50 90 88" stroke={c.glassShadow} strokeWidth="5"
         strokeLinecap="round" opacity={0.22} clipPath="url(#jbFull)" />
       <Ellipse cx="50" cy="93" rx="28" ry="3.5"
-        fill={C.glassShadow} opacity={0.18} clipPath="url(#jbFull)" />
+        fill={c.glassShadow} opacity={0.18} clipPath="url(#jbFull)" />
 
       {/* Re-stroke edge */}
       <Path
         d="M12 10 Q5 13 4 22 L2 90 Q1 98 10 98 L90 98 Q99 98 98 90 L96 22 Q95 13 88 10 Z"
-        fill="none" stroke={C.glassStroke} strokeWidth="1.5"
+        fill="none" stroke={c.glassStroke} strokeWidth="1.5"
       />
     </Svg>
   );
@@ -275,70 +343,98 @@ const JarBodySvg: React.FC<{ fillCount: number }> = ({ fillCount }) => {
 // ─────────────────────────────────────────────────────────────
 // JarLidSvg
 // ─────────────────────────────────────────────────────────────
-const JarLidSvg: React.FC = () => (
-  <Svg width={JAR_W} height={LID_H} viewBox="0 0 100 26">
-    <Defs>
-      <SvgLinearGradient id="jlGrad" x1="0" y1="0" x2="0" y2="1">
-        <Stop offset="0"   stopColor="#99F6E4" />
-        <Stop offset="0.5" stopColor="#2DD4BF" />
-        <Stop offset="1"   stopColor="#0D9488" />
-      </SvgLinearGradient>
-      <SvgLinearGradient id="jlKnob" x1="0" y1="0" x2="0" y2="1">
-        <Stop offset="0" stopColor="#E6FFFA" />
-        <Stop offset="1" stopColor="#99F6E4" />
-      </SvgLinearGradient>
-      <SvgRadialGradient id="jlKnobShine" cx="40%" cy="35%" r="55%">
-        <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.7" />
-        <Stop offset="1" stopColor="#2DD4BF" stopOpacity="0"   />
-      </SvgRadialGradient>
-    </Defs>
-    {/* Lid body */}
-    <Rect x="12" y="14" width="76" height="11" rx="5.5"
-      fill="url(#jlGrad)" stroke={C.lidRim} strokeWidth="0.8" />
-    {/* Rim shadow */}
-    <Rect x="10" y="23" width="80" height="2.5" rx="1.2"
-      fill={C.glassShadow} opacity={0.35} />
-    {/* Shine streak */}
-    <Rect x="18" y="16" width="22" height="5" rx="2.5"
-      fill={C.glassShine} opacity={0.42} />
-    {/* Gold rim accent */}
-    <Rect x="12" y="19" width="76" height="2" rx="1"
-      fill="#6EE87A" opacity={0.3} />
-    {/* Knob */}
-    <Ellipse cx="50" cy="8" rx="16" ry="8"
-      fill="url(#jlKnob)" stroke={C.lidRim} strokeWidth="0.8" />
-    <Ellipse cx="50" cy="6.5" rx="11" ry="5.5"
-      fill="url(#jlKnobShine)" />
-    <Ellipse cx="44" cy="5.5" rx="3.5" ry="2.5"
-      fill={C.glassShine} opacity={0.55} />
-  </Svg>
-);
+const JarLidSvg: React.FC = () => {
+  const colors = useAppColors();
+  const c = getJarColors(colors);
+
+  return (
+    <Svg width={JAR_W} height={LID_H} viewBox="0 0 100 26">
+      <Defs>
+        <SvgLinearGradient id="jlGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0"   stopColor={c.lidTop} />
+          <Stop offset="0.5" stopColor={c.lidBot} />
+          <Stop offset="1"   stopColor={c.lidRim} />
+        </SvgLinearGradient>
+        <SvgLinearGradient id="jlKnob" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor={c.lidKnob} />
+          <Stop offset="1" stopColor={c.lidTop} />
+        </SvgLinearGradient>
+        <SvgRadialGradient id="jlKnobShine" cx="40%" cy="35%" r="55%">
+          <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.7" />
+          <Stop offset="1" stopColor={c.lidBot} stopOpacity="0"   />
+        </SvgRadialGradient>
+      </Defs>
+      {/* Lid body */}
+      <Rect x="12" y="14" width="76" height="11" rx="5.5"
+        fill="url(#jlGrad)" stroke={c.lidRim} strokeWidth="0.8" />
+      {/* Rim shadow */}
+      <Rect x="10" y="23" width="80" height="2.5" rx="1.2"
+        fill={c.glassShadow} opacity={0.35} />
+      {/* Shine streak */}
+      <Rect x="18" y="16" width="22" height="5" rx="2.5"
+        fill={c.glassShine} opacity={0.42} />
+      {/* Accent rim line */}
+      <Rect x="12" y="19" width="76" height="2" rx="1"
+        fill={c.lidAccent} opacity={0.3} />
+      {/* Knob */}
+      <Ellipse cx="50" cy="8" rx="16" ry="8"
+        fill="url(#jlKnob)" stroke={c.lidRim} strokeWidth="0.8" />
+      <Ellipse cx="50" cy="6.5" rx="11" ry="5.5"
+        fill="url(#jlKnobShine)" />
+      <Ellipse cx="44" cy="5.5" rx="3.5" ry="2.5"
+        fill={c.glassShine} opacity={0.55} />
+    </Svg>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 // PaperSlipSvg (flying)
 // ─────────────────────────────────────────────────────────────
-const PaperSlipSvg: React.FC = () => (
-  <Svg width={ENV_W} height={ENV_H} viewBox="0 0 48 38">
-    <Defs>
-      <SvgLinearGradient id="fpGrad" x1="0" y1="0" x2="0" y2="1">
-        <Stop offset="0" stopColor="#FFFFFF"  />
-        <Stop offset="1" stopColor="#F0FDFA"  />
-      </SvgLinearGradient>
-    </Defs>
-    <Rect x="2.5" y="2.5" width="44" height="34" rx="3.5"
-      fill={C.paperShadow} opacity={0.5} />
-    <Rect x="1" y="1" width="44" height="34" rx="3.5"
-      fill="url(#fpGrad)" stroke={C.paperLine} strokeWidth="1" />
-    <Line x1="6" y1="13" x2="42" y2="13" stroke={C.paperLine} strokeWidth="1.1" />
-    <Line x1="6" y1="21" x2="42" y2="21" stroke={C.paperLine} strokeWidth="1.1" />
-    <Line x1="6" y1="29" x2="42" y2="29" stroke={C.paperLine} strokeWidth="1.1" />
-    <G transform="translate(24, 10)">
-      <Path d={heartD(6.5)} fill={C.heartPrimary} opacity={0.92} />
-    </G>
-    <Path d="M38 1 L45 8 L38 8 Z" fill={C.paperShadow} opacity={0.55} />
-    <Rect x="4" y="3" width="13" height="3" rx="1.5" fill="#FFF" opacity={0.5} />
-  </Svg>
-);
+const PaperSlipSvg: React.FC = () => {
+  const colors = useAppColors();
+  const c = getJarColors(colors);
+
+  return (
+    <Svg width={ENV_W} height={ENV_H} viewBox="0 0 48 38">
+      <Defs>
+        <SvgLinearGradient id="fpGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor={c.paperBase}  />
+          <Stop offset="1" stopColor={c.paperShadow}  />
+        </SvgLinearGradient>
+      </Defs>
+      <Rect x="2.5" y="2.5" width="44" height="34" rx="3.5"
+        fill={c.paperShadow} opacity={0.5} />
+      <Rect x="1" y="1" width="44" height="34" rx="3.5"
+        fill="url(#fpGrad)" stroke={c.paperLine} strokeWidth="1" />
+      <Line x1="6" y1="13" x2="42" y2="13" stroke={c.paperLine} strokeWidth="1.1" />
+      <Line x1="6" y1="21" x2="42" y2="21" stroke={c.paperLine} strokeWidth="1.1" />
+      <Line x1="6" y1="29" x2="42" y2="29" stroke={c.paperLine} strokeWidth="1.1" />
+      <G transform="translate(24, 10)">
+        <Path d={heartD(6.5)} fill={c.heartPrimary} opacity={0.92} />
+      </G>
+      <Path d="M38 1 L45 8 L38 8 Z" fill={c.paperShadow} opacity={0.55} />
+      <Rect x="4" y="3" width="13" height="3" rx="1.5" fill="#FFF" opacity={0.5} />
+    </Svg>
+  );
+};
+
+// ── Radial Gradient Glow Ring Svg ────────────────────────────
+const GlowRingSvg: React.FC = () => {
+  const colors = useAppColors();
+  const c = getJarColors(colors);
+  return (
+    <Svg width="100%" height="100%" viewBox="0 0 100 100" style={StyleSheet.absoluteFill}>
+      <Defs>
+        <SvgRadialGradient id="ringGlow" cx="50%" cy="50%" r="50%">
+          <Stop offset="0" stopColor={c.sparkGlow} stopOpacity={0.7} />
+          <Stop offset="0.5" stopColor={c.glow} stopOpacity={0.3} />
+          <Stop offset="1" stopColor={c.glow} stopOpacity={0} />
+        </SvgRadialGradient>
+      </Defs>
+      <Ellipse cx="50" cy="50" rx="50" ry="40" fill="url(#ringGlow)" />
+    </Svg>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 // Particle types for magic effects
@@ -370,6 +466,7 @@ interface TrailDot {
   opacity: RNAnimated.Value;
   scale: RNAnimated.Value;
   color: string;
+  size: number;
 }
 
 interface AmbientParticle {
@@ -380,6 +477,7 @@ interface AmbientParticle {
   color: string;
   opacity: RNAnimated.Value;
   translateY: RNAnimated.Value;
+  translateX: RNAnimated.Value;
   scale: RNAnimated.Value;
 }
 
@@ -406,6 +504,9 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
     const insets = useSafeAreaInsets();
     const animatingRef = useRef(false);
     const cancelFlightRef = useRef<(() => void) | null>(null);
+
+    const colors = useAppColors();
+    const c = getJarColors(colors);
 
     // ── Paper position (JS-driven cubic bezier, exact HTML match) ──
     const [paperState, setPaperState] = useState({
@@ -470,32 +571,67 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       transform: [{ scale: badgeScale.value }],
     }));
 
+    const shadowStyle = useAnimatedStyle(() => ({
+      transform: [
+        { scaleX: bodyScale.value },
+        { scaleY: bodyScale.value },
+      ],
+      opacity: 0.18 + (bodyScale.value - 1) * 2.5,
+    }));
+
+    // Cleanup animations on unmount
+    useEffect(() => {
+      return () => {
+        cancelFlightRef.current?.();
+      };
+    }, []);
+
+    // ── Ambient particle colors setup ─────────────────────────
+    const ambientColors = [
+      c.sparkPrimary,
+      c.sparkSecondary,
+      c.sparkAccent,
+      c.sparkGlow,
+      c.sparkWhite,
+    ];
+    const ambientColorsRef = useRef(ambientColors);
+    useEffect(() => {
+      ambientColorsRef.current = ambientColors;
+    }, [ambientColors]);
+
     // ── Ambient particle spawner ──────────────────────────────
     useEffect(() => {
       const interval = setInterval(() => {
         const id = ambientIdRef.current++;
         const opacity    = new RNAnimated.Value(0);
         const translateY = new RNAnimated.Value(0);
+        const translateX = new RNAnimated.Value(0);
         const scale      = new RNAnimated.Value(1);
+        
+        const swayDist = (Math.random() - 0.5) * responsiveWidth(5);
+        const particleSize = 3 + Math.random() * 4;
+
         const particle: AmbientParticle = {
           id,
           left:   10 + Math.random() * 80,   // % of JAR_W
           bottom: 5 + Math.random() * 40,
-          size:   3 + Math.random() * 4,
-          color:  AMBIENT_COLORS[Math.floor(Math.random() * AMBIENT_COLORS.length)],
+          size:   particleSize,
+          color:  ambientColorsRef.current[Math.floor(Math.random() * ambientColorsRef.current.length)],
           opacity,
           translateY,
+          translateX,
           scale,
         };
         setAmbientParticles(prev => [...prev.slice(-12), particle]);
 
-        // float up and fade
+        // float up, sway and fade
         RNAnimated.parallel([
           RNAnimated.sequence([
             RNAnimated.timing(opacity, { toValue: 0.6, duration: 400, useNativeDriver: true }),
             RNAnimated.timing(opacity, { toValue: 0,   duration: 2600, useNativeDriver: true }),
           ]),
           RNAnimated.timing(translateY, { toValue: -responsiveHeight(12), duration: 3500, easing: RNEasing.linear, useNativeDriver: true }),
+          RNAnimated.timing(translateX, { toValue: swayDist, duration: 3500, easing: RNEasing.inOut(RNEasing.ease), useNativeDriver: true }),
           RNAnimated.sequence([
             RNAnimated.delay(2800),
             RNAnimated.timing(scale, { toValue: 0.3, duration: 700, useNativeDriver: true }),
@@ -511,22 +647,25 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
     // ── Spawn trail dot ───────────────────────────────────────
     const spawnTrail = useCallback((x: number, y: number) => {
       const id    = trailIdRef.current++;
-      const opacity = new RNAnimated.Value(0.8);
+      const opacity = new RNAnimated.Value(0.85);
       const scale   = new RNAnimated.Value(1);
-      const colors  = [C.sparkTeal, C.sparkGold, C.sparkGreen];
+      const trailColors  = [c.sparkPrimary, c.sparkSecondary, c.sparkGlow];
+      const trailSize = 3 + Math.random() * 4;
+      
       const dot: TrailDot = {
         id, left: x, top: y,
         opacity, scale,
-        color: colors[Math.floor(Math.random() * 3)],
+        color: trailColors[Math.floor(Math.random() * trailColors.length)],
+        size: trailSize,
       };
       setTrailDots(prev => [...prev.slice(-20), dot]);
       RNAnimated.parallel([
-        RNAnimated.timing(opacity, { toValue: 0, duration: 500, useNativeDriver: true }),
-        RNAnimated.timing(scale,   { toValue: 0.3, duration: 500, useNativeDriver: true }),
+        RNAnimated.timing(opacity, { toValue: 0, duration: 550, useNativeDriver: true }),
+        RNAnimated.timing(scale,   { toValue: 0.25, duration: 550, useNativeDriver: true }),
       ]).start(() => {
         setTrailDots(prev => prev.filter(d => d.id !== id));
       });
-    }, []);
+    }, [c.sparkPrimary, c.sparkSecondary, c.sparkGlow]);
 
     // ── Trigger burst sparkles ────────────────────────────────
     const triggerBurst = useCallback(() => {
@@ -536,7 +675,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
         y:       new RNAnimated.Value(0),
         opacity: new RNAnimated.Value(0),
         scale:   new RNAnimated.Value(1),
-        color:   b.color,
+        color:   (c as any)[b.colorKey],
         size:    b.size,
       }));
       setBurstParticles(particles);
@@ -557,7 +696,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       });
 
       setTimeout(() => setBurstParticles([]), 800);
-    }, []);
+    }, [c]);
 
     // ── Trigger floating hearts ───────────────────────────────
     const triggerFloatHearts = useCallback(() => {
@@ -567,7 +706,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
         y:       new RNAnimated.Value(0),
         opacity: new RNAnimated.Value(0),
         scale:   new RNAnimated.Value(1),
-        color:   h.color,
+        color:   (c as any)[h.colorKey],
         size:    h.size,
       }));
       setFloatHearts(hearts);
@@ -586,7 +725,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       });
 
       setTimeout(() => setFloatHearts([]), 1400);
-    }, []);
+    }, [c]);
 
     // ── Main animation (cubic bezier arc, exact HTML flow) ────
     useImperativeHandle(ref, () => ({
@@ -716,6 +855,18 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
     // ─────────────────────────────────────────────────────────
     return (
       <View style={styles.root}>
+        {/* ── Ground shadow under the jar ── */}
+        <Animated.View
+          style={[
+            styles.groundShadow,
+            {
+              backgroundColor: colors.isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(124, 58, 237, 0.15)',
+            },
+            shadowStyle,
+          ]}
+          pointerEvents="none"
+        />
+
         {/* ── Ambient rising particles ── */}
         {ambientParticles.map(p => (
           <RNAnimated.View
@@ -733,6 +884,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
                 opacity:   p.opacity,
                 transform: [
                   { translateY: p.translateY },
+                  { translateX: p.translateX },
                   { scale:      p.scale },
                 ],
                 shadowColor: p.color,
@@ -753,11 +905,14 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
               {
                 left:            d.left,
                 top:             d.top,
+                width:           d.size,
+                height:          d.size,
+                borderRadius:    d.size / 2,
                 backgroundColor: d.color,
                 opacity:         d.opacity,
                 transform:       [{ scale: d.scale }],
                 shadowColor:     d.color,
-                shadowRadius:    4,
+                shadowRadius:    d.size,
                 shadowOpacity:   0.9,
               },
             ]}
@@ -766,8 +921,10 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
 
         {/* ── Jar assembly ── */}
         <Animated.View style={[styles.jarWrapper]} pointerEvents="none">
-          {/* Glow ring */}
-          <Animated.View style={[styles.glowRing, glowStyle]} pointerEvents="none" />
+          {/* Glow ring (radial gradient) */}
+          <Animated.View style={[styles.glowRing, glowStyle]} pointerEvents="none">
+            <GlowRingSvg />
+          </Animated.View>
 
           {/* Lid */}
           <Animated.View style={[styles.lidContainer, lidStyle]}>
@@ -781,7 +938,16 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
 
           {/* Count badge */}
           {displayCount > 0 && (
-            <Animated.Text style={[styles.countBadge, badgeStyle]}>
+            <Animated.Text
+              style={[
+                styles.countBadge,
+                {
+                  backgroundColor: c.badge,
+                  shadowColor: c.badgeShadow,
+                },
+                badgeStyle,
+              ]}
+            >
               {displayCount}
             </Animated.Text>
           )}
@@ -897,7 +1063,6 @@ const styles = StyleSheet.create({
     width:  JAR_W * 1.3,
     height: JAR_W * 1.1,
     borderRadius: JAR_W * 0.65,
-    backgroundColor: C.glow,
     zIndex: 0,
   },
 
@@ -923,23 +1088,22 @@ const styles = StyleSheet.create({
     position:        'absolute',
     bottom:          0,
     right:           -10,
-    backgroundColor: C.badge,
     color:           '#FFFFFF',
     fontSize:        12,
-    fontWeight:      '800',
+    fontWeight:      '700',
+    fontFamily:      'DMSans-Bold',
     borderRadius:    12,
     minWidth:        24,
     height:          24,
     textAlign:       'center',
     lineHeight:      24,
-    paddingHorizontal: 3,
+    paddingHorizontal: 4,
     overflow:        'hidden',
     zIndex:          20,
-    shadowColor:     C.badgeShadow,
-    shadowOffset:    { width: 0, height: 1 },
+    shadowOffset:    { width: 0, height: 2 },
     shadowOpacity:   0.45,
-    shadowRadius:    2,
-    elevation:       3,
+    shadowRadius:    3,
+    elevation:       4,
   },
 
   burstContainer: {
@@ -976,6 +1140,11 @@ const styles = StyleSheet.create({
     width:  ENV_W,
     height: ENV_H,
     zIndex: 40,
+    shadowColor: 'rgba(0, 0, 0, 0.22)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 7,
   },
 
   ambientDot: {
@@ -985,10 +1154,16 @@ const styles = StyleSheet.create({
 
   trailDot: {
     position:     'absolute',
-    width:        5,
-    height:       5,
-    borderRadius: 2.5,
     elevation:    3,
     zIndex:       35,
+  },
+
+  groundShadow: {
+    position: 'absolute',
+    bottom: responsiveHeight(1.5),
+    width: JAR_W * 0.75,
+    height: 8,
+    borderRadius: 4,
+    zIndex: 1,
   },
 });

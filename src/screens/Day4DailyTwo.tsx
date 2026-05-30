@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { DayHeader } from '../components/common/DayHeader';
-import { DayCTA } from '../components/common/DayCTA';
 import {
   View, Text, StyleSheet, TextInput,
-  KeyboardAvoidingView, Platform, ScrollView,
+  KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
 import { useAppColors } from '../theme';
+import { metrics } from '../theme/metrics';
+import { typography, fonts } from '../theme/typography';
 import { dailyTwoQuestions } from '../data/quizData';
 import { useDayStore } from '../store/useDayStore';
 import { useJournalStore } from '../store/useJournalStore';
 import { haptics } from '../utils/haptics';
+import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DailyTwo'>;
 
@@ -22,7 +25,9 @@ export const Day4DailyTwo: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const day4 = useDayStore((s) => s.day4);
+  const setDay4DailyTwo = useDayStore((s) => s.setDay4DailyTwo);
   const addEntry = useJournalStore((s) => s.addEntry);
 
   const pair = dailyTwoQuestions[new Date().getDay() % dailyTwoQuestions.length];
@@ -35,57 +40,114 @@ export const Day4DailyTwo: React.FC = () => {
     haptics.success();
     const a1 = answer1.trim();
     const a2 = answer2.trim();
+    let status: 'both' | 'one' | 'skipped' = 'skipped';
+    if (a1 && a2) status = 'both';
+    else if (a1 || a2) status = 'one';
+    
+    setDay4DailyTwo(a1, a2, status);
     if (a1 || a2) {
       addEntry({ day: 4, type: 'daily2', content: `Q1: ${a1}\nQ2: ${a2}` });
     }
-    // We'll pass the answers forward via navigation or better yet, store them partially
-    // For now, let's just navigate to the next screen
-    navigation.navigate('Day4TriviaFact');
+    navigation.navigate('Day4DropBox');
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScreenWrapper>
         <ProgressStrip currentDay={4} />
-        <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <DayHeader eyebrow="The Daily 2" />
-          <Text style={styles.title}>Two questions.{'\n'}Both for you.</Text>
-          <Text style={styles.subtitle}>Private. No one will read them but you.</Text>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <DayHeader eyebrow="Daily Journal" />
+          {/* <Text style={styles.title}>Two questions. Two cards.</Text> */}
+          <Text style={styles.title}>Your private journal grows here — day by day.</Text>
 
-          <View style={styles.questionBlock}>
-            <Text style={styles.qNumber}>01</Text>
-            <Text style={styles.qText}>{pair[0]}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Your answer…"
-              placeholderTextColor={colors.textHint}
-              value={answer1}
-              onChangeText={setAnswer1}
-              multiline
-              textAlignVertical="top"
-            />
+          {/* Card 1 */}
+          <View style={styles.card}>
+            <Text style={styles.cardEyebrow}>ABOUT YOU</Text>
+            <Text style={styles.cardQuestion}>{pair[0]}</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Type anything..."
+                placeholderTextColor={colors.textHint}
+                value={answer1}
+                onChangeText={setAnswer1}
+                multiline
+                maxLength={300}
+                textAlignVertical="top"
+              />
+              <Text style={styles.charCount}>{answer1.length}/300 chars</Text>
+            </View>
+            <View style={styles.cardFooter}>
+              <View style={[styles.tag, answer1.trim().length > 0 ? styles.tagActive : null]}>
+                <Text style={[styles.tagText, answer1.trim().length > 0 ? styles.tagTextActive : null]}>
+                  {answer1.trim().length > 0 ? 'Tone: Tender ✓' : 'Tone: Pending'}
+                </Text>
+              </View>
+              <Text style={styles.footerNote}>Feeds Day 5 Mood Chart</Text>
+            </View>
           </View>
 
-          <View style={styles.divider} />
-
-          <View style={styles.questionBlock}>
-            <Text style={styles.qNumber}>02</Text>
-            <Text style={styles.qText}>{pair[1]}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Your answer…"
-              placeholderTextColor={colors.textHint}
-              value={answer2}
-              onChangeText={setAnswer2}
-              multiline
-              textAlignVertical="top"
-            />
+          {/* Card 2 */}
+          <View style={styles.card}>
+            <Text style={styles.cardEyebrow}>ABOUT YOUR RELATIONSHIP</Text>
+            <Text style={styles.cardQuestion}>{pair[1]}</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Type anything..."
+                placeholderTextColor={colors.textHint}
+                value={answer2}
+                onChangeText={setAnswer2}
+                multiline
+                maxLength={300}
+                textAlignVertical="top"
+              />
+              <Text style={styles.charCount}>{answer2.length}/300 chars</Text>
+            </View>
+            <View style={styles.cardFooter}>
+              <View style={[styles.tag, answer2.trim().length > 0 ? styles.tagActive : null]}>
+                <Text style={[styles.tagText, answer2.trim().length > 0 ? styles.tagTextActive : null]}>
+                  {answer2.trim().length > 0 ? 'Tone: Warm ✓' : 'Tone: Pending'}
+                </Text>
+              </View>
+              <Text style={styles.footerNote}>Feeds Day 5 Mood Chart</Text>
+            </View>
           </View>
 
           <Text style={styles.hook}>Tomorrow is Day 5. Your final ritual. Make it count.</Text>
+          <View style={{ height: 120 }} />
         </ScrollView>
 
-        <DayCTA title={canContinue ? "Save & continue" : "Skip for now"} onPress={handleDone} />
+        {/* Custom bottom button row matching screenshot */}
+        <View style={[styles.ctaWrapper, { paddingBottom: Math.max(insets.bottom + 8, metrics.spacing.md) }]}>
+          {/* <TouchableOpacity
+            style={[styles.mainBtn, !canContinue && styles.mainBtnDisabled]}
+            onPress={handleDone}
+            disabled={!canContinue}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.mainBtnText}>Save to journal →</Text>
+          </TouchableOpacity> */}
+          <GradientButton
+            text="Save to journal "
+            onPress={handleDone}
+            disabled={!canContinue}
+             gradientColors={colors.gradientBtn2}
+            
+          />
+          
+          <TouchableOpacity
+            style={styles.skipBtn}
+            onPress={() => {
+              haptics.light();
+              setDay4DailyTwo('', '', 'skipped');
+              navigation.navigate('Day4DropBox');
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.skipBtnText}>Skip</Text>
+          </TouchableOpacity>
+        </View>
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -93,17 +155,136 @@ export const Day4DailyTwo: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
-  content: { padding: 28, paddingBottom: 8 },
-  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 36, marginBottom: 10 },
-  subtitle: { fontSize: 14, color: c.textHint, fontFamily: 'Inter-Regular', lineHeight: 22, marginBottom: 32 },
-  questionBlock: { marginBottom: 8 },
-  qNumber: { color: c.day4, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 1, marginBottom: 8 },
-  qText: { fontSize: 18, color: c.text, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 14 },
-  input: {
-    color: c.text, fontSize: 15, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
-    padding: 14, minHeight: 80, lineHeight: 22,
+  content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingTop: metrics.spacing.md },
+  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34, marginBottom: 8 },
+  subtitle: { fontSize: 14, color: c.textSecondary, fontFamily: fonts.dmSansRegular, lineHeight: 22, marginBottom: metrics.spacing.lg },
+  
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: c.glassBorder || 'rgba(0,0,0,0.06)',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: metrics.spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+    gap: 12,
+    marginTop: metrics.spacing.sm
   },
-  divider: { height: 1, backgroundColor: c.surface, marginVertical: 24 },
-  hook: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', textAlign: 'center', marginTop: 24, marginBottom: 8, lineHeight: 20 },
+  cardEyebrow: {
+    fontSize: 10,
+    fontFamily: fonts.dmSansBold,
+    color: c.textHint || '#9CA3AF',
+    letterSpacing: 1.0,
+    textTransform: 'uppercase',
+  },
+  cardQuestion: {
+    fontSize: 16,
+    color: c.text,
+    fontFamily: 'PlayfairDisplay-Bold',
+    lineHeight: 24,
+  },
+  inputWrapper: {
+    position: 'relative',
+    marginTop: 4,
+  },
+  input: {
+    color: c.text,
+    fontSize: 14,
+    fontFamily: fonts.dmSansRegular,
+    borderWidth: 1,
+    borderColor: c.surfaceBorder,
+    borderRadius: 12,
+    padding: 12,
+    paddingBottom: 28,
+    minHeight: 80,
+    lineHeight: 20,
+    backgroundColor: '#FFFFFF',
+  },
+  charCount: {
+    position: 'absolute',
+    bottom: 8,
+    right: 12,
+    fontSize: 10,
+    color: c.textHint,
+    fontFamily: fonts.dmSansMedium,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  tag: {
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: metrics.radius.sm || 6,
+  },
+  tagActive: {
+    backgroundColor: c.day4 + '15',
+  },
+  tagText: {
+    fontSize: 10,
+    fontFamily: fonts.dmSansBold,
+    color: c.textHint,
+  },
+  tagTextActive: {
+    color: c.day4,
+  },
+  footerNote: {
+    fontSize: 10,
+    fontFamily: fonts.dmSansMedium,
+    color: c.textHint,
+  },
+  hook: {
+    color: c.text,
+    fontSize: 12,
+    fontFamily: fonts.dmSansRegular,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 8,
+    lineHeight: 18
+  },
+  
+  // ── CTA Wrapper ─────────────────────────────────────────
+  ctaWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: metrics.layout.screenPaddingHz,
+    paddingTop: metrics.spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.5)',
+  },
+  mainBtn: {
+    backgroundColor: c.primary,
+    paddingVertical: 16,
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mainBtnDisabled: {
+    backgroundColor: c.textHint,
+    opacity: 0.5,
+  },
+  mainBtnText: {
+    ...typography.buttonLarge,
+    color: '#FFFFFF',
+  },
+  skipBtn: {
+    alignItems: 'center',
+    paddingVertical: metrics.spacing.smMd,
+  },
+  skipBtnText: {
+    fontSize: 12,
+    color: c.textHint,
+    fontFamily: fonts.dmSansRegular,
+    textDecorationLine: 'underline',
+  },
 });
