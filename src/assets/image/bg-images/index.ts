@@ -1,11 +1,15 @@
 
 import bluePurple from "./blue-purple.png"
 import greenBg from "./green-bg-2.png"
+import greenBg3 from "./green-bg-3.png"
 import greenBg2 from "./green-bg-2.png"
 import greenPink from "./green-pink.png"
 import lavenderBg from "./lavender-bg.png"
 import orangePurple from "./orange-purple.png"
 import pinkBg from "./pink-bg.png"
+import bgImage from "./bg-img.png"
+import bgImage2 from "./bg-image.png"
+
 
 export const IMAGE = {
     bluePurple,
@@ -15,5 +19,8 @@ export const IMAGE = {
     lavenderBg,
     orangePurple,
     pinkBg,
+    bgImage,
+    bgImage2,
+    greenBg3
 
 }

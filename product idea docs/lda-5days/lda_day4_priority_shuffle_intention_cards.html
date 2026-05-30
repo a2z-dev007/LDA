@@ -1,0 +1,280 @@
+
+<h2 class="sr-only">Day 4 Priority Shuffle cards personalised by intention word — 3 sets of 5 cards for each of the 8 intention words</h2>
+<style>
+.wrap{padding:1rem 0}
+.intent-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem}
+.itab{padding:6px 14px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;font-size:12px;font-weight:500;transition:all .12s}
+.itab.on{border-color:var(--color-border-secondary);color:var(--color-text-primary);background:var(--color-background-secondary)}
+.panel{display:none}.panel.on{display:block}
+.set-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:1.5rem}
+.set-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.set-head{padding:8px 14px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-bottom:0.5px solid var(--color-border-tertiary)}
+.card-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.card-item:last-child{border-bottom:none}
+.card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.card-title{font-size:12.5px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px;line-height:1.4}
+.card-sub{font-size:11px;color:var(--color-text-secondary);line-height:1.5;font-style:italic}
+.intent-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:.6rem}
+</style>
+
+<div class="wrap">
+<div class="intent-tabs">
+  <button class="itab on" onclick="sw('patient',this)">Patient</button>
+  <button class="itab" onclick="sw('present',this)">Present</button>
+  <button class="itab" onclick="sw('honest',this)">Honest</button>
+  <button class="itab" onclick="sw('warm',this)">Warm</button>
+  <button class="itab" onclick="sw('playful',this)">Playful</button>
+  <button class="itab" onclick="sw('open',this)">Open</button>
+  <button class="itab" onclick="sw('gentle',this)">Gentle</button>
+  <button class="itab" onclick="sw('brave',this)">Brave</button>
+</div>
+
+<div id="p-patient" class="panel on">
+<div class="intent-label">Intention — Patient · cards about slowing down and being heard</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#FAEEDA;color:#633806">Set 1 — Feeling rushed</div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">⏳</div><div><div class="card-title">More room to finish my thoughts</div><div class="card-sub">You need to be heard without being interrupted</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🫂</div><div><div class="card-title">Conversations that don't get cut short</div><div class="card-sub">You want to go deeper, not just touch the surface</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🌿</div><div><div class="card-title">A slower pace on hard days</div><div class="card-sub">You need them to stay in the moment with you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">💬</div><div><div class="card-title">Space to say things imperfectly</div><div class="card-sub">You want to talk without getting it exactly right</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🕯️</div><div><div class="card-title">Time together with no agenda</div><div class="card-sub">No rush, no next thing — just being present</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FAEEDA;color:#633806">Set 2 — Feeling unheard</div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">👂</div><div><div class="card-title">Being listened to — not just heard</div><div class="card-sub">You need them to wait before responding</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🌊</div><div><div class="card-title">Fewer quick fixes, more sitting with it</div><div class="card-sub">You don't always need a solution right away</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🤍</div><div><div class="card-title">Patience when I'm figuring things out</div><div class="card-sub">You need grace while you process slowly</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🔇</div><div><div class="card-title">Silence that doesn't feel awkward</div><div class="card-sub">You want to sit quietly without anyone filling it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">📿</div><div><div class="card-title">Fewer distractions during our time</div><div class="card-sub">You need their full presence, not divided attention</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FAEEDA;color:#633806">Set 3 — Feeling the pace</div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🌙</div><div><div class="card-title">One slow evening together this week</div><div class="card-sub">No plans, no phone — just the two of you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🫶</div><div><div class="card-title">Understanding before advice</div><div class="card-sub">You need to be understood before being helped</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">💭</div><div><div class="card-title">Time to think before I have to answer</div><div class="card-sub">You process slowly — and that's okay</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🌸</div><div><div class="card-title">Less doing, more being together</div><div class="card-sub">You want ease, not productivity</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAEEDA">🎋</div><div><div class="card-title">Calm in the small moments</div><div class="card-sub">You want ordinary time to feel unhurried</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-present" class="panel">
+<div class="intent-label">Intention — Present · cards about attention and being here</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#E1F5EE;color:#085041">Set 1 — Feeling absent connection</div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">📵</div><div><div class="card-title">Phones away during meals</div><div class="card-sub">You need eye contact more than updates</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">✨</div><div><div class="card-title">Moments that feel fully alive</div><div class="card-sub">You want to be inside the moment, not watching it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🎯</div><div><div class="card-title">Their undivided attention — even briefly</div><div class="card-sub">10 minutes of full focus beats an hour half-there</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🌅</div><div><div class="card-title">A morning that starts together</div><div class="card-sub">Before the day takes over — just a few minutes</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">👁️</div><div><div class="card-title">Being noticed without having to ask</div><div class="card-sub">You want them to see you — not be told to look</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#E1F5EE;color:#085041">Set 2 — Feeling like background</div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🫂</div><div><div class="card-title">Physical presence that means something</div><div class="card-sub">Touch that says "I'm here" not just "I'm close"</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🎵</div><div><div class="card-title">Doing something together without screens</div><div class="card-sub">Anything that requires both of you to be there</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">💬</div><div><div class="card-title">A real question asked about my day</div><div class="card-sub">Not "how was it" — something specific and curious</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🌿</div><div><div class="card-title">Being chosen over the to-do list</div><div class="card-sub">You want to feel like a priority, not a checkbox</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🕯️</div><div><div class="card-title">An evening that's just ours</div><div class="card-sub">No tasks, no catch-up — deliberately free</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#E1F5EE;color:#085041">Set 3 — Feeling the drift</div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🌙</div><div><div class="card-title">One conversation before we sleep</div><div class="card-sub">Not logistics — something real from the day</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🤝</div><div><div class="card-title">Being remembered in small ways</div><div class="card-sub">A text, a look, a moment that says I thought of you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🌊</div><div><div class="card-title">Less parallel living, more actual togetherness</div><div class="card-sub">Same room shouldn't mean separate worlds</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">🎋</div><div><div class="card-title">A check-in that isn't about logistics</div><div class="card-sub">How are you — actually — not just what needs doing</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E1F5EE">💫</div><div><div class="card-title">The feeling of being fully met</div><div class="card-sub">You want to finish a moment and feel — yes, that</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-honest" class="panel">
+<div class="intent-label">Intention — Honest · cards about truth and being known</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#EEEDFE;color:#3C3489">Set 1 — Carrying something unsaid</div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🗝️</div><div><div class="card-title">A space to say the difficult thing</div><div class="card-sub">You've been holding something that needs to come out</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🤍</div><div><div class="card-title">Being received without judgment</div><div class="card-sub">You want to say it and have it land gently</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">💬</div><div><div class="card-title">The conversation we keep not having</div><div class="card-sub">You need to name the thing in the room</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🌊</div><div><div class="card-title">Knowing I won't be punished for being real</div><div class="card-sub">Safety to be honest without it becoming a fight</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🕯️</div><div><div class="card-title">One real thing said between us today</div><div class="card-sub">Not deep — just true. That's enough.</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#EEEDFE;color:#3C3489">Set 2 — Performing, not connecting</div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🎭</div><div><div class="card-title">Less performing, more being</div><div class="card-sub">You're tired of editing yourself before you speak</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🪟</div><div><div class="card-title">Feeling fully known — not just liked</div><div class="card-sub">You want them to know the actual you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🔓</div><div><div class="card-title">Dropping the careful version of myself</div><div class="card-sub">The one you show when you're not sure how it'll land</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🫶</div><div><div class="card-title">Honesty that doesn't cost the relationship</div><div class="card-sub">You want truth to feel safe, not risky</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">✍️</div><div><div class="card-title">Saying "I'm not okay" when I'm not okay</div><div class="card-sub">And having that be enough of an answer</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#EEEDFE;color:#3C3489">Set 3 — Wanting deeper truth</div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">💎</div><div><div class="card-title">Knowing what they're actually thinking</div><div class="card-sub">Not the surface answer — the real one underneath</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🌱</div><div><div class="card-title">Honesty that builds, not wounds</div><div class="card-sub">Truth said with care for where it lands</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🔍</div><div><div class="card-title">Fewer polite non-answers</div><div class="card-sub">"Fine" doesn't tell me anything. You need more.</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🌙</div><div><div class="card-title">A late-night truth between us</div><div class="card-sub">The kind that only comes out when it's dark and quiet</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EEEDFE">🤲</div><div><div class="card-title">Mutual honesty — not just mine</div><div class="card-sub">You want both of you to be real at the same time</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-warm" class="panel">
+<div class="intent-label">Intention — Warm · cards about closeness and being felt</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#FBEAF0;color:#72243E">Set 1 — Feeling cold distance</div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🫂</div><div><div class="card-title">More warmth in the ordinary moments</div><div class="card-sub">Not grand gestures — just small everyday softness</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🌸</div><div><div class="card-title">A touch that says I see you</div><div class="card-sub">Hand on back, shoulder squeeze — not automatic</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">☕</div><div><div class="card-title">Being thought of without asking</div><div class="card-sub">Chai made, blanket brought — unprompted care</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">💌</div><div><div class="card-title">Something kind said unprompted</div><div class="card-sub">Not because it's a special occasion — just because</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🕯️</div><div><div class="card-title">Feeling like home in their presence</div><div class="card-sub">That easy warmth that used to come without trying</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FBEAF0;color:#72243E">Set 2 — Feeling unseen</div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">👁️</div><div><div class="card-title">Being noticed when I'm struggling</div><div class="card-sub">You want them to see it before you have to say it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🌙</div><div><div class="card-title">A slow homecoming</div><div class="card-sub">Door opens and they're glad it's you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🤍</div><div><div class="card-title">Affection that feels chosen, not routine</div><div class="card-sub">The hug that lasts a second longer than necessary</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🌷</div><div><div class="card-title">Feeling held, not just accompanied</div><div class="card-sub">There's a difference — and you feel it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🎵</div><div><div class="card-title">Warmth in how they speak to me</div><div class="card-sub">Not what they say — the tone they use to say it</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FBEAF0;color:#72243E">Set 3 — Feeling transactional</div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🫙</div><div><div class="card-title">Less logistics, more love</div><div class="card-sub">The week has been all planning and no connecting</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🔥</div><div><div class="card-title">Rekindling the easy warmth</div><div class="card-sub">It was there before — you want it back</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🌅</div><div><div class="card-title">One moment that feels tender</div><div class="card-sub">Not forced — just soft and real</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">💫</div><div><div class="card-title">To feel chosen, not just stayed with</div><div class="card-sub">Love isn't enough — you want to feel it actively</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FBEAF0">🫶</div><div><div class="card-title">Knowing they appreciate me — not assumed</div><div class="card-sub">Said out loud, not just felt silently</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-playful" class="panel">
+<div class="intent-label">Intention — Playful · cards about lightness and joy returning</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#EAF3DE;color:#27500A">Set 1 — Things got serious</div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">😂</div><div><div class="card-title">Laughing until it goes too long</div><div class="card-sub">The kind where something small becomes everything</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎲</div><div><div class="card-title">Doing something spontaneous together</div><div class="card-sub">No plan, no agenda — just a Tuesday that turned into something</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎪</div><div><div class="card-title">The version of us that's a little silly</div><div class="card-sub">You miss when things felt light between you</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🌈</div><div><div class="card-title">One moment that has nothing to do with being adults</div><div class="card-sub">Life got serious — your relationship doesn't have to</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🏃</div><div><div class="card-title">An inside joke that still lands</div><div class="card-sub">Or making a new one — even better</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#EAF3DE;color:#27500A">Set 2 — The fun drained out</div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎮</div><div><div class="card-title">Something we haven't done in too long</div><div class="card-sub">A game, a walk somewhere new, a small adventure</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🌟</div><div><div class="card-title">Surprising each other with something small</div><div class="card-sub">Nothing expensive — just unexpected</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎭</div><div><div class="card-title">Teasing each other again</div><div class="card-sub">The affectionate kind — you got too polite</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🌊</div><div><div class="card-title">Doing nothing — playfully</div><div class="card-sub">Idle time that becomes funny because you're together</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎵</div><div><div class="card-title">Music, dancing, or something dumb and fun</div><div class="card-sub">Kitchen dancing counts. It always counts.</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#EAF3DE;color:#27500A">Set 3 — Want to feel young again</div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🌸</div><div><div class="card-title">The feeling of early days — some of it</div><div class="card-sub">When everything felt a little lighter and funnier</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🎯</div><div><div class="card-title">Competing at something ridiculous</div><div class="card-sub">Even badly — especially badly</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">😄</div><div><div class="card-title">The funny version of a hard week</div><div class="card-sub">Finding what's absurd in the chaos together</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">🔥</div><div><div class="card-title">Being a team — playfully, not just practically</div><div class="card-sub">You collaborate on logistics. You want to play together too.</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#EAF3DE">✨</div><div><div class="card-title">One dinner with zero seriousness allowed</div><div class="card-sub">No problems, no plans — just the good stuff</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-open" class="panel">
+<div class="intent-label">Intention — Open · cards about walls coming down</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#E6F1FB;color:#0C447C">Set 1 — Sensing a wall</div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🪟</div><div><div class="card-title">Access to their inner world this week</div><div class="card-sub">What they're carrying — not just what they're doing</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🔓</div><div><div class="card-title">A door that usually stays closed</div><div class="card-sub">One topic that normally gets avoided — opened gently</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">💭</div><div><div class="card-title">Knowing what they're worried about</div><div class="card-sub">Even a fragment — something real and unguarded</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🌊</div><div><div class="card-title">Vulnerability without it becoming an event</div><div class="card-sub">A soft admission in an ordinary moment</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🤝</div><div><div class="card-title">Knowing what they actually need right now</div><div class="card-sub">Not guessing — them just saying it</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#E6F1FB;color:#0C447C">Set 2 — Feeling locked out</div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🌱</div><div><div class="card-title">Progress on a topic we keep circling</div><div class="card-sub">The one that always gets close but never lands</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🎯</div><div><div class="card-title">Being let in when things are hard for them</div><div class="card-sub">Not finding out later — being there during</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">💬</div><div><div class="card-title">Less "I'm fine" more of what's actually there</div><div class="card-sub">You know something's behind the fine — you want it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🌙</div><div><div class="card-title">A late-night conversation that goes somewhere</div><div class="card-sub">Past the surface, past the update, into the real</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🫶</div><div><div class="card-title">Mutual openness — not just me going first</div><div class="card-sub">You want both of you to let down the guard</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#E6F1FB;color:#0C447C">Set 3 — Ready to go deeper</div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🧭</div><div><div class="card-title">Talking about where we're going</div><div class="card-sub">Not just this week — the bigger picture, together</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">💡</div><div><div class="card-title">Something new I've learned about them</div><div class="card-sub">You've been assuming the same person — time to update</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🌊</div><div><div class="card-title">A fear shared without making it a big deal</div><div class="card-sub">Just dropped into the ordinary, like it's safe to say</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🔍</div><div><div class="card-title">Getting curious about each other again</div><div class="card-sub">Asking real questions, not just checking in</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#E6F1FB">🎋</div><div><div class="card-title">The feeling of being known — updated</div><div class="card-sub">They know who you were. Do they know who you are now?</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-gentle" class="panel">
+<div class="intent-label">Intention — Gentle · cards about softness and landing well</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#CECBF6;color:#26215C">Set 1 — Things land too hard</div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌸</div><div><div class="card-title">Being spoken to more softly</div><div class="card-sub">Not less honestly — just with more care for how it lands</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🤍</div><div><div class="card-title">Feedback that doesn't sting</div><div class="card-sub">Truth can be true and still be kind</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌊</div><div><div class="card-title">Conflict that doesn't leave marks</div><div class="card-sub">You want to disagree and still feel okay after</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🫂</div><div><div class="card-title">Repair that happens quickly</div><div class="card-sub">Not days of residue — a soft reset that same day</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌙</div><div><div class="card-title">An apology that actually lands</div><div class="card-sub">Not the form of one — the real thing</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#CECBF6;color:#26215C">Set 2 — Feeling bruised</div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🎋</div><div><div class="card-title">Patience when I'm struggling</div><div class="card-sub">Less sharp edges when things get hard</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🔇</div><div><div class="card-title">Tone that doesn't trigger defence</div><div class="card-sub">You shut down when it comes out too fast or too flat</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌷</div><div><div class="card-title">Being treated carefully on hard days</div><div class="card-sub">Reading the room — knowing when to soften</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">💬</div><div><div class="card-title">Hard things said at the right moment</div><div class="card-sub">Timing matters as much as the words themselves</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🫶</div><div><div class="card-title">Being held through a difficult conversation</div><div class="card-sub">Not just having the talk — feeling safe inside it</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#CECBF6;color:#26215C">Set 3 — Want softness back</div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">✨</div><div><div class="card-title">The kindness that used to come easily</div><div class="card-sub">Before life made everything a little less careful</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌱</div><div><div class="card-title">Gentleness as a baseline — not an effort</div><div class="card-sub">You want soft to be the default, not the exception</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🕯️</div><div><div class="card-title">Care shown in the small daily things</div><div class="card-sub">Soft language, easy touch, unhurried presence</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">💎</div><div><div class="card-title">Knowing my sensitivity will be protected</div><div class="card-sub">That the things I've shared won't be used against me</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#CECBF6">🌅</div><div><div class="card-title">A fresh start after a rough patch</div><div class="card-sub">Not pretending it didn't happen — but moving forward gently</div></div></div>
+</div>
+</div>
+</div>
+
+<div id="p-brave" class="panel">
+<div class="intent-label">Intention — Brave · cards about courage and choosing to try</div>
+<div class="set-grid">
+<div class="set-box">
+<div class="set-head" style="background:#FAECE7;color:#712B13">Set 1 — Holding back</div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🔥</div><div><div class="card-title">Starting the conversation I've been avoiding</div><div class="card-sub">It's been sitting there long enough</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🌱</div><div><div class="card-title">Saying what I actually need</div><div class="card-sub">Not hinting — asking directly, even if it's uncomfortable</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🦁</div><div><div class="card-title">Choosing to stay through the hard part</div><div class="card-sub">Not fixing it — just not walking away from it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">⚡</div><div><div class="card-title">Showing them a part of me they haven't seen</div><div class="card-sub">The unguarded version you protect from everyone</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🎯</div><div><div class="card-title">Naming the thing both of us know is there</div><div class="card-sub">Not carefully — just honestly, finally</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FAECE7;color:#712B13">Set 2 — Playing it safe</div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🌊</div><div><div class="card-title">Trying something we've never done together</div><div class="card-sub">New experience, new version of us in it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">💬</div><div><div class="card-title">Asking a question I'm afraid of the answer to</div><div class="card-sub">Because not knowing is worse than knowing</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🤍</div><div><div class="card-title">Admitting I got it wrong</div><div class="card-sub">A real apology — not the diplomatic version</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🔓</div><div><div class="card-title">Dropping my guard first</div><div class="card-sub">Someone has to go first. Choosing to be that person.</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🌸</div><div><div class="card-title">Saying "I miss us" out loud</div><div class="card-sub">Not a complaint — a reaching toward something good</div></div></div>
+</div>
+<div class="set-box">
+<div class="set-head" style="background:#FAECE7;color:#712B13">Set 3 — Ready to invest</div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🧭</div><div><div class="card-title">Deciding to try harder — out loud</div><div class="card-sub">Not silently — saying it so they can hear it</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🌟</div><div><div class="card-title">Choosing this relationship actively</div><div class="card-sub">Not coasting — consciously picking them, today</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🔥</div><div><div class="card-title">Asking what they need — and meaning it</div><div class="card-sub">Then actually doing the thing, not just asking</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">💌</div><div><div class="card-title">Saying the loving thing first</div><div class="card-sub">Before context, before caveats — just the feeling</div></div></div>
+<div class="card-item"><div class="card-icon" style="background:#FAECE7">🌄</div><div><div class="card-title">Starting again from a better place</div><div class="card-sub">This week was hard. Next week doesn't have to be.</div></div></div>
+</div>
+</div>
+</div>
+
+</div>
+<script>
+function sw(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.itab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  el.classList.add('on');
+}
+</script>

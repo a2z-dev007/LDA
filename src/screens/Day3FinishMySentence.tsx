@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../navigation/types';
 import { ProgressStrip } from '../components/common/ProgressStrip';
 import { ScreenWrapper } from '../components/common/ScreenWrapper';
-import { useAppColors } from '../theme';
+import { COLORS, colors, useAppColors } from '../theme';
 import { typography, fonts } from '../theme/typography';
 import { metrics } from '../theme/metrics';
 import { haptics } from '../utils/haptics';
@@ -45,7 +45,7 @@ export const Day3FinishMySentence: React.FC = () => {
   const colors = useAppColors();
   const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
-  
+
   // Day Store
   const intentionWord = useDayStore(s => s.day3.intentionWord) || 'Patient';
   const setDay3FMS = useDayStore(s => s.setDay3FMS);
@@ -75,7 +75,7 @@ export const Day3FinishMySentence: React.FC = () => {
       Animated.timing(cardScales[idx], { toValue: 0.97, duration: 80, useNativeDriver: true }),
       Animated.timing(cardScales[idx], { toValue: 1, duration: 80, useNativeDriver: true }),
     ]).start();
-    
+
     setTimeout(() => {
       setSelectedSetIdx(idx);
       setAnswers([]);
@@ -118,7 +118,7 @@ export const Day3FinishMySentence: React.FC = () => {
   const handleNext = () => {
     if (selectedSetIdx === null) return;
     const currentSet = intentionConfig.sets[selectedSetIdx];
-    
+
     if (currentQuestionIdx < currentSet.qs.length - 1) {
       runTransition(() => {
         setCurrentQuestionIdx(prev => prev + 1);
@@ -163,8 +163,8 @@ export const Day3FinishMySentence: React.FC = () => {
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity 
-            style={styles.backButton} 
+          <TouchableOpacity
+            style={styles.backButton}
             onPress={() => navigation.goBack()}
             activeOpacity={0.7}
           >
@@ -193,7 +193,7 @@ export const Day3FinishMySentence: React.FC = () => {
             const setEmoji = getSetEmoji(set);
             const decoEmojis = getSetDecoEmojis(set);
             const cleanTitle = cleanSetTitle(set.title);
-            
+
             return (
               <Animated.View key={idx} style={{ transform: [{ scale: cardScales[idx] }] }}>
                 <TouchableOpacity
@@ -251,8 +251,8 @@ export const Day3FinishMySentence: React.FC = () => {
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         {/* Sub Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity 
-            style={styles.backButton} 
+          <TouchableOpacity
+            style={styles.backButton}
             onPress={handleBack}
             activeOpacity={0.7}
           >
@@ -286,11 +286,11 @@ export const Day3FinishMySentence: React.FC = () => {
             </View>
           </View>
           <View style={styles.progressBarBg}>
-            <Animated.View 
+            <Animated.View
               style={[
-                styles.progressBarFill, 
+                styles.progressBarFill,
                 { width: `${((currentQuestionIdx + 1) / totalQuestions) * 100}%`, backgroundColor: activeColor }
-              ]} 
+              ]}
             />
           </View>
         </View>
@@ -337,7 +337,7 @@ export const Day3FinishMySentence: React.FC = () => {
                   ]}>
                     <Text style={styles.optionEmoji}>{opt.i}</Text>
                   </View>
-                  <Text 
+                  <Text
                     style={[
                       styles.optionLabel,
                       isSelected && [styles.optionLabelSelected, { color: activeColor }]
@@ -382,9 +382,9 @@ export const Day3FinishMySentence: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ProgressStrip currentDay={3} />
-      
-      <ScrollView 
+      {/* <ProgressStrip currentDay={3} /> */}
+
+      <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -438,11 +438,7 @@ const makeStyles = (c: any, activeColor: string, activeBg: string) => StyleSheet
     borderColor: 'rgba(0,0,0,0.06)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
+
   },
   headerTitle: {
     fontSize: responsiveFontSize(2.6),
@@ -493,15 +489,12 @@ const makeStyles = (c: any, activeColor: string, activeBg: string) => StyleSheet
     gap: 16,
   },
   setCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.bgGlass,
     borderRadius: 20,
     borderWidth: 1,
+    borderColor: COLORS.glassBorderColor,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 3,
+
   },
   setCardDecoRow: {
     flexDirection: 'row',
@@ -623,16 +616,17 @@ const makeStyles = (c: any, activeColor: string, activeBg: string) => StyleSheet
 
   // ── Prompt Card (Question) ──────────────────────────────
   promptCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.bgGlass,
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
+    borderColor: COLORS.glassBorderColor,
     marginBottom: metrics.spacing.lg,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.04,
-    shadowRadius: 10,
-    elevation: 2,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 3 },
+    // shadowOpacity: 0.04,
+    // shadowRadius: 10,
+    // elevation: 2,
   },
   promptCardHeader: {
     flexDirection: 'row',
@@ -668,24 +662,20 @@ const makeStyles = (c: any, activeColor: string, activeBg: string) => StyleSheet
   },
   optionCard: {
     width: (responsiveWidth(100) - metrics.layout.screenPaddingHz * 2 - 12) / 2,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.bgGlass,
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.06)',
+    borderColor: COLORS.glassBorderColor,
     paddingVertical: 16,
     paddingHorizontal: 12,
     minHeight: 120,
     position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
-    elevation: 2,
+
   },
   optionCardSelected: {
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    // shadowOpacity: 0.08,
+    // shadowRadius: 12,
+    // // elevation: 1,
   },
   optionContent: {
     alignItems: 'center',
@@ -722,25 +712,18 @@ const makeStyles = (c: any, activeColor: string, activeBg: string) => StyleSheet
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
+
   },
 
   // ── Couple Card ─────────────────────────────────────────
   coupleCardContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.bgGlass,
     borderWidth: 1,
+    borderColor: COLORS.glassBorderColor,
     borderRadius: 18,
     overflow: 'hidden',
     flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
+
   },
   coupleCardAccent: {
     width: 4,

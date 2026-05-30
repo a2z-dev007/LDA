@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronLeft } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAppColors } from '../../theme';
+import { COLORS, useAppColors } from '../../theme';
 import { fonts } from '../../theme/typography';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
@@ -78,16 +78,16 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(45, 95, 93, 0.06)',
+    backgroundColor: COLORS.bgGlass,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(45, 95, 93, 0.1)',
+    borderColor: COLORS.glassBorderColor,
   },
   headerTitle: {
     fontSize: responsiveFontSize(2.4),
     color: c.text,
-    // fontFamily: fonts.playfairSemiBold,
+    fontFamily: fonts.playfairSemiBold,
   },
   titleNoButton: {
     marginLeft: 0,

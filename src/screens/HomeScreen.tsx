@@ -28,7 +28,7 @@ const DAY_DATA = [
     title: 'The Spark Check',
     subtitle: 'Reignite connection and curiosity',
     route: 'Day1Slider' as keyof RootStackParamList,
-    iconColors: ['#6EE87A', '#2DD4BF'] as [string, string],
+    iconColors: ['#2D5F5D', '#8FB8A8'] as [string, string],
     iconEmoji: '✦',
   },
   {
@@ -69,11 +69,11 @@ export const HomeScreen = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
-  const userName    = useUserStore((s) => s.name);
-  const nextDay     = useDayStore((s) => s.nextDay());
-  const completed   = useDayStore((s) => s.completedDayCount());
+  const userName = useUserStore((s) => s.name);
+  const nextDay = useDayStore((s) => s.nextDay());
+  const completed = useDayStore((s) => s.completedDayCount());
   const streakCount = useStreakStore((s) => s.streakCount);
-  const insets      = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
 
   const handleContinue = () => {
     haptics.medium();
@@ -91,7 +91,7 @@ export const HomeScreen = () => {
   const activeDay = DAY_DATA[nextDay - 1];
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper blurValue={4}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -130,8 +130,8 @@ export const HomeScreen = () => {
         <View style={styles.cards}>
           {DAY_DATA.map((day) => {
             const isCompleted = day.number < nextDay;
-            const isActive    = day.number === nextDay;
-            const isLocked    = day.number > nextDay;
+            const isActive = day.number === nextDay;
+            const isLocked = day.number > nextDay;
 
             return (
               <TouchableOpacity
@@ -222,7 +222,7 @@ export const HomeScreen = () => {
             onPress={() => navigation.navigate('Day5PartnerInvite')}
             showArrow={true}
             fullWidth={true}
-            gradientColors={['#6EE87A', '#1E90FF']}
+            gradientColors={colors.gradientBtn2}
           />
         )}
       </View>
@@ -286,12 +286,12 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.sm,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    backgroundColor: c.glassCardBg,
     paddingVertical: metrics.spacing.smMd,
     paddingHorizontal: metrics.spacing.smMd,
     borderRadius: metrics.radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: c.glassBorder,
     flexDirection: 'row',
     alignItems: 'center',
     gap: metrics.spacing.smMd,
@@ -346,10 +346,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textSecondary,
   },
   cardSubtitle: {
-     fontSize:responsiveFontSize(1.5 ),
-        fontFamily: 'DMSans-Regular',
-        fontWeight: '400' as const,
-        lineHeight: fontSize.body * 1.5,
+    fontSize: responsiveFontSize(1.5),
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400' as const,
+    lineHeight: fontSize.body * 1.5,
     color: c.textSecondary,
   },
   cardSubtitleLocked: {

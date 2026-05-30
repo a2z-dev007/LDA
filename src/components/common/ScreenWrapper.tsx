@@ -10,6 +10,7 @@ interface Props {
   style?: ViewStyle;
   [key: string]: any;
   blurValue?: number;
+  source?: any;
 }
 
 /**
@@ -22,12 +23,13 @@ export const ScreenWrapper: React.FC<Props> = ({
   backgroundColor,
   style,
   blurValue = 2,
+  source = IMAGE.greenBg3,
   ...rest
 }) => {
   const colors = useAppColors();
   return (
     <ImageBackground
-      source={IMAGE.greenBg}
+      source={source}
       style={styles.gradient}
       resizeMode="cover"
       blurRadius={blurValue}

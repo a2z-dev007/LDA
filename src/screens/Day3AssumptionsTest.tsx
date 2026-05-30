@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, Animated, PanResponder, Dimensions,
+  View, Text, StyleSheet, Animated, PanResponder, Dimensions, TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -35,13 +35,21 @@ export const Day3AssumptionsTest: React.FC = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
-  const [showInstruction, setShowInstruction] = useState(true);
 
   // Swipe animation
   const position = useRef(new Animated.ValueXY()).current;
   const cardOpacity = useRef(new Animated.Value(1)).current;
-  const nextCardScale = useRef(new Animated.Value(0.92)).current;
-  const nextCardOpacity = useRef(new Animated.Value(0.5)).current;
+
+  // Smooth progress bar animation
+  const progressAnim = useRef(new Animated.Value(1 / total)).current;
+
+  useEffect(() => {
+    Animated.timing(progressAnim, {
+      toValue: (currentIndex + 1) / total,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [currentIndex, total]);
 
   // Derived rotation & overlay opacities from position.x
   const rotate = position.x.interpolate({
@@ -62,6 +70,25 @@ export const Day3AssumptionsTest: React.FC = () => {
     extrapolate: 'clamp',
   });
 
+  // Dynamic next card animations bound to front card displacement
+  const nextCardScale = position.x.interpolate({
+    inputRange: [-SCREEN_WIDTH * 0.5, 0, SCREEN_WIDTH * 0.5],
+    outputRange: [1, 0.94, 1],
+    extrapolate: 'clamp',
+  });
+
+  const nextCardOpacity = position.x.interpolate({
+    inputRange: [-SCREEN_WIDTH * 0.5, 0, SCREEN_WIDTH * 0.5],
+    outputRange: [0.95, 0.5, 0.95],
+    extrapolate: 'clamp',
+  });
+
+  const nextCardTranslateY = position.x.interpolate({
+    inputRange: [-SCREEN_WIDTH * 0.5, 0, SCREEN_WIDTH * 0.5],
+    outputRange: [0, 16, 0],
+    extrapolate: 'clamp',
+  });
+
   // Haptic feedback on crossing threshold
   const hasTriggeredHaptic = useRef(false);
 
@@ -75,8 +102,6 @@ export const Day3AssumptionsTest: React.FC = () => {
       // Reset animations for next card
       position.setValue({ x: 0, y: 0 });
       cardOpacity.setValue(1);
-      nextCardScale.setValue(0.92);
-      nextCardOpacity.setValue(0.5);
     } else {
       // Last question — complete
       const trueCount = Object.values(newAnswers).filter(Boolean).length;
@@ -109,16 +134,6 @@ export const Day3AssumptionsTest: React.FC = () => {
         duration: SWIPE_OUT_DURATION,
         useNativeDriver: true,
       }),
-      Animated.spring(nextCardScale, {
-        toValue: 1,
-        friction: 6,
-        useNativeDriver: true,
-      }),
-      Animated.timing(nextCardOpacity, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
     ]).start(() => {
       handleSwipeComplete(direction === 'right');
     });
@@ -136,7 +151,6 @@ export const Day3AssumptionsTest: React.FC = () => {
       onMoveShouldSetPanResponder: (_, gs) => Math.abs(gs.dx) > 8,
       onPanResponderGrant: () => {
         hasTriggeredHaptic.current = false;
-        setShowInstruction(false);
       },
       onPanResponderMove: (_, gs) => {
         position.setValue({ x: gs.dx, y: gs.dy * 0.15 });
@@ -169,7 +183,11 @@ export const Day3AssumptionsTest: React.FC = () => {
 
   const question = questions[currentIndex];
   const nextQuestion = currentIndex < total - 1 ? questions[currentIndex + 1] : null;
-  const progress = (currentIndex + 1) / total;
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'],
+  });
 
   const formatPersonalityType = (key: string) =>
     key.split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -184,7 +202,7 @@ export const Day3AssumptionsTest: React.FC = () => {
 
         {/* Subtitle */}
         <Text style={styles.subtitle}>
-          10 statements · Swipe to answer
+          10 statements · Swipe or tap to answer
         </Text>
 
         {/* Personality Pill */}
@@ -200,7 +218,7 @@ export const Day3AssumptionsTest: React.FC = () => {
         {/* Progress */}
         <View style={styles.progressContainer}>
           <View style={styles.progressTrack}>
-            <Animated.View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+            <Animated.View style={[styles.progressFill, { width: progressWidth }]} />
           </View>
           <Text style={styles.progressText}>
             {currentIndex + 1} / {total}
@@ -215,13 +233,19 @@ export const Day3AssumptionsTest: React.FC = () => {
               styles.questionCard,
               styles.nextCard,
               {
-                transform: [{ scale: nextCardScale }],
+                transform: [
+                  { scale: nextCardScale },
+                  { translateY: nextCardTranslateY },
+                ],
                 opacity: nextCardOpacity,
               },
             ]}>
-              <Text style={styles.statementNumber}>
-                STATEMENT {currentIndex + 2} OF {total}
-              </Text>
+              <Text style={styles.quoteBackground}>“</Text>
+              <View style={styles.statementBadge}>
+                <Text style={styles.statementNumber}>
+                  STATEMENT {currentIndex + 2} OF {total}
+                </Text>
+              </View>
               <Text style={styles.statementText} numberOfLines={4}>
                 "{nextQuestion.statement}"
               </Text>
@@ -255,9 +279,13 @@ export const Day3AssumptionsTest: React.FC = () => {
               <Text style={styles.falseOverlayText}>FALSE</Text>
             </Animated.View>
 
-            <Text style={styles.statementNumber}>
-              STATEMENT {currentIndex + 1} OF {total}
-            </Text>
+            <Text style={styles.quoteBackground}>“</Text>
+
+            <View style={styles.statementBadge}>
+              <Text style={styles.statementNumber}>
+                STATEMENT {currentIndex + 1} OF {total}
+              </Text>
+            </View>
 
             <Text style={styles.statementText}>
               "{question.statement}"
@@ -265,26 +293,26 @@ export const Day3AssumptionsTest: React.FC = () => {
           </Animated.View>
         </View>
 
-        {/* Swipe instruction */}
-        {showInstruction && (
-          <View style={styles.instructionRow}>
-            <View style={styles.instructionItem}>
-              <View style={[styles.instructionCircle, { backgroundColor: 'rgba(254,226,226,0.7)' }]}>
-                <ArrowLeft size={14} color="#991B1B" />
-              </View>
-              <Text style={[styles.instructionLabel, { color: '#991B1B' }]}>FALSE</Text>
-            </View>
+        {/* Swipe buttons (Tap actions) */}
+        <View style={styles.actionButtonsRow}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.buttonFalse]}
+            onPress={() => swipeOut('left')}
+            activeOpacity={0.7}
+          >
+            <XCircle size={20} color="#C85A54" strokeWidth={2.5} />
+            <Text style={styles.buttonTextFalse}>False</Text>
+          </TouchableOpacity>
 
-            <Text style={styles.instructionDivider}>swipe</Text>
-
-            <View style={styles.instructionItem}>
-              <Text style={[styles.instructionLabel, { color: '#065F46' }]}>TRUE</Text>
-              <View style={[styles.instructionCircle, { backgroundColor: 'rgba(167,243,208,0.5)' }]}>
-                <ArrowRight size={14} color="#065F46" />
-              </View>
-            </View>
-          </View>
-        )}
+          <TouchableOpacity
+            style={[styles.actionButton, styles.buttonTrue]}
+            onPress={() => swipeOut('right')}
+            activeOpacity={0.7}
+          >
+            <CheckCircle size={20} color="#2D5F5D" strokeWidth={2.5} />
+            <Text style={styles.buttonTextTrue}>True</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Dots */}
         <View style={styles.dotsRow}>
@@ -351,20 +379,21 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: 6,
   },
   progressTrack: {
-    height: 4,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 2,
+    height: 6,
+    backgroundColor: 'rgba(45, 95, 93, 0.08)',
+    borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#0D9488',
-    borderRadius: 2,
+    backgroundColor: c.primary,
+    borderRadius: 3,
   },
   progressText: {
     ...typography.captionSmall,
     color: c.textHint,
     textAlign: 'right',
+    marginTop: 2,
   },
 
   // Card stack
@@ -377,27 +406,44 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     position: 'absolute',
     width: SCREEN_WIDTH - metrics.layout.screenPaddingHz * 2 - 8,
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
+    borderRadius: 28,
     borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.06)',
+    borderColor: 'rgba(45, 95, 93, 0.12)',
     padding: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 260,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 5,
+    minHeight: 280,
+    shadowColor: '#1A3635',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.06,
+    shadowRadius: 20,
+    elevation: 4,
   },
   nextCard: {
     zIndex: -1,
   },
-  statementNumber: {
-    ...typography.captionSmall,
-    color: c.textHint,
-    letterSpacing: 1.5,
+  quoteBackground: {
+    position: 'absolute',
+    top: -15,
+    left: 20,
+    fontSize: 140,
+    fontFamily: 'PlayfairDisplay-Italic',
+    color: 'rgba(45, 95, 93, 0.04)',
+    zIndex: -1,
+  },
+  statementBadge: {
+    backgroundColor: 'rgba(45, 95, 93, 0.06)',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     marginBottom: metrics.spacing.md,
+  },
+  statementNumber: {
+    fontSize: 11,
+    fontFamily: fonts.dmSansBold,
+    color: c.primary,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
   },
   statementText: {
     fontSize: 22,
@@ -405,7 +451,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontFamily: 'PlayfairDisplay-Italic',
     lineHeight: 32,
     textAlign: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
   },
 
   // Swipe overlays
@@ -444,38 +490,49 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     letterSpacing: 1,
   },
 
-  // Instruction row
-  instructionRow: {
+  // Action Buttons Row
+  actionButtonsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
-    paddingVertical: 14,
-    marginTop: 8,
+    paddingHorizontal: 8,
+    marginVertical: metrics.spacing.md,
   },
-  instructionItem: {
+  actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-  },
-  instructionCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
+    flex: 1,
+    height: 52,
+    borderRadius: metrics.radius.full,
+    borderWidth: 1.5,
+    shadowColor: '#1A3635',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  instructionLabel: {
-    fontSize: 13,
+  buttonFalse: {
+    backgroundColor: 'rgba(254, 242, 242, 0.95)',
+    borderColor: 'rgba(200, 90, 84, 0.25)',
+  },
+  buttonTrue: {
+    backgroundColor: 'rgba(236, 253, 245, 0.95)',
+    borderColor: 'rgba(45, 95, 93, 0.25)',
+  },
+  buttonTextFalse: {
+    fontSize: 15,
     fontFamily: fonts.dmSansBold,
+    color: '#C85A54',
     letterSpacing: 0.5,
   },
-  instructionDivider: {
-    fontSize: 12,
-    fontFamily: fonts.dmSansRegular,
-    color: c.textHint,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
+  buttonTextTrue: {
+    fontSize: 15,
+    fontFamily: fonts.dmSansBold,
+    color: '#2D5F5D',
+    letterSpacing: 0.5,
   },
 
   // Dots
@@ -491,7 +548,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderRadius: 4,
   },
   dotActive: {
-    backgroundColor: '#0D9488',
+    backgroundColor: c.primary,
     width: 20,
     borderRadius: 4,
   },

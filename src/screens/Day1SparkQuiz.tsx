@@ -300,7 +300,7 @@ export const Day1SparkQuiz: React.FC = () => {
             i <= currentIndex ? (
               <LinearGradient
                 key={i}
-                colors={['#6EE87A', '#2DD4BF']}
+                colors={[colors.primary, colors.secondary]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={[styles.dot, styles.dotActive]}
@@ -369,7 +369,7 @@ export const Day1SparkQuiz: React.FC = () => {
             >
               <View style={[styles.option, selectedOption === 'A' && styles.optionSelected]}>
                 <LinearGradient
-                  colors={['#6EE87A', '#2DD4BF']}
+                  colors={[colors.primary, colors.secondary]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.optionIconCircle}
@@ -398,7 +398,7 @@ export const Day1SparkQuiz: React.FC = () => {
             >
               <View style={[styles.option, selectedOption === 'B' && styles.optionSelected]}>
                 <LinearGradient
-                  colors={['#6EE87A', '#2DD4BF']}
+                  colors={[colors.primary, colors.secondary]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.optionIconCircle}

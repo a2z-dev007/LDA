@@ -51,7 +51,7 @@ export const colors = {
   glassHeavy: _t.glassHeavy,
   glassWhite: _t.glassWhite,
   glassCardBg: _t.glassCardBg,
-  
+
 
   textDark: _t.textDark,
   textLight: _t.textLight,
@@ -68,7 +68,7 @@ export const colors = {
   day4: _t.day4,
   day5: _t.day5,
 
-  
+
   error: _t.error,
   success: _t.success,
 
@@ -80,6 +80,11 @@ export const currentTheme = {
   description: _t.description,
   isDark: _t.isDark,
 };
+
+export const COLORS = {
+  bgGlass: 'rgba(255,255,255,0.8)',
+  glassBorderColor: 'rgba(143,184,168,0.25)',
+}
 
 // Re-export theme registry
 export { themes, type ThemeName, type DarkThemeName, type LightThemeName } from './colorThemes';

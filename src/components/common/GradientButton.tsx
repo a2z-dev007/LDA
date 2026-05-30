@@ -47,7 +47,7 @@ const GRADIENT_VARIANTS: Record<GradientVariant, { start: string; end: string }>
   skyLavender: { start: '#8CB8D8', end: '#B8A8D8' },      // day5 → day4: calm to dreamy
   
   // ── Sage Garden Theme Gradients ─────────────────────────────
-  sageBlue: { start: '#6EE87A', end: '#00BCD4' },         // lime green → cyan blue — matches LDA logo
+  sageBlue: { start: '#2D5F5D', end: '#8FB8A8' },         // forest teal → soft sage
   forestSage: { start: '#2D5F5D', end: '#8FB8A8' },       // forest teal to sage
   mintTeal: { start: '#A8C9BC', end: '#6BA8B8' },         // mint to teal
   
@@ -99,8 +99,8 @@ interface GradientButtonProps {
   hideGlossyOverlay?: boolean;
 }
 
-// 3-stop gradient matching the LDA logo: lime green → teal → cyan blue
-const SAGE_BLUE_GRADIENT: [string, string, string] = ['#6EE87A', '#2DD4BF', '#00BCD4'];
+// 3-stop gradient matching the theme: forest teal → medium sage → soft sage
+const SAGE_BLUE_GRADIENT: [string, string, string] = ['#2D5F5D', '#5A8A7F', '#8FB8A8'];
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
   text,

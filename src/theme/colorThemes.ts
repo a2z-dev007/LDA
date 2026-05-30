@@ -7,7 +7,7 @@ export interface ColorTheme {
   name: string;
   description: string;
   isDark: boolean;
-  bgImage?:"",
+  bgImage?: "",
 
   // Brand Colors
   primary: string;
@@ -19,7 +19,7 @@ export interface ColorTheme {
   darkMid: string;    // card / surface background
   light: string;      // subtle tinted surface
   white: string;      // pure white / near-white
-  glassWhite:string;
+  glassWhite: string;
 
   // ── Semantic tokens ──────────────────────────────────────
   text: string;           // primary body text
@@ -29,7 +29,7 @@ export interface ColorTheme {
   surfaceBorder: string;  // card / input border
   onPrimary: string;      // text/icon ON a primary-colored button
   // ─────────────────────────────────────────────────────────
-glassCardBg?: string;
+  glassCardBg?: string;
   // Gradients
   gradientStart: string;
   gradientMid: string;
@@ -93,10 +93,10 @@ export const midnightGardenTheme: ColorTheme = {
   gradientMid: '#23314A',
   gradientEnd: '#2D3E57',
 
-  buttonGradientStart:  '#D63F6E',
+  buttonGradientStart: '#D63F6E',
   buttonGradientEnd: '#D7897F',
   glassWhite: 'rgba(255,255,255,0.1)',
-  
+
   glassLight: 'rgba(216,128,132,0.10)',
   glassBorder: 'rgba(143,161,177,0.25)',
   glassHeavy: 'rgba(216,128,132,0.18)',
@@ -146,15 +146,15 @@ export const sageGardenTheme: ColorTheme = {
   gradientStart: '#F5FAF9',
   gradientMid: '#E8F3F1',
   gradientEnd: '#E0F0ED',
-  gradientBtn:['#6EE87A', '#2DD4BF', '#00BCD4'],
-  gradientBtn2: ['#6EE87A', '#2DD4BF', '#1E90FF'],
-  buttonGradientStart: '#6EE87A',
-  buttonGradientEnd: '#00BCD4',
+  gradientBtn: ['#2D5F5D', '#5A8A7F', '#8FB8A8'],
+  gradientBtn2: ['#2D5F5D', '#5A8A7F', '#6BA8B8'],
+  buttonGradientStart: '#2D5F5D',
+  buttonGradientEnd: '#8FB8A8',
   glassWhite: 'rgba(255,255,255,0.3)',
   glassLight: 'rgba(45,95,93,0.08)',
   glassBorder: 'rgba(143,184,168,0.25)',
   glassHeavy: 'rgba(45,95,93,0.12)',
-  glassCardBg:'rgba(255,255,255,0.7)',
+  glassCardBg: 'rgba(255,255,255,0.8)',
   textDark: '#1A3635',
   textLight: '#FFFFFF',
   textMuted: 'rgba(26,54,53,0.65)',

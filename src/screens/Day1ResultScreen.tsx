@@ -155,10 +155,10 @@ export const Day1ResultScreen: React.FC = () => {
             },
           ]}
         >
-          <View style={[styles.badgeGlowRing, { borderColor: 'rgba(45,212,191,0.15)' }]} />
-          <View style={[styles.badgeMidRing, { borderColor: 'rgba(45,212,191,0.3)' }]} />
+          <View style={[styles.badgeGlowRing, { borderColor: colors.surfaceBorder }]} />
+          <View style={[styles.badgeMidRing, { borderColor: colors.glassBorder }]} />
           <LinearGradient
-            colors={['#6EE87A', '#2DD4BF']}
+            colors={[colors.primary, colors.secondary]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.badgeCircle}
@@ -180,12 +180,12 @@ export const Day1ResultScreen: React.FC = () => {
             {
               opacity: cardAnim,
               transform: [{ translateY: cardSlide }],
-              borderColor: 'rgba(45,212,191,0.3)',
+              borderColor: colors.glassBorder,
             },
           ]}
         >
           <LinearGradient
-            colors={['#6EE87A', '#2DD4BF']}
+            colors={[colors.primary, colors.secondary]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.cardAccentBar}
@@ -199,10 +199,10 @@ export const Day1ResultScreen: React.FC = () => {
             {personality.traits.map((trait, i) => (
               <LinearGradient
                 key={i}
-                colors={['rgba(110,232,122,0.15)', 'rgba(45,212,191,0.15)']}
+                colors={[`${colors.primary}26`, `${colors.secondary}26`]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={[styles.pill, { borderColor: 'rgba(45,212,191,0.5)' }]}
+                style={[styles.pill, { borderColor: `${colors.primary}40` }]}
               >
                 <Text style={[styles.pillText, { color: colors.primary }]}>{trait}</Text>
               </LinearGradient>
@@ -212,7 +212,7 @@ export const Day1ResultScreen: React.FC = () => {
 
         <Animated.View style={[styles.growthCard, { opacity: growthAnim }]}>
           <View style={styles.growthIconRow}>
-            <View style={[styles.growthIconCircle, { backgroundColor: 'rgba(45,212,191,0.15)' }]}>
+            <View style={[styles.growthIconCircle, { backgroundColor: `${colors.primary}26` }]}>
               <Heart size={metrics.iconSize.sm} color={colors.primary} strokeWidth={1.5} />
             </View>
             <Text style={styles.growthLabel}>ONE INVITATION FOR YOU</Text>
@@ -316,9 +316,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderRadius: responsiveWidth(13),
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2DD4BF',
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(0.5) },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.25,
     shadowRadius: responsiveWidth(4),
     elevation: 10,
   },
@@ -344,9 +344,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
     marginBottom: metrics.spacing.md,
-    shadowColor: '#2DD4BF',
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(0.3) },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.06,
     shadowRadius: responsiveWidth(3),
     elevation: 3,
   },

@@ -184,7 +184,7 @@ export const Day1HonestMoment: React.FC = () => {
             <View style={styles.scoreCardBorder}>
               {/* Gradient card */}
               <LinearGradient
-                colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+                colors={colors.gradientBtn2}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0.6, y: 1 }}
                 style={styles.scoreGradientMask}
@@ -197,7 +197,7 @@ export const Day1HonestMoment: React.FC = () => {
           {/* Heart badge — beats */}
           <Animated.View style={[styles.heartBadge, { transform: [{ scale: heartBeatAnim }] }]}>
             <LinearGradient
-              colors={['#6EE87A', '#2DD4BF']}
+              colors={[colors.primary, colors.secondary]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.heartBadgeGradient}
@@ -293,7 +293,7 @@ export const Day1HonestMoment: React.FC = () => {
           }}
           showArrow={true}
           fullWidth={true}
-          gradientColors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+          gradientColors={colors.gradientBtn2}
         />
       </Animated.View>
     </ScreenWrapper>
@@ -348,7 +348,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     padding: 3,
     borderRadius: metrics.radius.xl + 3,
     backgroundColor: '#FFFFFF',
-    shadowColor: '#2DD4BF',
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(0.5) },
     shadowOpacity: 0.25,
     shadowRadius: responsiveWidth(4),
@@ -378,7 +378,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     position: 'absolute',
     bottom: -responsiveWidth(2),
     right: -responsiveWidth(2),
-    shadowColor: '#2DD4BF',
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(0.3) },
     shadowOpacity: 0.4,
     shadowRadius: responsiveWidth(2),
@@ -395,7 +395,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   sparkle: {
     position: 'absolute',
-    color: '#2DD4BF',
+    color: c.secondary,
     fontSize: responsiveFontSize(2.5),
     opacity: 0.7,
   },
@@ -416,7 +416,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.95)',
     padding: metrics.spacing.md,
     marginBottom: metrics.spacing.md,
-    shadowColor: '#2DD4BF',
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(0.3) },
     shadowOpacity: 0.08,
     shadowRadius: responsiveWidth(3),

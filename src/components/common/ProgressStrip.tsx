@@ -22,7 +22,7 @@ export const ProgressStrip: React.FC<Props> = ({ currentDay, totalDays = 5 }) =>
           return (
             <LinearGradient
               key={day}
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+              colors={colors.gradientBtn2}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.segment, { marginRight: i < totalDays - 1 ? 4 : 0 }]}

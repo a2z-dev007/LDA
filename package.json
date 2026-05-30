@@ -9,7 +9,10 @@
     "start": "react-native start",
     "test": "jest",
     "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "apk:debug": "cd android && ./gradlew assembleDebug"
+    "apk:platform:android:debug": "cd android && gradlew assembleDebug",
+    "apk:platform:ios:debug": "cd android && ./gradlew assembleDebug",
+    "apk:platform:android:release": "cd android && gradlew assembleRelease",
+    "apk:platform:ios:release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^3.0.2",

@@ -16,6 +16,9 @@ interface DayCTAProps {
 }
 
 export const DayCTA: React.FC<DayCTAProps> = ({ title, onPress, disabled }) => {
+  const colors = useAppColors();
+  const styles = makeStyles(colors);
+
   return (
     <View style={[styles.ctaWrapper, { paddingBottom: responsiveHeight(3) }]}>
       <TouchableOpacity
@@ -25,7 +28,7 @@ export const DayCTA: React.FC<DayCTAProps> = ({ title, onPress, disabled }) => {
         disabled={disabled}
       >
         <LinearGradient
-          colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
+          colors={colors.gradientBtn}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.cta}
@@ -41,18 +44,18 @@ export const DayCTA: React.FC<DayCTAProps> = ({ title, onPress, disabled }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   ctaWrapper: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
   },
   ctaTouch: {
     borderRadius: metrics.radius.full,
-    backgroundColor: '#1A9B7A',
-    shadowColor: '#0D5C4A',
+    backgroundColor: c.primary,
+    shadowColor: c.primary,
     shadowOffset: { width: 0, height: responsiveHeight(1.0) },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.35,
     shadowRadius: responsiveWidth(5),
-    elevation: 14,
+    elevation: 10,
   },
   ctaDim: {
     opacity: 0.5,
