@@ -28,7 +28,7 @@ const DAY_DATA = [
     title: 'The Spark Check',
     subtitle: 'Reignite connection and curiosity',
     route: 'Day1Slider' as keyof RootStackParamList,
-    iconColors: ['#2D5F5D', '#8FB8A8'] as [string, string],
+    iconColors: ['#4ECDC4', '#3B82F6'] as [string, string],
     iconEmoji: '✦',
   },
   {
@@ -36,7 +36,7 @@ const DAY_DATA = [
     title: 'The Mood Room',
     subtitle: 'Explore feelings and set the vibe',
     route: 'Bridge1to2' as keyof RootStackParamList,
-    iconColors: ['#7EC8E3', '#4A90D9'] as [string, string],
+    iconColors: ['#4ECDC4', '#2DD4BF'] as [string, string],
     iconEmoji: '☁',
   },
   {
