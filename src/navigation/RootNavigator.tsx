@@ -11,52 +11,52 @@ import { NameKeeperScreen } from '../screens/NameKeeperScreen';
 import { IntroSliderScreen } from '../screens/IntroSliderScreen';
 
 // Day 1
-import { Day1ConnectionSlider } from '../screens/Day1ConnectionSlider';
-import { Day1HonestMoment } from '../screens/Day1HonestMoment';
-import { Day1VibeCheck } from '../screens/Day1VibeCheck';
-import { Day1SparkQuiz } from '../screens/Day1SparkQuiz';
-import { Day1ResultScreen } from '../screens/Day1ResultScreen';
+import { Day1ConnectionSlider } from '../screens/day1/Day1ConnectionSlider';
+import { Day1HonestMoment } from '../screens/day1/Day1HonestMoment';
+import { Day1VibeCheck } from '../screens/day1/Day1VibeCheck';
+import { Day1SparkQuiz } from '../screens/day1/Day1SparkQuiz';
+import { Day1ResultScreen } from '../screens/day1/Day1ResultScreen';
 
 // Bridges
-import { Bridge1to2 } from '../screens/Bridge1to2';
-import { Bridge2to3 } from '../screens/Bridge2to3';
-import { Bridge3to4 } from '../screens/Bridge3to4';
-import { Bridge4to5 } from '../screens/Bridge4to5';
+import { Bridge1to2 } from '../screens/bridges/Bridge1to2';
+import { Bridge2to3 } from '../screens/bridges/Bridge2to3';
+import { Bridge3to4 } from '../screens/bridges/Bridge3to4';
+import { Bridge4to5 } from '../screens/bridges/Bridge4to5';
 import { SetYourIntention } from '../screens/SetYourIntention';
 import { ThisOrThatScreen } from '../screens/ThisOrThatScreen';
 
 // Day 2
-import { Day2MoodPicker } from '../screens/Day2MoodPicker';
-import { Day2OneGoodThing } from '../screens/Day2OneGoodThing';
-import { Day2MoodFollowUp } from '../screens/Day2MoodFollowUp';
-import { Day2ResultScreen } from '../screens/Day2ResultScreen';
+import { Day2MoodPicker } from '../screens/day2/Day2MoodPicker';
+import { Day2OneGoodThing } from '../screens/day2/Day2OneGoodThing';
+import { Day2MoodFollowUp } from '../screens/day2/Day2MoodFollowUp';
+import { Day2ResultScreen } from '../screens/day2/Day2ResultScreen';
 
 // Day 3
-import { Day3AppreciationSnap } from '../screens/Day3AppreciationSnap';
-import { Day3FinishMySentence } from '../screens/Day3FinishMySentence';
-import { Day3AssumptionsTest } from '../screens/Day3AssumptionsTest';
-import { Day3MirrorResults } from '../screens/Day3MirrorResults';
-import { Day3MoodBoard } from '../screens/Day3MoodBoard';
-import { Day3MoodBoardResult } from '../screens/Day3MoodBoardResult';
-import { Day3OneCertainty } from '../screens/Day3OneCertainty';
-import { Day3Complete } from '../screens/Day3Complete';
+import { Day3AppreciationSnap } from '../screens/day3/Day3AppreciationSnap';
+import { Day3FinishMySentence } from '../screens/day3/Day3FinishMySentence';
+import { Day3AssumptionsTest } from '../screens/day3/Day3AssumptionsTest';
+import { Day3MirrorResults } from '../screens/day3/Day3MirrorResults';
+import { Day3MoodBoard } from '../screens/day3/Day3MoodBoard';
+import { Day3MoodBoardResult } from '../screens/day3/Day3MoodBoardResult';
+import { Day3OneCertainty } from '../screens/day3/Day3OneCertainty';
+import { Day3Complete } from '../screens/day3/Day3Complete';
 
 // Day 4
-import { Day4MemoryJar } from '../screens/Day4MemoryJar';
-import { Day4TinyCompliment } from '../screens/Day4TinyCompliment';
-import { Day4PriorityShuffle } from '../screens/Day4PriorityShuffle';
-import { Day4DailyTwo } from '../screens/Day4DailyTwo';
-import { Day4TriviaFact } from '../screens/Day4TriviaFact';
-import { Day4DropBox } from '../screens/Day4DropBox';
-import { Day4Complete } from '../screens/Day4Complete'
+import { Day4MemoryJar } from '../screens/day4/Day4MemoryJar';
+import { Day4TinyCompliment } from '../screens/day4/Day4TinyCompliment';
+import { Day4PriorityShuffle } from '../screens/day4/Day4PriorityShuffle';
+import { Day4DailyTwo } from '../screens/day4/Day4DailyTwo';
+import { Day4TriviaFact } from '../screens/day4/Day4TriviaFact';
+import { Day4DropBox } from '../screens/day4/Day4DropBox';
+import { Day4Complete } from '../screens/day4/Day4Complete'
 
 // Day 5
-import { Day5Celebration } from '../screens/Day5Celebration';
-import { Day5ReportCard } from '../screens/Day5ReportCard';
-import { Day5ThePromise } from '../screens/Day5ThePromise';
-import { Day5JarReveal } from '../screens/Day5JarReveal';
-import { Day5TheLetter } from '../screens/Day5TheLetter';
-import { Day5PartnerInvite } from '../screens/Day5PartnerInvite';
+import { Day5Celebration } from '../screens/day5/Day5Celebration';
+import { Day5ReportCard } from '../screens/day5/Day5ReportCard';
+import { Day5ThePromise } from '../screens/day5/Day5ThePromise';
+import { Day5JarReveal } from '../screens/day5/Day5JarReveal';
+import { Day5TheLetter } from '../screens/day5/Day5TheLetter';
+import { Day5PartnerInvite } from '../screens/day5/Day5PartnerInvite';
 
 // Hub
 import { HomeScreen } from '../screens/HomeScreen';
