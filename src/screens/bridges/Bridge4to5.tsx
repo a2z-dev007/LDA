@@ -4,12 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
+import Svg, { Path } from 'react-native-svg';
 import {
   responsiveHeight,
-  responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {
-  Archive,
   CheckCircle2,
   Flame,
   Gift,
@@ -18,19 +17,20 @@ import {
   ShieldCheck,
   Sparkles,
   Target,
-  Quote,
+  Menu,
+  Smile,
+  ChevronRight,
 } from 'lucide-react-native';
 import { RootStackParamList } from '../../navigation/types';
 import { ScreenWrapper } from '../../components/common/ScreenWrapper';
 import { GradientButton } from '../../components/common/GradientButton';
 import { useAppColors } from '../../theme';
-import { bridgeQuotes } from '../../data/quizData';
 import { useDayStore } from '../../store/useDayStore';
 import { useStreakStore } from '../../store/useStreakStore';
 import { useUserStore } from '../../store/useUserStore';
 import { haptics } from '../../utils/haptics';
 import { metrics } from '../../theme/metrics';
-import { fonts, typography } from '../../theme/typography';
+import { fonts } from '../../theme/typography';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge4to5'>;
 
@@ -40,6 +40,28 @@ const memoryLabels = {
   emoji: 'Emoji memory',
   skipped: 'Memory pending',
 };
+
+// Custom Bridge Icon SVG
+const BridgeIcon: React.FC<{ color?: string; size?: number }> = ({ color = '#0D9488', size = 16 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M3 17h18" />
+    <Path d="M6 10v7" />
+    <Path d="M18 10v7" />
+    <Path d="M6 10c3 3 9 3 12 0" />
+    <Path d="M10 12v5" />
+    <Path d="M14 12v5" />
+  </Svg>
+);
+
+// Custom Jar Icon SVG
+const JarIcon: React.FC<{ color?: string; size?: number }> = ({ color = '#3B82F6', size = 14 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M6 9a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V9z" />
+    <Path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <Path d="M9 12h6" />
+    <Path d="M9 16h6" />
+  </Svg>
+);
 
 export const Bridge4to5: React.FC = () => {
   const colors = useAppColors();
@@ -64,34 +86,47 @@ export const Bridge4to5: React.FC = () => {
   const recapPills = React.useMemo(() => [
     {
       label: memoryLabel,
-      Icon: Archive,
-      tint: colors.day4,
-      bg: `${colors.day4}14`,
-      border: `${colors.day4}24`,
+      Icon: day4.memoryType === 'emoji' ? Smile : Smile,
+      tint: '#3B82F6',
+      bg: '#EFF6FF',
+      border: '#DBEAFE',
     },
     {
       label: `Top need · ${topNeed}`,
       Icon: Target,
-      tint: colors.primary,
-      bg: 'rgba(13,148,136,0.08)',
-      border: 'rgba(13,148,136,0.18)',
+      tint: '#0D9488',
+      bg: '#E6FBF7',
+      border: '#CCFBF1',
     },
     day4.tinyComplimentWord
       ? {
           label: day4.tinyComplimentWord,
           Icon: Heart,
-          tint: '#BE185D',
-          bg: 'rgba(244,114,182,0.1)',
-          border: 'rgba(244,114,182,0.22)',
+          tint: '#EC4899',
+          bg: '#FFF1F2',
+          border: '#FFE4E6',
         }
       : {
           label: day4.intentionWord || 'Intention held',
           Icon: Sparkles,
-          tint: '#78350F',
+          tint: '#B45309',
           bg: '#FEF3C7',
           border: '#FDE68A',
         },
-  ], [colors.day4, colors.primary, day4.intentionWord, day4.tinyComplimentWord, memoryLabel, topNeed]);
+  ], [day4.intentionWord, day4.tinyComplimentWord, day4.memoryType, memoryLabel, topNeed]);
+
+  const dateInfo = React.useMemo(() => {
+    const timestamp = day4.completionTimestamp || new Date().toISOString();
+    const d = new Date(timestamp);
+    const monthsShort = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const monthsLong = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return {
+      day: d.getDate().toString(),
+      monthShort: monthsShort[d.getMonth()],
+      monthLong: monthsLong[d.getMonth()],
+      year: d.getFullYear().toString(),
+    };
+  }, [day4.completionTimestamp]);
 
   const handleContinue = React.useCallback(() => {
     haptics.success();
@@ -99,14 +134,29 @@ export const Bridge4to5: React.FC = () => {
   }, [navigation]);
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper style={{ paddingTop: insets.top }}>
+      {/* Visual background gradient to match screenshot perfectly */}
+      <LinearGradient
+        colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.eyebrowPill}>
-          <Text style={styles.eyebrowText}>Day 4 → Day 5 Bridge</Text>
+        {/* Custom Header with Pill & Hamburger */}
+        <View style={styles.headerRow}>
+          <View style={styles.headerPill}>
+            <BridgeIcon color="#0D9488" size={16} />
+            <Text style={styles.headerPillText}>Day 4 → Day 5 Bridge</Text>
+          </View>
+          <View style={styles.menuButton}>
+            <Menu size={18} color="#6B7280" />
+          </View>
         </View>
 
         {/* Streak Card */}
@@ -116,6 +166,7 @@ export const Bridge4to5: React.FC = () => {
             <View style={styles.streakRingContainer}>
               <View style={styles.streakRing}>
                 <Text style={styles.streakNumber}>{displayStreak}</Text>
+                <Text style={styles.streakLabel}>DAYS</Text>
               </View>
               <View style={styles.streakFlameBadge}>
                 <Flame size={12} color="#F97316" fill="#FED7AA" />
@@ -126,6 +177,17 @@ export const Bridge4to5: React.FC = () => {
               <Text style={styles.streakSubtext}>
                 {displayStreak}-day streak · Final day is ready
               </Text>
+
+              {/* Custom 5-Day Progress Bar */}
+              <View style={styles.streakProgressRow}>
+                <View style={styles.streakProgressSegment} />
+                <View style={styles.streakProgressSegment} />
+                <View style={styles.streakProgressSegment} />
+                <View style={styles.streakProgressSegment} />
+                <View style={styles.streakProgressCheck}>
+                  <Text style={styles.checkIcon}>✓</Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -134,6 +196,7 @@ export const Bridge4to5: React.FC = () => {
         <View style={styles.card}>
           <Text style={styles.cardZoneTitle}>ZONE 2 · DAY 4 RECAP</Text>
 
+          {/* Pills Row */}
           <View style={styles.pillsRow}>
             {recapPills.map(({ label, Icon, tint, bg, border }) => (
               <View key={label} style={[styles.recapPill, { backgroundColor: bg, borderColor: border }]}>
@@ -145,69 +208,98 @@ export const Bridge4to5: React.FC = () => {
             ))}
           </View>
 
-          {/* Glowing Memory Box */}
-          <LinearGradient
-            colors={[`${colors.day4}18`, 'rgba(255, 255, 255, 0.02)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.memoryBox}
-          >
+          {/* Memory Jar Box */}
+          <View style={styles.memoryBox}>
             <View style={styles.boxHeaderRow}>
-              <Archive size={14} color={colors.day4} />
-              <Text style={[styles.boxLabel, { color: colors.day4 }]}>MEMORY JAR</Text>
+              <JarIcon color="#3B82F6" size={14} />
+              <Text style={styles.boxLabel}>MEMORY JAR</Text>
             </View>
-            <Text style={styles.memoryText} numberOfLines={3}>
-              "{day4.memoryContent || 'A beautiful memory of us.'}"
-            </Text>
-          </LinearGradient>
+            
+            <View style={styles.memoryBodyRow}>
+              {/* Calendar Icon */}
+              <View style={styles.calendarContainer}>
+                <View style={styles.calendarHeader}>
+                  <Text style={styles.calendarMonthText}>{dateInfo.monthShort}</Text>
+                </View>
+                <View style={styles.calendarBody}>
+                  <Text style={styles.calendarDayText}>{dateInfo.day}</Text>
+                </View>
+              </View>
 
-          {/* Mini Cards */}
+              {/* Memory Text */}
+              <Text style={styles.memoryMainText} numberOfLines={3}>
+                Date: {dateInfo.day} {dateInfo.monthLong} {dateInfo.year} <Text style={styles.memoryDivider}>|</Text> <Text style={styles.memoryItalicText}>"{day4.memoryContent || 'A beautiful memory of us.'}"</Text>
+              </Text>
+            </View>
+          </View>
+
+          {/* Mini Cards (2 Column Grid) */}
           <View style={styles.twoColumnRow}>
+            {/* Priority Shuffle Card */}
             <View style={styles.miniCard}>
-              <View style={styles.miniIcon}>
-                <Target size={16} color={colors.primary} />
+              <View style={styles.miniCardTop}>
+                <View style={styles.miniIconCircle}>
+                  <Target size={16} color="#0D9488" />
+                </View>
               </View>
-              <View style={styles.miniCardTextContainer}>
-                <Text style={styles.miniLabel}>PRIORITY SHUFFLE</Text>
-                <Text style={styles.miniValue} numberOfLines={2}>
-                  {day4.d4_priority_picks.length
-                    ? day4.d4_priority_picks.join(' · ')
-                    : topNeed}
-                </Text>
+              
+              <View style={styles.miniCardBottomRow}>
+                <View style={styles.miniCardTextContainer}>
+                  <Text style={styles.miniLabel}>PRIORITY SHUFFLE</Text>
+                  <Text style={styles.miniValue} numberOfLines={1}>
+                    {day4.d4_priority_picks.length
+                      ? day4.d4_priority_picks[0]
+                      : topNeed}
+                  </Text>
+                  <Text style={styles.miniSubtext} numberOfLines={1}>
+                    More calm, less stress ...
+                  </Text>
+                </View>
+                <ChevronRight size={14} color="#0D9488" style={styles.miniChevron} />
               </View>
             </View>
 
+            {/* Daily Two Card */}
             <View style={styles.miniCard}>
-              <View style={styles.miniIconPurple}>
-                <MessageCircle size={16} color="#C084FC" />
+              <View style={styles.miniCardTop}>
+                <View style={[styles.miniIconCircle, styles.purpleCircle]}>
+                  <MessageCircle size={16} color="#A855F7" />
+                </View>
               </View>
-              <View style={styles.miniCardTextContainer}>
-                <Text style={styles.miniLabel}>DAILY TWO</Text>
-                <Text style={styles.miniValue} numberOfLines={2}>
-                  {dailyTwoSummary}
-                </Text>
+              
+              <View style={styles.miniCardBottomRow}>
+                <View style={styles.miniCardTextContainer}>
+                  <Text style={styles.miniLabel}>DAILY TWO</Text>
+                  <Text style={styles.miniValue} numberOfLines={2}>
+                    {dailyTwoSummary}
+                  </Text>
+                </View>
+                <ChevronRight size={14} color="#A855F7" style={styles.miniChevron} />
               </View>
             </View>
           </View>
 
           {/* Status Indicators */}
           <View style={styles.statusRow}>
+            {/* Drop Box Badge */}
             <View style={[styles.statusChip, day4.dropBoxUsed ? styles.statusChipActive : null]}>
-              <ShieldCheck size={13} color={day4.dropBoxUsed ? '#2DD4BF' : colors.textHint} />
+              <ShieldCheck size={13} color={day4.dropBoxUsed ? '#0D9488' : '#64748B'} />
               <Text style={[styles.statusText, day4.dropBoxUsed ? styles.statusTextActive : null]}>
                 Drop Box {day4.dropBoxUsed ? 'used' : 'open'}
               </Text>
             </View>
 
+            {/* Love Drop Badge */}
             <View style={[styles.statusChip, day4.loveDropUsed ? styles.statusChipActive : null]}>
-              <Gift size={13} color={day4.loveDropUsed ? '#2DD4BF' : colors.textHint} />
+              <Gift size={13} color={day4.loveDropUsed ? '#0D9488' : '#64748B'} />
               <Text style={[styles.statusText, day4.loveDropUsed ? styles.statusTextActive : null]}>
                 Love Drop {day4.loveDropUsed ? 'sent' : 'ready'}
               </Text>
             </View>
 
+            {/* Reflection Badge */}
             <View style={[styles.statusChip, hasDailyTwo ? styles.statusChipActive : null]}>
-              <CheckCircle2 size={13} color={hasDailyTwo ? '#2DD4BF' : colors.textHint} />
+              <CheckCircle2 size={13} color={hasDailyTwo ? '#0D9488' : '#64748B'} />
               <Text style={[styles.statusText, hasDailyTwo ? styles.statusTextActive : null]}>
                 {hasDailyTwo ? 'Reflected' : 'Optional'}
               </Text>
@@ -215,35 +307,27 @@ export const Bridge4to5: React.FC = () => {
           </View>
         </View>
 
-        {/* Teaser Card */}
-        <LinearGradient
-          colors={['rgba(249, 185, 92, 0.12)', 'rgba(255, 255, 255, 0.02)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.teaserCard}
-        >
-          <Text style={styles.teaserText}>
-            Day 5 turns everything you saved into your reveal, report card, letter, and promise.
-          </Text>
-        </LinearGradient>
+        {/* Teaser Card (Sparkles Box) */}
+        <View style={styles.teaserCard}>
+          <View style={styles.teaserContent}>
+            <Sparkles size={20} color="#0D9488" style={styles.teaserSparkle} />
+            <Text style={styles.teaserText}>
+              Day 5 turns everything you saved{'\n'}into your reveal, report card, letter, and promise.
+            </Text>
+          </View>
+        </View>
 
+        {/* Progress Dots */}
         <View style={styles.dotsRow}>
-          <View style={styles.dot} />
           <View style={styles.dot} />
           <View style={styles.dot} />
           <View style={styles.dot} />
           <View style={[styles.dot, styles.dotActive]} />
         </View>
 
-        {/* Bridge Quote */}
+        {/* Zone 3 Title Label */}
         <View style={styles.quoteZone}>
           <Text style={styles.cardZoneTitle}>ZONE 3 · BRIDGE QUOTE</Text>
-          <View style={styles.quoteCard}>
-            <View style={styles.quoteIconWrapper}>
-              <Quote size={26} color={colors.primary} strokeWidth={1.2} />
-            </View>
-            <Text style={styles.quoteText}>"{bridgeQuotes.bridge_4to5}"</Text>
-          </View>
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -264,11 +348,8 @@ export const Bridge4to5: React.FC = () => {
 };
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => {
-  const cardBg = c.isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.75)';
-  const cardBorder = c.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(45, 95, 93, 0.12)';
-  const miniCardBg = c.isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.65)';
-  const statusChipBg = c.isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.6)';
-  const quoteCardBg = c.isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.65)';
+  const cardBg = c.isDark ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF';
+  const cardBorder = c.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.03)';
   const ctaBg = c.isDark ? `${c.dark}d8` : 'rgba(255, 255, 255, 0.85)';
   const ctaBorder = c.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
 
@@ -279,39 +360,69 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
     content: {
       paddingHorizontal: metrics.layout.screenPaddingHz,
       paddingBottom: responsiveHeight(15),
-      gap: 20, // Clean vertical gap instead of individual margins
+      gap: 20,
     },
-    eyebrowPill: {
-      alignSelf: 'flex-start',
-      backgroundColor: c.isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)',
-      borderRadius: 100,
-      borderCurve: 'continuous',
-      borderWidth: 1,
-      borderColor: c.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0, 0, 0, 0.04)',
-      paddingHorizontal: 12,
-      paddingVertical: 4,
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginTop: 8,
+      marginBottom: 4,
     },
-    eyebrowText: {
-      fontSize: 11,
+    headerPill: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 100,
+      borderWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.05)',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.03,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+    headerPillText: {
+      fontSize: 12,
       fontFamily: fonts.dmSansBold,
-      color: c.textSecondary,
-      letterSpacing: 0.5,
+      color: '#334155',
+      letterSpacing: 0.2,
+    },
+    menuButton: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      backgroundColor: '#FFFFFF',
+      borderWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.05)',
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.03,
+      shadowRadius: 6,
+      elevation: 1,
     },
     card: {
       backgroundColor: cardBg,
       borderRadius: 24,
-      borderCurve: 'continuous',
-      borderWidth: 1.5,
+      borderWidth: 1,
       borderColor: cardBorder,
       padding: 20,
       gap: 16,
-      boxShadow: c.isDark ? '0 8px 32px rgba(0, 0, 0, 0.15)' : '0 8px 24px rgba(26, 54, 53, 0.06)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.03,
+      shadowRadius: 12,
+      elevation: 2,
     },
     cardZoneTitle: {
       fontSize: 10,
       fontFamily: fonts.dmSansBold,
-      color: c.textHint,
+      color: '#94A3B8',
       letterSpacing: 1.5,
       textTransform: 'uppercase',
     },
@@ -322,54 +433,90 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
     },
     streakRingContainer: {
       position: 'relative',
-      width: 64,
-      height: 64,
+      width: 72,
+      height: 72,
     },
     streakRing: {
-      width: 64,
-      height: 64,
-      borderRadius: 32,
-      borderCurve: 'continuous',
+      width: 72,
+      height: 72,
+      borderRadius: 36,
       borderWidth: 3,
       borderColor: '#0D9488',
-      backgroundColor: 'rgba(13, 148, 136, 0.05)',
+      backgroundColor: 'rgba(13, 148, 136, 0.03)',
       alignItems: 'center',
       justifyContent: 'center',
-      boxShadow: '0 0 15px rgba(13, 148, 136, 0.15)',
     },
     streakNumber: {
-      fontSize: 24,
+      fontSize: 26,
       fontFamily: fonts.dmSansBold,
-      color: c.text,
+      color: '#1E293B',
+      lineHeight: 28,
+    },
+    streakLabel: {
+      fontSize: 9,
+      fontFamily: fonts.dmSansBold,
+      color: '#64748B',
+      letterSpacing: 0.5,
+      marginTop: -2,
     },
     streakFlameBadge: {
       position: 'absolute',
-      top: -4,
-      right: -4,
+      top: -2,
+      right: -2,
       width: 22,
       height: 22,
       borderRadius: 11,
-      borderCurve: 'continuous',
       backgroundColor: '#FFFFFF',
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
-      borderColor: '#E2E8F0',
+      borderColor: 'rgba(0, 0, 0, 0.05)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 1,
     },
     streakInfo: {
       flex: 1,
       justifyContent: 'center',
     },
     welcomeText: {
-      fontFamily: 'PlayfairDisplay-Bold',
+      fontFamily: fonts.dmSansBold,
       fontSize: 20,
-      color: c.text,
+      color: '#1E293B',
     },
     streakSubtext: {
       fontSize: 13,
-      fontFamily: 'Inter-Regular',
-      color: c.textSecondary,
+      fontFamily: fonts.dmSansRegular,
+      color: '#64748B',
       marginTop: 2,
+    },
+    streakProgressRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      marginTop: 10,
+    },
+    streakProgressSegment: {
+      width: 24,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: '#0D9488',
+    },
+    streakProgressCheck: {
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      backgroundColor: '#0D9488',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    checkIcon: {
+      color: '#FFFFFF',
+      fontSize: 10,
+      fontFamily: fonts.dmSansBold,
+      lineHeight: 12,
     },
     pillsRow: {
       flexDirection: 'row',
@@ -378,32 +525,28 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
       width: '100%',
     },
     recapPill: {
-      maxWidth: '100%',
       flexDirection: 'row',
       alignItems: 'center',
       borderWidth: 1,
       borderRadius: 100,
-      borderCurve: 'continuous',
       paddingHorizontal: 12,
-      paddingVertical: 5,
+      paddingVertical: 6,
+    },
+    recapPillText: {
+      fontSize: 11,
+      fontFamily: fonts.dmSansBold,
     },
     pillIcon: {
       marginRight: 6,
     },
-    recapPillText: {
-      fontSize: 11,
-      maxWidth: responsiveWidth(72),
-      fontFamily: fonts.dmSansBold,
-    },
     memoryBox: {
-      borderWidth: 1.5,
-      borderColor: c.isDark ? `${c.day4}30` : `${c.day4}40`,
+      backgroundColor: '#F0F7FF',
+      borderWidth: 1,
+      borderColor: 'rgba(59, 130, 246, 0.15)',
       borderRadius: 16,
-      borderCurve: 'continuous',
-      padding: 16,
+      padding: 14,
       width: '100%',
-      gap: 8,
-      boxShadow: c.isDark ? `0 4px 12px ${c.day4}10` : `0 4px 12px ${c.day4}15`,
+      gap: 10,
     },
     boxHeaderRow: {
       flexDirection: 'row',
@@ -414,12 +557,60 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
       letterSpacing: 1.2,
       fontSize: 9,
       fontFamily: fonts.dmSansBold,
+      color: '#3B82F6',
     },
-    memoryText: {
-      fontSize: 15,
-      color: c.text,
-      fontFamily: 'PlayfairDisplay-Italic',
-      lineHeight: 22,
+    memoryBodyRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    calendarContainer: {
+      width: 32,
+      height: 36,
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: '#E2E8F0',
+      overflow: 'hidden',
+      backgroundColor: '#FFFFFF',
+    },
+    calendarHeader: {
+      height: 11,
+      backgroundColor: '#EF4444',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    calendarMonthText: {
+      color: '#FFFFFF',
+      fontSize: 7,
+      fontFamily: fonts.dmSansBold,
+      lineHeight: 9,
+    },
+    calendarBody: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    calendarDayText: {
+      color: '#1E293B',
+      fontSize: 14,
+      fontFamily: fonts.dmSansBold,
+      lineHeight: 16,
+    },
+    memoryMainText: {
+      flex: 1,
+      fontSize: 14,
+      fontFamily: fonts.dmSansMedium,
+      color: '#334155',
+      lineHeight: 18,
+    },
+    memoryDivider: {
+      color: '#CBD5E1',
+      marginHorizontal: 4,
+    },
+    memoryItalicText: {
+      fontFamily: fonts.playfairItalic,
+      fontStyle: 'italic',
+      color: '#1E293B',
     },
     twoColumnRow: {
       flexDirection: 'row',
@@ -428,48 +619,62 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
     miniCard: {
       flex: 1,
       minHeight: 110,
-      backgroundColor: miniCardBg,
-      borderWidth: 1.5,
-      borderColor: c.isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: '#FFFFFF',
+      borderWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.03)',
       borderRadius: 16,
-      borderCurve: 'continuous',
       padding: 14,
-      gap: 8,
       justifyContent: 'space-between',
-      boxShadow: c.isDark ? '0 4px 12px rgba(0, 0, 0, 0.04)' : '0 4px 12px rgba(26, 54, 53, 0.03)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.02,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+    miniCardTop: {
+      alignSelf: 'flex-start',
+    },
+    miniIconCircle: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: '#E6FBF7',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    purpleCircle: {
+      backgroundColor: '#F3E8FF',
+    },
+    miniCardBottomRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+      gap: 4,
     },
     miniCardTextContainer: {
+      flex: 1,
       gap: 2,
     },
-    miniIcon: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      borderCurve: 'continuous',
-      backgroundColor: 'rgba(13,148,136,0.1)',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    miniIconPurple: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      borderCurve: 'continuous',
-      backgroundColor: 'rgba(192, 132, 252, 0.1)',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     miniLabel: {
-      color: c.textHint,
+      color: '#94A3B8',
       letterSpacing: 1.1,
       fontSize: 9,
       fontFamily: fonts.dmSansBold,
     },
     miniValue: {
-      fontSize: 12,
-      color: c.text,
+      fontSize: 13,
+      color: '#1E293B',
       fontFamily: fonts.dmSansBold,
       lineHeight: 16,
+    },
+    miniSubtext: {
+      fontSize: 10,
+      color: '#64748B',
+      fontFamily: fonts.dmSansRegular,
+      lineHeight: 12,
+    },
+    miniChevron: {
+      marginBottom: 2,
     },
     statusRow: {
       flexDirection: 'row',
@@ -480,90 +685,77 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 6,
-      backgroundColor: statusChipBg,
-      borderWidth: 1.5,
-      borderColor: c.isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: '#FFFFFF',
+      borderWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.04)',
       borderRadius: 100,
-      borderCurve: 'continuous',
       paddingHorizontal: 12,
       paddingVertical: 6,
-      boxShadow: c.isDark ? 'none' : '0 2px 4px rgba(0, 0, 0, 0.02)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.01,
+      shadowRadius: 2,
+      elevation: 1,
     },
     statusChipActive: {
-      backgroundColor: c.isDark ? 'rgba(13, 148, 136, 0.10)' : '#E6FBF7',
-      borderColor: c.isDark ? 'rgba(13, 148, 136, 0.25)' : '#CCFBF1',
+      backgroundColor: '#E6FBF7',
+      borderColor: '#CCFBF1',
     },
     statusText: {
       fontSize: 11,
-      color: c.textHint,
-      fontFamily: fonts.dmSansBold,
-      letterSpacing: 0.5,
+      color: '#64748B',
+      fontFamily: fonts.dmSansMedium,
     },
     statusTextActive: {
-      color: c.isDark ? '#2DD4BF' : '#0D9488',
+      color: '#0D9488',
+      fontFamily: fonts.dmSansBold,
     },
     teaserCard: {
+      backgroundColor: '#FFFDF9',
       borderWidth: 1.5,
-      borderColor: c.isDark ? 'rgba(249, 185, 92, 0.25)' : 'rgba(212, 112, 16, 0.2)',
+      borderColor: '#E2B670',
       borderStyle: 'dashed',
       borderRadius: 18,
-      borderCurve: 'continuous',
       padding: 16,
+      marginHorizontal: 2,
+    },
+    teaserContent: {
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      boxShadow: c.isDark ? '0 4px 15px rgba(249, 185, 92, 0.03)' : '0 4px 12px rgba(212, 112, 16, 0.02)',
+      gap: 12,
+    },
+    teaserSparkle: {
+      alignSelf: 'center',
     },
     teaserText: {
+      flex: 1,
       fontSize: 14,
-      color: c.isDark ? '#F9B95C' : '#B07010',
-      fontFamily: 'PlayfairDisplay-Italic',
-      lineHeight: 20,
+      color: '#B45309',
+      fontFamily: fonts.playfairItalic,
+      fontStyle: 'italic',
+      lineHeight: 22,
       textAlign: 'center',
     },
     dotsRow: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: 6,
-      marginVertical: 12,
+      gap: 8,
+      marginVertical: 4,
     },
     dot: {
-      width: 6,
-      height: 6,
-      borderRadius: 3,
-      backgroundColor: c.isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#D1D5DB',
     },
     dotActive: {
-      width: 20,
-      borderRadius: 3,
-      backgroundColor: c.primary,
-      boxShadow: `0 0 8px ${c.primary}50`,
+      backgroundColor: '#0D9488',
     },
     quoteZone: {
       gap: 8,
       width: '100%',
-    },
-    quoteCard: {
-      backgroundColor: quoteCardBg,
-      borderWidth: 1.5,
-      borderColor: c.isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.9)',
-      padding: 20,
-      borderRadius: 20,
-      borderCurve: 'continuous',
-      width: '100%',
       alignItems: 'center',
-      gap: 12,
-      boxShadow: c.isDark ? '0 4px 15px rgba(0, 0, 0, 0.08)' : '0 4px 12px rgba(26, 54, 53, 0.03)',
-    },
-    quoteIconWrapper: {
-      opacity: 0.4,
-    },
-    quoteText: {
-      fontSize: 16,
-      color: c.textSecondary,
-      fontFamily: 'PlayfairDisplay-Italic',
-      lineHeight: 24,
-      textAlign: 'center',
     },
     bottomSpacer: {
       height: 24,
@@ -581,3 +773,4 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
     },
   });
 };
+

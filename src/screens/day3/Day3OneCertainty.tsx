@@ -10,6 +10,7 @@ import { ProgressStrip } from '../../components/common/ProgressStrip';
 import { ScreenWrapper } from '../../components/common/ScreenWrapper';
 import { ScreenHeader } from '../../components/common/ScreenHeader';
 import { GradientButton } from '../../components/common/GradientButton';
+import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
 import { useAppColors } from '../../theme';
 import { typography, fonts } from '../../theme/typography';
 import { metrics } from '../../theme/metrics';
@@ -79,7 +80,23 @@ export const Day3OneCertainty: React.FC = () => {
               multiline
               textAlignVertical="top"
               autoFocus={false}
+              maxLength={150}
             />
+            <View style={styles.charCountContainer}>
+              <Text style={styles.charCountText}>
+                {text.length} / 150 chars
+              </Text>
+              
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <EnhanceAIButton
+                  text={text}
+                  onEnhanced={setText}
+                  context="certainty"
+                  maxLength={150}
+                  disabled={text.trim().length < 5}
+                />
+              </View>
+            </View>
           </View>
 
           {/* Dedication badge + hint */}
@@ -177,8 +194,24 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: 16,
     fontFamily: fonts.playfairSemiBold,
     padding: 18,
-    minHeight: 130,
+    paddingBottom: 8,
+    minHeight: 110,
     lineHeight: 26,
+  },
+  charCountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    paddingTop: 8,
+  },
+  charCountText: {
+    fontSize: 11,
+    color: c.textHint,
+    fontFamily: fonts.dmSansRegular,
   },
   metaRow: {
     flexDirection: 'row',

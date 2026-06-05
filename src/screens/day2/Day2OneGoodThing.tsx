@@ -17,6 +17,7 @@ import { useDayStore } from '../../store/useDayStore';
 import { useJournalStore } from '../../store/useJournalStore';
 import { Check, BookOpen, Sparkles } from 'lucide-react-native';
 import { GradientButton } from '../../components/common/GradientButton';
+import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
 import {
   responsiveHeight,
   responsiveFontSize,
@@ -74,12 +75,22 @@ export const Day2OneGoodThing: React.FC = () => {
               <Text style={styles.charCountText}>
                 {text.length} / 80 chars
               </Text>
-              {text.trim().length >= 10 && (
-                <View style={styles.signalBadge}>
-                  <Check size={12} color={colors.primary} />
-                  <Text style={styles.signalText}>Dedication signal</Text>
-                </View>
-              )}
+              
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <EnhanceAIButton
+                  text={text}
+                  onEnhanced={setText}
+                  context="appreciation"
+                  maxLength={80}
+                  disabled={text.trim().length < 5}
+                />
+                {text.trim().length >= 10 && (
+                  <View style={styles.signalBadge}>
+                    <Check size={12} color={colors.primary} />
+                    <Text style={styles.signalText}>Dedication</Text>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
 

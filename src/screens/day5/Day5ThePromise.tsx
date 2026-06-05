@@ -19,6 +19,7 @@ import { haptics } from '../../utils/haptics';
 import { Day5Scoring } from '../../services/scoring/day5Scoring';
 import { JarEnvelopeAnimation, JarEnvelopeHandle } from '../../components/common/JarEnvelopeAnimation';
 import { metrics } from '../../theme/metrics';
+import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day5ThePromise'>;
 
@@ -104,24 +105,42 @@ export const Day5ThePromise: React.FC = () => {
             One thing you want to do differently from tomorrow.
           </Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="From tomorrow, I will…"
-            placeholderTextColor={colors.textHint}
-            value={promise}
-            onChangeText={setPromise}
-            multiline
-            textAlignVertical="top"
-            autoFocus
-            maxLength={200}
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="From tomorrow, I will…"
+              placeholderTextColor={colors.textHint}
+              value={promise}
+              onChangeText={setPromise}
+              multiline
+              textAlignVertical="top"
+              autoFocus
+              maxLength={200}
+            />
+            <View style={styles.charCountContainer}>
+              <Text style={styles.charCountText}>
+                {promise.length} / 200 chars
+              </Text>
+              
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <EnhanceAIButton
+                  text={promise}
+                  onEnhanced={setPromise}
+                  context="promise"
+                  maxLength={200}
+                  disabled={promise.trim().length < 5}
+                />
+              </View>
+            </View>
+          </View>
+
           <Text style={styles.hint}>
             This becomes the closing statement of your report card.{'\n'}
             Optional to include on your shareable card.
           </Text>
         </View>
 
-        <DayCTA title="{promise.trim() ? 'Save & continue ' : 'Skip '}" onPress={handleContinue} />
+        <DayCTA title={promise.trim() ? 'Save & continue ' : 'Skip '} onPress={handleContinue} />
       </ScreenWrapper>
     </KeyboardAvoidingView>
   );
@@ -139,10 +158,35 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   eyebrow: { color: c.day5, fontSize: 12, fontFamily: 'Inter-SemiBold', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 },
   title: { fontSize: 32, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 42, marginBottom: 8 },
   subtitle: { fontSize: 18, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 28 },
+  inputContainer: {
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: c.surfaceBorder,
+    padding: 16,
+    marginBottom: 16,
+  },
   input: {
-    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1, borderColor: c.surfaceBorder, borderRadius: 12,
-    padding: 16, minHeight: 120, lineHeight: 24, marginBottom: 16,
+    color: c.text,
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    minHeight: 100,
+    lineHeight: 24,
+    padding: 0,
+    marginBottom: 12,
+  },
+  charCountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.05)',
+    paddingTop: 12,
+  },
+  charCountText: {
+    fontSize: 11,
+    color: c.textHint,
+    fontFamily: 'Inter-Regular',
   },
   hint: { color: c.textHint, fontSize: 13, fontFamily: 'Inter-Regular', lineHeight: 20 },
 });
