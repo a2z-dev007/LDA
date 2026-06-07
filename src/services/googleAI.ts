@@ -5,7 +5,7 @@ const GEMINI_API_KEY_STORAGE_KEY = 'gemini_api_key';
 
 // Default / fallback API key if not set in MMKV.
 // Developers can paste their API key here for quick local testing.
-export const HARDCODED_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
+export const HARDCODED_API_KEY = process.env.GEMINI_API_KEY || '';
 
 export type AIPromptContext =
   | 'appreciation'

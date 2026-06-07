@@ -125,6 +125,11 @@ export const Day1ResultScreen: React.FC = () => {
         />
       </View>
 
+      {/* Animated Jar — positioned absolutely outside the ScrollView */}
+      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: Math.max(insets.top + 10, 48) }]}>
+        <JarEnvelopeAnimation ref={jarRef} initialCount={1} />
+      </Animated.View>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -133,9 +138,6 @@ export const Day1ResultScreen: React.FC = () => {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-2) }]}>
-          <JarEnvelopeAnimation ref={jarRef} initialCount={1} />
-        </Animated.View>
 
         <Animated.View style={[styles.header, { opacity: headerAnim }]}>
           <View style={styles.achievementBadgeRow}>

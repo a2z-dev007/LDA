@@ -192,6 +192,13 @@ export const ThisOrThatScreen: React.FC = () => {
 
 
 
+      {/* Animated Jar — outside ScrollView */}
+      {isFinished && (
+        <Animated.View style={[styles.jarAbsolutePos, { opacity: jarEntranceAnim }]}>
+          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+        </Animated.View>
+      )}
+
       <Animated.ScrollView
         style={[styles.container, { opacity: fadeAnim }]}
         contentContainerStyle={styles.content}
@@ -270,22 +277,7 @@ export const ThisOrThatScreen: React.FC = () => {
 
             {/* Results Screen */}
             <View style={styles.header}>
-              <Animated.View 
-                style={[
-                  styles.resultJarPos, 
-                  { 
-                    opacity: jarEntranceAnim,
-                    transform: [{ 
-                      translateY: jarEntranceAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [20, 0]
-                      })
-                    }]
-                  }
-                ]}
-              >
-                <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-              </Animated.View>
+              {/* Jar has been moved outside ScrollView */}
               <Text style={styles.title}>All 3 rounds done 🎉</Text>
               <Text style={styles.subtitle}>Their answers are sealed — reveal when they join.</Text>
               
@@ -379,6 +371,13 @@ const makeStyles = (c: any) => StyleSheet.create({
     justifyContent: 'center',
     height: 120,
     marginBottom: 10,
+  },
+  jarAbsolutePos: {
+    position: 'absolute',
+    right: metrics.layout.screenPaddingHz - 15,
+    top: 60,
+    zIndex: 10,
+    transform: [{ scale: 0.55 }],
   },
 
 

@@ -176,6 +176,11 @@ export const Day4Complete: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={4} />
 
+      {/* Animated Jar — top right positioned absolutely over the screen */}
+      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: 48 }]}>
+        <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+      </Animated.View>
+
       <ScrollView 
         style={styles.scroll} 
         contentContainerStyle={styles.content}
@@ -183,10 +188,6 @@ export const Day4Complete: React.FC = () => {
       >
         {/* Checkmark Circle Hero */}
         <View style={styles.heroSection}>
-          {/* Animated Jar — top right */}
-          <Animated.View style={[styles.jarWrapper, { opacity: headerAnim }]}>
-            <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-          </Animated.View>
 
           <View style={styles.checkCircle}>
             <Check size={36} color={colors.primary} strokeWidth={3} />

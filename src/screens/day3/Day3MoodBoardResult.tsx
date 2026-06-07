@@ -108,10 +108,11 @@ export const Day3MoodBoardResult: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
 
+      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: 48 }]}>
+        <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+      </Animated.View>
+
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
-          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-        </Animated.View>
 
         <View style={styles.header}>
           <ScreenHeader title="Mood Board Match" />

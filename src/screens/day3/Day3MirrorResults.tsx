@@ -146,11 +146,12 @@ export const Day3MirrorResults: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      {/* <ProgressStrip currentDay={3} /> */}
+      {/* Animated Jar — positioned absolutely at the top right */}
+      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: 48 }]}>
+        <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+      </Animated.View>
+
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
-          <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-        </Animated.View>
 
         <ScreenHeader 
           title="Your Results" 

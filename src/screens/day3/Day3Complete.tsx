@@ -117,13 +117,14 @@ export const Day3Complete: React.FC = () => {
     <ScreenWrapper>
       <ProgressStrip currentDay={3} />
 
+      {/* Animated Jar — top right positioned absolutely over the screen */}
+      <Animated.View style={[styles.jarContainer, { opacity: headerAnim, top: 48 }]}>
+        <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
+      </Animated.View>
+
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Hero */}
         <View style={styles.heroSection}>
-          {/* Animated Jar — top right */}
-          <Animated.View style={[styles.jarContainer, { opacity: headerAnim }]}>
-            <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
-          </Animated.View>
 
           <View style={styles.checkCircle}>
             <CheckCircle size={44} color="#2D5F5D" strokeWidth={1.5} />
