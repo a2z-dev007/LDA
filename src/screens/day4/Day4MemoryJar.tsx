@@ -46,6 +46,8 @@ export const Day4MemoryJar: React.FC = () => {
   const setDay4Memory = useDayStore((s) => s.setDay4Memory);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
   const setJarFillLevel = useJournalStore((s) => s.setJarFillLevel);
+  const jarMemories = useJournalStore((s) => s.jarMemories);
+  const initialJarCount = useRef(jarMemories.length).current;
 
   // CommonJar Reference
   const jarRef = useRef<CommonJarHandle>(null);
@@ -372,8 +374,8 @@ export const Day4MemoryJar: React.FC = () => {
 
               {/* CommonJar Component */}
               <View style={styles.jarContainer}>
-                <CommonJar scale={1.4} count={3} ref={jarRef} primaryColor={colors.day4} />
-                <Text style={styles.jarLabel}>3 memories saved.</Text>
+                <CommonJar scale={1.4} initialCount={initialJarCount} ref={jarRef} primaryColor={colors.day4} />
+                <Text style={styles.jarLabel}>{initialJarCount} memories saved.</Text>
               </View>
 
               {/* Option Tabs */}
@@ -518,9 +520,9 @@ export const Day4MemoryJar: React.FC = () => {
             <View style={styles.successContainer}>
               {/* CommonJar Component showing 4 counts */}
               <View style={styles.jarContainer}>
-                <CommonJar scale={1.4} count={4} primaryColor={colors.day4} />
+                <CommonJar scale={1.4} count={jarMemories.length} primaryColor={colors.day4} />
                 <Text style={[styles.jarLabel, { color: colors.day4, fontFamily: fonts.dmSansBold }]}>
-                  4 memories saved. ✓
+                  {jarMemories.length} memories saved. ✓
                 </Text>
               </View>
 

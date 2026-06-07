@@ -51,7 +51,7 @@ export const Day4TinyCompliment: React.FC = () => {
   const setTinyCompliment = useDayStore((s) => s.setTinyCompliment);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
   const jarMemories = useJournalStore((s) => s.jarMemories);
-  const initialJarCount = useRef(3 + jarMemories.length).current;
+  const initialJarCount = useRef(jarMemories.length).current;
   const jarRef = useRef<JarEnvelopeHandle>(null);
 
   const handleSelect = (word: string) => {

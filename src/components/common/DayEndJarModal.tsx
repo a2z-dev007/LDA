@@ -47,7 +47,11 @@ export const DayEndJarModal: React.FC<DayEndJarModalProps> = ({
   const jarRef = useRef<JarEnvelopeHandle>(null);
   const [animationFinished, setAnimationFinished] = useState(false);
   const [modalActive, setModalActive] = useState(false);
-  const initialCount = useRef(useJournalStore.getState().jarMemories.length).current;
+  const initialCount = useRef(
+    currentDay === 5
+      ? Math.max(0, useJournalStore.getState().jarMemories.length - 1)
+      : useJournalStore.getState().jarMemories.length
+  ).current;
 
   const bgOpacity = useSharedValue(0);
 
