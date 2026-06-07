@@ -22,8 +22,8 @@ export const ScreenWrapper: React.FC<Props> = ({
   children,
   backgroundColor,
   style,
-  blurValue = 2,
-  source = IMAGE.greenBg3,
+  blurValue =1,
+  source = IMAGE.greenBg,
   ...rest
 }) => {
   const colors = useAppColors();

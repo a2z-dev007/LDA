@@ -1,7 +1,7 @@
 
 import bluePurple from "./blue-purple.png"
 import greenBg from "./green-bg-2.png"
-import greenBg3 from "./green-bg-3.png"
+import greenBg3 from "./green-bg.png"
 import greenBg2 from "./green-bg-2.png"
 import greenPink from "./green-pink.png"
 import lavenderBg from "./lavender-bg.png"

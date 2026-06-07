@@ -63,4 +63,5 @@ export type RootStackParamList = {
   Day5JarReveal: undefined;
   Day5TheLetter: undefined;
   Day5PartnerInvite: undefined;
+  InvitePartner: undefined;
 };

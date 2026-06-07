@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { DayHeader } from '../../components/common/DayHeader';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -51,7 +51,7 @@ export const Day4TinyCompliment: React.FC = () => {
   const setTinyCompliment = useDayStore((s) => s.setTinyCompliment);
   const addJarMemory = useJournalStore((s) => s.addJarMemory);
   const jarMemories = useJournalStore((s) => s.jarMemories);
-  const initialJarCount = useRef(jarMemories.length).current;
+  const initialJarCount = useRef(3 + jarMemories.length).current;
   const jarRef = useRef<JarEnvelopeHandle>(null);
 
   const handleSelect = (word: string) => {
@@ -94,7 +94,11 @@ export const Day4TinyCompliment: React.FC = () => {
         <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
       </View>
 
-      <View style={styles.body}>
+      <ScrollView 
+        style={styles.scroll} 
+        contentContainerStyle={styles.content} 
+        showsVerticalScrollIndicator={false}
+      >
         <DayHeader eyebrow="Day 4 · Tiny Compliment" />
         
         {/* Status Capsule */}
@@ -147,7 +151,7 @@ export const Day4TinyCompliment: React.FC = () => {
           <Sparkles size={13} color={colors.accent} style={{ marginRight: 6 }} />
           <Text style={styles.tipText}>Your word glows inside the jar on Day 5</Text>
         </View>
-      </View>
+      </ScrollView>
 
       {/* CTA Button */}
       <View style={[styles.ctaWrapper, { paddingBottom: Math.max(insets.bottom + 8, metrics.spacing.md) }]}>
@@ -190,10 +194,13 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     zIndex: 10,
     transform: [{ scale: 0.55 }],
   },
-  body: {
+  scroll: {
     flex: 1,
+  },
+  content: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.md,
+    paddingBottom: responsiveHeight(20),
   },
   statusCapsule: {
     flexDirection: 'row',
@@ -230,7 +237,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     justifyContent: 'flex-start',
   },
   pill: {
-    width: '31.3%',
+    width: (responsiveWidth(100) - metrics.layout.screenPaddingHz * 2 - 20) / 3,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',

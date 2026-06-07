@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TextInput,
+  View, Text, StyleSheet, ScrollView,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import { ProgressStrip } from '../../components/common/ProgressStrip';
 import { ScreenWrapper } from '../../components/common/ScreenWrapper';
 import { ScreenHeader } from '../../components/common/ScreenHeader';
 import { GradientButton } from '../../components/common/GradientButton';
-import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
+import { AIInput } from '../../components/common/AIInput';
 import { useAppColors } from '../../theme';
 import { typography, fonts } from '../../theme/typography';
 import { metrics } from '../../theme/metrics';
@@ -70,34 +70,16 @@ export const Day3OneCertainty: React.FC = () => {
           </Text>
 
           {/* Text input */}
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="I know that they always show up, even when it's hard."
-              placeholderTextColor={colors.textHint}
-              value={text}
-              onChangeText={setText}
-              multiline
-              textAlignVertical="top"
-              autoFocus={false}
-              maxLength={150}
-            />
-            <View style={styles.charCountContainer}>
-              <Text style={styles.charCountText}>
-                {text.length} / 150 chars
-              </Text>
-              
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <EnhanceAIButton
-                  text={text}
-                  onEnhanced={setText}
-                  context="certainty"
-                  maxLength={150}
-                  disabled={text.trim().length < 5}
-                />
-              </View>
-            </View>
-          </View>
+          <AIInput
+            value={text}
+            onChangeText={setText}
+            context="certainty"
+            question="Despite everything you're not sure about — what's the one thing you know for certain?"
+            placeholder="I know that they always show up, even when it's hard."
+            maxLength={150}
+            containerStyle={styles.aiInputContainer}
+            autoFocus={false}
+          />
 
           {/* Dedication badge + hint */}
           <View style={styles.metaRow}>
@@ -180,38 +162,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginBottom: 20,
     lineHeight: 28,
   },
-  inputWrapper: {
+  aiInputContainer: {
     marginHorizontal: metrics.layout.screenPaddingHz,
-    marginBottom: 12,
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderWidth: 1.5,
     borderColor: 'rgba(45,95,93,0.15)',
-    backgroundColor: 'rgba(255,255,255,0.9)',
-  },
-  input: {
-    color: c.text,
-    fontSize: 16,
-    fontFamily: fonts.playfairSemiBold,
-    padding: 18,
-    paddingBottom: 8,
-    minHeight: 110,
-    lineHeight: 26,
-  },
-  charCountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    paddingTop: 8,
-  },
-  charCountText: {
-    fontSize: 11,
-    color: c.textHint,
-    fontFamily: fonts.dmSansRegular,
+    marginBottom: 12,
   },
   metaRow: {
     flexDirection: 'row',

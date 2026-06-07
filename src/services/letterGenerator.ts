@@ -15,10 +15,10 @@ const personalityNames: Record<PersonalityTypeId, string> = {
 
 const templates = [
   (name: string, score: number, typeName: string, memoryOpener: string) =>
-    `Dear ${name},\n\nFive days ago, I sat with a number — ${score} out of 10. That number was honest. Maybe more honest than I'd been in a while.\n\nI've been thinking about what it means to be ${typeName} in this relationship. It means I love in a particular way. Not always loudly. Not always perfectly. But consistently mine.\n\nI keep coming back to this: ${memoryOpener}\n\nThat moment matters. You matter. And I wanted to write that down somewhere real.\n\nI'm not done growing. But I'm glad I'm growing with you.\n\nWith love,\nMe`,
+    `${name}.\n\nYou started this week at a ${score}.\n\nYou didn't know what you'd find — but you showed up anyway.\n\nThe ${typeName} in you knew something worth protecting was here.\n\n${memoryOpener}\n\nThat's the memory you chose to keep. That's enough. That's everything.`,
 
   (name: string, score: number, typeName: string, memoryOpener: string) =>
-    `To ${name},\n\nI started this week at a ${score}. I'm ending it somewhere different — not because everything changed, but because I looked more carefully.\n\nBeing ${typeName} means I carry things quietly sometimes. But this week I tried to carry them out loud, even just for myself.\n\nSomething I keep returning to: ${memoryOpener}\n\nThat's the kind of thing I don't want to forget. So I wrote it down. For you. For us.\n\nAlways,\nMe`,
+    `${name}.\n\nYou gave yourself a score of ${score} on Day 1.\n\nYou started with that simple, honest baseline — and you kept showing up day after day.\n\nYour inner ${typeName} showed that there is something deep here worth guarding.\n\n${memoryOpener}\n\nThat's the memory you held onto. That's enough. That's everything.`,
 ];
 
 export function generateLetter(
@@ -28,19 +28,21 @@ export function generateLetter(
   memoryContent: string | null,
   day3Certainty: string | null
 ): string {
-  const typeName = personalityNames[personalityType] ?? 'someone who loves deeply';
+  const typeName = personalityNames[personalityType] ?? 'Steady Flame';
+  const name = userName || 'you';
   
   let memoryOpener = '';
   if (memoryContent && memoryContent.trim()) {
-    memoryOpener = '"' + memoryContent.trim().split(/\s+/).slice(0, 8).join(' ') + '..."';
+    const words = memoryContent.trim().split(/\s+/);
+    memoryOpener = `"${words.slice(0, 8).join(' ')}${words.length > 8 ? '...' : ''}"`;
   } else if (day3Certainty && day3Certainty.trim()) {
-    memoryOpener = `knowing one thing is certain: "${day3Certainty.trim()}"`;
+    memoryOpener = `"${day3Certainty.trim()}"`;
   } else {
-    memoryOpener = "You came back, five days in a row. That's the memory worth keeping.";
+    memoryOpener = '"You came back, five days in a row. That\'s the memory worth keeping."';
   }
 
   // Consistent template selection per user/score to prevent letter change on re-render
-  const strForHash = `${userName}_${sliderScore}_${personalityType}`;
+  const strForHash = `${name}_${sliderScore}_${personalityType}`;
   let hash = 0;
   for (let i = 0; i < strForHash.length; i++) {
     hash = strForHash.charCodeAt(i) + ((hash << 5) - hash);
@@ -48,5 +50,5 @@ export function generateLetter(
   const index = Math.abs(hash) % templates.length;
   const template = templates[index];
 
-  return template(userName || 'you', sliderScore, typeName, memoryOpener);
+  return template(name, sliderScore, typeName, memoryOpener);
 }

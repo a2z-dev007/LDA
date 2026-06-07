@@ -114,14 +114,16 @@ export const Day1ResultScreen: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <LottieView
-        ref={lottieRef}
-        source={LOTTIE.confetti}
-        style={styles.confetti}
-        autoPlay={false}
-        loop={false}
-        resizeMode="cover"
-      />
+      <View pointerEvents="none" style={styles.confetti}>
+        <LottieView
+          ref={lottieRef}
+          source={LOTTIE.confetti}
+          style={StyleSheet.absoluteFill}
+          autoPlay={false}
+          loop={false}
+          resizeMode="cover"
+        />
+      </View>
 
       <ScrollView
         style={styles.scroll}
@@ -268,7 +270,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     width: '100%',
     height: responsiveHeight(50),
     zIndex: 999,
-    pointerEvents: 'none' as any,
   },
   header: {
     alignItems: 'center',

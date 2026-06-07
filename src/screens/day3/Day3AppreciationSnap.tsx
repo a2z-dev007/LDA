@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { DayHeader } from '../../components/common/DayHeader';
 import { DayCTA } from '../../components/common/DayCTA';
 import {
-  View, Text, StyleSheet, TextInput,
+  View, Text, StyleSheet,
   KeyboardAvoidingView, Platform, Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,7 @@ import { useAppColors } from '../../theme';
 import { useDayStore } from '../../store/useDayStore';
 import { useJournalStore } from '../../store/useJournalStore';
 import { haptics } from '../../utils/haptics';
+import { AIInput } from '../../components/common/AIInput';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day3AppreciationSnap'>;
 
@@ -66,14 +67,13 @@ export const Day3AppreciationSnap: React.FC = () => {
               translateY: flyAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -80] }),
             }],
           }]}>
-            <TextInput
-              style={styles.input}
-              placeholder="Write something true…"
-              placeholderTextColor={colors.textHint}
+            <AIInput
               value={text}
               onChangeText={setText}
-              multiline
-              textAlignVertical="top"
+              context="appreciation"
+              question="Before we test what you know about them — What do you want them to know about you right now?"
+              placeholder="Write something true…"
+              maxLength={150}
               autoFocus
             />
           </Animated.View>
@@ -98,12 +98,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   title: { fontSize: 22, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 32, marginBottom: 8 },
   subtitle: { fontSize: 18, color: c.textSecondary, fontFamily: 'PlayfairDisplay-Italic', lineHeight: 28, marginBottom: 28 },
   inputCard: {},
-  input: {
-    color: c.text, fontSize: 16, fontFamily: 'Inter-Regular',
-    borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.9)', borderRadius: 12,
-    padding: 16, minHeight: 120, lineHeight: 24,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-  },
   savedNote: { color: c.day3, fontSize: 14, fontFamily: 'Inter-SemiBold', marginTop: 12 },
   hint: { color: c.textHint, fontSize: 12, fontFamily: 'Inter-Regular', marginTop: 16 },
 });

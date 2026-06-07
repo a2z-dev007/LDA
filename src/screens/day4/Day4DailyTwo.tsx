@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DayHeader } from '../../components/common/DayHeader';
 import {
-  View, Text, StyleSheet, TextInput,
+  View, Text, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,8 @@ import { useDayStore } from '../../store/useDayStore';
 import { useJournalStore } from '../../store/useJournalStore';
 import { haptics } from '../../utils/haptics';
 import { GradientButton } from '../../components/common/GradientButton';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { AIInput } from '../../components/common/AIInput';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DailyTwo'>;
 
@@ -64,19 +66,16 @@ export const Day4DailyTwo: React.FC = () => {
           <View style={styles.card}>
             <Text style={styles.cardEyebrow}>ABOUT YOU</Text>
             <Text style={styles.cardQuestion}>{pair[0]}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Type anything..."
-                placeholderTextColor={colors.textHint}
-                value={answer1}
-                onChangeText={setAnswer1}
-                multiline
-                maxLength={300}
-                textAlignVertical="top"
-              />
-              <Text style={styles.charCount}>{answer1.length}/300 chars</Text>
-            </View>
+            <AIInput
+              value={answer1}
+              onChangeText={setAnswer1}
+              context="general"
+              question={pair[0]}
+              placeholder="Type anything..."
+              maxLength={300}
+              containerStyle={styles.customAIInputContainer}
+              inputStyle={styles.customAIInput}
+            />
             <View style={styles.cardFooter}>
               <View style={[styles.tag, answer1.trim().length > 0 ? styles.tagActive : null]}>
                 <Text style={[styles.tagText, answer1.trim().length > 0 ? styles.tagTextActive : null]}>
@@ -91,19 +90,16 @@ export const Day4DailyTwo: React.FC = () => {
           <View style={styles.card}>
             <Text style={styles.cardEyebrow}>ABOUT YOUR RELATIONSHIP</Text>
             <Text style={styles.cardQuestion}>{pair[1]}</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Type anything..."
-                placeholderTextColor={colors.textHint}
-                value={answer2}
-                onChangeText={setAnswer2}
-                multiline
-                maxLength={300}
-                textAlignVertical="top"
-              />
-              <Text style={styles.charCount}>{answer2.length}/300 chars</Text>
-            </View>
+            <AIInput
+              value={answer2}
+              onChangeText={setAnswer2}
+              context="general"
+              question={pair[1]}
+              placeholder="Type anything..."
+              maxLength={300}
+              containerStyle={styles.customAIInputContainer}
+              inputStyle={styles.customAIInput}
+            />
             <View style={styles.cardFooter}>
               <View style={[styles.tag, answer2.trim().length > 0 ? styles.tagActive : null]}>
                 <Text style={[styles.tagText, answer2.trim().length > 0 ? styles.tagTextActive : null]}>
@@ -119,7 +115,7 @@ export const Day4DailyTwo: React.FC = () => {
         </ScrollView>
 
         {/* Custom bottom button row matching screenshot */}
-        <View style={[styles.ctaWrapper, { paddingBottom: Math.max(insets.bottom + 8, metrics.spacing.md) }]}>
+        <View style={[styles.ctaWrapper, { paddingBottom:metrics.spacing.md}]}>
           {/* <TouchableOpacity
             style={[styles.mainBtn, !canContinue && styles.mainBtnDisabled]}
             onPress={handleDone}
@@ -156,7 +152,7 @@ export const Day4DailyTwo: React.FC = () => {
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scroll: { flex: 1 },
   content: { paddingHorizontal: metrics.layout.screenPaddingHz, paddingTop: metrics.spacing.md },
-  title: { fontSize: 26, color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34, marginBottom: 8 },
+  title: { fontSize:responsiveFontSize(2), color: c.text, fontFamily: 'PlayfairDisplay-Bold', lineHeight: 34, marginBottom: 8 },
   subtitle: { fontSize: 14, color: c.textSecondary, fontFamily: fonts.dmSansRegular, lineHeight: 22, marginBottom: metrics.spacing.lg },
   
   card: {
@@ -182,35 +178,27 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     textTransform: 'uppercase',
   },
   cardQuestion: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(2),
     color: c.text,
     fontFamily: 'PlayfairDisplay-Bold',
-    lineHeight: 24,
+    // lineHeight: responsiveHeight(2.4),
   },
-  inputWrapper: {
-    position: 'relative',
-    marginTop: 4,
-  },
-  input: {
-    color: c.text,
-    fontSize: 14,
-    fontFamily: fonts.dmSansRegular,
+  customAIInputContainer: {
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: c.surfaceBorder,
     borderRadius: 12,
     padding: 12,
-    paddingBottom: 28,
-    minHeight: 80,
-    lineHeight: 20,
-    backgroundColor: '#FFFFFF',
+    paddingBottom: 8,
+    marginBottom: 0,
+    marginTop: 4,
   },
-  charCount: {
-    position: 'absolute',
-    bottom: 8,
-    right: 12,
-    fontSize: 10,
-    color: c.textHint,
-    fontFamily: fonts.dmSansMedium,
+  customAIInput: {
+    minHeight: 80,
+    fontSize: 14,
+    lineHeight: 20,
+    padding: 0,
+    marginBottom: 8,
   },
   cardFooter: {
     flexDirection: 'row',

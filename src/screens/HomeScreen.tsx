@@ -241,7 +241,7 @@ export const HomeScreen = () => {
         ) : (
           <GradientButton
             text="Invite your partner"
-            onPress={() => navigation.navigate('Day5PartnerInvite')}
+            onPress={() => navigation.navigate('InvitePartner')}
             showArrow={true}
             fullWidth={true}
             gradientColors={colors.gradientBtn2}

@@ -4,23 +4,21 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/types';
 import { ScreenWrapper } from '../../components/common/ScreenWrapper';
-import { useAppColors } from '../../theme';
+import { COLORS, useAppColors } from '../../theme';
 import { useDayStore } from '../../store/useDayStore';
 import { useUserStore } from '../../store/useUserStore';
 import { haptics } from '../../utils/haptics';
-import { DayEndJarModal } from '../../components/common/DayEndJarModal';
 import { GradientButton } from '../../components/common/GradientButton';
 import { ChevronLeft, Clock, Heart, CheckCircle2 } from 'lucide-react-native';
 
-type Nav = StackNavigationProp<RootStackParamList, 'Day5PartnerInvite'>;
+type Nav = StackNavigationProp<RootStackParamList, 'InvitePartner'>;
 
-export const Day5PartnerInvite: React.FC = () => {
+export const InvitePartner: React.FC = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   const setPartnerInviteSent = useDayStore((s) => s.setPartnerInviteSent);
   const userName = useUserStore((s) => s.name);
-  const [showJarModal, setShowJarModal] = useState(false);
   
   const [inviteCode, setInviteCode] = useState('');
   const [partnerCode, setPartnerCode] = useState('');
@@ -33,20 +31,12 @@ export const Day5PartnerInvite: React.FC = () => {
     const code = Math.floor(10000000 + Math.random() * 90000000).toString();
     setInviteCode(code);
 
-    // Show the final jar payoff on mount for Day 5
-    const timer = setTimeout(() => {
-      setShowJarModal(true);
-    }, 500);
-
     // Countdown timer
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 3540));
     }, 1000);
 
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const handleSendCode = async () => {
@@ -186,12 +176,6 @@ export const Day5PartnerInvite: React.FC = () => {
           </View>
         </View>
       </Modal>
-
-      <DayEndJarModal 
-        visible={showJarModal}
-        currentDay={5}
-        onNext={() => setShowJarModal(false)}
-      />
     </ScreenWrapper>
   );
 };
@@ -203,7 +187,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   headerRow: {
     paddingHorizontal: 24,
-    // paddingTop: 16,
+    paddingTop: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -306,7 +290,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   successContainer: {
     width: '100%',
     maxWidth: 340,
-    backgroundColor: c.glassCardBg || 'rgba(255, 255, 255, 0.95)',
+    backgroundColor:"#fff",
     borderRadius: 24,
     padding: 28,
     alignItems: 'center',
@@ -338,4 +322,3 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     marginBottom: 24,
   },
 });
-

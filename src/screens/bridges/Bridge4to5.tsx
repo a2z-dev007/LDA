@@ -30,7 +30,9 @@ import { useStreakStore } from '../../store/useStreakStore';
 import { useUserStore } from '../../store/useUserStore';
 import { haptics } from '../../utils/haptics';
 import { metrics } from '../../theme/metrics';
-import { fonts } from '../../theme/typography';
+import { fonts, typography } from '../../theme/typography';
+import { CommonJar } from '../../components/common/CommonJar';
+import { bridgeQuotes } from '../../data/quizData';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Bridge4to5'>;
 
@@ -130,18 +132,18 @@ export const Bridge4to5: React.FC = () => {
 
   const handleContinue = React.useCallback(() => {
     haptics.success();
-    navigation.navigate('Day5Celebration');
+    navigation.navigate('Day5ThePromise');
   }, [navigation]);
 
   return (
-    <ScreenWrapper style={{ paddingTop: insets.top }}>
+    <ScreenWrapper >
       {/* Visual background gradient to match screenshot perfectly */}
-      <LinearGradient
+      {/* <LinearGradient
         colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
-      />
+      /> */}
 
       <ScrollView
         style={styles.scroll}
@@ -150,13 +152,16 @@ export const Bridge4to5: React.FC = () => {
       >
         {/* Custom Header with Pill & Hamburger */}
         <View style={styles.headerRow}>
-          <View style={styles.headerPill}>
+          {/* <View style={styles.headerPill}>
             <BridgeIcon color="#0D9488" size={16} />
             <Text style={styles.headerPillText}>Day 4 → Day 5 Bridge</Text>
-          </View>
-          <View style={styles.menuButton}>
+          </View> */}
+                  <View style={styles.eyebrowPill}>
+                    <Text style={styles.eyebrowText}>Day 3 → Day 4 Bridge</Text>
+                  </View>
+          {/* <View style={styles.menuButton}>
             <Menu size={18} color="#6B7280" />
-          </View>
+          </View> */}
         </View>
 
         {/* Streak Card */}
@@ -212,24 +217,36 @@ export const Bridge4to5: React.FC = () => {
           <View style={styles.memoryBox}>
             <View style={styles.boxHeaderRow}>
               <JarIcon color="#3B82F6" size={14} />
-              <Text style={styles.boxLabel}>MEMORY JAR</Text>
+              <Text style={styles.boxLabel}>MEMORY JAR (80% FILLED)</Text>
             </View>
             
             <View style={styles.memoryBodyRow}>
-              {/* Calendar Icon */}
-              <View style={styles.calendarContainer}>
-                <View style={styles.calendarHeader}>
-                  <Text style={styles.calendarMonthText}>{dateInfo.monthShort}</Text>
+              {/* Calendar Icon & Memory Text */}
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={styles.calendarContainer}>
+                  <View style={styles.calendarHeader}>
+                    <Text style={styles.calendarMonthText}>{dateInfo.monthShort}</Text>
+                  </View>
+                  <View style={styles.calendarBody}>
+                    <Text style={styles.calendarDayText}>{dateInfo.day}</Text>
+                  </View>
                 </View>
-                <View style={styles.calendarBody}>
-                  <Text style={styles.calendarDayText}>{dateInfo.day}</Text>
-                </View>
+                <Text style={styles.memoryMainText} numberOfLines={3}>
+                  <Text style={styles.memoryItalicText}>
+                    "{day4.memoryContent ? day4.memoryContent.slice(0, 60) + (day4.memoryContent.length > 60 ? '...' : '') : 'A beautiful memory of us.'}"
+                  </Text>
+                </Text>
               </View>
 
-              {/* Memory Text */}
-              <Text style={styles.memoryMainText} numberOfLines={3}>
-                Date: {dateInfo.day} {dateInfo.monthLong} {dateInfo.year} <Text style={styles.memoryDivider}>|</Text> <Text style={styles.memoryItalicText}>"{day4.memoryContent || 'A beautiful memory of us.'}"</Text>
-              </Text>
+              {/* Jar preview at 80% */}
+              <View style={styles.jarPreviewContainer}>
+                <CommonJar scale={0.55} count={4} primaryColor={colors.day4} />
+                {day4.tinyComplimentWord && (
+                  <View style={styles.jarGlowTextContainer}>
+                    <Text style={styles.jarGlowText}>{day4.tinyComplimentWord.toUpperCase()}</Text>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
 
@@ -252,7 +269,7 @@ export const Bridge4to5: React.FC = () => {
                       : topNeed}
                   </Text>
                   <Text style={styles.miniSubtext} numberOfLines={1}>
-                    More calm, less stress ...
+                    Day 5 shows if they felt the same.
                   </Text>
                 </View>
                 <ChevronRight size={14} color="#0D9488" style={styles.miniChevron} />
@@ -325,9 +342,18 @@ export const Bridge4to5: React.FC = () => {
           <View style={[styles.dot, styles.dotActive]} />
         </View>
 
-        {/* Zone 3 Title Label */}
+        {/* Zone 3: Bridge Quote & Significance Line */}
         <View style={styles.quoteZone}>
           <Text style={styles.cardZoneTitle}>ZONE 3 · BRIDGE QUOTE</Text>
+          <View style={styles.quoteCard}>
+            <Text style={styles.quoteText}>
+              "{bridgeQuotes.bridge_4to5}"
+            </Text>
+            <View style={styles.quoteDivider} />
+            <Text style={styles.significanceText}>
+              "Day 5 is the one that matters. Everything you built this week becomes visible today."
+            </Text>
+          </View>
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -362,6 +388,21 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
       paddingBottom: responsiveHeight(15),
       gap: 20,
     },
+     eyebrowPill: {
+        alignSelf: 'flex-start',
+        backgroundColor: 'rgba(255,255,255,0.3)',
+        borderRadius: metrics.radius.full,
+        borderWidth: 1,
+        borderColor: 'rgba(45,95,93,0.18)',
+        paddingHorizontal: metrics.spacing.smMd,
+        paddingVertical: metrics.spacing.xs,
+        marginTop: metrics.spacing.xs,
+      },
+      eyebrowText: {
+        ...typography.captionSmall,
+        color: c.text,
+        letterSpacing: 0.3,
+      },
     headerRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -753,9 +794,75 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => {
       backgroundColor: '#0D9488',
     },
     quoteZone: {
-      gap: 8,
+      gap: 12,
       width: '100%',
       alignItems: 'center',
+      marginTop: 8,
+    },
+    quoteCard: {
+      backgroundColor: cardBg,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: cardBorder,
+      padding: 20,
+      width: '100%',
+      alignItems: 'center',
+      gap: 12,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.02,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+    quoteText: {
+      fontSize: 16,
+      color: c.text,
+      fontFamily: fonts.playfairItalic,
+      fontStyle: 'italic',
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+    quoteDivider: {
+      width: 40,
+      height: 1,
+      backgroundColor: c.textHint,
+      opacity: 0.2,
+      marginVertical: 4,
+    },
+    significanceText: {
+      fontSize: 13,
+      color: c.primary,
+      fontFamily: fonts.dmSansBold,
+      textAlign: 'center',
+      lineHeight: 18,
+    },
+    jarPreviewContainer: {
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 70,
+      height: 90,
+      marginLeft: 8,
+    },
+    jarGlowTextContainer: {
+      position: 'absolute',
+      backgroundColor: c.day5,
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+      borderRadius: 8,
+      shadowColor: c.day5,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+      elevation: 3,
+      top: '40%',
+      zIndex: 10,
+    },
+    jarGlowText: {
+      color: '#FFFFFF',
+      fontSize: 7,
+      fontFamily: fonts.dmSansBold,
+      letterSpacing: 0.5,
     },
     bottomSpacer: {
       height: 24,

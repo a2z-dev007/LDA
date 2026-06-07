@@ -146,7 +146,7 @@ export const Day3MirrorResults: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ProgressStrip currentDay={3} />
+      {/* <ProgressStrip currentDay={3} /> */}
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: responsiveHeight(-1) }]}>
           <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
@@ -418,6 +418,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   footer: {
     paddingHorizontal: 20,
-    paddingBottom: 34,
+    paddingBottom: responsiveHeight(2),
   },
 });

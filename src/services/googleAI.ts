@@ -5,7 +5,7 @@ const GEMINI_API_KEY_STORAGE_KEY = 'gemini_api_key';
 
 // Default / fallback API key if not set in MMKV.
 // Developers can paste their API key here for quick local testing.
-const HARDCODED_API_KEY = '';
+export const HARDCODED_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
 
 export type AIPromptContext =
   | 'appreciation'
@@ -88,13 +88,14 @@ interface EnhanceTextOptions {
   text: string;
   context: AIPromptContext;
   maxLength: number;
+  question?: string;
 }
 
 /**
  * Sends a request to Google Gemini API to enhance/rewrite a user's journal entry.
  */
 export const enhanceTextWithAI = async (options: EnhanceTextOptions): Promise<string> => {
-  const { text, context, maxLength } = options;
+  const { text, context, maxLength, question } = options;
   const apiKey = getGeminiApiKey();
 
   if (!apiKey) {
@@ -109,13 +110,15 @@ export const enhanceTextWithAI = async (options: EnhanceTextOptions): Promise<st
 
   // Build a highly tailored prompt designed to get a high-quality single-string response
   const prompt = `You are a warm relationship counselor helping a user improve the phrasing of their journal entry.
+${question ? `The user is responding to the following prompt/question on their screen:
+"${question}"\n` : ''}
 The user is writing an entry for: ${contextDesc}
 
 Here is the user's raw input:
 "${text}"
 
 Your task:
-Rewrite the user's input to be more emotionally resonant, warm, and constructive, while preserving their core details, authentic voice, and specific situation.
+Rewrite the user's input to be a more emotionally resonant, warm, and constructive response${question ? ' to the question asked' : ''}, while preserving their core details, authentic voice, and specific situation.
 Avoid inventing new details or facts. Do not write generic poetry. Keep it grounded, sincere, and natural.
 
 CRITICAL RULES:

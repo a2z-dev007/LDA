@@ -594,7 +594,6 @@ export const Day4MemoryJar: React.FC = () => {
             </View>
           )}
 
-          <View style={{ height: responsiveHeight(12) }} />
         </ScrollView>
 
         {/* CTA Area */}
@@ -825,6 +824,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   content: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.md,
+    paddingBottom: responsiveHeight(22),
   },
   title: {
     ...typography.displayMedium,

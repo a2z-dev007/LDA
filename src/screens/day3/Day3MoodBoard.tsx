@@ -85,7 +85,7 @@ export const Day3MoodBoard: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <ProgressStrip currentDay={3} />
+      {/* <ProgressStrip currentDay={3} /> */}
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -173,7 +173,7 @@ const makeStyles = (c: any) => StyleSheet.create({
   },
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
-    marginTop: metrics.spacing.md,
+    // marginTop: metrics.spacing.md,
     marginBottom: metrics.spacing.lg,
   },
   italicInstruction: {

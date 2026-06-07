@@ -75,14 +75,16 @@ export const Day5Celebration: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      <LottieView
-        ref={lottieRef}
-        source={LOTTIE.confetti}
-        style={styles.confetti}
-        autoPlay={false}
-        loop={false}
-        resizeMode="cover"
-      />
+      <View pointerEvents="none" style={styles.confetti}>
+        <LottieView
+          ref={lottieRef}
+          source={LOTTIE.confetti}
+          style={StyleSheet.absoluteFill}
+          autoPlay={false}
+          loop={false}
+          resizeMode="cover"
+        />
+      </View>
 
       {/* 5-pip progress strip — all filled */}
       <View style={styles.pipsRow}>
@@ -99,7 +101,11 @@ export const Day5Celebration: React.FC = () => {
         ))}
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContainer} 
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.body}>
           {/* Glowing Badge Component */}
           <Animated.View style={[styles.badgeWrapper, { opacity: badgeOpacity, transform: [{ scale: badgeScale }] }]}>
@@ -165,6 +171,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>, tierColor: string) => {
   const traitPillBg = c.isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.65)';
 
   return StyleSheet.create({
+    scroll: {
+      flex: 1,
+    },
     pipsRow: { 
       flexDirection: 'row', 
       paddingHorizontal: 24, 
@@ -197,7 +206,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>, tierColor: string) => {
       width: '100%',
       height: '100%',
       zIndex: 999,
-      pointerEvents: 'none',
     },
     
     // Badge Visuals

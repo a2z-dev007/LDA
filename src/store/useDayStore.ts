@@ -3,6 +3,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { mmkvStorage } from '../services/mmkvStorage';
 import { Segment } from '../data/quizData';
 import { PersonalityTypeId } from '../data/personalityTypes';
+import { useJournalStore } from './useJournalStore';
+import { useStreakStore } from './useStreakStore';
 
 // ─────────────────────────────────────────────────────────────
 // Day Data Shapes — PRD §4.1
@@ -435,14 +437,17 @@ export const useDayStore = create<DayStore>()(
         return Math.min(pts, 7.0);
       },
 
-      resetAll: () =>
+      resetAll: () => {
+        useJournalStore.getState().clearAll();
+        useStreakStore.getState().resetStreak();
         set({
           day1: defaultDay1,
           day2: defaultDay2,
           day3: defaultDay3,
           day4: defaultDay4,
           day5: defaultDay5,
-        }),
+        });
+      },
     }),
     {
       name: 'lda-day-store',

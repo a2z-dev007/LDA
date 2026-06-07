@@ -22,6 +22,7 @@ import {
   validateApiKey,
   enhanceTextWithAI,
   AIPromptContext,
+  HARDCODED_API_KEY,
 } from '../../services/googleAI';
 
 interface EnhanceAIButtonProps {
@@ -30,6 +31,7 @@ interface EnhanceAIButtonProps {
   context: AIPromptContext;
   maxLength: number;
   disabled?: boolean;
+  question?: string;
 }
 
 export const EnhanceAIButton: React.FC<EnhanceAIButtonProps> = ({
@@ -38,6 +40,7 @@ export const EnhanceAIButton: React.FC<EnhanceAIButtonProps> = ({
   context,
   maxLength,
   disabled = false,
+  question,
 }) => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
@@ -46,7 +49,7 @@ export const EnhanceAIButton: React.FC<EnhanceAIButtonProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
   
   // State for the API key setup modal
-  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [apiKeyInput, setApiKeyInput] = useState(HARDCODED_API_KEY);
   const [validatingKey, setValidatingKey] = useState(false);
   const [validationError, setValidationError] = useState('');
   const [validationSuccess, setValidationSuccess] = useState(false);
@@ -78,6 +81,7 @@ export const EnhanceAIButton: React.FC<EnhanceAIButtonProps> = ({
         text: text.trim(),
         context,
         maxLength,
+        question,
       });
       onEnhanced(enhanced);
       haptics.success();

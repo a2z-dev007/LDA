@@ -571,13 +571,7 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
       transform: [{ scale: badgeScale.value }],
     }));
 
-    const shadowStyle = useAnimatedStyle(() => ({
-      transform: [
-        { scaleX: bodyScale.value },
-        { scaleY: bodyScale.value },
-      ],
-      opacity: 0.18 + (bodyScale.value - 1) * 2.5,
-    }));
+
 
     // Cleanup animations on unmount
     useEffect(() => {
@@ -855,17 +849,6 @@ export const JarEnvelopeAnimation = forwardRef<JarEnvelopeHandle, { initialCount
     // ─────────────────────────────────────────────────────────
     return (
       <View style={styles.root}>
-        {/* ── Ground shadow under the jar ── */}
-        <Animated.View
-          style={[
-            styles.groundShadow,
-            {
-              backgroundColor: colors.isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(124, 58, 237, 0.15)',
-            },
-            shadowStyle,
-          ]}
-          pointerEvents="none"
-        />
 
         {/* ── Ambient rising particles ── */}
         {ambientParticles.map(p => (
@@ -1100,10 +1083,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     overflow:        'hidden',
     zIndex:          20,
-    shadowOffset:    { width: 0, height: 2 },
-    shadowOpacity:   0.45,
-    shadowRadius:    3,
-    elevation:       4,
   },
 
   burstContainer: {
@@ -1140,11 +1119,6 @@ const styles = StyleSheet.create({
     width:  ENV_W,
     height: ENV_H,
     zIndex: 40,
-    shadowColor: 'rgba(0, 0, 0, 0.22)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 7,
   },
 
   ambientDot: {

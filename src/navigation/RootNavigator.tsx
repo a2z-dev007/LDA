@@ -57,6 +57,7 @@ import { Day5ThePromise } from '../screens/day5/Day5ThePromise';
 import { Day5JarReveal } from '../screens/day5/Day5JarReveal';
 import { Day5TheLetter } from '../screens/day5/Day5TheLetter';
 import { Day5PartnerInvite } from '../screens/day5/Day5PartnerInvite';
+import { InvitePartner } from '../screens/day5/InvitePartner';
 
 // Hub
 import { HomeScreen } from '../screens/HomeScreen';
@@ -141,6 +142,7 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day5JarReveal" component={Day5JarReveal} />
       <Stack.Screen name="Day5TheLetter" component={Day5TheLetter} />
       <Stack.Screen name="Day5PartnerInvite" component={Day5PartnerInvite} />
+      <Stack.Screen name="InvitePartner" component={InvitePartner} />
     </Stack.Navigator>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity,
+  View, Text, StyleSheet, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -15,9 +15,9 @@ import { metrics } from '../../theme/metrics';
 import { haptics } from '../../utils/haptics';
 import { useDayStore } from '../../store/useDayStore';
 import { useJournalStore } from '../../store/useJournalStore';
-import { Check, BookOpen, Sparkles } from 'lucide-react-native';
+import { BookOpen } from 'lucide-react-native';
 import { GradientButton } from '../../components/common/GradientButton';
-import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
+import { AIInput } from '../../components/common/AIInput';
 import {
   responsiveHeight,
   responsiveFontSize,
@@ -59,40 +59,17 @@ export const Day2OneGoodThing: React.FC = () => {
             "Before anything else — name one thing about your partner that made you feel something good recently. It can be tiny."
           </Text>
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="The way they laughed at my terrible joke last night."
-              placeholderTextColor={colors.textHint}
-              value={text}
-              onChangeText={setText}
-              multiline
-              maxLength={80}
-              textAlignVertical="top"
-              autoFocus
-            />
-            <View style={styles.charCountContainer}>
-              <Text style={styles.charCountText}>
-                {text.length} / 80 chars
-              </Text>
-              
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <EnhanceAIButton
-                  text={text}
-                  onEnhanced={setText}
-                  context="appreciation"
-                  maxLength={80}
-                  disabled={text.trim().length < 5}
-                />
-                {text.trim().length >= 10 && (
-                  <View style={styles.signalBadge}>
-                    <Check size={12} color={colors.primary} />
-                    <Text style={styles.signalText}>Dedication</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-          </View>
+          <AIInput
+            value={text}
+            onChangeText={setText}
+            context="appreciation"
+            question="Before anything else — name one thing about your partner that made you feel something good recently. It can be tiny."
+            placeholder="The way they laughed at my terrible joke last night."
+            maxLength={80}
+            showDedicationBadge={true}
+            dedicationThreshold={10}
+            autoFocus
+          />
 
           <View style={styles.journalAnimHint}>
             <View style={styles.hintIconBox}>
@@ -132,44 +109,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     lineHeight: responsiveFontSize(3.8),
     marginBottom: metrics.spacing.xl,
   },
-  inputContainer: {
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderRadius: metrics.radius.lg,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.9)',
-    padding: metrics.spacing.md,
-    marginBottom: metrics.spacing.xl,
-  },
-  input: {
-    color: c.text,
-    ...typography.bodyMedium,
-    minHeight: responsiveHeight(15),
-    lineHeight: 24,
-    marginBottom: metrics.spacing.sm,
-  },
-  charCountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
-    paddingTop: metrics.spacing.sm,
-  },
 
-  charCountText: {
-    ...typography.captionSmall,
-    color: c.textHint,
-  },
-  signalBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  signalText: {
-    ...typography.captionSmall,
-    color: c.primary,
-    fontFamily: 'Inter-SemiBold',
-  },
   journalAnimHint: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -32,13 +32,13 @@ export const Day5ReportCard: React.FC = () => {
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
   
-  const { day1, day2, day3, day4 } = useDayStore();
+  const { day1, day2, day3, day4, day5 } = useDayStore();
   const personality = personalityTypes.find((p) => p.id === day1.personalityType);
 
   // --- 1. MASTER SCORE CALCULATION ---
   const reportData = useMemo(() => {
-    return Day5Scoring.consolidate(day1, day2, day3, day4, null);
-  }, [day1, day2, day3, day4]);
+    return Day5Scoring.consolidate(day1, day2, day3, day4, day5.promise);
+  }, [day1, day2, day3, day4, day5.promise]);
 
   // --- 2. SECTION 1: MOOD JOURNEY GRAPH VALUES ---
   const getDay4Tone = (text: string | null) => {
@@ -164,6 +164,16 @@ export const Day5ReportCard: React.FC = () => {
               </View>
             ))}
           </View>
+
+          {/* Connection Score Total display */}
+          <View style={styles.connectionScoreContainer}>
+            <Text style={styles.connectionScoreLabel}>Connection Score</Text>
+            <View style={styles.connectionScoreBadge}>
+              <Text style={styles.connectionScoreVal}>{reportData.connectionScore}</Text>
+              <Text style={styles.connectionScoreMax}>/100</Text>
+            </View>
+          </View>
+
           <View style={styles.insightBox}>
             <Text style={styles.insightText}>"{moodInsightLine}"</Text>
           </View>
@@ -372,7 +382,7 @@ export const Day5ReportCard: React.FC = () => {
             </LinearGradient>
             <Text style={styles.badgeName}>{reportData.badge.name}</Text>
             <View style={styles.tierPill}>
-              <Text style={styles.tierPillText}>{reportData.badgeTier.toUpperCase()} TIER</Text>
+               <Text style={styles.tierPillText}>{reportData.badgeTier.toUpperCase()} TIER</Text>
             </View>
             <Text style={styles.badgeDesc}>{reportData.badge.description}</Text>
             
@@ -382,6 +392,19 @@ export const Day5ReportCard: React.FC = () => {
                   <Text style={styles.traitText}>{tr}</Text>
                 </View>
               ))}
+            </View>
+
+            {/* Sub-scores Row */}
+            <View style={styles.subScoresContainer}>
+              <View style={styles.subScoreItem}>
+                <Text style={styles.subScoreLabel}>DEDICATION SCORE</Text>
+                <Text style={styles.subScoreVal}>{reportData.dedicationScore} <Text style={styles.subScoreMax}>/7</Text></Text>
+              </View>
+              <View style={styles.subScoreDivider} />
+              <View style={styles.subScoreItem}>
+                <Text style={styles.subScoreLabel}>PARTNER KNOWLEDGE</Text>
+                <Text style={styles.subScoreVal}>{reportData.partnerKnowledgeScore} <Text style={styles.subScoreMax}>/10</Text></Text>
+              </View>
             </View>
           </View>
         </View>
@@ -443,13 +466,22 @@ export const Day5ReportCard: React.FC = () => {
           </View>
         </View>
 
+        {/* Closing statement of the report card */}
+        <View style={styles.closingStatementContainer}>
+          <Text style={styles.closingStatementLabel}>YOUR PROMISE FOR THE RELATIONSHIP</Text>
+          <Text style={styles.closingStatementText}>
+            {day5.promise && day5.promise.trim() 
+              ? `"${day5.promise}"` 
+               : `"A new week begins tomorrow."`}
+          </Text>
+        </View>
       </ScrollView>
 
       <DayCTA 
-        title="Continue to the Promise" 
+        title="Reveal Memory Jar" 
         onPress={() => { 
           haptics.medium(); 
-          navigation.navigate('Day5ThePromise');
+          navigation.navigate('Day5JarReveal');
         }} 
       />
     </ScreenWrapper>
@@ -964,5 +996,96 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: 10,
     color: c.textSecondary,
     marginTop: 1,
+  },
+  connectionScoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(13, 148, 136, 0.05)',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(13, 148, 136, 0.1)',
+  },
+  connectionScoreLabel: {
+    fontSize: 15,
+    fontFamily: fonts.dmSansBold,
+    color: c.text,
+  },
+  connectionScoreBadge: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  connectionScoreVal: {
+    fontSize: 24,
+    fontFamily: fonts.dmSansBold,
+    color: c.primary,
+  },
+  connectionScoreMax: {
+    fontSize: 13,
+    fontFamily: fonts.dmSansMedium,
+    color: c.textHint,
+  },
+  subScoresContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.015)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 8,
+    width: '100%',
+    justifyContent: 'space-between',
+  },
+  subScoreItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  subScoreDivider: {
+    width: 1,
+    height: 30,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+  },
+  subScoreLabel: {
+    fontSize: 9,
+    fontFamily: fonts.dmSansBold,
+    color: c.textHint,
+    letterSpacing: 0.5,
+  },
+  subScoreVal: {
+    fontSize: 16,
+    fontFamily: fonts.dmSansBold,
+    color: c.text,
+  },
+  subScoreMax: {
+    fontSize: 11,
+    fontFamily: fonts.dmSansRegular,
+    color: c.textHint,
+  },
+  closingStatementContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    marginBottom: 20,
+  },
+  closingStatementLabel: {
+    fontSize: 9,
+    fontFamily: fonts.dmSansBold,
+    color: c.textHint,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  closingStatementText: {
+    fontSize: 16,
+    fontFamily: 'PlayfairDisplay-Italic',
+    fontStyle: 'italic',
+    color: c.primary,
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });
