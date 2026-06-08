@@ -8,7 +8,6 @@ import { useAppColors } from '../../theme';
 import { useDayStore } from '../../store/useDayStore';
 import { useUserStore } from '../../store/useUserStore';
 import { haptics } from '../../utils/haptics';
-import { DayEndJarModal } from '../../components/common/DayEndJarModal';
 import { GradientButton } from '../../components/common/GradientButton';
 import { ChevronLeft, Clock, Heart, CheckCircle2 } from 'lucide-react-native';
 
@@ -20,7 +19,6 @@ export const Day5PartnerInvite: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const setPartnerInviteSent = useDayStore((s) => s.setPartnerInviteSent);
   const userName = useUserStore((s) => s.name);
-  const [showJarModal, setShowJarModal] = useState(false);
   
   const [inviteCode, setInviteCode] = useState('');
   const [partnerCode, setPartnerCode] = useState('');
@@ -33,18 +31,12 @@ export const Day5PartnerInvite: React.FC = () => {
     const code = Math.floor(10000000 + Math.random() * 90000000).toString();
     setInviteCode(code);
 
-    // Show the final jar payoff on mount for Day 5
-    const timer = setTimeout(() => {
-      setShowJarModal(true);
-    }, 500);
-
     // Countdown timer
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 3540));
     }, 1000);
 
     return () => {
-      clearTimeout(timer);
       clearInterval(interval);
     };
   }, []);
@@ -153,6 +145,17 @@ export const Day5PartnerInvite: React.FC = () => {
                 style={{ marginTop: 8 }}
               />
             </View>
+
+            <TouchableOpacity
+              style={[styles.outlineBtn, { marginTop: 12, marginBottom: 16 }]}
+              onPress={() => {
+                haptics.light();
+                navigation.navigate('Home');
+              }}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.outlineBtnLabel}>Back to Home</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -186,12 +189,6 @@ export const Day5PartnerInvite: React.FC = () => {
           </View>
         </View>
       </Modal>
-
-      <DayEndJarModal 
-        visible={showJarModal}
-        currentDay={5}
-        onNext={() => setShowJarModal(false)}
-      />
     </ScreenWrapper>
   );
 };

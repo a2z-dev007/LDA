@@ -429,7 +429,8 @@ export const Day4MemoryJar: React.FC = () => {
                       <EnhanceAIButton
                         text={memoryText}
                         onEnhanced={setMemoryText}
-                        context="a beautiful romantic memory for a couple's memory jar"
+                        context="memory"
+                        question="a beautiful romantic memory for a couple's memory jar"
                         maxLength={300}
                         disabled={memoryText.trim().length < 5}
                       />

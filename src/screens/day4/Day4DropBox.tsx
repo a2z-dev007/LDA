@@ -321,7 +321,8 @@ export const Day4DropBox: React.FC = () => {
                       <EnhanceAIButton
                         text={rawText}
                         onEnhanced={setRawText}
-                        context="a thoughtful, honest, and kind way to express difficult feelings to a partner"
+                        context="frustration_reframe"
+                        question="a thoughtful, honest, and kind way to express difficult feelings to a partner"
                         maxLength={300}
                         disabled={rawText.trim().length < 5 || loading}
                       />

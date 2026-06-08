@@ -593,6 +593,7 @@ interface AmbientParticle {
 
 export interface CommonJarHandle {
   triggerEnvelope: (onComplete?: () => void) => void;
+  triggerTap: () => void;
 }
 
 interface CommonJarProps {
@@ -939,11 +940,7 @@ export const CommonJar = forwardRef<CommonJarHandle, CommonJarProps>(
       };
     }, [startBreathing]);
 
-    const handlePressJar = () => {
-      if (animatingRef.current) return;
-      haptics.light();
-      onPress?.();
-
+    const triggerTapAnimation = () => {
       cancelAnimation(glowOpacity);
       cancelAnimation(glowScale);
       cancelAnimation(lidTransY);
@@ -1026,6 +1023,13 @@ export const CommonJar = forwardRef<CommonJarHandle, CommonJarProps>(
           startBreathing();
         }
       }, 700);
+    };
+
+    const handlePressJar = () => {
+      if (animatingRef.current) return;
+      haptics.light();
+      onPress?.();
+      triggerTapAnimation();
     };
 
     useEffect(() => {
@@ -1299,6 +1303,9 @@ export const CommonJar = forwardRef<CommonJarHandle, CommonJarProps>(
         });
         cancelFlightRef.current = cancelPhase1;
       },
+      triggerTap: () => {
+        triggerTapAnimation();
+      },
     }));
 
     return (
@@ -1309,7 +1316,11 @@ export const CommonJar = forwardRef<CommonJarHandle, CommonJarProps>(
             {
               width: JAR_W * 0.75,
               bottom: responsiveHeight(1.5),
-              backgroundColor: colors.isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(124, 58, 237, 0.16)',
+              backgroundColor: colors.isDark 
+                ? 'rgba(0, 0, 0, 0.5)' 
+                : (c.glassStroke && c.glassStroke.startsWith('#') 
+                  ? `${c.glassStroke}22` 
+                  : 'rgba(245, 158, 11, 0.16)'),
             },
             shadowStyle,
           ]}
