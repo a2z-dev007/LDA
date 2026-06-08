@@ -169,7 +169,8 @@ export const Day3MoodBoard: React.FC = () => {
 
 const makeStyles = (c: any) => StyleSheet.create({
   scrollContent: {
-    paddingBottom: metrics.spacing.xl,
+    flexGrow: 1,
+    // paddingBottom: metrics.spacing.xl,
   },
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
@@ -284,6 +285,7 @@ const makeStyles = (c: any) => StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginTop: 'auto',
     marginBottom: metrics.spacing.lg,
   },
 });

@@ -18,7 +18,7 @@ import { useDayStore } from '../../store/useDayStore';
 import { useJournalStore } from '../../store/useJournalStore';
 import { haptics } from '../../utils/haptics';
 import { GradientButton } from '../../components/common/GradientButton';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 import { AIInput } from '../../components/common/AIInput';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4DailyTwo'>;
@@ -111,7 +111,7 @@ export const Day4DailyTwo: React.FC = () => {
           </View>
 
           <Text style={styles.hook}>Tomorrow is Day 5. Your final ritual. Make it count.</Text>
-          <View style={{ height: 120 }} />
+          <View style={{ height: responsiveHeight(15) }} />
         </ScrollView>
 
         {/* Custom bottom button row matching screenshot */}
@@ -128,7 +128,7 @@ export const Day4DailyTwo: React.FC = () => {
             text="Save to journal "
             onPress={handleDone}
             disabled={!canContinue}
-             gradientColors={colors.gradientBtn2}
+             gradientColors={colors.gradientBtn}
             
           />
           
@@ -233,7 +233,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: 12,
     fontFamily: fonts.dmSansRegular,
     textAlign: 'center',
-    marginTop: 20,
+    // marginTop: 20,
     marginBottom: 8,
     lineHeight: 18
   },

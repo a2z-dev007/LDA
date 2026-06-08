@@ -147,7 +147,7 @@ export const Day3MirrorResults: React.FC = () => {
   return (
     <ScreenWrapper>
       {/* Animated Jar — positioned absolutely at the top right */}
-      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: 48 }]}>
+      <Animated.View style={[styles.jarWrapper, { opacity: headerAnim, top: 30 }]}>
         <JarEnvelopeAnimation ref={jarRef} initialCount={initialJarCount} />
       </Animated.View>
 

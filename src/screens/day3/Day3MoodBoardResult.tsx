@@ -185,7 +185,7 @@ export const Day3MoodBoardResult: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scrollContent: {
-    paddingBottom: metrics.spacing.xl,
+    flexGrow: 1,
     position: 'relative',
   },
   jarWrapper: {
@@ -353,5 +353,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginTop: 'auto',
+    marginBottom: metrics.spacing.lg,
   },
 });

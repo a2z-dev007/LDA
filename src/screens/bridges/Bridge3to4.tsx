@@ -494,7 +494,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     right: 0,
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    // backgroundColor: 'rgba(255,255,255,0.85)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.5)',
   },

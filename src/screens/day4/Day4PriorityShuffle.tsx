@@ -165,13 +165,13 @@ export const Day4PriorityShuffle: React.FC = () => {
           <View style={styles.eyebrowRow}>
              <DayHeader eyebrow="Day 4 · Priority Shuffle" />
             {/* Intention Pill */}
-            <View style={[styles.intentionPill, { backgroundColor: config.bg, borderColor: config.color }]}>
+           
+          </View>
+           <View style={[styles.intentionPill, { backgroundColor: config.bg, borderColor: config.color }]}>
               <Text style={[styles.intentionText, { color: config.textColor }]}>
                 Intention: {config.label}
               </Text>
             </View>
-          </View>
-          
           <Text style={styles.title}>
             5 cards. Tap your top 3 — in order of what you need most right now.
           </Text>
@@ -336,8 +336,8 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    gap: metrics.spacing.sm,
-    marginBottom: metrics.spacing.smMd,
+    // gap: metrics.spacing.sm,
+    // marginBottom: metrics.spacing.smMd,
   },
   eyebrowPill: {
     flexDirection: 'row',
@@ -361,6 +361,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingVertical: metrics.spacing.xs,
     borderWidth: 1,
     alignSelf: 'flex-start',
+    marginBottom: metrics.spacing.md,
   },
   intentionText: {
     fontSize: metrics.fontSize.micro,
@@ -377,7 +378,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     fontSize: 13,
     color: c.textHint || '#9CA3AF',
     fontFamily: fonts.dmSansMedium,
-    marginBottom: metrics.spacing.md,
+    marginBottom: metrics.spacing.sm,
   },
   metaRow: {
     flexDirection: 'row',

@@ -180,7 +180,7 @@ export const Day3Complete: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scrollContent: {
-    paddingBottom: metrics.spacing.xl * 2,
+    flexGrow: 1,
   },
   heroSection: {
     alignItems: 'center',
@@ -324,5 +324,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginTop: 'auto',
+    marginBottom: metrics.spacing.lg,
   },
 });

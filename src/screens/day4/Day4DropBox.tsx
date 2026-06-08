@@ -69,6 +69,7 @@ export const Day4DropBox: React.FC = () => {
 
   // Tab indicator sliding animation
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     Animated.spring(slideAnim, {
@@ -124,6 +125,9 @@ export const Day4DropBox: React.FC = () => {
     haptics.light();
     setSealType(type);
     setRawText(''); // clear input on type switch
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   const handlePresetTap = (text: string) => {
@@ -174,6 +178,7 @@ export const Day4DropBox: React.FC = () => {
         <ProgressStrip currentDay={4} />
         
         <ScrollView 
+          ref={scrollRef}
           style={styles.scroll} 
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
@@ -249,9 +254,18 @@ export const Day4DropBox: React.FC = () => {
               </View>
 
               {/* Presets and Custom Input Section */}
-              {sealType && (
-                <View style={styles.presetsInputSection}>
-                  <Text style={styles.sectionHeader}>TAP A PRESET OR TYPE YOUR OWN</Text>
+              {sealType && (() => {
+                const activeOption = sealOptions.find(opt => opt.id === sealType);
+                return (
+                  <View style={[
+                    styles.presetsInputSection,
+                    activeOption && {
+                      borderColor: activeOption.color,
+                      borderWidth: 1.5,
+                      backgroundColor: activeOption.bgColor,
+                    }
+                  ]}>
+                    <Text style={[styles.sectionHeader, activeOption && { color: activeOption.color }]}>TAP A PRESET OR TYPE YOUR OWN</Text>
                   
                   <View style={styles.presetsGrid}>
                     {PRESETS[sealType].map((preset, idx) => (
@@ -278,7 +292,8 @@ export const Day4DropBox: React.FC = () => {
                   />
                   <Text style={styles.charLimitText}>{rawText.length}/200 chars</Text>
                 </View>
-              )}
+                );
+              })()}
             </View>
           ) : (
             /* DROP BOX TAB */
@@ -332,7 +347,7 @@ export const Day4DropBox: React.FC = () => {
              
 
               <GradientButton
-                text="Seal & drop 🧡"
+                text="Seal & drop 🩷 "
                 onPress={handleSeal}
                 disabled={!isLoveDropReady}
                 fullWidth

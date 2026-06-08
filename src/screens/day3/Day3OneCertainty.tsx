@@ -148,7 +148,8 @@ export const Day3OneCertainty: React.FC = () => {
 
 const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   scrollContent: {
-    paddingBottom: metrics.spacing.xl * 2,
+    flexGrow: 1,
+ 
   },
   header: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
@@ -251,5 +252,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: metrics.layout.screenPaddingHz,
+    marginTop: 'auto',
+    marginBottom: metrics.spacing.lg,
   },
 });
