@@ -153,7 +153,7 @@ export const Day5Celebration: React.FC = () => {
 
       <Animated.View style={{ opacity: buttonOpacity }}>
         <DayCTA 
-          title="See your full report" 
+          title="See Your 5-Day Story" 
           onPress={() => { 
             haptics.medium(); 
             navigation.navigate('Day5ReportCard');

@@ -11,6 +11,7 @@ import { RootStackParamList } from '../../navigation/types';
 import { ProgressStrip } from '../../components/common/ProgressStrip';
 import { ScreenWrapper } from '../../components/common/ScreenWrapper';
 import { GradientButton } from '../../components/common/GradientButton';
+import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
 import { useAppColors } from '../../theme';
 import { useDayStore } from '../../store/useDayStore';
 import { useStreakStore } from '../../store/useStreakStore';
@@ -304,18 +305,29 @@ export const Day4DropBox: React.FC = () => {
               {!reframed ? (
                 /* Raw Input State */
                 <View style={styles.reframeInputSection}>
-                  <TextInput
-                    style={styles.rawTextInput}
-                    placeholder="Type anything..."
-                    placeholderTextColor={colors.textHint}
-                    value={rawText}
-                    onChangeText={setRawText}
-                    multiline
-                    maxLength={300}
-                    textAlignVertical="top"
-                    editable={!loading}
-                  />
-                  <Text style={styles.charCountText}>{rawText.length} chars</Text>
+                  <View style={{ position: 'relative' }}>
+                    <TextInput
+                      style={styles.rawTextInput}
+                      placeholder="Type anything..."
+                      placeholderTextColor={colors.textHint}
+                      value={rawText}
+                      onChangeText={setRawText}
+                      multiline
+                      maxLength={300}
+                      textAlignVertical="top"
+                      editable={!loading}
+                    />
+                    <View style={styles.bottomActionRow}>
+                      <EnhanceAIButton
+                        text={rawText}
+                        onEnhanced={setRawText}
+                        context="a thoughtful, honest, and kind way to express difficult feelings to a partner"
+                        maxLength={300}
+                        disabled={rawText.trim().length < 5 || loading}
+                      />
+                      <Text style={styles.charCountText}>{rawText.length}/300 ✦</Text>
+                    </View>
+                  </View>
                 </View>
               ) : (
                 /* Reframed Result State */
@@ -600,21 +612,31 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(0,0,0,0.06)',
     padding: 16,
+    paddingBottom: 48,
     minHeight: 150,
     color: c.text,
     fontFamily: fonts.dmSansRegular,
     fontSize: 15,
   },
   charCountText: {
-    fontSize: 11,
+    fontSize: 10,
     color: c.textHint,
-    textAlign: 'right',
-    marginTop: -8,
+    fontFamily: fonts.dmSansMedium,
+    marginBottom: 4,
+  },
+  bottomActionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    right: 12,
   },
   reframeBtn: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
-    borderColor: '#D97706',
+    borderColor: '#0D9488',
     borderRadius: 100,
     paddingVertical: 14,
     alignItems: 'center',
@@ -627,7 +649,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   reframeBtnText: {
     fontSize: 14,
     fontFamily: fonts.dmSansBold,
-    color: '#D97706',
+    color: '#0D9488',
   },
 
   // ── Reframe Result ────────────────────────────────────────

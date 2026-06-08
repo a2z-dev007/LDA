@@ -27,6 +27,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { CommonJar, CommonJarHandle } from '../../components/common/CommonJar';
 import { CustomBottomSheet } from '../../components/common/CustomBottomSheet';
 import { GradientButton } from '../../components/common/GradientButton';
+import { EnhanceAIButton } from '../../components/common/EnhanceAIButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Day4MemoryJar'>;
 
@@ -424,7 +425,16 @@ export const Day4MemoryJar: React.FC = () => {
                       maxLength={300}
                       textAlignVertical="top"
                     />
-                    <Text style={styles.charCount}>{memoryText.length}/300</Text>
+                    <View style={styles.bottomActionRow}>
+                      <EnhanceAIButton
+                        text={memoryText}
+                        onEnhanced={setMemoryText}
+                        context="a beautiful romantic memory for a couple's memory jar"
+                        maxLength={300}
+                        disabled={memoryText.trim().length < 5}
+                      />
+                      <Text style={styles.charCount}>{memoryText.length}/300 ✦</Text>
+                    </View>
                   </View>
                 )}
 
@@ -911,12 +921,19 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     padding: 2,
   },
   charCount: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
     fontSize: 10,
     color: c.textHint,
     fontFamily: fonts.dmSansMedium,
+    marginBottom: 4,
+  },
+  bottomActionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   photoContainer: {
     flex: 1,

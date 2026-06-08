@@ -156,9 +156,9 @@ export const Bridge4to5: React.FC = () => {
             <BridgeIcon color="#0D9488" size={16} />
             <Text style={styles.headerPillText}>Day 4 → Day 5 Bridge</Text>
           </View> */}
-                  <View style={styles.eyebrowPill}>
-                    <Text style={styles.eyebrowText}>Day 3 → Day 4 Bridge</Text>
-                  </View>
+          <View style={styles.eyebrowPill}>
+            <Text style={styles.eyebrowText}>Day 4 → Day 5 Bridge</Text>
+          </View>
           {/* <View style={styles.menuButton}>
             <Menu size={18} color="#6B7280" />
           </View> */}
