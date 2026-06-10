@@ -116,55 +116,56 @@ function getJarColors(colors: ReturnType<typeof useAppColors>) {
   const isDark = colors.isDark;
 
   return {
-    // Glass
+    // Glass (beautiful glowing purple/violet container matching the reference design)
     glassStroke: isDark
-      ? 'rgba(196, 181, 253, 0.9)'
-      : 'rgba(139, 92, 246, 0.7)',
+      ? 'rgba(168, 85, 247, 0.95)' // glowing purple
+      : 'rgba(139, 92, 246, 0.78)', // elegant violet
 
-    glassShine: 'rgba(255,255,255,0.95)',
+    glassShine: 'rgba(255, 255, 255, 0.95)',
 
     glassShadow: isDark
-      ? 'rgba(91, 33, 182, 0.45)'
-      : 'rgba(124, 58, 237, 0.18)',
+      ? 'rgba(124, 58, 237, 0.45)'
+      : 'rgba(124, 58, 237, 0.2)',
 
     glassInsideBgStart: isDark
       ? 'rgba(139, 92, 246, 0.18)'
-      : 'rgba(255,255,255,0.9)',
+      : 'rgba(255, 255, 255, 0.92)',
 
     glassInsideBgEnd: isDark
       ? 'rgba(76, 29, 149, 0.08)'
-      : 'rgba(243,232,255,0.6)',
+      : 'rgba(243, 232, 255, 0.65)',
 
-    // Lid
-    lidTop: '#E9D5FF',
-    lidBot: '#8B5CF6',
-    lidRim: '#6D28D9',
-    lidKnob: '#F5F3FF',
-    lidAccent: '#C084FC',
+    // Lid (luxury metallic gold cap matching the magical jar concept)
+    lidTop: '#FEF3C7',     // soft warm gold
+    lidBot: '#F59E0B',     // rich amber gold
+    lidRim: '#D97706',     // burnished bronze gold
+    lidKnob: '#FEF3C7',    // gold knob
+    lidAccent: '#FBBF24',  // shimmering gold highlight
 
     // Paper
-    paperBase: '#FFF7FF',
-    paperShadow: '#F3E8FF',
-    paperLine: '#D8B4FE',
+    paperBase: '#FFFFFF',
+    paperShadow: 'rgba(139, 92, 246, 0.15)',
+    paperLine: 'rgba(139, 92, 246, 0.4)',
 
     // Hearts
-    heartPrimary: '#FB7185',
-    heartDeep: '#EC4899',
+    heartPrimary: '#FF6B8B',
+    heartDeep: '#FD4B72',
 
-    // Sparkles
-    sparkPrimary: '#C084FC',
-    sparkSecondary: '#A78BFA',
-    sparkAccent: '#F0ABFC',
-    sparkWhite: '#FFFFFF',
-    sparkGlow: '#E9D5FF',
+    // Sparkles (warm gold and diamond white magical glints matching the inner glow of the jar)
+    sparkPrimary: '#FBBF24',      // shimmering gold
+    sparkSecondary: '#F59E0B',    // warm amber gold
+    sparkAccent: '#FEF3C7',       // white gold
+    sparkWhite: '#FFFFFF',        // diamond white shine
+    sparkGlow: '#FCD34D',         // golden aura
 
-    // Glow
+    // Glow Aura (glowing warm golden aura when lid lifts)
     glow: isDark
-      ? 'rgba(168,85,247,0.35)'
-      : 'rgba(168,85,247,0.22)',
+      ? 'rgba(245, 158, 11, 0.38)'
+      : 'rgba(245, 158, 11, 0.26)',
 
-    badge: '#A855F7',
-    badgeShadow: 'rgba(168,85,247,0.5)',
+    // Badge (luxury gold badge with rich warm shadow)
+    badge: '#F59E0B',
+    badgeShadow: 'rgba(245, 158, 11, 0.55)',
   };
 }
 
