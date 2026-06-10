@@ -143,13 +143,13 @@ function getJarColors(colors: ReturnType<typeof useAppColors>) {
     lidAccent: '#FBBF24',  // shimmering gold highlight
 
     // Paper
-    paperBase: '#FFFFFF',
-    paperShadow: 'rgba(139, 92, 246, 0.15)',
-    paperLine: 'rgba(139, 92, 246, 0.4)',
+    paperBase: '#FFF7FF',
+    paperShadow: '#F3E8FF',
+    paperLine: '#D8B4FE',
 
     // Hearts
-    heartPrimary: '#FF6B8B',
-    heartDeep: '#FD4B72',
+    heartPrimary: '#FB7185',
+    heartDeep: '#EC4899',
 
     // Sparkles (warm gold and diamond white magical glints matching the inner glow of the jar)
     sparkPrimary: '#FBBF24',      // shimmering gold
