@@ -65,7 +65,7 @@ export const fontSize = {
   /** Labels, tags, badges */
   label: responsiveFontSize(1.7),
   /** Captions, hints, timestamps */
-  caption: responsiveFontSize(1.4),
+  caption: responsiveFontSize(1.6),
   /** Tiny overline / micro text */
   micro: responsiveFontSize(1.2),
 };

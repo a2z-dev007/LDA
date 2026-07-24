@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Calibri, Arial, sans-serif; background: #fff; padding: 24px; font-size: 13px; color: #1A1A1A; }
+
+.sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sheet-sub { font-size: 12px; color: #666; margin-bottom: 16px; }
+.btn-row { margin-bottom: 14px; }
+.btn { background: #217346; color: white; padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #1a5c38; }
+
+table { width: 100%; border-collapse: collapse; border: 1.5px solid #B0B0B0; }
+
+thead tr th {
+  background: #1F6B3A;
+  color: white;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border: 1px solid #166030;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Bridge header */
+.bridge-row td {
+  background: #E2E2E2;
+  font-weight: 700;
+  font-size: 12px;
+  color: #444;
+  padding: 7px 11px;
+  border: 1px solid #B0B0B0;
+  letter-spacing: .02em;
+}
+
+/* Activity group header */
+.group-row td {
+  background: #D6E4F0;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #1A1A1A;
+  padding: 8px 11px;
+  border: 1px solid #B0B0B0;
+}
+
+/* Data rows */
+.data-row td {
+  padding: 7px 11px;
+  border: 1px solid #D0D0D0;
+  vertical-align: top;
+  line-height: 1.55;
+  font-size: 12px;
+}
+.data-row:nth-child(odd) td { background: #FFFFFF; }
+.data-row:nth-child(even) td { background: #F5F9F6; }
+.data-row:hover td { background: #EBF5FF; }
+
+.type-score   { color: #1F6B3A; font-weight: 700; }
+.type-display { color: #1F4E79; font-weight: 700; }
+.type-exp     { color: #7B2D8B; font-weight: 700; }
+.type-route   { color: #833C00; font-weight: 700; }
+
+.pts { font-weight: 700; color: #1F6B3A; }
+.none { color: #999; font-style: italic; }
+
+.axis { font-weight: 700; }
+.a { color: #1F6B3A; }
+.b { color: #1F4E79; }
+.c { color: #833C00; }
+.ded { color: #6B3291; }
+
+@media print {
+  .btn-row { display: none; }
+  body { padding: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet-title">LDA — Day 2: The Mood Room</div>
+<div class="sheet-sub">Bridge 1→2 + Day 2 Activities · What scores · What it feeds on Day 5 · How it calculates · Plain explanation</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:13%">Activity</th>
+      <th style="width:9%">Activity Type</th>
+      <th style="width:13%">Linked to Day 5</th>
+      <th style="width:13%">Day 5 Section Name</th>
+      <th style="width:10%">Score / Points</th>
+      <th style="width:16%">How the Score Works</th>
+      <th style="width:22%">What This Means (Plain English)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- BRIDGE SECTION HEADER -->
+    <tr class="bridge-row">
+      <td colspan="8">BRIDGE 1→2 &nbsp;—&nbsp; Activities the user completes before Day 2 begins. These happen on re-entry after Day 1 is done.</td>
+    </tr>
+
+    <!-- B1 Activity 1 — Return Greeting -->
+    <tr class="group-row">
+      <td>B1</td>
+      <td colspan="7">Return Greeting + Streak Ring &nbsp;—&nbsp; "Welcome back." Streak ring shows Day 2. Day 1 recap card with personality type shown.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Return Greeting + Streak Ring</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 link</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>Nothing stored. No calculation.</td>
+      <td>A purely motivational screen. Displays the Day 1 personality type as a recap. Its job is to remind the user what they built yesterday and bring them back into the experience with warmth.</td>
+    </tr>
+
+    <!-- B1 Activity 2 — Intention Word -->
+    <tr class="group-row">
+      <td>B2</td>
+      <td colspan="7">Intention Word Selector &nbsp;—&nbsp; "One word you want to bring into your relationship today." 8 options: Patient · Present · Honest · Warm · Playful · Open · Gentle · Brave. Tap = instant select.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Intention Word Selector</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 2 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Word is stored and pulled into display. No calculation.</td>
+      <td>The selected word appears as a pill on the Day 2 card in the Week in Moments timeline on Day 5. It also appears in the Bridge 2→3 recap the following day. No score contribution — its purpose is emotional intention-setting before the Day 2 mood check-in.</td>
+    </tr>
+
+    <!-- B1 Activity 3 — This or That -->
+    <tr class="group-row">
+      <td>B3</td>
+      <td colspan="7">This or That: Us Edition — Game 06 (NEW) &nbsp;—&nbsp; 3 rounds. Each round: two illustrated scenario cards (e.g. Beach vs Trek). User picks theirs, then predicts their partner's. Partner side sealed until they join.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>This or That (G06)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>2 or more adventure/active picks across 3 rounds = Active +1. 2 or more comfort/home picks = Expressive +1.</td>
+      <td>The type of scenario the user picks across the 3 rounds hints at how they show love — through action and energy (Active) or through comfort and closeness (Expressive).</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>This or That (G06)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Predictions match own picks 2 or more times = Protecting +1. All 3 predictions are different from own picks = Building +1.</td>
+      <td>If the user expects their partner to pick the same things as themselves, it signals they see the relationship as a shared identity (Protecting). If they expect differences, it signals they see their partner as distinct and are comfortable with that (Building).</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>This or That (G06)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Couple Mode Unlock</td>
+      <td>Section 8 — Couple Mode</td>
+      <td><span class="none">No score</span></td>
+      <td>User's picks shown. Partner's side shown as sealed/locked. No calculation.</td>
+      <td>On Day 5, the user sees their 3 picks with the partner's side still locked — "3 rounds waiting." When the partner joins and completes this activity, both sides merge and a Couple Card is generated showing what each person picked and where they matched.</td>
+    </tr>
+
+
+    <!-- DAY 2 SECTION HEADER -->
+    <tr class="bridge-row">
+      <td colspan="8">DAY 2 MAIN ACTIVITIES &nbsp;—&nbsp; The Mood Room. Theme: Calm &amp; Warm. Purpose: Emotional check-in · Deepen Day 1 reflection · Build private journal.</td>
+    </tr>
+
+    <!-- Activity 1 — Candle Mood -->
+    <tr class="group-row">
+      <td>1</td>
+      <td colspan="7">The Candle Mood Screen &nbsp;—&nbsp; A candle animates for 3 seconds, then 8 mood options appear: Distant · Connected · Grateful · Frustrated · Playful · Missed · Overwhelmed · Loved. Tap one. Candle flame changes. Auto-advances.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score</td>
+      <td>Section 1 — Mood Journey Chart (D2 bar)</td>
+      <td><span class="pts">Max 10 pts</span></td>
+      <td>Connected / Loved / Playful = 9 (full score). Grateful / Missed = 6. Overwhelmed / Frustrated / Distant = 3. Normalised: 9→10 pts · 6→6 pts · 3→3 pts.</td>
+      <td>The mood selected becomes the Day 2 bar on the Mood Journey chart. Warmer moods contribute more to the Connection Score. Even heavy moods contribute something — the user is rewarded for being honest.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Playful or Connected = Active +1.</td>
+      <td>A playful or connected mood suggests someone who engages with their relationship energetically and outwardly — a signal that they lean Active in how they express love.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Loved / Grateful / Missed = Deep +1. Connected / Playful = Present +1.</td>
+      <td>Moods like Loved, Grateful, or Missed suggest someone focused on deep, accumulated feeling. Moods like Connected or Playful suggest someone more focused on what is happening right now.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Grateful / Loved = Protecting +1. Frustrated / Distant / Overwhelmed = Building +1.</td>
+      <td>Feeling grateful or loved suggests the user is in a good emotional place and wants to protect that. Feeling frustrated or distant suggests the relationship needs work — a Building signal.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-route">Routes Day 2 Content</span></td>
+      <td>Follow-Up Question Track</td>
+      <td>Day 2 — Follow-Up Question (same day)</td>
+      <td><span class="none">No score</span></td>
+      <td>Mood = Happiness track → one set of questions. Mood = Sadness track → another set. Mood = Frustrated → specific question based on Day 1 Quiz Q2 answer.</td>
+      <td>The mood selected here immediately determines which follow-up question the user sees on the very next screen. Frustrated users get a question personalised further by their Day 1 quiz answer — the Day 1 → Day 2 connection in action.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Candle Mood</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Emotional Weather + Week Timeline</td>
+      <td>Section 2 — Emotional Weather · Section 5 — Week in Moments</td>
+      <td><span class="none">No score</span></td>
+      <td>Mood icon shown in report. No calculation.</td>
+      <td>The Day 2 mood icon appears as the second of three emotional snapshots in the Emotional Weather section. It also shows on the Day 2 card in the Week in Moments timeline.</td>
+    </tr>
+
+    <!-- Activity 2 — One Good Thing -->
+    <tr class="group-row">
+      <td>2</td>
+      <td colspan="7">One Good Thing &nbsp;—&nbsp; "Name one thing about your partner that made you feel something good recently. It can be tiny." Short open text (10–80 characters). Card flies into the journal on save. Optional.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>One Good Thing</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">Partial signal</span></td>
+      <td>Response is 40 or more characters = Expressive signal (partial contribution toward Axis A).</td>
+      <td>A generous, considered response (40+ characters) suggests the user is emotionally expressive and willing to put feeling into words — a signal toward the Expressive side of Axis A.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>One Good Thing</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline + Bridge 2→3 recap</td>
+      <td>Section 5 — Week in Moments (Day 2 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words shown. No calculation.</td>
+      <td>The user's exact words appear on the Day 2 card in the Week in Moments timeline on Day 5. The same words also appear the very next day in the Bridge 2→3 recap — "He made chai without asking. That's the whole thing really." — creating a feeling that the app is listening.</td>
+    </tr>
+
+    <!-- Activity 3 — Follow-Up Question -->
+    <tr class="group-row">
+      <td>3</td>
+      <td colspan="7">The Follow-Up Question &nbsp;—&nbsp; One open-text question. Adapts based on mood selected + Day 1 Quiz Q2 answer (for Frustrated track). Privacy note visible. Optional.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Follow-Up Question</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+1 Dedication pt</span></td>
+      <td>Day 2 complete (mood answered + follow-up answered, not skipped) = +1 Dedication point.</td>
+      <td>Finishing Day 2 properly earns 1 Dedication point. Dedication drives up to 30 of 100 Connection Score points and determines badge tier (gold, standard, emerging).</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Follow-Up Question</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts</span></td>
+      <td>Response is 60 or more characters = Expressive +2. This is the highest character-count signal in the entire 5-day app.</td>
+      <td>A long, considered response to this question is the single strongest Expressive signal in the whole flow. Someone who writes 60+ characters here is clearly comfortable expressing themselves in words — a defining Expressive trait.</td>
+    </tr>
+    <tr class="data-row">
+      <td></td>
+      <td>Follow-Up Question</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 2 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words shown. No calculation. If skipped, only the mood name shows — no personal quote.</td>
+      <td>The user's answer appears on the Day 2 card in the Week in Moments timeline. If they skipped this question, the card shows only the mood name with no personal quote — a gentle incentive to answer.</td>
+    </tr>
+
+
+    <!-- SUMMARY -->
+    <tr>
+      <td colspan="8" style="background:#E2EFDA;padding:10px 11px;border:1px solid #B0B0B0;font-size:12px">
+        <strong>Day 2 Summary:</strong> &nbsp;
+        5 Scoring activities &nbsp;|&nbsp;
+        1 Experience-only activity &nbsp;|&nbsp;
+        <strong style="color:#1F6B3A">Up to 22 Connection Score points available in Day 2</strong> &nbsp;|&nbsp;
+        Mood routes same-day content (follow-up question) &nbsp;|&nbsp;
+        3 Day 5 report sections fed &nbsp;|&nbsp;
+        Game 06 (This or That) sealed — reveals when partner joins
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

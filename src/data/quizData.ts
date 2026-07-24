@@ -124,7 +124,7 @@ export const moodOptions: MoodOption[] = [
     color: '#F0A057',
     moodScore: 9,
     candleVariant: 'tall_gold',
-    followUpQuestion: 'What made you feel connected today? Even one small thing.',
+    followUpQuestion: "What is it about how they show up for you lately that's made you feel most seen?",
     axisSignals: ['present', 'building'],
   },
   {
@@ -140,8 +140,8 @@ export const moodOptions: MoodOption[] = [
   {
     id: 'loved',
     label: 'Loved',
-    emoji: '💛',
-    color: '#D4A843',
+    emoji: '❤️',
+    color: '#E85C7A',
     moodScore: 8,
     candleVariant: 'steady_amber',
     followUpQuestion: 'When did you last feel this loved? What was happening?',
@@ -151,7 +151,7 @@ export const moodOptions: MoodOption[] = [
     id: 'playful',
     label: 'Playful',
     emoji: '✨',
-    color: '#E85C7A',
+    color: '#D4A843',
     moodScore: 7,
     candleVariant: 'flicker',
     followUpQuestion: 'What would a playful evening with them look like right now?',
@@ -191,7 +191,7 @@ export const moodOptions: MoodOption[] = [
     id: 'missed',
     label: 'Missing Them',
     emoji: '🌙',
-    color: '#9B8EC4',
+    color: '#D4A843',
     moodScore: 5,
     candleVariant: 'warm_small',
     followUpQuestion: 'What do you miss most about them right now?',
@@ -292,18 +292,20 @@ export const bridgeQuotes: Record<string, string> = {
 export interface IntentionWord {
   word: string;
   subtext: string;
+  emoji: string;
 }
 
 export const intentionWords: IntentionWord[] = [
-  { word: 'Present', subtext: 'I will be here, fully.' },
-  { word: 'Gentle', subtext: 'I will soften where I can.' },
-  { word: 'Curious', subtext: 'I will ask before assuming.' },
-  { word: 'Open', subtext: 'I will let them in.' },
-  { word: 'Patient', subtext: 'I will wait for the right moment.' },
-  { word: 'Brave', subtext: 'I will say the hard thing.' },
-  { word: 'Grateful', subtext: 'I will notice what I have.' },
-  { word: 'Playful', subtext: 'I will not take this too seriously.' },
+  { word: 'Patient', subtext: 'I will wait for the right moment.', emoji: '🕰' },
+  { word: 'Present', subtext: 'I will be here, fully.', emoji: '🌿' },
+  { word: 'Honest', subtext: 'I will tell the hard truth.', emoji: '🔦' },
+  { word: 'Warm', subtext: 'I will give or receive tenderness.', emoji: '🧡' },
+  { word: 'Playful', subtext: 'I will bring lightness back.', emoji: '🎈' },
+  { word: 'Open', subtext: 'I will be more vulnerable.', emoji: '🚪' },
+  { word: 'Gentle', subtext: 'I will soften where I can.', emoji: '🌸' },
+  { word: 'Brave', subtext: 'I will face hard things together.', emoji: '🦁' },
 ];
+
 
 // ─────────────────────────────────────────────────────────────
 // Badges — 8 badges with axis keys, descriptions, trait pills

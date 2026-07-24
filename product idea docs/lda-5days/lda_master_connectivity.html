@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#F4F8F6;color:#1A2E2A;font-size:13px;line-height:1.6}
+.wrap{max-width:1060px;margin:0 auto;padding:24px 20px 60px}
+
+/* Header */
+.doc-hd{background:#1A2E2A;color:white;padding:28px 36px 24px;border-radius:14px;margin-bottom:28px}
+.doc-hd h1{font-size:19px;font-weight:700;margin-bottom:6px}
+.doc-hd p{font-size:12.5px;color:#7DBEAA;line-height:1.6}
+
+/* TOC */
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.toc a{font-size:11px;font-weight:600;padding:5px 13px;border-radius:100px;text-decoration:none;background:white;border:.5px solid #D8EDE6;color:#4A7067}
+.toc a:hover{background:#1A2E2A;color:white}
+
+/* Section shell */
+.sec-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:14px 20px;border-radius:10px 10px 0 0;margin-top:32px}
+.sec-hd h2{font-size:15px;font-weight:700;color:white}
+.sec-hd .badge{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,.15);color:white}
+.sec-body{background:white;border-radius:0 0 12px 12px;border:.5px solid #D8EDE6;border-top:none;overflow:hidden}
+
+/* Activity cards */
+.act{border-bottom:.5px solid #EEF3F1;padding:16px 20px;display:grid;grid-template-columns:180px 90px 1fr;gap:16px;align-items:start}
+.act:last-child{border-bottom:none}
+.act:hover{background:#FAFCFB}
+.act-name{font-size:13px;font-weight:700;color:#1A2E2A;line-height:1.4;margin-bottom:3px}
+.act-sub{font-size:11px;color:#8AADA6;line-height:1.45}
+
+/* Type badges */
+.type-wrap{display:flex;flex-direction:column;gap:5px;padding-top:2px}
+.tbadge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.t-score{background:#E8F7F2;color:#1D6B4A}
+.t-disp{background:#E6F1FB;color:#2A5FA0}
+.t-exp{background:#F5F0FF;color:#5A3AAA}
+.t-new{background:#FFE8E8;color:#C0292D;border:1px solid #FFBCBC}
+.t-upd{background:#FFF3CD;color:#7A5500}
+
+/* Connection block */
+.conn-block{display:flex;flex-direction:column;gap:8px}
+.conn-row{display:flex;gap:10px;align-items:flex-start}
+.conn-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.conn-text{font-size:12.5px;color:#1A2E2A;line-height:1.55}
+.conn-text strong{color:#1A2E2A}
+.conn-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:100px;flex-shrink:0;margin-top:3px}
+
+/* Callout boxes */
+.note{background:#FFFBEA;border:1px solid #E8C840;border-radius:8px;padding:10px 14px;font-size:12px;color:#705C00;line-height:1.55;margin-top:10px}
+.insight{background:#F0F7F4;border-radius:8px;padding:10px 14px;font-size:12px;color:#2A5040;line-height:1.55;margin-top:8px;border-left:3px solid #1D9E75}
+
+/* Score summary cards */
+.score-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 20px}
+.ss-card{border-radius:10px;padding:14px 15px}
+.ss-card h4{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.ss-card p{font-size:12px;line-height:1.6}
+.ss-card .src{font-size:11px;font-weight:600;margin-top:6px;padding:4px 9px;border-radius:6px;display:inline-block}
+
+/* Day 5 report sections */
+.rpt-card{background:white;border-radius:10px;padding:15px 18px;border-left:4px solid;margin-bottom:10px}
+.rpt-card h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.rpt-card .rpt-sub{font-size:12px;color:#4A7067;line-height:1.55;margin-bottom:10px}
+.rpt-feeds{display:flex;flex-wrap:wrap;gap:6px}
+.rfeed{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:600}
+
+/* Segment flow */
+.seg-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:#D8EDE6;border-radius:10px;overflow:hidden;margin:16px 0}
+.seg-cell{background:white;padding:13px 11px}
+.seg-cell .s-day{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.seg-cell .s-what{font-size:12.5px;font-weight:700;color:#1A2E2A;margin-bottom:4px;line-height:1.3}
+.seg-cell .s-how{font-size:11px;color:#4A7067;line-height:1.45}
+
+/* Chain connector */
+.chain{display:flex;align-items:flex-start;gap:0;margin:12px 0;flex-wrap:wrap}
+.chain-step{background:white;border:.5px solid #D8EDE6;border-radius:8px;padding:10px 13px;flex:1;min-width:140px}
+.chain-step h5{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.chain-step p{font-size:11.5px;color:#4A7067;line-height:1.5}
+.chain-arrow{font-size:18px;color:#D8EDE6;padding:18px 8px;flex-shrink:0;align-self:center}
+
+/* Summary table */
+table{width:100%;border-collapse:collapse}
+th{background:#F2F8F5;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#4A7067;padding:10px 14px;text-align:left;border-bottom:1px solid #D8EDE6}
+td{padding:10px 14px;border-bottom:.5px solid #EEF3F1;vertical-align:top;line-height:1.55;font-size:12.5px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFCFB}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="doc-hd">
+  <h1>LDA — 5-Day Activity, Scoring & Connectivity Map</h1>
+  <p>Founder reference · Every activity across all 5 days · What scores, what doesn't · How each moment connects forward to the Day 5 report · No technical data — pure flow logic.</p>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <a href="#howtoread">How to Read</a>
+  <a href="#day1">Day 1</a>
+  <a href="#b12">Bridge 1→2</a>
+  <a href="#day2">Day 2</a>
+  <a href="#b23">Bridge 2→3</a>
+  <a href="#day3">Day 3</a>
+  <a href="#b34">Bridge 3→4</a>
+  <a href="#day4">Day 4</a>
+  <a href="#b45">Bridge 4→5</a>
+  <a href="#day5">Day 5 Activities</a>
+  <a href="#scoring">What Day 5 Scores</a>
+  <a href="#report">Report — 8 Sections</a>
+  <a href="#segment">Segment Journey</a>
+  <a href="#gaps">Gaps & Additions</a>
+</div>
+
+<!-- HOW TO READ -->
+<div id="howtoread">
+  <div class="sec-hd" style="background:#1A2E2A">
+    <h2>How to Read This Document</h2>
+  </div>
+  <div class="sec-body" style="padding:18px 22px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      <div style="background:#E8F7F2;border-radius:10px;padding:14px 15px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#1D9E75;margin-bottom:6px">🟢 Scoring Activity</div>
+        <p style="font-size:12px;color:#2A4A3A;line-height:1.55">Directly contributes a number to the Day 5 scorecard — either to the Connection Score, the Dedication Score, or to determining the user's Badge type.</p>
+      </div>
+      <div style="background:#E6F1FB;border-radius:10px;padding:14px 15px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4A8FD4;margin-bottom:6px">🔵 Display-Feed Activity</div>
+        <p style="font-size:12px;color:#2A3A5A;line-height:1.55">Doesn't change any score number, but the user's response populates visible sections of the Day 5 report — their exact words, choices, or tiles shown back to them.</p>
+      </div>
+      <div style="background:#F5F0FF;border-radius:10px;padding:14px 15px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#6053C0;margin-bottom:6px">🟣 Experience-Only</div>
+        <p style="font-size:12px;color:#3A2A5A;line-height:1.55">Pure emotional moment. Nothing is stored, nothing feeds Day 5. These screens exist only to create a feeling — priming, warmth, or reflection — before the next activity.</p>
+      </div>
+    </div>
+    <div class="insight" style="margin-top:14px">
+      <strong>The core principle:</strong> Every scoring activity across Days 1–4 quietly builds the Day 5 report in the background. By Day 5, the app already knows the user's badge type, connection score, emotional arc, relationship needs, and personality profile — all from what they did, not what they wrote.
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 1 ══ -->
+<div id="day1">
+  <div class="sec-hd" style="background:#1D9E75">
+    <h2>DAY 1 — The Spark Check</h2>
+    <span class="badge">Theme: Bold & Fun</span>
+    <span class="badge">Purpose: Set baseline · Generate personality type · Earn partner invite right</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">Connection Slider</div>
+        <div class="act-sub">User drags 1–10 to express how connected they feel right now</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Immediately:</strong> The score splits users into 1 of 5 emotional segments. Each segment gets a completely different set of 7 quiz questions — written specifically for where they are emotionally.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score:</strong> The starting score contributes the largest single chunk (up to 20 of 100 points). A score of 10 contributes max; a score of 1 contributes the least.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis C (Protecting vs Building):</strong> A score of 6 or above pushes the badge toward "Protecting what you have." A score of 5 or below pushes it toward "Building something new." This is the single strongest signal for Axis C.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Report:</strong> The number appears in the Mood Journey chart as the Day 1 bar, in the Week in Moments card ("You came in at 6/10"), and in the personalised Letter.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Trend Bonus:</strong> The Day 1 score is compared against the emotional tone of Day 4's journal entry. If the user ended warmer than they started, they earn bonus points on the Connection Score.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Honest Moment</div>
+        <div class="act-sub">A personalised response to their slider score — pre-written, segment-adaptive. 4–6 second pause.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-exp">🟣 Experience</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">No data stored. No Day 5 contribution. This screen exists purely to make the user feel seen before the quiz begins — a low scorer hears "Most people wouldn't admit this. You just did. That takes courage." A high scorer hears something that gently challenges their perfect 10. The emotional tone this sets directly influences how honestly users answer the quiz, which DOES feed the badge.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Vibe Check <span class="tbadge t-new" style="font-size:9px;margin-left:4px">NEW · Game 05</span></div>
+        <div class="act-sub">8 emoji tiles showing different relationship moods (Growing, Drifting, Passionate, Quiet, Tired, Hopeful, Tender, Energised). User taps one.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score:</strong> Positive vibes (Growing, Hopeful, Energised, Passionate) contribute the most — up to 10 points. Tender or Quiet vibes contribute 7. Heavy vibes (Tired, Drifting) contribute 3.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A (Expressive vs Active):</strong> Tender/Quiet vibes suggest someone who loves quietly → Expressive. Energised/Passionate/Growing suggest someone who shows love through doing → Active.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis C:</strong> Growing/Hopeful/Energised → Building (wants more). Tender/Quiet → Protecting (wants to preserve what's there).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Report Section 2 (Emotional Weather):</strong> The Day 1 vibe tile appears as the first of three emotional snapshots of the week — shown visually alongside Day 2 mood and Day 3 Mood Board theme.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Spark Quiz — 7 Questions</div>
+        <div class="act-sub">Segment-adaptive — 5 different question sets. Each question is two illustrated card options. No confirm button, auto-advances.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Immediately:</strong> All 7 answers are combined to calculate the user's personality type (Steady Flame, Electric Spark, Deep Current, or Shifting Tide). This happens silently in the background.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — All 3 Axes:</strong> Specific quiz answers directly feed the Expressive/Active, Deep/Present, and Protecting/Building axes. Questions 1, 4, 5, 6, and 7 each carry weight toward specific badge outcomes. Question 1 also acts as a tie-breaker for Axis A. Question 7 breaks Axis B ties.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#D4537E"></div>
+          <div class="conn-text"><strong>Day 2 Follow-up Question:</strong> One specific quiz answer (Question 2) is held forward to Day 2 — if the user selects "Frustrated" as their Day 2 mood, the follow-up question they see is customised based on whether they said "small things pile up" or "one big thing" in that answer.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Personality Type Result</div>
+        <div class="act-sub">One of four types displayed with description, traits, and a growth area. Shareable card. CTAs: Save / Come back tomorrow.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> Completing Day 1 fully earns +1 point toward the Dedication Score (which directly drives 30 points of the Connection Score and determines badge tier).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#4A8FD4"></div>
+          <div class="conn-text"><strong>Day 3 Mirror Game — Direct Route:</strong> The personality type determines which of 5 sets of 10 True/False statements is served on Day 3. Steady Flame gets statements about small daily noticing. Electric Spark gets statements about dreams and ambition. Deep Current gets statements about inner life. Shifting Tide gets relationship-specific statements. This is the most direct Day 1 → Day 3 connection in the entire app.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#B07010"></div>
+          <div class="conn-text"><strong>Day 4 Trivia Fact:</strong> A personalised psychology fact, specific to the personality type, is served as the closing moment of Day 4.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Report Section 3:</strong> The Personality Type Deep Dive section pulls this type and shows 3 pre-written strengths + 1 growth area. It also appears in the Week in Moments D1 card and in the personalised Letter.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ BRIDGE B1→2 ══ -->
+<div id="b12">
+  <div class="sec-hd" style="background:#6B8F87">
+    <h2>BRIDGE 1→2 — Entering Day 2</h2>
+    <span class="badge">3 Activities</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">Return Greeting + Streak Ring</div>
+        <div class="act-sub">"Welcome back." Streak ring shows Day 2. Day 1 recap card with personality type.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-exp">🟣 Experience</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">Purely motivational. Displays the personality type from Day 1 as a recap. No new data stored, no score contribution. The streak ring begins building the identity of "someone who comes back."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Intention Word Selector</div>
+        <div class="act-sub">"One word you want to bring into your relationship today." 8 options: Patient / Present / Honest / Warm / Playful / Open / Gentle / Brave.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">No score contribution. The chosen word travels forward: shown as a pill in the Bridge 2→3 recap, and appears on the Day 2 card in the Day 5 Week in Moments timeline. Its purpose is emotional intention-setting — priming the user for the Day 2 mood check-in.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">This or That: Us Edition <span class="tbadge t-new" style="font-size:9px;margin-left:4px">NEW · Game 06</span></div>
+        <div class="act-sub">3 rounds. Each round: two illustrated scenario cards (e.g. Beach vs Trek). User picks theirs, then predicts their partner's. Partner side sealed.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A:</strong> If the user consistently picks adventure/active options across 2 or more rounds → Active signal. Consistently picking comfort/home options → Expressive signal.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis C:</strong> If their predictions match their own picks 2+ times (they expect their partner to be like them) → Protecting. If all 3 predictions differ from their own picks (they know their partner is different) → Building.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#E67E22"></div>
+          <div class="conn-text"><strong>Day 5 Couple Mode Section:</strong> The user's picks are shown — partner's side remains sealed with a lock icon. "3 rounds waiting" status displayed as an open loop. When partner joins: both sides merge, prediction accuracy is calculated, and a Couple Card is generated ("You picked Beach. They picked Trek.").</div>
+        </div>
+        <div class="note">🔒 The partner's sealed side is never shown back to the solo user again until the partner completes this same activity on their own device.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ DAY 2 ══ -->
+<div id="day2">
+  <div class="sec-hd" style="background:#D4537E">
+    <h2>DAY 2 — The Mood Room</h2>
+    <span class="badge">Theme: Calm & Warm</span>
+    <span class="badge">Purpose: Emotional check-in · Deepen Day 1 reflection · Build private journal</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Candle Mood Screen</div>
+        <div class="act-sub">A candle animates for 3 seconds, then an 8-mood grid appears: Distant · Connected · Grateful · Frustrated · Playful · Missed · Overwhelmed · Loved. Tap selects; candle flame changes appearance.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#D4537E"></div>
+          <div class="conn-text"><strong>Immediately routes to the right follow-up question:</strong> The mood selected places the user on a Happiness track (Connected/Grateful/Playful/Loved), a Sadness track (Distant/Missed/Overwhelmed), or a Frustrated track. Each track has 3 different rotating follow-up questions.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score:</strong> Mood score contributes up to 10 points. Connected/Loved/Playful = highest; Grateful/Missed = mid; Overwhelmed/Frustrated/Distant = lowest.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — All 3 Axes:</strong> Playful or Connected → Active signal. Loved/Grateful/Missed → Deep signal. Connected/Playful → Present signal. Grateful/Loved → Protecting. Frustrated/Distant/Overwhelmed → Building.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Report Section 2 (Emotional Weather):</strong> The Day 2 mood icon appears as the second tile in the 3-tile Emotional Weather display. Also feeds the Mood Journey chart as the Day 2 bar.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 3→4 Conditional:</strong> If the same mood is selected for 3 consecutive days, a gentle acknowledgement line is added: "You've been feeling [mood] for a few days. That's worth noticing. The jar is a good place for that."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">One Good Thing</div>
+        <div class="act-sub">"Name one thing about your partner that made you feel something good recently. It can be tiny." Short open text (10–80 characters). Card animates into the journal icon on save.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A (partial signal):</strong> If the user writes 40 or more characters — meaning they gave a considered, generous response — it registers as an Expressive signal.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 2→3 Recap:</strong> Their exact words are shown back on the bridge card — "He made chai without asking. That's the whole thing really." — creating a sense of continuity and that the app is listening.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 2 Card:</strong> Exact words shown in the timeline.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Follow-Up Question</div>
+        <div class="act-sub">One open-text question, adaptive to mood track + Day 1 quiz answer (for Frustrated track). Privacy note visible. Optional.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> Completing Day 2 fully (mood + this follow-up, not skipped) earns +1 point to the Dedication Score.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A:</strong> If the user writes 60 or more characters in their response, it signals they are an Expressive communicator — contributing +2 to the Expressive side of Axis A. This is the highest character-count signal in the entire app.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 2 Card:</strong> Exact words shown. If skipped, the card only shows the mood name — no personal quote.</div>
+        </div>
+        <div class="insight"><strong>The D1 → D2 connection in action:</strong> If Day 1 quiz question 2 was answered as "small things pile up" AND the user selects Frustrated on Day 2, they see: "What's the specific small thing that tipped it today? There always is one." If they answered "one big thing," they see: "Is this the same thing again — or something new? Knowing which one changes everything."</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ BRIDGE B2→3 ══ -->
+<div id="b23">
+  <div class="sec-hd" style="background:#6B8F87">
+    <h2>BRIDGE 2→3 — Entering Day 3</h2>
+  </div>
+  <div class="sec-body">
+    <div class="act">
+      <div>
+        <div class="act-name">Return + Recap + Mirror Prep</div>
+        <div class="act-sub">Streak 3. Day 2 mood recap + One Good Thing card (exact words) + intention word pill. Mirror Prep teaser line. Bridge quote. Day 3 intention word selector.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">Reads and displays yesterday's mood, One Good Thing, and intention word. The key moment here is the <strong>Mirror Prep line</strong> — the only adaptive text that directly bridges two days: <em>"Yesterday you felt [Grateful]. Today we find out how well you actually know them."</em> This creates anticipation for the Mirror Game without explaining it. The intention word selected here feeds the Day 5 Week in Moments D3 card.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Conditional line:</strong> If the user already sent a partner invite on Day 3 (in a previous visit), the bridge adds: "You invited them. Now let's give you one more day of this before they arrive."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 3 ══ -->
+<div id="day3">
+  <div class="sec-hd" style="background:#4A8FD4">
+    <h2>DAY 3 — The Mirror Game</h2>
+    <span class="badge">Theme: Playful + Provocative</span>
+    <span class="badge">Strongest conversion day · Most partner invite hooks · Highest retention</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Appreciation Snap</div>
+        <div class="act-sub">"Before we test what you know about them — what do you want them to know about you right now?" One sentence, open text.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points toward the Dedication Score.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 3 Card:</strong> Exact words shown. If skipped, the slot reads "Day 3 — you noticed them" with no quote. Purpose: self-expressive moment before the partner-focused T/F game begins. The arc goes: "I want them to know this" → "How well do I actually know them?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Finish My Sentence <span class="tbadge t-new" style="font-size:9px;margin-left:4px">NEW · Game 02</span></div>
+        <div class="act-sub">A sentence stem appears in large italic. User picks one of 4 illustrated tap cards to complete it. No writing. Partner's version of the same stem is shown as a sealed/locked card beside theirs.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — All 3 Axes:</strong> Each of the 4 completion cards carries a hidden emotional tag (e.g. "resilience," "playful," "deep," "protective"). The tag of the selected card feeds all three badge axes simultaneously — it is one of the richest single-tap signals in the app for badge determination.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 3 Card:</strong> The selected sentence completion is shown in Playfair italic.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#E67E22"></div>
+          <div class="conn-text"><strong>Day 5 Couple Mode Section:</strong> The stem and the user's answer are shown — partner's sealed card beside it. "1 of 2 sides complete" status. When partner joins and completes Day 3: both sides reveal simultaneously — described as the "Sentence Reveal" moment in the couple dashboard.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Mirror Game — 10 True/False Statements</div>
+        <div class="act-sub">"You think you know your partner. Let's test that." One statement per full screen. Tap TRUE or FALSE. Auto-advances. 10-pip progress bar.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="note" style="margin-bottom:10px">⚡ <strong>Key Day 1 → Day 3 connection:</strong> The specific 10 statements shown here are 100% determined by the personality type calculated on Day 1. A Steady Flame gets statements about small daily noticing habits. An Electric Spark gets statements about their partner's dreams and ambitions. A Deep Current gets questions about their partner's private interior life. A Shifting Tide gets relationship-specific statements about honesty, choice, and effort.</div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score — Partner Knowledge component:</strong> The count of TRUE answers (out of 10) contributes directly. Up to 10 points.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis B (Deep vs Present):</strong> Answering TRUE to 7 or more statements suggests someone deeply invested in knowing their partner → Deep +2. Answering TRUE to 4 or fewer suggests someone more focused on the present moment than accumulated knowledge → Present +2.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis C:</strong> 7 or more TRUE answers → Protecting signal (you know what you have and want to hold it).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Partner Knowledge Score:</strong> Shown directly as a /10 score. When partner joins, the score is recalibrated — showing what % of the user's solo predictions actually matched their partner's own self-reported answers.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 3→4:</strong> "Yesterday you were 7 for 10" shown in the recap card.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Mirror Results — Open Loop</div>
+        <div class="act-sub">Split screen: user's 10 answers fully visible on left. Partner's side completely frosted + locked on right. Invite CTA. Pre-written WhatsApp message. Screenshot icon.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-exp">🟣 Experience</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">The most important <strong>conversion screen</strong> in the entire app. No new scoring happens here. The user has invested 3 minutes answering questions about their partner and cannot see whether they were right. The only resolution is inviting the partner. If user taps Invite: this is recorded and the Bridge 3→4 adapts accordingly.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Mood Board Match <span class="tbadge t-new" style="font-size:9px;margin-left:4px">NEW · Game 07</span></div>
+        <div class="act-sub">"Pick 3 tiles that describe your relationship this week." 10 illustrated icon tiles (Comfort, Fresh start, Our world, Under cloud, Intimate, Peaceful, Up & down, Figuring out, Blossoming, Safe home). Save unlocks after exactly 3 selected.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score — Mood Board Positivity:</strong> Each tile carries a hidden emotional tag (Present, Protecting, Deep, or Building). The proportion of "positive" tiles (Present or Protecting) among the 3 chosen contributes up to 10 points to the Connection Score.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — All 3 Axes simultaneously:</strong> The majority tag across the 3 tiles chosen determines the axis contribution for all three axes. This is the only activity in the app that influences all 3 badge axes from a single gesture.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Report Section 2 (Emotional Weather):</strong> The 3 selected tiles are grouped into one of 5 named themes (Safe & Steady, Growing & Open, Navigating Together, Deeply Connected, Mixed & Moving). This theme name appears as the Day 3 panel in the Emotional Weather section.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 3 Card:</strong> The 3 tile icons shown.</div>
+        </div>
+        <div class="insight"><strong>Placement rationale:</strong> The Mirror Game surfaces uncertainty ("I wasn't sure about some of those"). The Mood Board immediately converts that uncertainty into a visual emotional reframe. The arc: analytical (T/F) → visual (tiles) → anchoring (One Certainty). This is why Day 3 has the highest retention rate.</div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The One Certainty</div>
+        <div class="act-sub">"Despite everything you're not sure about — what's the one thing you know for certain?" Open text. ~15 seconds.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points (contributing toward the D3 complete bonus).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 3→4:</strong> Shown as Card 2 in the recap — exact words in Playfair italic. This is the emotional anchor the user carries into Day 4.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 3 Card:</strong> Exact words shown.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>The Letter (Day 5 fallback):</strong> If the user skipped the Day 4 Memory Jar, the Letter template uses this certainty text instead as the personal moment referenced.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ BRIDGE B3→4 ══ -->
+<div id="b34">
+  <div class="sec-hd" style="background:#6B8F87">
+    <h2>BRIDGE 3→4 — Entering Day 4</h2>
+  </div>
+  <div class="sec-body">
+    <div class="act">
+      <div>
+        <div class="act-name">Return + Mirror Recap + Jar Preview</div>
+        <div class="act-sub">Streak 4. True/False count card ("You were 7 for 10"). One Certainty card (exact words). Mini 5-dot visual timeline — Day 4 dot pulsing in amber. Bridge quote. Day 4 intention word selector.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">Reads and displays the Mirror Game count, the One Certainty quote, and a preview of the jar filling up. The pulsing amber dot on the mini timeline creates a specific completion impulse — "one more dot to fill." Day 4 intention word stored for the Week in Moments D4 card.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Conditional:</strong> If the same mood has been selected 3 days running → gentle acknowledgement line added referencing the repeated mood and inviting the jar as a place to put it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 4 ══ -->
+<div id="day4">
+  <div class="sec-hd" style="background:#B07010">
+    <h2>DAY 4 — The Memory Jar</h2>
+    <span class="badge">Theme: Warm & Emotional</span>
+    <span class="badge">Purpose: Preservation · Surface unspoken needs · Build journaling habit</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Memory Jar</div>
+        <div class="act-sub">Jar shown at 60% fill with 3 notes visible. "Drop one memory here." User chooses input type: Text, Photo, or Emoji + date. Drop arc animation on save.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> Dropping a memory earns +1 point — the single largest Dedication Score contribution from any Day 4 activity.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A:</strong> The input type signals love expression style. Writing a text memory → Expressive +2 (the highest single signal for Expressive in the whole app). Dropping a photo → Active +2. Using emoji + date → Active +1.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Section 6 (Jar Full Reveal):</strong> The memory content appears as a note inside the jar at 100% fill.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>The Letter (Day 5):</strong> The first 8 words of the memory are pulled into the personalised letter template: "[Name]. You started this week at a 6. The [Steady Flame] in you knew something worth protecting was here. '[The day we got caught in the rain]…' That's the memory you chose to keep."</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 4→5:</strong> First 60 characters of the memory shown in the ceremonial recap card.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Tiny Compliment</div>
+        <div class="act-sub">"One word that describes how your partner makes you feel." 8 word pills: Seen / Safe / Lighter / Lucky / Proud / Loved / Calm / Home. Or free-type up to 10 characters.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Jar:</strong> The word glows inside the jar as a floating label on the full reveal. <strong>Week in Moments D4 card:</strong> word shown. <strong>Shareable card:</strong> word shown as a glowing pill. No badge axis contribution — this is purely emotional and display-driven.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Priority Shuffle <span class="tbadge t-new" style="font-size:9px;margin-left:4px">NEW · Game 08</span></div>
+        <div class="act-sub">"5 cards. Tap your top 3 — in order of what you need most right now." Cards: More warmth & affection · Dedicated time together · More calm, less stress · Laughter & lightness · Deeper conversations. No writing at all.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis B (Deep vs Present):</strong> Picking "Deeper conversations" anywhere in the top 3 → Deep +2. "Laughter & lightness" as the top pick → Present +2. "More calm, less stress" in the picks → Deep +1.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis C:</strong> Top pick of "Warmth" or "Calm" → Protecting +2 (wants to restore safety). Top pick of "Laughter," "Time," or "Conversations" → Building +2 (wants to create something new).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +0.5 points.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Section 4 (Relationship Needs):</strong> This is the only activity that gets its own dedicated report section. The top pick is displayed prominently with a pre-written one-line description. All 3 picks shown in ranked order. Partner's picks shown as sealed until they join.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Bridge 4→5 — New Card 3:</strong> "Your top need this week: [Warmth & affection]" shown with the line "Day 5 shows you if they felt the same." — creates a specific open loop anticipation going into the final day.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Daily 2</div>
+        <div class="act-sub">Two journal cards. Card 1: "What emotion are you carrying into today?" Card 2: "What's something your relationship taught you this week?" Both open text, both optional.</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> Both answered = +0.5. Only one answered = +0.25.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge Axis A:</strong> If both answers are substantial (40+ characters each) → Expressive +1. Signals a reflective, verbally expressive person.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score — Mood Chart D4 Bar:</strong> Card 1's text is scanned for emotional tone keywords. Warmth words (grateful, happy, calm, loved, good) score 7. Heavy words (tired, frustrated, anxious, distant) score 4. Neutral = 5. This becomes the Day 4 bar on the Mood Journey chart.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Connection Score — Trend Bonus:</strong> The Day 4 tone is compared to the Day 1 slider score. If the user ended emotionally warmer than they started → +10 bonus points. Equal → +5. Declining → +0. This is the arc reward.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Week in Moments — Day 4 Card:</strong> Card 2's answer shown in exact words.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Love Drop + Drop Box <span class="tbadge t-upd" style="font-size:9px;margin-left:4px">UPDATED · Game 04</span></div>
+        <div class="act-sub">Two tabs. <strong>Love Drop (new):</strong> Leave a sealed message for your partner — choose from 4 types (compliment, memory, challenge, something I've been meaning to say) with zero-typing preset options. <strong>Drop Box (existing):</strong> Write something hard — AI reframes it. Original deleted.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — Love Drop:</strong> Leaving a compliment → Expressive signal (Axis A). Using the Love Drop at all → Deep signal (Axis B). Leaving a challenge → Building (Axis C). Leaving a compliment or memory → Protecting (Axis C).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#1D9E75"></div>
+          <div class="conn-text"><strong>Day 5 Badge — Drop Box:</strong> Using the Drop Box → Deep +2 (highest single Deep signal in the app). Also → Building +1 (Axis C). Suggests someone willing to do the hard emotional work.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> Love Drop used = +0.5. Drop Box used = +0.5. Maximum +1.0 from this screen.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Day 5 Jar Reveal:</strong> If Love Drop was used → a gold sealed note appears in the jar: "Something waiting for them." If Drop Box was used → a rose note: "Something you found the words for." Both are visible and tappable inside the jar.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#E67E22"></div>
+          <div class="conn-text"><strong>When Partner Joins:</strong> Love Drop content unseals on the partner's device — they find the message. This is the most intimate Couple Mode moment in the app.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">Personalised Trivia Fact</div>
+        <div class="act-sub">Full screen for 5 seconds. A relationship psychology fact tailored to the user's personality type. Swipe up to dismiss. No CTA.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-exp">🟣 Experience</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">No data stored. No Day 5 contribution. Pure gift moment. The <strong>Day 1 → Day 4 personalisation</strong> connection: the specific fact is determined entirely by the personality type from Day 1 — Steady Flame gets a fact about consistent care, Electric Spark about novelty and energy, Deep Current about depth of conversation, Shifting Tide about early disclosure. The user never "sees" this connection — they just feel known.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ BRIDGE B4→5 ══ -->
+<div id="b45">
+  <div class="sec-hd" style="background:#6B8F87">
+    <h2>BRIDGE 4→5 — Entering Day 5</h2>
+    <span class="badge">Ceremonial · Different in feel from all previous bridges</span>
+  </div>
+  <div class="sec-body">
+    <div class="act">
+      <div>
+        <div class="act-name">Ceremonial Bridge + Top Need Preview</div>
+        <div class="act-sub">Streak 5 ring (more pronounced animation). Memory card (Day 4 first line). Jar preview at 80% + compliment word glowing inside. NEW — Top Need card. Bridge quote + Significance Line. No intention word selector.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">Reads and surfaces Day 4 memory, the jar at 80%, and the compliment word glowing inside the jar preview (the first time the user sees the word inside the visual jar — creates an emotional surprise).</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#B07010"></div>
+          <div class="conn-text"><strong>New Top Need Card (G08 connection):</strong> "Your top need this week: [Warmth & affection]" displayed with the hook line "Day 5 shows you if they felt the same." This creates a very specific anticipation — they now want to open Day 5 to find out if their partner had the same top need. The answer only comes in the Day 5 report.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Significance Line:</strong> "Day 5 is the one that matters. Everything you built this week becomes visible today." — no intention word selector here. The Promise screen on Day 5 serves the same forward-looking function with greater emotional weight.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 5 ACTIVITIES ══ -->
+<div id="day5">
+  <div class="sec-hd" style="background:#6053C0">
+    <h2>DAY 5 — The Reveal</h2>
+    <span class="badge">Theme: Bold & Emotional</span>
+    <span class="badge">Purpose: Celebration · Recognition · Full story made visible · Partner invite earned</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="act">
+      <div>
+        <div class="act-name">Celebration + Badge</div>
+        <div class="act-sub">5-pip fill animation (600ms, left to right). Multi-colour confetti. "That's not nothing." "Most people quit at Day 2." Badge displayed. Full score calculation runs here.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-score">🟢 Scoring</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text">This is the moment all 5 days of data converge. The badge type, badge tier, Connection Score, Partner Knowledge Score, and Dedication Score are all calculated in the background as this screen loads. The user just sees the confetti and their badge — the calculation is invisible.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Report Card — 8 Sections</div>
+        <div class="act-sub">Full scrollable report generated from all 5 days. See the Report Map section below for what feeds each of the 8 sections.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">This is the delivery of everything collected across Days 1–4. Nothing new is calculated here — the report is already assembled. See the Report Map section for the complete breakdown.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Promise</div>
+        <div class="act-sub">"Five days in. One thing you want to do differently for your relationship from tomorrow. Not a resolution. Just one honest intention." Open text. Placeholder: "Starting tomorrow, I want to…"</div>
+      </div>
+      <div class="type-wrap">
+        <span class="tbadge t-score">🟢 Scoring</span>
+        <span class="tbadge t-disp">🔵 Display-Feed</span>
+      </div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#6053C0"></div>
+          <div class="conn-text"><strong>Dedication Score:</strong> +1 point (per algorithm table) — completing this is the last action available to boost badge tier before the score locks. A user on the boundary between badge tiers can push themselves over by completing this.</div>
+        </div>
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text"><strong>Report Card:</strong> Their words appear as the closing statement of the full report in Playfair italic. <strong>Shareable Card:</strong> User can toggle whether to include the promise text before sharing.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Letter</div>
+        <div class="act-sub">A personalised letter generated from a template. Displayed full-screen with no buttons for 6 seconds. Then "Save this" and "Share this" appear.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-disp">🔵 Display-Feed</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">This is the emotional peak of Day 5. The letter is assembled from 4 specific data points collected across 5 days: the user's <strong>name</strong> (Day 0), their <strong>Day 1 slider score</strong>, their <strong>personality type</strong>, and the <strong>first 8 words of their Day 4 memory</strong>. Fallback: if Day 4 memory was skipped, the Day 3 One Certainty is used. If both were skipped: "You came back, five days in a row. That's the memory worth keeping." No new scoring. Pure output.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div>
+        <div class="act-name">The Partner Invite</div>
+        <div class="act-sub">"You've been doing this alone for 5 days. Imagine what it feels like when both of you show up." Primary: Invite partner. Ghost: Continue solo for now.</div>
+      </div>
+      <div class="type-wrap"><span class="tbadge t-exp">🟣 Experience</span></div>
+      <div class="conn-block">
+        <div class="conn-row">
+          <div class="conn-dot" style="background:#8AADA6"></div>
+          <div class="conn-text">No score contribution. This is the earned moment — 5 days of investment created enough trust and open loops (sealed Mirror Game, sealed Finish My Sentence, sealed This or That, sealed Love Drop) that inviting the partner feels like a natural resolution, not a sales ask. Pre-written WhatsApp message generated with unique link. If they choose to continue solo: Day 6+ daily habit begins, jar resets for Week 2, badge preserved.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ WHAT DAY 5 SCORES ══ -->
+<div id="scoring">
+  <div class="sec-hd" style="background:#1A2E2A">
+    <h2>WHAT DAY 5 SCORES — 4 Numbers, What Builds Them</h2>
+  </div>
+  <div class="sec-body">
+    <div class="score-summary">
+
+      <div class="ss-card" style="background:#E8F7F2;border:.5px solid #C0DDD4">
+        <h4 style="color:#1D6B4A">Connection Score · /100</h4>
+        <p style="color:#2A4A3A">A composite number capped at 100. Built from 7 components. Displayed prominently on the report card.</p>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#1D9E75">Day 1 slider</strong> → up to 20 pts (the single biggest component)</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#1D9E75">Day 1 Vibe Check</strong> → up to 10 pts</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#D4537E">Day 2 mood</strong> → up to 10 pts</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#4A8FD4">Day 3 Mood Board</strong> → up to 10 pts</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#4A8FD4">Day 3 Mirror Game</strong> → up to 10 pts</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#6053C0">Dedication Score</strong> → up to 30 pts</div>
+          <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A4A3A"><strong style="color:#B07010">Day 4 Trend Bonus</strong> → up to 10 pts</div>
+        </div>
+      </div>
+
+      <div class="ss-card" style="background:#EEEDFE;border:.5px solid #C0B8F0">
+        <h4 style="color:#4A3AAA">Dedication Score · /7</h4>
+        <p style="color:#3A2A5A">Measures commitment across all 5 days. Drives 30 of the 100 Connection Score points AND determines badge tier (gold / standard / emerging).</p>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px;font-size:11px;color:#3A2A5A">
+          <div style="background:white;border-radius:6px;padding:5px 9px">D1 fully complete → <strong>+1</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">D2 complete, not skipped → <strong>+1</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">D3 complete (T/F + Mood Board + FMS) → <strong>+1 (+0.5 each for MB & FMS)</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">D4 memory dropped → <strong>+1</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">D4 Priority Shuffle, Love Drop, Daily 2, Drop Box → <strong>+0.5 each</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">D5 Promise completed → <strong>+1</strong></div>
+          <div style="background:white;border-radius:6px;padding:5px 9px">Skip never used across all days → <strong>+1</strong></div>
+          <div style="background:#EEEDFE;border-radius:6px;padding:5px 9px;font-weight:700;color:#6053C0">Max possible: 9 → capped at 7.0</div>
+          <div style="background:#EEEDFE;border-radius:6px;padding:5px 9px;font-size:10px">6–7 pts = Gold tier · 4–5 = Standard · 2–3 = Emerging</div>
+        </div>
+      </div>
+
+      <div class="ss-card" style="background:#E6F1FB;border:.5px solid #B0C8E8">
+        <h4 style="color:#2A5FA0">Partner Knowledge Score · /10</h4>
+        <p style="color:#2A3A5A">Direct output of the Day 3 Mirror Game. The count of TRUE answers out of 10. Displayed on the report as-is.</p>
+        <p style="color:#2A3A5A;margin-top:8px;font-size:12px">When partner joins: the score is recalibrated — the number shown updates to reflect what % of the solo predictions actually matched what the partner said about themselves.</p>
+        <div style="background:white;border-radius:6px;padding:6px 9px;font-size:11px;color:#2A3A5A;margin-top:8px"><strong>The only score that changes after Day 5</strong> — everything else locks when the report generates.</div>
+      </div>
+
+    </div>
+
+    <div style="padding:0 20px 20px">
+      <div style="background:#F2F8F6;border-radius:10px;padding:16px 18px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4A7067;margin-bottom:10px">The 8 Badges — Determined by 3 Binary Axes</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+          <div style="background:white;border-radius:8px;padding:11px 13px;border-top:3px solid #1D9E75">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#1D9E75;margin-bottom:5px">Axis A</div>
+            <div style="font-size:13px;font-weight:700;color:#1A2E2A">Expressive vs Active</div>
+            <div style="font-size:11px;color:#4A7067;margin-top:4px">Do you love through words and depth, or through actions and energy?</div>
+            <div style="font-size:11px;color:#8AADA6;margin-top:5px">Fed by: Quiz Q1+Q6, Vibe Check, This or That, Finish My Sentence, Mood Board, Daily 2 length, Memory type, Follow-up length, Love Drop type</div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:11px 13px;border-top:3px solid #4A8FD4">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#4A8FD4;margin-bottom:5px">Axis B</div>
+            <div style="font-size:13px;font-weight:700;color:#1A2E2A">Deep vs Present</div>
+            <div style="font-size:11px;color:#4A7067;margin-top:4px">Are you investing in accumulated depth, or celebrating what's here now?</div>
+            <div style="font-size:11px;color:#8AADA6;margin-top:5px">Fed by: Quiz Q4+Q7, Mood, Mirror ratio, Drop Box, FMS tag, Mood Board, Priority Shuffle, Love Drop</div>
+          </div>
+          <div style="background:white;border-radius:8px;padding:11px 13px;border-top:3px solid #B07010">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#B07010;margin-bottom:5px">Axis C</div>
+            <div style="font-size:13px;font-weight:700;color:#1A2E2A">Protecting vs Building</div>
+            <div style="font-size:11px;color:#4A7067;margin-top:4px">Are you here to protect something good, or build something new?</div>
+            <div style="font-size:11px;color:#8AADA6;margin-top:5px">Fed by: Day 1 slider score (strongest signal), Quiz Q5+Q6+Q7, Mood, Mirror ratio, Drop Box, Vibe Check, This or That, Mood Board, Priority Shuffle, Love Drop</div>
+          </div>
+        </div>
+        <table>
+          <tr><th>Axis A</th><th>Axis B</th><th>Axis C</th><th>Badge Name</th></tr>
+          <tr><td>Expressive</td><td>Deep</td><td>Protecting</td><td><strong>The Warm Keeper</strong> — "You love loudly in the quiet moments and guard what you've built."</td></tr>
+          <tr><td>Expressive</td><td>Deep</td><td>Building</td><td><strong>The Honest Architect</strong> — "You use your words as tools — to name what's broken and build what's missing."</td></tr>
+          <tr><td>Expressive</td><td>Present</td><td>Protecting</td><td><strong>The Joyful Anchor</strong> — "You keep things light, keep things close, make ordinary moments feel like enough."</td></tr>
+          <tr><td>Expressive</td><td>Present</td><td>Building</td><td><strong>The Curious Lover</strong> — "You are always reaching — for the next conversation, the next version of this relationship."</td></tr>
+          <tr><td>Active</td><td>Deep</td><td>Protecting</td><td><strong>The Quiet Strength</strong> — "You don't say it — you do it. What you've built speaks louder than words."</td></tr>
+          <tr><td>Active</td><td>Deep</td><td>Building</td><td><strong>The Steady Climber</strong> — "You move slowly and with purpose. Every action is intentional. You're building something that lasts."</td></tr>
+          <tr><td>Active</td><td>Present</td><td>Protecting</td><td><strong>The Spark Keeper</strong> — "You make things happen. You keep the energy alive — and you do it so naturally nobody notices the work."</td></tr>
+          <tr><td>Active</td><td>Present</td><td>Building</td><td><strong>The Intentional Partner</strong> — "You are here on purpose. You chose this, showed up, and kept going."</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 5 REPORT MAP ══ -->
+<div id="report">
+  <div class="sec-hd" style="background:#6053C0">
+    <h2>DAY 5 REPORT — What Populates Each of the 8 Sections</h2>
+  </div>
+  <div class="sec-body" style="padding:18px 20px">
+
+    <div class="rpt-card" style="border-color:#1D9E75">
+      <h4>Section 1 — Mood Journey</h4>
+      <div class="rpt-sub">A 5-bar chart showing the user's emotional arc across the week. One pre-written insight line below it, selected based on the pattern (upward, downward, dip-then-recovery, or flat).</div>
+      <div class="rpt-feeds">
+        <span class="rfeed t-score" style="background:#E8F7F2;color:#1D6B4A">Day 1 slider score → D1 bar</span>
+        <span class="rfeed t-score" style="background:#FBEAF0;color:#9A2050">Day 2 mood score → D2 bar</span>
+        <span class="rfeed t-score" style="background:#F2F8F6;color:#4A7067">Average of D1+D2 → D3 bar (no Day 3 mood selection)</span>
+        <span class="rfeed t-score" style="background:#FAEEDA;color:#7A4E00">Day 4 journal keyword tone → D4 bar</span>
+        <span class="rfeed t-score" style="background:#EEEDFE;color:#4A3AAA">Running average of all → D5 bar</span>
+      </div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#D4537E">
+      <h4>Section 2 — Emotional Weather <span style="font-size:10px;font-weight:600;color:#D4537E;background:#FBEAF0;padding:2px 7px;border-radius:100px;margin-left:5px">NEW</span></h4>
+      <div class="rpt-sub">Three tiles side by side showing the emotional theme of Days 1, 2, and 3. One pre-written line reads the overall weekly pattern.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#E8F7F2;color:#1D6B4A">Vibe Check tile (Day 1)</span>
+        <span class="rfeed" style="background:#FBEAF0;color:#9A2050">Candle mood icon (Day 2)</span>
+        <span class="rfeed" style="background:#E6F1FB;color:#2A5FA0">Mood Board theme name (Day 3)</span>
+      </div>
+      <div class="insight" style="margin-top:10px">Pattern lines: All positive → "Your week felt grounded." · Mixed → "Your week moved. So did you." · Heavy opening to warm close → "You came in at [vibe] and left at [theme]. That's growth." · Consistently heavy → "It was a hard week. You showed up anyway."</div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#4A8FD4">
+      <h4>Section 3 — Personality Type Deep Dive</h4>
+      <div class="rpt-sub">The personality type from Day 1 shown with full description, 3 strengths, and 1 growth area (framed as an invitation, not criticism).</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#E8F7F2;color:#1D6B4A">Personality type from Day 1 quiz</span>
+      </div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#B07010">
+      <h4>Section 4 — Your Relationship Needs This Week <span style="font-size:10px;font-weight:600;color:#B07010;background:#FAEEDA;padding:2px 7px;border-radius:100px;margin-left:5px">NEW</span></h4>
+      <div class="rpt-sub">The top need displayed prominently with a pre-written description. All 3 picks listed in ranked order. Partner's picks shown as sealed cards until they join.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#FAEEDA;color:#7A4E00">Priority Shuffle top pick (Day 4)</span>
+        <span class="rfeed" style="background:#FAEEDA;color:#7A4E00">All 3 Priority Shuffle picks in order (Day 4)</span>
+      </div>
+      <div class="insight" style="margin-top:10px">"More warmth & affection" → "You're craving closeness right now. Not grand gestures — just presence." · "Deeper conversations" → "You're hungry for the real stuff. The kind of talk that doesn't happen by accident." · "Laughter & lightness" → "You want to feel like you again — and like them again." · "Dedicated time together" → "You need time that belongs only to you two. Uninterrupted, chosen, real." · "More calm, less stress" → "You need the relationship to feel like relief, not pressure."</div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#8AADA6">
+      <h4>Section 5 — Week in Moments (Timeline)</h4>
+      <div class="rpt-sub">Vertical journal. One card per day. Exact words — never edited, never paraphrased. Their own voice, held back to them.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#E8F7F2;color:#1D6B4A">D1: Vibe tile + type name + "Came in at [N]/10" + vibe emoji</span>
+        <span class="rfeed" style="background:#FBEAF0;color:#9A2050">D2: Intention word pill + One Good Thing exact text + mood icon</span>
+        <span class="rfeed" style="background:#E6F1FB;color:#2A5FA0">D3: Appreciation Snap + selected FMS sentence + One Certainty</span>
+        <span class="rfeed" style="background:#FAEEDA;color:#7A4E00">D4: Memory first 60 chars + Tiny Compliment word + Daily 2 Q2</span>
+      </div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#B07010">
+      <h4>Section 6 — Memory Jar Full Reveal</h4>
+      <div class="rpt-sub">The jar fills to 100% on arrival with a 1.2-second animation and a golden glow pulse. All notes are tappable. The compliment word floats and glows inside.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#FAEEDA;color:#7A4E00">All jar memories (Days 1–4 notes)</span>
+        <span class="rfeed" style="background:#FAEEDA;color:#7A4E00">Tiny Compliment word (glowing label)</span>
+        <span class="rfeed" style="background:#FBEAF0;color:#9A2050">If Drop Box used → rose note "Something you found the words for"</span>
+        <span class="rfeed" style="background:#FEF3E0;color:#9A4E00">If Love Drop used → gold sealed note "Something waiting for them"</span>
+      </div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#6053C0">
+      <h4>Section 7 — Your Badge</h4>
+      <div class="rpt-sub">Badge name, tier ring (gold/standard/emerging), description, and 3 trait pills. Shareable card export from this section.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#EEEDFE;color:#4A3AAA">Badge name (from 3-axis calculation)</span>
+        <span class="rfeed" style="background:#EEEDFE;color:#4A3AAA">Badge tier (from Dedication Score)</span>
+      </div>
+    </div>
+
+    <div class="rpt-card" style="border-color:#E67E22">
+      <h4>Section 8 — Couple Mode Unlock <span style="font-size:10px;font-weight:600;color:#E67E22;background:#FEF0E6;padding:2px 7px;border-radius:100px;margin-left:5px">NEW</span></h4>
+      <div class="rpt-sub">"3 games waiting for both of you." Shows the state of every sealed game from the 5 days — what the user played, what's still waiting for the partner.</div>
+      <div class="rpt-feeds">
+        <span class="rfeed" style="background:#E8F7F2;color:#1D6B4A">G01 Prediction Game → locked preview</span>
+        <span class="rfeed" style="background:#E6F1FB;color:#2A5FA0">G02 FMS: user's answer + partner's sealed card</span>
+        <span class="rfeed" style="background:#E8F7F2;color:#1D6B4A">G03 Us vs. The Question → locked preview</span>
+        <span class="rfeed" style="background:#FBEAF0;color:#9A2050">G06 This or That: 3 rounds user picks + partner predictions sealed</span>
+        <span class="rfeed" style="background:#FEF0E6;color:#9A4E00">Love Drop status (sealed note)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SEGMENT JOURNEY ══ -->
+<div id="segment">
+  <div class="sec-hd" style="background:#1A2E2A">
+    <h2>THE SEGMENT JOURNEY — How Day 1's Slider Score Shapes All 5 Days</h2>
+  </div>
+  <div class="sec-body" style="padding:18px 20px">
+    <p style="color:#4A7067;font-size:12.5px;margin-bottom:14px">The Day 1 slider score is the single most impactful input in the entire 5-day experience. Here is how it cascades forward:</p>
+
+    <div class="seg-grid">
+      <div class="seg-cell"><div class="s-day" style="color:#1D9E75">D1 · Instant</div><div class="s-what">Slider score → 1 of 5 segments</div><div class="s-how">Segment determines which 7 quiz questions are shown. A score of 1–2 gets questions about loneliness and courage. A score of 10 gets questions that gently examine whether "perfect" is really perfect.</div></div>
+      <div class="seg-cell"><div class="s-day" style="color:#1D9E75">D1 · 30 sec later</div><div class="s-what">Honest Moment copy adapts</div><div class="s-how">The emotional response shown under their score is different for all 5 segments. A 3 hears something very different from an 8.</div></div>
+      <div class="seg-cell"><div class="s-day" style="color:#D4537E">D2 · If Frustrated</div><div class="s-what">Quiz Q2 shapes one follow-up question</div><div class="s-how">If the user picks Frustrated on the Day 2 candle, the follow-up question they see is specifically adapted to whether they said "small things pile up" or "one big thing" in the Day 1 quiz.</div></div>
+      <div class="seg-cell"><div class="s-day" style="color:#4A8FD4">D3 · Mirror</div><div class="s-what">Personality type → exact T/F statement set</div><div class="s-how">The 10 statements are 100% personalised to the personality type derived from the Day 1 quiz. This is the longest-range direct connection in the app.</div></div>
+      <div class="seg-cell"><div class="s-day" style="color:#B07010">D4 · Closing</div><div class="s-what">Personality type → trivia fact</div><div class="s-how">The closing gift of Day 4 is a psychology fact specific to how the user's type loves. Steady Flames get one fact. Electric Sparks get another. The user never knows — they just feel known.</div></div>
+    </div>
+
+    <table>
+      <tr>
+        <th>Slider Score</th>
+        <th>Segment Name</th>
+        <th>Quiz Questions Focused On</th>
+        <th>Honest Moment Tone</th>
+        <th>Day 5 Axis C Direction</th>
+        <th>Most Likely Badge Outcome</th>
+      </tr>
+      <tr>
+        <td><strong>1–2</strong></td>
+        <td>The Quiet Crisis</td>
+        <td>Loneliness, courage, what broke down, unspoken fear, why you're here</td>
+        <td>"Most people wouldn't admit this. You just did. That takes courage — and it's exactly why you're here."</td>
+        <td>Building +2 (strong) — wants to repair and grow</td>
+        <td>The Honest Architect or The Steady Climber</td>
+      </tr>
+      <tr>
+        <td><strong>3–5</strong></td>
+        <td>The Slow Drift</td>
+        <td>Surface-level fineness, routines replacing real conversation, unspoken needs, what you want</td>
+        <td>"Most people open this app at a 5. You opened it at [N]. That's honest. Let's work with that."</td>
+        <td>Building +2 — wants to rebuild connection</td>
+        <td>Varies — all badges possible depending on other axes</td>
+      </tr>
+      <tr>
+        <td><strong>6–7</strong></td>
+        <td>The Good Place, Going Deeper</td>
+        <td>What's working, how you know, private shared language, what you protect, where you're headed</td>
+        <td>"Most people open at a 5. You opened at [N]. You're doing better than you think — and we'll make sure it stays that way."</td>
+        <td>Protecting +2 — wants to sustain what's good</td>
+        <td>The Warm Keeper, The Joyful Anchor, The Spark Keeper</td>
+      </tr>
+      <tr>
+        <td><strong>8–9</strong></td>
+        <td>The Strong Foundation</td>
+        <td>Depth of comfort, honesty corners, conflict strength, what you admire, the private question</td>
+        <td>"[N] out of 10. You're here because you want to protect something good. That's the smartest thing a couple can do."</td>
+        <td>Protecting +2 (strong) — deeply invested in maintaining</td>
+        <td>The Warm Keeper, The Quiet Strength</td>
+      </tr>
+      <tr>
+        <td><strong>10</strong></td>
+        <td>The Perfect Ten — Examined</td>
+        <td>Earned vs genuine, what "perfect" actually costs, attention, can't assume it — must keep choosing it</td>
+        <td>"10. Either things are genuinely perfect — or you're being very kind to yourself. Either way, we'll find out. Let's begin."</td>
+        <td>Protecting +2 — high investment in preservation</td>
+        <td>The Spark Keeper, The Joyful Anchor</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══ GAPS & ADDITIONS ══ -->
+<div id="gaps">
+  <div class="sec-hd" style="background:#1A2E2A">
+    <h2>GAPS & CONNECTIONS TO ADD</h2>
+    <span class="badge">Founder action items</span>
+  </div>
+  <div class="sec-body" style="padding:18px 22px">
+    <p style="font-size:13px;color:#4A7067;margin-bottom:16px">The following connections currently exist as logic or data but are not yet surfaced visibly in the experience. These are opportunities to make the user feel more known:</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #D4537E">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#D4537E;letter-spacing:.08em;margin-bottom:5px">Gap 1 — Mood continuity not yet visible to user</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">The 5-day mood chart is calculated and shown on Day 5 — but the user has no visual sense of their emotional arc <em>while</em> they're in it (Days 2–4). Consider: a subtle, always-visible "emotional pulse" that grows across the days, so users feel the arc building before Day 5.</p>
+      </div>
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #B07010">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#B07010;letter-spacing:.08em;margin-bottom:5px">Gap 2 — Segment identity never reflected back before Day 5</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">The user is placed in a segment ("The Slow Drift," "The Strong Foundation") on Day 1 but never told what segment they're in. The Personality Type is revealed, but the emotional starting point is not explicitly named. Consider: a soft, non-clinical acknowledgement on Day 2 or 3 that references where they started — "You came in feeling like things needed work. Look what three days of showing up feels like."</p>
+      </div>
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #4A8FD4">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#4A8FD4;letter-spacing:.08em;margin-bottom:5px">Gap 3 — Personality type personalisation stops after Day 4 Trivia</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">After the Day 1 type determination, personalisation happens in Day 3 Mirror Game questions (strong connection) and Day 4 Trivia (good connection) — but the Bridge 3→4 quote, the Bridge 4→5 Significance Line, and several Day 5 insight lines are still generic. Consider: one type-adaptive phrase in at least Bridge 3→4 and one in the Day 5 report beyond just Section 3.</p>
+      </div>
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #1D9E75">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#1D9E75;letter-spacing:.08em;margin-bottom:5px">Gap 4 — Daily 2 keyword tone scoring is invisible</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">The Day 4 journal entry (Card 1: "What emotion are you carrying?") is scanned for warmth vs heavy keywords to set the D4 bar on the mood chart and determine the Trend Bonus. The user has no idea this is happening. While intentionally invisible, it could be worth surfacing on Day 5 as a gentle reflection: "The way you described Day 4 felt warmer than how you described Day 1."</p>
+      </div>
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #6053C0">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6053C0;letter-spacing:.08em;margin-bottom:5px">Gap 5 — Bridge quotes are fully generic</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">All 4 bridge quotes ("Noticing what's good is not the same as ignoring what's hard", etc.) are the same for all users regardless of their segment, personality type, or preceding day's activity. These are good quotes — but they could be even more powerful with 2–3 variations per bridge that adapt to the user's emotional segment or recent mood pattern.</p>
+      </div>
+
+      <div style="background:white;border-radius:10px;padding:14px 16px;border-left:4px solid #E67E22">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#E67E22;letter-spacing:.08em;margin-bottom:5px">Opportunity — D5 report pattern reads need more combinations mapped</div>
+        <p style="font-size:12.5px;color:#1A2E2A;line-height:1.6">The Emotional Weather section in the Day 5 report currently has 4 pre-written pattern reads (all positive, mixed, heavy-then-positive, consistently heavy). The actual combinations possible across 3 inputs (Day 1 vibe, Day 2 mood, Day 3 Mood Board theme) run into dozens. Mapping at least 8–10 combinations with specific language would meaningfully increase the "they know me" feeling at the report's most personal section.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="background:#1A2E2A;color:#4A7067;text-align:center;padding:18px;border-radius:10px;margin-top:30px;font-size:11.5px;line-height:1.7">
+  LDA 5-Day Activity & Connectivity Map · Founder Reference · All activities · All connections · All Day 5 outputs · No technical datasets
+</div>
+
+</div>
+</body>
+</html>

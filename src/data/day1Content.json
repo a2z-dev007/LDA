@@ -39,242 +39,472 @@
       "segment_1": {
         "name": "The Quiet Crisis",
         "moodBadges": ["Honest · Self-aware", "Reflective · Brave", "Tender · Honest", "Deep · Vulnerable", "Grounded · Clear", "Curious · Open", "Honest · Self-aware"],
-        "questions": [
-          {
-            "id": "q1",
-            "prompt": "When you feel disconnected, you usually…",
-            "optionA": "lonely because they're right there",
-            "optionB": "tired from trying a long time"
-          },
-          {
-            "id": "q2",
-            "prompt": "The last time you felt truly close was…",
-            "optionA": "longer ago than you're comfortable admitting",
-            "optionB": "hard to remember clearly — which tells you everything"
-          },
-          {
-            "id": "q3",
-            "prompt": "What broke down was…",
-            "optionA": "you stopped really talking — conversations became logistics",
-            "optionB": "you stopped choosing each other — it became automatic, not intentional"
-          },
-          {
-            "id": "q4",
-            "prompt": "Your honest role…",
-            "optionA": "you've tried — and you're not sure it's been enough",
-            "optionB": "there are things you could have done differently that you haven't yet"
-          },
-          {
-            "id": "q5",
-            "prompt": "The fear is…",
-            "optionA": "this becomes permanent — that this is just who you are now",
-            "optionB": "one of you will stop trying before the other is ready"
-          },
-          {
-            "id": "q6",
-            "prompt": "What you still believe…",
-            "optionA": "this relationship has something worth fighting for",
-            "optionB": "you're not sure yet — but you're here, which means something"
-          },
-          {
-            "id": "q7",
-            "prompt": "Why you're here…",
-            "optionA": "you're not ready to give up — you just need somewhere to start",
-            "optionB": "you want to understand what happened before you decide anything"
-          }
-        ]
+        "sets": {
+          "set_a": [
+            {
+              "id": "q1",
+              "prompt": "When you think about your relationship right now, the feeling that sits heaviest is ___",
+              "optionA": "A loneliness that's strange because they're right there",
+              "optionB": "A tiredness — like you've been trying for a long time"
+            },
+            {
+              "id": "q2",
+              "prompt": "The last time you felt genuinely close to your partner was ___",
+              "optionA": "Longer ago than you're comfortable admitting",
+              "optionB": "Hard to remember clearly — which tells you everything"
+            },
+            {
+              "id": "q3",
+              "prompt": "If you had to name the one thing that slowly changed between you two, it would be ___",
+              "optionA": "You stopped really talking — conversations became logistics",
+              "optionB": "You stopped choosing each other — it became automatic, not intentional"
+            },
+            {
+              "id": "q4",
+              "prompt": "When you reflect on where things are, you feel ___",
+              "optionA": "Like you've tried — and you're not sure it's been enough",
+              "optionB": "Like there are things you could have done differently that you haven't yet"
+            },
+            {
+              "id": "q5",
+              "prompt": "The thing you're most afraid of right now is ___",
+              "optionA": "That this becomes permanent — that this is just who you are now",
+              "optionB": "That one of you will stop trying before the other is ready"
+            },
+            {
+              "id": "q6",
+              "prompt": "Even now, somewhere in you, you believe ___",
+              "optionA": "This relationship has something worth fighting for",
+              "optionB": "You're not sure yet — but you're here, which means something"
+            },
+            {
+              "id": "q7",
+              "prompt": "You opened this app today because ___",
+              "optionA": "You're not ready to give up — you just need somewhere to start",
+              "optionB": "You want to understand what happened before you decide anything"
+            }
+          ],
+          "set_b": [
+            {
+              "id": "q1",
+              "prompt": "The space between you and your partner right now feels ___",
+              "optionA": "Like something drifted — slowly, quietly, without a single big moment",
+              "optionB": "Like something broke — and neither of you has fully acknowledged it yet"
+            },
+            {
+              "id": "q2",
+              "prompt": "When something hurts, you ___",
+              "optionA": "Keep it inside — because saying it out loud feels like opening something you can't close",
+              "optionB": "Say something — but it rarely comes out the way you meant it to"
+            },
+            {
+              "id": "q3",
+              "prompt": "Right now, the effort in your relationship feels ___",
+              "optionA": "One-sided — and you're not sure which side you're even on anymore",
+              "optionB": "Absent — like you've both gone quiet at the same time"
+            },
+            {
+              "id": "q4",
+              "prompt": "The last time you felt truly seen by your partner was ___",
+              "optionA": "A while ago — it happened, just not recently",
+              "optionB": "You're struggling to think of a specific moment right now"
+            },
+            {
+              "id": "q5",
+              "prompt": "The one thing that could actually move something right now is ___",
+              "optionA": "One real conversation — not a fight, just an honest one",
+              "optionB": "One moment of feeling chosen — not out of habit, but on purpose"
+            },
+            {
+              "id": "q6",
+              "prompt": "The question you ask yourself most about this relationship is ___",
+              "optionA": "Is this just a hard season — or have we become strangers?",
+              "optionB": "Do they still see me — or just the version of me they got used to?"
+            },
+            {
+              "id": "q7",
+              "prompt": "You're here because ___",
+              "optionA": "Love is still there — it's just buried under everything else",
+              "optionB": "You want to find out if love is enough to rebuild on"
+            }
+          ]
+        }
       },
       "segment_2": {
         "name": "The Slow Drift",
         "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
-        "questions": [
-          {
-            "id": "q1",
-            "prompt": "Your relationship feels…",
-            "optionA": "fine on the surface — but not quite what it used to be underneath",
-            "optionB": "like you're both waiting for something to shift, without saying it"
-          },
-          {
-            "id": "q2",
-            "prompt": "The disconnection lives…",
-            "optionA": "in the everyday — the routines have replaced the real conversations",
-            "optionB": "in the emotional — you talk, but you're not sure they really hear you"
-          },
-          {
-            "id": "q3",
-            "prompt": "The unspoken thing is…",
-            "optionA": "a low-level frustration that keeps recycling",
-            "optionB": "something you genuinely need that you haven't found the words for yet"
-          },
-          {
-            "id": "q4",
-            "prompt": "When things get tense, you…",
-            "optionA": "address it — even imperfectly, even messily",
-            "optionB": "let it settle first — you need to process before you can speak"
-          },
-          {
-            "id": "q5",
-            "prompt": "Compared to a year ago, things feel…",
-            "optionA": "comfortable — which is good, but also a little too quiet",
-            "optionB": "different in a way you haven't fully named yet"
-          },
-          {
-            "id": "q6",
-            "prompt": "What's getting in the way is…",
-            "optionA": "life — the pace, the stress, the endless list of things that aren't each other",
-            "optionB": "something between the two of you specifically — not external, internal"
-          },
-          {
-            "id": "q7",
-            "prompt": "What you actually want is…",
-            "optionA": "to feel close again — not perfect, just genuinely close",
-            "optionB": "to feel like you're both choosing this — not just maintaining it"
-          }
-        ]
+        "sets": {
+          "set_a": [
+            {
+              "id": "q1",
+              "prompt": "When you're honest about your relationship right now, it mostly feels ___",
+              "optionA": "Fine on the surface — but not quite what it used to be underneath",
+              "optionB": "Like you're both waiting for something to shift, without saying it"
+            },
+            {
+              "id": "q2",
+              "prompt": "The place you feel least connected to your partner is ___",
+              "optionA": "In the everyday — the routines have replaced the real conversations",
+              "optionB": "In the emotional — you talk, but you're not sure they really hear you"
+            },
+            {
+              "id": "q3",
+              "prompt": "There is something between you right now that neither of you has said out loud. That thing is closer to ___",
+              "optionA": "A low-level frustration that keeps recycling",
+              "optionB": "Something you genuinely need that you haven't found the words for yet"
+            },
+            {
+              "id": "q4",
+              "prompt": "When there's tension between you, your instinct is to ___",
+              "optionA": "Address it — even imperfectly, even messily",
+              "optionB": "Let it settle first — you need to process before you can speak"
+            },
+            {
+              "id": "q5",
+              "prompt": "Your relationship right now compared to a year ago is ___",
+              "optionA": "Comfortable — which is good, but also a little too quiet",
+              "optionB": "Different in a way you haven't fully named yet"
+            },
+            {
+              "id": "q6",
+              "prompt": "The thing most coming between you and your partner right now is ___",
+              "optionA": "Life — the pace, the stress, the endless list of things that aren't each other",
+              "optionB": "Something between the two of you specifically — not external, internal"
+            },
+            {
+              "id": "q7",
+              "prompt": "What you actually want from this relationship right now is ___",
+              "optionA": "To feel close again — not perfect, just genuinely close",
+              "optionB": "To feel like you're both choosing this — not just maintaining it"
+            }
+          ],
+          "set_b": [
+            {
+              "id": "q1",
+              "prompt": "Your relationship right now feels most like ___",
+              "optionA": "A song you both know but have stopped actually listening to",
+              "optionB": "A conversation that keeps getting interrupted before it gets real"
+            },
+            {
+              "id": "q2",
+              "prompt": "When you think about who tries harder to keep things connected ___",
+              "optionA": "You feel like you're carrying slightly more than your share",
+              "optionB": "You feel like you're both trying — just in different directions"
+            },
+            {
+              "id": "q3",
+              "prompt": "The last time you had a conversation that actually meant something was ___",
+              "optionA": "Recently enough — but not as often as you'd like",
+              "optionB": "Long enough ago that you feel it as a gap"
+            },
+            {
+              "id": "q4",
+              "prompt": "The small thing that bothers you most — the one you never say — is ___",
+              "optionA": "Feeling like you're not a priority when other things come up",
+              "optionB": "Feeling like you have to manage your emotions before they feel safe to share"
+            },
+            {
+              "id": "q5",
+              "prompt": "Even at a 4 or 5, the thing that's still clearly there is ___",
+              "optionA": "Care — you genuinely care about each other, even when it's hard",
+              "optionB": "History — you've built something real, even if it needs attention right now"
+            },
+            {
+              "id": "q6",
+              "prompt": "If you traced back to when things started feeling less connected, it was probably ___",
+              "optionA": "Gradual — no single moment, just a slow background drift",
+              "optionB": "A specific period — something happened and the recovery was incomplete"
+            },
+            {
+              "id": "q7",
+              "prompt": "The version of your relationship you still believe is possible looks like ___",
+              "optionA": "Coming home to each other — not just to the same house",
+              "optionB": "Talking the way you used to — before the filters went up"
+            }
+          ]
+        }
       },
       "segment_3": {
         "name": "The Good Place, Going Deeper",
         "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
-        "questions": [
-          {
-            "id": "q1",
-            "prompt": "You know it's working because of…",
-            "optionA": "the ease — things feel natural, comfortable, genuinely safe",
-            "optionB": "the growth — you're both different people than when you started, in the best way"
-          },
-          {
-            "id": "q2",
-            "prompt": "Your partner knows you love them through…",
-            "optionA": "the consistent small things you do without being asked",
-            "optionB": "the way you show up fully when something actually matters"
-          },
-          {
-            "id": "q3",
-            "prompt": "The honest nuance is…",
-            "optionA": "the depth of your conversations — more real, less routine",
-            "optionB": "the frequency of intentional time — more chosen moments, fewer accidental ones"
-          },
-          {
-            "id": "q4",
-            "prompt": "When there's small friction, you…",
-            "optionA": "address it quickly — you've learned not to let things accumulate",
-            "optionB": "give it space — you've learned that not everything needs a conversation"
-          },
-          {
-            "id": "q5",
-            "prompt": "The inside thing you share is…",
-            "optionA": "a private language — references, looks, words that belong only to the two of you",
-            "optionB": "a way of being together that just works — hard to explain, obvious when you're in it"
-          },
-          {
-            "id": "q6",
-            "prompt": "What you protect most is…",
-            "optionA": "the quality time — not letting life quietly eat it all",
-            "optionB": "the honesty — not letting comfort become performance"
-          },
-          {
-            "id": "q7",
-            "prompt": "Where you're headed feels like…",
-            "optionA": "building something — there's a clear sense of direction and shared purpose",
-            "optionB": "enjoying something — the present is genuinely good and that's enough right now"
-          }
-        ]
+        "sets": {
+          "set_a": [
+            {
+              "id": "q1",
+              "prompt": "The clearest sign your relationship is in a good place right now is ___",
+              "optionA": "The ease — things feel natural, comfortable, genuinely safe",
+              "optionB": "The growth — you're both different people than when you started, in the best way"
+            },
+            {
+              "id": "q2",
+              "prompt": "Your partner knows you love them most because of ___",
+              "optionA": "The consistent small things you do without needing to be asked",
+              "optionB": "The way you show up fully when something actually matters"
+            },
+            {
+              "id": "q3",
+              "prompt": "Even in a good relationship, the one thing you'd quietly change is ___",
+              "optionA": "The depth of your conversations — more real, less routine",
+              "optionB": "The frequency of intentional time — more chosen moments, fewer accidental ones"
+            },
+            {
+              "id": "q4",
+              "prompt": "When something small creates friction between you ___",
+              "optionA": "You address it quickly — you've learned not to let things accumulate",
+              "optionB": "You give it space — you've learned that not everything needs a conversation"
+            },
+            {
+              "id": "q5",
+              "prompt": "The thing about your relationship that's only yours — that outsiders wouldn't understand — is ___",
+              "optionA": "A private language — references, looks, words that belong only to the two of you",
+              "optionB": "A way of being together that just works — hard to explain, obvious when you're in it"
+            },
+            {
+              "id": "q6",
+              "prompt": "The thing you're most intentional about protecting in your relationship is ___",
+              "optionA": "The quality time — not letting life quietly eat it all",
+              "optionB": "The honesty — not letting comfort become performance"
+            },
+            {
+              "id": "q7",
+              "prompt": "You and your partner are ___",
+              "optionA": "Building something — there's a clear sense of direction and shared purpose",
+              "optionB": "Enjoying something — the present is genuinely good and that's enough right now"
+            }
+          ],
+          "set_b": [
+            {
+              "id": "q1",
+              "prompt": "At the core, your relationship works because ___",
+              "optionA": "You're genuinely compatible — you want the same things in the same direction",
+              "optionB": "You've worked at it — it's good because you've both chosen to make it good"
+            },
+            {
+              "id": "q2",
+              "prompt": "You and your partner are most connected when ___",
+              "optionA": "You're in motion together — doing something, going somewhere, in an experience",
+              "optionB": "You're completely still — just present, no agenda, nowhere to be"
+            },
+            {
+              "id": "q3",
+              "prompt": "If you were to identify the one area that could quietly make your relationship even better ___",
+              "optionA": "It would be saying more of what you actually feel — not less",
+              "optionB": "It would be doing more of what matters — not just what's convenient"
+            },
+            {
+              "id": "q4",
+              "prompt": "Your partner shows love mostly by ___",
+              "optionA": "Paying attention — remembering things, noticing things, being present",
+              "optionB": "Acting — doing things, solving things, showing up in practical ways"
+            },
+            {
+              "id": "q5",
+              "prompt": "The relationship you want to have is ___",
+              "optionA": "One that keeps surprising you — that stays curious and alive",
+              "optionB": "One that becomes unshakeable — deep roots, total trust, total ease"
+            },
+            {
+              "id": "q6",
+              "prompt": "The thing you do best together — that you're quietly proud of — is ___",
+              "optionA": "How you handle difficulty — you come out of hard things closer",
+              "optionB": "How you enjoy each other — the lightness is real and it's rare"
+            },
+            {
+              "id": "q7",
+              "prompt": "You're using this app because ___",
+              "optionA": "Something this good deserves to be actively looked after",
+              "optionB": "You know that good relationships don't stay good without intention"
+            }
+          ]
+        }
       },
       "segment_4": {
         "name": "The Strong Foundation",
         "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
-        "questions": [
-          {
-            "id": "q1",
-            "prompt": "Your relationship feels like…",
-            "optionA": "something you grew — it took time and work and it shows",
-            "optionB": "something you found — a rare fit that you both recognised and held onto"
-          },
-          {
-            "id": "q2",
-            "prompt": "Your deepest comfort is…",
-            "optionA": "being completely yourself — no performance, no editing, just you",
-            "optionB": "being completely safe — knowing they're there regardless of what comes"
-          },
-          {
-            "id": "q3",
-            "prompt": "The honest corner is…",
-            "optionA": "how much you need to hear that you're valued — not assumed, actually said",
-            "optionB": "how much you notice the small things they do — and how much it means"
-          },
-          {
-            "id": "q4",
-            "prompt": "Your conflict strength is…",
-            "optionA": "come back to each other — the repair is always faster than the rupture",
-            "optionB": "stay fair — neither of you fights dirty, even when it's hard"
-          },
-          {
-            "id": "q5",
-            "prompt": "What you admire most is…",
-            "optionA": "the way they move through difficulty — their resilience quietly amazes you",
-            "optionB": "the way they see the world — their perspective consistently surprises you"
-          },
-          {
-            "id": "q6",
-            "prompt": "The private question you carry is…",
-            "optionA": "are we growing in the same direction — or has the direction quietly shifted?",
-            "optionB": "am I being the partner they actually need — not just the one I think I'm being?"
-          },
-          {
-            "id": "q7",
-            "prompt": "What you're protecting is…",
-            "optionA": "the depth — the knowing-each-other that took years to build",
-            "optionB": "the spark — making sure comfort never becomes invisible to each other"
-          }
-        ]
+        "sets": {
+          "set_a": [
+            {
+              "id": "q1",
+              "prompt": "Your relationship at 8 or 9 feels like ___",
+              "optionA": "Something you grew — it took time and work and it shows",
+              "optionB": "Something you found — a rare fit that you both recognised and held onto"
+            },
+            {
+              "id": "q2",
+              "prompt": "The thing that makes your relationship feel like home is ___",
+              "optionA": "Being completely yourself — no performance, no editing, just you",
+              "optionB": "Being completely safe — knowing they're there regardless of what comes"
+            },
+            {
+              "id": "q3",
+              "prompt": "Even at an 8 or 9, the one thing you don't always say out loud is ___",
+              "optionA": "How much you need to hear that you're valued — not assumed, actually said",
+              "optionB": "How much you notice the small things they do — and how much it means"
+            },
+            {
+              "id": "q4",
+              "prompt": "When you and your partner disagree, the thing you do best is ___",
+              "optionA": "Come back to each other — the repair is always faster than the rupture",
+              "optionB": "Stay fair — neither of you fights dirty, even when it's hard"
+            },
+            {
+              "id": "q5",
+              "prompt": "The thing about your partner that you genuinely admire — that goes beyond love — is ___",
+              "optionA": "The way they move through difficulty — their resilience quietly amazes you",
+              "optionB": "The way they see the world — their perspective consistently surprises you"
+            },
+            {
+              "id": "q6",
+              "prompt": "The question you come back to privately is ___",
+              "optionA": "Are we growing in the same direction — or has the direction quietly shifted?",
+              "optionB": "Am I being the partner they actually need — not just the one I think I'm being?"
+            },
+            {
+              "id": "q7",
+              "prompt": "At 8 or 9, what you're most committed to protecting is ___",
+              "optionA": "The depth — the knowing-each-other that took years to build",
+              "optionB": "The spark — making sure comfort never becomes invisible to each other"
+            }
+          ],
+          "set_b": [
+            {
+              "id": "q1",
+              "prompt": "Your relationship right now feels most like ___",
+              "optionA": "A well-worn favourite thing — comfortable, trusted, completely yours",
+              "optionB": "Something still being discovered — familiar but not yet fully known"
+            },
+            {
+              "id": "q2",
+              "prompt": "How you stay close ___",
+              "optionA": "The way you communicate — honestly, often, even about the hard things",
+              "optionB": "The way you prioritise each other — not by accident, by choice"
+            },
+            {
+              "id": "q3",
+              "prompt": "If there's one small thing slightly missing right now at an 8 or 9, it's ___",
+              "optionA": "More spontaneity — things are good but slightly predictable",
+              "optionB": "More depth in conversation — things are warm but sometimes surface-level"
+            },
+            {
+              "id": "q4",
+              "prompt": "You feel most loved by your partner when ___",
+              "optionA": "They stop everything and are just completely there with you",
+              "optionB": "They do something that proves they were thinking about you when you weren't around"
+            },
+            {
+              "id": "q5",
+              "prompt": "The thing you two do better together than separately is ___",
+              "optionA": "Handle hard things — you're each other's best thinking partner",
+              "optionB": "Enjoy ordinary things — the mundane is genuinely good when they're in it"
+            },
+            {
+              "id": "q6",
+              "prompt": "To move from an 8 to a 10, the thing that would make the most difference is ___",
+              "optionA": "More honesty about the things you hold back even in a safe relationship",
+              "optionB": "More presence — being together without the background noise of everything else"
+            },
+            {
+              "id": "q7",
+              "prompt": "The truest sentence about your relationship right now is ___",
+              "optionA": "We've built something real — and I don't take that lightly",
+              "optionB": "We're still building — and that's the part I love most"
+            }
+          ]
+        }
       },
       "segment_5": {
         "name": "The Perfect Ten — Examined",
         "moodBadges": ["Honest · Self-aware", "Curious · Open", "Reflective · Brave", "Tender · Honest", "Spicy · Self-aware", "Deep · Vulnerable", "Grounded · Clear"],
-        "questions": [
-          {
-            "id": "q1",
-            "prompt": "Your 10 is…",
-            "optionA": "earned — you've done the work and this is what it feels like",
-            "optionB": "genuine — it's just always been this way and you're aware of how rare that is"
-          },
-          {
-            "id": "q2",
-            "prompt": "When you say 10, you mean…",
-            "optionA": "complete trust — you could say anything and know it would be held safely",
-            "optionB": "complete ease — being with them is the most natural thing in your life"
-          },
-          {
-            "id": "q3",
-            "prompt": "The honest fine print is…",
-            "optionA": "time — even at 10 the one currency you're always short of is uninterrupted time together",
-            "optionB": "expression — at 10 you sometimes assume they know things you haven't actually said"
-          },
-          {
-            "id": "q4",
-            "prompt": "How you got here…",
-            "optionA": "you've navigated hard things together — the score reflects survival and growth",
-            "optionB": "you simply work — the compatibility was always there and you both knew it"
-          },
-          {
-            "id": "q5",
-            "prompt": "Your most alive moment together is…",
-            "optionA": "something new together — travel, decisions, adventures, firsts",
-            "optionB": "something completely ordinary — and it's still the best place to be"
-          },
-          {
-            "id": "q6",
-            "prompt": "What you know about 10s…",
-            "optionA": "you can't assume it — you have to keep choosing it",
-            "optionB": "it doesn't mean perfect — it means you'd choose this exact person in any version of your life"
-          },
-          {
-            "id": "q7",
-            "prompt": "Why you're using this app at 10…",
-            "optionA": "the best thing you can do with something this good is pay attention to it",
-            "optionB": "you want to know if your partner would give you the same number — and what it means if it's different"
-          }
-        ]
+        "sets": {
+          "set_a": [
+            {
+              "id": "q1",
+              "prompt": "Your 10 is ___",
+              "optionA": "Earned — you've done the work and this is what it feels like",
+              "optionB": "Genuine — it's just always been this way and you're aware of how rare that is"
+            },
+            {
+              "id": "q2",
+              "prompt": "When you say 10, you mean ___",
+              "optionA": "Complete trust — you could say anything and know it would be held safely",
+              "optionB": "Complete ease — being with them is the most natural thing in your life"
+            },
+            {
+              "id": "q3",
+              "prompt": "At a 10, the thing you still want more of is ___",
+              "optionA": "Time — even at 10 the one currency you're always short of is uninterrupted time together",
+              "optionB": "Expression — at 10 you sometimes assume they know things you haven't actually said"
+            },
+            {
+              "id": "q4",
+              "prompt": "Your relationship is a 10 mostly because ___",
+              "optionA": "You've navigated hard things together — the score reflects survival and growth",
+              "optionB": "You simply work — the compatibility was always there and you both knew it"
+            },
+            {
+              "id": "q5",
+              "prompt": "Your relationship feels most alive when ___",
+              "optionA": "You're in something new together — travel, decisions, adventures, firsts",
+              "optionB": "You're in something completely ordinary — and it's still the best place to be"
+            },
+            {
+              "id": "q6",
+              "prompt": "The thing you've learned about being at a 10 is ___",
+              "optionA": "You can't assume it — you have to keep choosing it",
+              "optionB": "It doesn't mean perfect — it means you'd choose this exact person in any version of your life"
+            },
+            {
+              "id": "q7",
+              "prompt": "You're using this app at a 10 because ___",
+              "optionA": "The best thing you can do with something this good is pay attention to it",
+              "optionB": "You want to know if your partner would give you the same number"
+            }
+          ],
+          "set_b": [
+            {
+              "id": "q1",
+              "prompt": "A 10 for you means ___",
+              "optionA": "Feeling genuinely chosen — not just stayed with, but actively chosen every day",
+              "optionB": "Feeling genuinely known — the real version of you, not the curated one"
+            },
+            {
+              "id": "q2",
+              "prompt": "The thing that pushes you from a 9 to a 10 is ___",
+              "optionA": "Safety — you can be completely honest without calculating the risk first",
+              "optionB": "Joy — there is a consistent lightness between you that you've never taken for granted"
+            },
+            {
+              "id": "q3",
+              "prompt": "At a 10, the thing you notice most about your partner right now is ___",
+              "optionA": "How much you still like them — separate from loving them, you genuinely like who they are",
+              "optionB": "How much they've grown — you're with a different person than you started with, and they're better"
+            },
+            {
+              "id": "q4",
+              "prompt": "Even at a 10, the question you occasionally ask yourself is ___",
+              "optionA": "Am I growing as a partner at the same pace as this relationship deserves?",
+              "optionB": "Are we saying the important things out loud — or just feeling them privately?"
+            },
+            {
+              "id": "q5",
+              "prompt": "A 10 shows up in your daily life mostly as ___",
+              "optionA": "A feeling — an underlying warmth that doesn't need a reason",
+              "optionB": "A behaviour — the things you do automatically because this person matters"
+            },
+            {
+              "id": "q6",
+              "prompt": "Your relationship is a 10 partly because you ___",
+              "optionA": "Show up consistently — the reliability is real and it builds something solid",
+              "optionB": "Stay curious — you haven't stopped wanting to know more about them"
+            },
+            {
+              "id": "q7",
+              "prompt": "The reason a 10 needs this app is ___",
+              "optionA": "Because attention is how a 10 stays a 10 — not by accident",
+              "optionB": "Because you want to find out what your partner's number is — and what it means if it's different"
+            }
+          ]
+        }
       }
     }
   },

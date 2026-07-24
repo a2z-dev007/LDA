@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { DayHeader } from '../components/common/DayHeader';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
-  KeyboardAvoidingView, Platform, Animated, ImageBackground,
+  KeyboardAvoidingView, Platform, Animated, ImageBackground, Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -19,6 +20,7 @@ import {
 } from '../components/icons/NameKeeperIcons';
 import { GradientButton } from '../components/common/GradientButton';
 import { IMAGE } from '../assets/image/bg-images';
+import { Sparkle, WandSparkles } from 'lucide-react-native';
 
 type Nav = StackNavigationProp<RootStackParamList, 'NameKeeper'>;
 
@@ -31,12 +33,23 @@ export const NameKeeperScreen: React.FC = () => {
 
   const [userName, setUserNameInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  
+
   const shake = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     // Entrance animation
@@ -104,10 +117,10 @@ export const NameKeeperScreen: React.FC = () => {
     >
       <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
         <KeyboardAvoidingView style={styles.inner} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Animated.View 
+          <Animated.View
             style={[
-              styles.container, 
-              { 
+              styles.container,
+              {
                 opacity: fadeAnim,
                 transform: [
                   { translateY: slideAnim },
@@ -118,7 +131,7 @@ export const NameKeeperScreen: React.FC = () => {
           >
             {/* Decorative floating elements */}
             <View style={styles.decorativeContainer}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.floatingIcon,
                   styles.floatingIcon1,
@@ -127,21 +140,21 @@ export const NameKeeperScreen: React.FC = () => {
               >
                 <HeartIcon size={24} color={colors.primary} />
               </Animated.View>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.floatingIcon,
                   styles.floatingIcon2,
-                  { 
-                    transform: [{ 
+                  {
+                    transform: [{
                       scale: pulseAnim.interpolate({
                         inputRange: [1, 1.1],
                         outputRange: [1, 1.15]
                       })
-                    }] 
+                    }]
                   }
                 ]}
               >
-                <SparkleIcon size={20} color={colors.primary} />
+                <WandSparkles size={20} color={colors.primary} />
               </Animated.View>
             </View>
 
@@ -156,7 +169,7 @@ export const NameKeeperScreen: React.FC = () => {
                   <View style={[styles.heroIconGlow, { backgroundColor: colors.primary }]} />
                 </View>
 
-                <Text style={styles.eyebrow}>ONE LAST THING</Text>
+                <DayHeader eyebrow="ONE LAST THING" />
 
                 <Text style={styles.title}>
                   What should we{'\n'}call you?
@@ -169,7 +182,7 @@ export const NameKeeperScreen: React.FC = () => {
 
               {/* Input section */}
               <View style={styles.inputSection}>
-                <Animated.View 
+                <Animated.View
                   style={[
                     styles.inputCard,
                     isFocused && styles.inputCardFocused,
@@ -212,26 +225,28 @@ export const NameKeeperScreen: React.FC = () => {
               </View>
             </View>
 
-            {/* Footer with button */}
-            <View style={styles.footer}>
-              <GradientButton
-                text="Continue to Day 1"
-                onPress={handleContinue}
-                disabled={!userName.trim()}
-                showArrow={true}
-                fullWidth={true}
-              />
+            {/* Footer with button — Hidden when keyboard is open to avoid UI overlap */}
+            {!isKeyboardVisible && (
+              <View style={styles.footer}>
+                <GradientButton
+                  text="Continue to Day 1"
+                  onPress={handleContinue}
+                  disabled={!userName.trim()}
+                  showArrow={true}
+                  fullWidth={true}
+                />
 
-              {/* Progress indicator */}
-              <View style={styles.progressContainer}>
-                <View style={styles.progressDots}>
-                  <View style={[styles.dot, styles.dotComplete]} />
-                  <View style={[styles.dot, styles.dotComplete]} />
-                  <View style={[styles.dot, styles.dotActive]} />
+                {/* Progress indicator */}
+                <View style={styles.progressContainer}>
+                  <View style={styles.progressDots}>
+                    <View style={[styles.dot, styles.dotComplete]} />
+                    <View style={[styles.dot, styles.dotComplete]} />
+                    <View style={[styles.dot, styles.dotActive]} />
+                  </View>
+                  <Text style={styles.progressText}>Step 3 of 3</Text>
                 </View>
-                <Text style={styles.progressText}>Step 3 of 3</Text>
               </View>
-            </View>
+            )}
           </Animated.View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -256,7 +271,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     paddingTop: metrics.spacing.xl,
     paddingBottom: metrics.spacing.md,
   },
-  
+
   // Decorative elements
   decorativeContainer: {
     position: 'absolute',
@@ -327,12 +342,6 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     left: -8,
     zIndex: 1,
   },
-  eyebrow: {
-    ...typography.captionSmall,
-    color: c.primary,
-    marginBottom: metrics.spacing.md,
-    textAlign: 'center',
-  },
   title: {
     ...typography.displayLarge,
     color: c.text,
@@ -351,7 +360,7 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.md,
   },
   inputCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: metrics.radius.xl,
     borderWidth: 2,
     borderColor: 'rgba(45, 95, 93, 0.2)',
@@ -359,20 +368,20 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: metrics.spacing.md,
     paddingVertical: metrics.spacing.xs,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    // shadowColor: '#000000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.06,
+    // shadowRadius: 8,
+    // elevation: 2,
   },
   inputCardFocused: {
     borderColor: c.primary,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    shadowColor: c.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 4,
+    // shadowColor: c.primary,
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 16,
+    // elevation: 4,
   },
   inputIconWrapper: {
     width: 48,

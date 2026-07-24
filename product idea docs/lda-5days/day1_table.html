@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Calibri, Arial, sans-serif; background: #fff; padding: 24px; font-size: 13px; color: #1A1A1A; }
+
+.sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sheet-sub { font-size: 12px; color: #666; margin-bottom: 16px; }
+
+.btn-row { margin-bottom: 14px; }
+.btn { background: #217346; color: white; padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #1a5c38; }
+
+table { width: 100%; border-collapse: collapse; border: 1.5px solid #B0B0B0; }
+
+/* Header row */
+thead tr th {
+  background: #1F6B3A;
+  color: white;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border: 1px solid #166030;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Activity group header */
+.group-row td {
+  background: #D6E4F0;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #1A1A1A;
+  padding: 8px 11px;
+  border: 1px solid #B0B0B0;
+  letter-spacing: .01em;
+}
+
+/* Data rows */
+.data-row td {
+  padding: 7px 11px;
+  border: 1px solid #D0D0D0;
+  vertical-align: top;
+  line-height: 1.55;
+  font-size: 12px;
+}
+.data-row:nth-child(odd) td { background: #FFFFFF; }
+.data-row:nth-child(even) td { background: #F5F9F6; }
+.data-row:hover td { background: #EBF5FF; }
+
+/* Type badges — inline text only, no fancy pills */
+.type-score   { color: #1F6B3A; font-weight: 700; }
+.type-display { color: #1F4E79; font-weight: 700; }
+.type-exp     { color: #7B2D8B; font-weight: 700; }
+.type-route   { color: #833C00; font-weight: 700; }
+
+/* Max pts highlight */
+.pts { font-weight: 700; color: #1F6B3A; }
+.none { color: #999; font-style: italic; }
+
+/* Axis tags */
+.axis { font-weight: 700; }
+.a { color: #1F6B3A; }
+.b { color: #1F4E79; }
+.c { color: #833C00; }
+
+@media print {
+  .btn-row { display: none; }
+  body { padding: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet-title">LDA — Day 1: The Spark Check</div>
+<div class="sheet-sub">All activities · What scores · What it feeds on Day 5 · How it calculates · Plain explanation</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:14%">Activity</th>
+      <th style="width:9%">Activity Type</th>
+      <th style="width:13%">Linked to Day 5</th>
+      <th style="width:13%">Day 5 Section Name</th>
+      <th style="width:13%">Score / Points</th>
+      <th style="width:15%">How the Score Works</th>
+      <th style="width:19%">What This Means (Plain English)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- ── ACTIVITY 1 — SLIDER ── -->
+    <tr class="group-row">
+      <td>1</td>
+      <td colspan="7">Connection Slider &nbsp;—&nbsp; User drags a number from 1 to 10 to show how connected they feel to their partner right now</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Connection Slider</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score</td>
+      <td>Section 1 — Mood Journey Chart</td>
+      <td><span class="pts">Max 20 pts</span></td>
+      <td>Higher the number dragged → more points. Score of 10 = full 20 pts. Score of 1 = just 2 pts.</td>
+      <td>The number the user picks is the biggest single contributor to their Day 5 score. A person who feels more connected starts with more points.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Connection Slider</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts to one side</span></td>
+      <td>Score 6 or above = Protecting gets +2. Score 5 or below = Building gets +2.</td>
+      <td>A higher score means the user feels their relationship is in a good place and wants to protect it. A lower score means they want to grow and build something better. This is the strongest single signal deciding whether the badge leans toward Protecting or Building.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Connection Slider</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline + Letter</td>
+      <td>Section 5 — Week in Moments + The Letter</td>
+      <td><span class="none">No score</span></td>
+      <td>Number is shown as text. No calculation.</td>
+      <td>"You came in at 6/10" appears on the Day 1 card in the timeline. The same number personalises the closing Letter on Day 5.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Connection Slider</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Trend Bonus</td>
+      <td>Section 1 — Mood Journey (Bonus)</td>
+      <td><span class="pts">Up to +10 bonus pts</span></td>
+      <td>Day 1 score compared to Day 4 journal tone. Ended warmer = +10. About the same = +5. Ended lower = 0.</td>
+      <td>Rewards a user who grew emotionally across the week. Day 1 score acts as the baseline that Day 4 is measured against.</td>
+    </tr>
+
+
+    <!-- ── ACTIVITY 2 — HONEST MOMENT ── -->
+    <tr class="group-row">
+      <td>2</td>
+      <td colspan="7">The Honest Moment &nbsp;—&nbsp; A personalised, pre-written response shown based on the score. 4–6 second pause. No buttons. Nothing to tap.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Honest Moment</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 link</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>No calculation. Nothing stored.</td>
+      <td>This screen only exists to make the user feel understood before the quiz. A user who feels seen tends to answer the quiz more honestly — and those quiz answers DO feed the badge. The moment itself does nothing; what it enables matters.</td>
+    </tr>
+
+
+    <!-- ── ACTIVITY 3 — VIBE CHECK ── -->
+    <tr class="group-row">
+      <td>3</td>
+      <td colspan="7">Vibe Check — Game 05 (NEW) &nbsp;—&nbsp; 8 emoji tiles showing relationship moods. User taps one. Options: Growing · Drifting · Passionate · Quiet · Tired · Hopeful · Tender · Energised</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Vibe Check</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score</td>
+      <td>Section 1 — Mood Journey</td>
+      <td><span class="pts">Max 10 pts</span></td>
+      <td>Positive tiles (Growing, Hopeful, Energised, Passionate) = 10 pts. Tender or Quiet = 7 pts. Heavy tiles (Tired, Drifting) = 3 pts.</td>
+      <td>A positive relationship feeling contributes the most. A heavy feeling contributes less — but the user is still rewarded for showing up and being honest.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Vibe Check</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Tender or Quiet = Expressive +1. Energised, Passionate, or Growing = Active +1.</td>
+      <td>The tile tapped hints at how the user expresses love. Quiet and tender vibes suggest someone who loves deeply and privately. Energised and passionate vibes suggest someone who expresses love through action.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Vibe Check</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Growing, Hopeful, Energised = Building +1. Tender or Quiet = Protecting +1.</td>
+      <td>The vibe also hints at whether the user wants to grow the relationship further or protect what they already have.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Vibe Check</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Emotional Weather</td>
+      <td>Section 2 — Emotional Weather</td>
+      <td><span class="none">No score</span></td>
+      <td>Tile shown as a visual icon. No calculation.</td>
+      <td>The Day 1 vibe tile is the first of three emotional snapshots shown in the Day 5 Emotional Weather section — sitting alongside the Day 2 mood and the Day 3 Mood Board theme.</td>
+    </tr>
+
+
+    <!-- ── ACTIVITY 4 — SPARK QUIZ ── -->
+    <tr class="group-row">
+      <td>4</td>
+      <td colspan="7">Spark Quiz — 7 Questions &nbsp;—&nbsp; 5 different question sets based on the Day 1 slider score. Each question shows two illustrated card options. Tap one, it auto-advances. No confirm button.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Spark Quiz (Q1 + Q6)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts per question</span></td>
+      <td>Q1 Answer A = Expressive +2. Q1 Answer B = Active +2. Same logic applies to Q6. Q1 also breaks any tie on Axis A.</td>
+      <td>Questions 1 and 6 are the two biggest inputs for deciding whether the badge leans Expressive or Active. Each one is worth double the smaller signals from other activities.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Spark Quiz (Q4 + Q7)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts per question</span></td>
+      <td>Q4 Answer B = Deep +2. Q4 Answer A = Present +2. Same logic applies to Q7. Q7 also breaks any tie on Axis B.</td>
+      <td>Questions 4 and 7 measure whether the user values depth of connection or living in the present moment. These are the two biggest Axis B inputs from Day 1.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Spark Quiz (Q5, Q6, Q7)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="axis c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt per question</span></td>
+      <td>Q5-B = Protecting +1. Q5-A = Building +1. Q6-A = Protecting +1. Q7-A = Building +1.</td>
+      <td>Three separate quiz answers each add a smaller signal to Axis C. Combined with the slider result (+2), these questions complete the full picture of whether the badge leans toward Protecting or Building.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Spark Quiz (Q2)</td>
+      <td><span class="type-route">Routes Day 2 Content</span></td>
+      <td>Day 2 Follow-Up Question</td>
+      <td>Day 2 — If mood = Frustrated</td>
+      <td><span class="none">No score</span></td>
+      <td>Answer A on Q2 routes one follow-up question. Answer B routes a different one. Only activates if Day 2 mood is Frustrated.</td>
+      <td>This is the only quiz answer carried forward to change what the user sees on Day 2. If they pick Frustrated on the Day 2 candle, their Q2 answer here decides exactly which follow-up question is shown to them.</td>
+    </tr>
+
+
+    <!-- ── ACTIVITY 5 — PERSONALITY TYPE ── -->
+    <tr class="group-row">
+      <td>5</td>
+      <td colspan="7">Personality Type Result &nbsp;—&nbsp; One of four types shown: Steady Flame · Electric Spark · Deep Current · Shifting Tide. Comes with description, traits, and a growth area. Shareable card.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Personality Type Result</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Dedication Score</td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+1 Dedication pt</span></td>
+      <td>Completing all of Day 1 = 1 Dedication point. Dedication (max 7 pts total) feeds up to 30 of the 100 Connection Score points. Also sets badge tier: Gold (6–7 pts), Standard (4–5 pts), Emerging (2–3 pts).</td>
+      <td>Finishing Day 1 earns the first Dedication point. Dedication is the highest-value component of the Connection Score — worth up to 30 points. It also decides whether the badge comes with a gold ring, a standard ring, or an emerging treatment.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Personality Type Result</td>
+      <td><span class="type-route">Routes Day 3 Content</span></td>
+      <td>Day 3 Mirror Game</td>
+      <td>Day 3 — 10 True/False Statements</td>
+      <td><span class="none">No score</span></td>
+      <td>Type determines which set of 10 T/F statements is served. Steady Flame = small daily noticing. Electric Spark = dreams and ambition. Deep Current = inner life. Shifting Tide = relationship-specific.</td>
+      <td>The personality type from Day 1 directly decides which 10 Mirror Game questions the user gets on Day 3. Two users with different types get a completely different set of questions. This is the longest-range direct connection in the entire 5-day flow.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Personality Type Result</td>
+      <td><span class="type-route">Routes Day 4 Content</span></td>
+      <td>Day 4 Trivia Fact</td>
+      <td>Day 4 — Closing Screen</td>
+      <td><span class="none">No score</span></td>
+      <td>Type determines which psychology fact is shown at the end of Day 4. Different fact for each of the 4 types.</td>
+      <td>The closing moment of Day 4 — a personalised psychology fact — is served based on the type assigned here on Day 1. The user never consciously connects these two moments. They just feel known.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Personality Type Result</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Type Deep Dive + Timeline + Letter</td>
+      <td>Section 3 · Section 5 · The Letter</td>
+      <td><span class="none">No score</span></td>
+      <td>Type name and pre-written content pulled and shown. No calculation.</td>
+      <td>The type appears in three Day 5 places: Section 3 gives a full deep-dive with 3 strengths and 1 growth area. Section 5 Week in Moments shows the type on the Day 1 card. The personalised Letter references the type by name in the closing paragraph.</td>
+    </tr>
+
+
+    <!-- ── SUMMARY ROW ── -->
+    <tr>
+      <td colspan="8" style="background:#E2EFDA;padding:10px 11px;border:1px solid #B0B0B0;font-size:12px">
+        <strong>Day 1 Summary:</strong> &nbsp;
+        4 Scoring activities &nbsp;|&nbsp;
+        1 Experience-only activity &nbsp;|&nbsp;
+        <strong style="color:#1F6B3A">Up to 40 Connection Score points set here</strong> &nbsp;|&nbsp;
+        3 forward routing decisions made (Day 2 Q · Day 3 Mirror set · Day 4 Trivia) &nbsp;|&nbsp;
+        6 Day 5 report sections fed from Day 1 data
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

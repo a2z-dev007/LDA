@@ -22,6 +22,10 @@ DerivedData
 *.xcuserstate
 **/.xcode.env.local
 
+# skills 
+.agent/
+.agents/
+
 # Android/IntelliJ
 #
 build/
@@ -73,3 +77,6 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# environment variables
+.env

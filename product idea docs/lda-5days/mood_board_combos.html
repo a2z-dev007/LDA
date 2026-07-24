@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#F4F8F6;color:#1A2E2A;padding:24px 20px 60px;font-size:13px}
+.wrap{max-width:1100px;margin:0 auto}
+
+.doc-hd{background:#1A2E2A;border-radius:14px;padding:22px 28px 18px;margin-bottom:20px;color:white}
+.doc-hd h1{font-size:17px;font-weight:700;margin-bottom:5px}
+.doc-hd p{font-size:12px;color:#7DBEAA;line-height:1.65}
+
+.btn-row{margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:#217346;color:white;padding:7px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* Tile legend */
+.tile-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:22px;background:white;border-radius:14px;padding:16px;border:.5px solid #D8EDE6}
+.tile-card{border-radius:10px;padding:10px 8px;text-align:center;border:1px solid #E8EDEB}
+.tile-card .te{font-size:20px;margin-bottom:4px}
+.tile-card .tn{font-size:11.5px;font-weight:700;color:#1A2E2A}
+.tile-card .tt{font-size:10px;margin-top:3px;padding:2px 6px;border-radius:100px;font-weight:600;display:inline-block}
+
+/* Category key */
+.cat-key{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;background:white;border-radius:12px;padding:14px 16px;border:.5px solid #D8EDE6}
+.ck{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#4A7067}
+.cd{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* Table */
+.tbl-wrap{background:white;border-radius:14px;border:.5px solid #D8EDE6;overflow-x:auto;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;min-width:700px}
+thead tr th{background:#1A2E2A;color:white;padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;text-align:left;border:1px solid #2A4A3A}
+.cat-hd td{font-weight:700;font-size:11.5px;padding:8px 12px;border:1px solid #D0D0D0;letter-spacing:.02em}
+.data-row td{padding:8px 12px;border:1px solid #E8EDEB;vertical-align:middle;font-size:12.5px;line-height:1.5}
+.data-row:nth-child(even) td{background:#FAFCFB}
+.data-row:hover td{background:#EBF5FF}
+.n-cell{font-family:monospace;font-size:11px;color:#8AADA6;font-weight:700;width:32px}
+.tile-cell{font-size:12px}
+.title-cell{font-weight:700;color:#1A2E2A;font-size:13px}
+.te-s{font-size:14px;margin-right:4px}
+
+/* Category colors */
+.cat1 td{background:#E8F7F2!important} .cat1h{background:#1D9E75!important;color:white!important}
+.cat2 td{background:#F0F8EE!important} .cat2h{background:#4CAF7A!important;color:white!important}
+.cat3 td{background:#E6F1FB!important} .cat3h{background:#4A8FD4!important;color:white!important}
+.cat4 td{background:#EAFAF3!important} .cat4h{background:#1D9E75!important;color:white!important}
+.cat5 td{background:#FEF9EE!important} .cat5h{background:#B07010!important;color:white!important}
+.cat6 td{background:#FEF3E0!important} .cat6h{background:#E67E22!important;color:white!important}
+.cat7 td{background:#FBEAF0!important} .cat7h{background:#D4537E!important;color:white!important}
+.cat8 td{background:#F5F0FF!important} .cat8h{background:#6053C0!important;color:white!important}
+
+.cat-hd.cat1h td,.cat-hd.cat2h td,.cat-hd.cat3h td,.cat-hd.cat4h td,.cat-hd.cat5h td,.cat-hd.cat6h td,.cat-hd.cat7h td,.cat-hd.cat8h td{border-color:rgba(255,255,255,.2)!important;color:white}
+
+.summary-row td{background:#E2EFDA!important;font-weight:700;font-size:12px;padding:9px 12px;border:1px solid #B0D0B0}
+
+@media print{.btn-row{display:none}body{padding:8px}.tbl-wrap{border:1px solid #ccc}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="doc-hd">
+  <h1>Mood Board Match — All 120 Combination Titles</h1>
+  <p>10 tiles · Pick 3 · C(10,3) = 120 possible combinations · Every combination has a unique title · Organized by emotional category · Ready for developer implementation.</p>
+</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<!-- TILE LEGEND -->
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#8AADA6;margin-bottom:8px">The 10 Tiles — Category Tags</div>
+<div class="tile-grid">
+  <div class="tile-card" style="background:#E8F7F2;border-color:#C0DDD4"><div class="te">☕</div><div class="tn">Comfort</div><span class="tt" style="background:#1D9E75;color:white">W — Warm</span></div>
+  <div class="tile-card" style="background:#F0F8F0;border-color:#B8D8B8"><div class="te">🌅</div><div class="tn">Fresh start</div><span class="tt" style="background:#4CAF7A;color:white">G — Growing</span></div>
+  <div class="tile-card" style="background:#E8F7F2;border-color:#C0DDD4"><div class="te">🎧</div><div class="tn">Our world</div><span class="tt" style="background:#1D9E75;color:white">W — Warm</span></div>
+  <div class="tile-card" style="background:#F0EEF8;border-color:#C8C0E0"><div class="te">🌧️</div><div class="tn">Under cloud</div><span class="tt" style="background:#6053C0;color:white">N — Navigating</span></div>
+  <div class="tile-card" style="background:#E8F7F2;border-color:#C0DDD4"><div class="te">🕯️</div><div class="tn">Intimate</div><span class="tt" style="background:#1D9E75;color:white">W — Warm</span></div>
+  <div class="tile-card" style="background:#E8F7F2;border-color:#C0DDD4"><div class="te">🌿</div><div class="tn">Peaceful</div><span class="tt" style="background:#1D9E75;color:white">W — Warm</span></div>
+  <div class="tile-card" style="background:#F0EEF8;border-color:#C8C0E0"><div class="te">🎢</div><div class="tn">Up & down</div><span class="tt" style="background:#6053C0;color:white">N — Navigating</span></div>
+  <div class="tile-card" style="background:#F0EEF8;border-color:#C8C0E0"><div class="te">🧩</div><div class="tn">Figuring out</div><span class="tt" style="background:#6053C0;color:white">N — Navigating</span></div>
+  <div class="tile-card" style="background:#F0F8F0;border-color:#B8D8B8"><div class="te">🌻</div><div class="tn">Blossoming</div><span class="tt" style="background:#4CAF7A;color:white">G — Growing</span></div>
+  <div class="tile-card" style="background:#E8F7F2;border-color:#C0DDD4"><div class="te">🏡</div><div class="tn">Safe home</div><span class="tt" style="background:#1D9E75;color:white">W — Warm</span></div>
+</div>
+
+<!-- CATEGORY KEY -->
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#8AADA6;margin-bottom:8px">8 Emotional Categories — Based on Tile Mix</div>
+<div class="cat-key">
+  <div class="ck"><div class="cd" style="background:#1D9E75"></div>W+W+W · All Warm (10)</div>
+  <div class="ck"><div class="cd" style="background:#4CAF7A"></div>W+W+G · Two Warm + Growing (20)</div>
+  <div class="ck"><div class="cd" style="background:#4A8FD4"></div>W+W+N · Two Warm + Navigating (30)</div>
+  <div class="ck"><div class="cd" style="background:#1D9E75;opacity:.6"></div>W+G+G · One Warm + Both Growing (5)</div>
+  <div class="ck"><div class="cd" style="background:#B07010"></div>W+G+N · Warm + Growing + Navigating (30)</div>
+  <div class="ck"><div class="cd" style="background:#E67E22"></div>W+N+N · One Warm + Two Navigating (15)</div>
+  <div class="ck"><div class="cd" style="background:#D4537E"></div>G/N Mix · Growth + Navigating combos (9)</div>
+  <div class="ck"><div class="cd" style="background:#6053C0"></div>N+N+N · All Navigating (1)</div>
+</div>
+
+<!-- TABLE -->
+<div class="tbl-wrap">
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:16%">Tile 1</th>
+      <th style="width:16%">Tile 2</th>
+      <th style="width:16%">Tile 3</th>
+      <th style="width:24%">Title</th>
+      <th style="width:24%">Emotional Read (Day 5 insight line)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- CAT 1: W+W+W -->
+    <tr class="cat-hd cat1h"><td colspan="6">CATEGORY 1 — W + W + W · All three tiles from the Warm/Safe group · "Deep Connection" zone · 10 combinations</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">1</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td class="title-cell">The Quiet Intimacy</td><td>Deep, private, and close. You've built something that doesn't need an audience.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">2</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td class="title-cell">Still Waters</td><td>A week of ease. Not every week needs to be dramatic to be meaningful.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">3</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🏡 Safe home</td><td class="title-cell">Safe & Steady</td><td>You started reaching, stayed warm, and found safety. A week that moved — and landed exactly right.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">4</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td class="title-cell">The Soft Place</td><td>Quiet, tender, and genuinely comfortable. That kind of softness between two people takes time to earn.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">5</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td class="title-cell">Wrapped in Warmth</td><td>Three shades of the same feeling — you feel held. That's not nothing. That's everything.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">6</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td class="title-cell">The Steady Hearth</td><td>Calm, consistent, and rooted. This relationship feels like somewhere to return to.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">7</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td class="title-cell">Deeply Rooted</td><td>You have something rare — depth and quiet at the same time. Most couples have one or the other.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">8</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td class="title-cell">Our Sanctuary</td><td>The relationship is a place, not just a feeling. That's the deepest kind of love.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">9</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td class="title-cell">The Safe Harbour</td><td>You've built something calm and yours. That kind of peace is a choice — and you're both making it.</td></tr>
+    <tr class="data-row cat1"><td class="n-cell">10</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td class="title-cell">The Still Flame</td><td>Soft. Still. Burning steady. This week felt like the best version of the long run.</td></tr>
+
+    <!-- CAT 2: W+W+G -->
+    <tr class="cat-hd cat2h"><td colspan="6">CATEGORY 2 — W + W + G · Two Warm + One Growing tile · "Safe Growth" zone · 20 combinations</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">11</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🌅 Fresh start</td><td class="title-cell">New Chapter Together</td><td>Something is beginning — and you're starting it from a comfortable, known place. That's the best way to start.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">12</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td class="title-cell">Tender Beginnings</td><td>Warm and new at the same time. You're growing without losing the closeness. Keep both.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">13</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td class="title-cell">Quietly Expanding</td><td>You're growing — calmly, without rush. The slowest-moving things often go the furthest.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">14</td><td>☕ Comfort</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td class="title-cell">Growing from Home</td><td>Something new is starting — but from solid ground. You haven't had to give up safety to grow.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">15</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td class="title-cell">Deepening Together</td><td>Already close — and still finding new layers. This relationship keeps surprising you.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">16</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td class="title-cell">Gently Evolving</td><td>Change without chaos. Growth without urgency. You're doing something most couples find very hard.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">17</td><td>🎧 Our world</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td class="title-cell">Built to Grow</td><td>What you've built is strong enough to expand. Something new is beginning — and it has a good foundation.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">18</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td class="title-cell">A Softer Opening</td><td>Something is opening between you — gently. The most lasting changes come in quietly.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">19</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td class="title-cell">Rooted & Reaching</td><td>Deep roots and a new branch. You're not choosing between safety and growth — you're proving they coexist.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">20</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td class="title-cell">The Slow Bloom</td><td>Unhurried. Steady. Something beautiful is building at exactly the right pace.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">21</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🌻 Blossoming</td><td class="title-cell">Warmth in Full Bloom</td><td>You started warm and kept expanding. This is what a relationship in full season looks like.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">22</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🌻 Blossoming</td><td class="title-cell">Tender in Full Bloom</td><td>Soft and flourishing. Close and opening. You've found a way to be both at once.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">23</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td class="title-cell">Quietly Flourishing</td><td>No announcement. No drama. Just a relationship that's quietly becoming more than it was.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">24</td><td>☕ Comfort</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td class="title-cell">Home in Bloom</td><td>You're flourishing — and doing it from a place of complete safety. That's rare and worth protecting.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">25</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🌻 Blossoming</td><td class="title-cell">Deep & Blooming</td><td>Deep, intimate, and still growing. This relationship has roots and wings simultaneously.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">26</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td class="title-cell">Growing in the Quiet</td><td>The quietest weeks are sometimes the most generative ones. Something important is expanding here.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">27</td><td>🎧 Our world</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td class="title-cell">Safe to Blossom</td><td>You created the conditions for something to grow — and it did. Safety is what makes real flourishing possible.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">28</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td class="title-cell">The Soft Flourish</td><td>Tender growth. The kind that doesn't announce itself — it just quietly becomes undeniable.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">29</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td class="title-cell">Rooted in Love</td><td>Close, safe, and blooming. Everything here is growing — not despite the depth, but because of it.</td></tr>
+    <tr class="data-row cat2"><td class="n-cell">30</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td class="title-cell">The Quiet Bloom</td><td>Steady, grounded, and quietly becoming more. You've built something that just keeps giving.</td></tr>
+
+    <!-- CAT 3: W+W+N -->
+    <tr class="cat-hd cat3h"><td colspan="6">CATEGORY 3 — W + W + N · Two Warm + One Navigating tile · "Resilient Connection" zone · 30 combinations</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">31</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🌧️ Under cloud</td><td class="title-cell">Held Through the Hard</td><td>Something's difficult — but you still feel the warmth underneath it. That's real resilience.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">32</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🌧️ Under cloud</td><td class="title-cell">Warm Despite the Weight</td><td>Carrying something heavy — and still choosing each other. That's the relationship doing its job.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">33</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🌧️ Under cloud</td><td class="title-cell">Still Here, Still Soft</td><td>There's a cloud — but the ground beneath it is calm and kind. You haven't let the weather change the climate.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">34</td><td>☕ Comfort</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td class="title-cell">Home in the Storm</td><td>Even when it's hard outside, you come back to the same warmth. The home you've built is doing what it's supposed to.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">35</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🌧️ Under cloud</td><td class="title-cell">Deep Roots in Hard Weather</td><td>The depth is what held you. Hard weeks reveal exactly how well the roots go down.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">36</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🌧️ Under cloud</td><td class="title-cell">The Quiet Resilience</td><td>You've been carrying something — quietly, steadily. That kind of strength rarely gets named. It should.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">37</td><td>🎧 Our world</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td class="title-cell">Protected, Not Perfect</td><td>It's not a perfect week. But it's a protected one. There's a difference — and it matters.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">38</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🌧️ Under cloud</td><td class="title-cell">Tender Under Pressure</td><td>Something pressed in this week — and you stayed soft with each other. That's not easy. It's everything.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">39</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td class="title-cell">Safe Inside the Storm</td><td>Outside might be rough. Inside — between you — there's still warmth and safety. Hold that.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">40</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td class="title-cell">The Steady Shelter</td><td>Calm and grounded despite the weather. You've built something that doesn't shake when the wind picks up.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">41</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🎢 Up & down</td><td class="title-cell">Comfort in the Movement</td><td>Things went up and down — but you stayed warm through all of it. That's what a good week actually looks like.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">42</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🎢 Up & down</td><td class="title-cell">Close Through the Changes</td><td>Unsteady week — but you stayed close. The turbulence didn't touch the connection.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">43</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🎢 Up & down</td><td class="title-cell">Finding Calm in the Waves</td><td>You kept coming back to stillness even when the week was uneven. That's an underrated relationship skill.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">44</td><td>☕ Comfort</td><td>🏡 Safe home</td><td>🎢 Up & down</td><td class="title-cell">Home Through the Highs & Lows</td><td>The week moved around — but you had somewhere to come back to. That's what makes the motion manageable.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">45</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🎢 Up & down</td><td class="title-cell">Deep in the Middle of It</td><td>A rocky week — held together by closeness and depth. You navigated it without losing each other.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">46</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🎢 Up & down</td><td class="title-cell">Riding the Waves Together</td><td>Uneven week, calm centre. You've found your balance together — even when the ground shifts.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">47</td><td>🎧 Our world</td><td>🏡 Safe home</td><td>🎢 Up & down</td><td class="title-cell">Safe Through the Turbulence</td><td>Things moved around this week — but your foundation held. That's what foundations are for.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">48</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🎢 Up & down</td><td class="title-cell">Soft Landings</td><td>Whatever went up and came down — you landed softly, together. That matters more than the turbulence.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">49</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td>🎢 Up & down</td><td class="title-cell">The Anchor Holds</td><td>A moving week — and something held steady beneath it. That anchor is the relationship doing exactly what it's built for.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">50</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td>🎢 Up & down</td><td class="title-cell">Grounded Through the Motion</td><td>The week swayed — you didn't. That kind of groundedness is built, not found.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">51</td><td>☕ Comfort</td><td>🎧 Our world</td><td>🧩 Figuring out</td><td class="title-cell">Comfortable with Not Knowing</td><td>Something is still unresolved — and you're sitting with it warmly. That's a mature kind of love.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">52</td><td>☕ Comfort</td><td>🕯️ Intimate</td><td>🧩 Figuring out</td><td class="title-cell">Close in the Questions</td><td>You don't have the answers yet — but you have each other in the middle of the uncertainty. That's enough to keep going.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">53</td><td>☕ Comfort</td><td>🌿 Peaceful</td><td>🧩 Figuring out</td><td class="title-cell">Calmly Finding Our Way</td><td>Uncertain — but unhurried. You're figuring it out at the pace the relationship needs, not the pace anxiety demands.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">54</td><td>☕ Comfort</td><td>🏡 Safe home</td><td>🧩 Figuring out</td><td class="title-cell">Safe Enough to Not Know</td><td>You have enough safety to sit with unanswered questions. That's the best thing a relationship can give you.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">55</td><td>🎧 Our world</td><td>🕯️ Intimate</td><td>🧩 Figuring out</td><td class="title-cell">Together in the Question</td><td>Something is still forming between you — and you're both present for the uncertainty. That's where the best things begin.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">56</td><td>🎧 Our world</td><td>🌿 Peaceful</td><td>🧩 Figuring out</td><td class="title-cell">The Quiet Search</td><td>Looking for something — calmly and together. The quiet search is often the most productive one.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">57</td><td>🎧 Our world</td><td>🏡 Safe home</td><td>🧩 Figuring out</td><td class="title-cell">Grounded While Searching</td><td>You don't have the answer — but you have a home base to return to while you look. That changes everything.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">58</td><td>🕯️ Intimate</td><td>🌿 Peaceful</td><td>🧩 Figuring out</td><td class="title-cell">Softly Uncertain</td><td>Tender and still mid-question. The uncertainty hasn't hardened anything — it's still soft here. That's a good sign.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">59</td><td>🕯️ Intimate</td><td>🏡 Safe home</td><td>🧩 Figuring out</td><td class="title-cell">Held Through the Not-Knowing</td><td>You're figuring it out — held close the whole time. That's the right way to navigate uncertainty.</td></tr>
+    <tr class="data-row cat3"><td class="n-cell">60</td><td>🌿 Peaceful</td><td>🏡 Safe home</td><td>🧩 Figuring out</td><td class="title-cell">The Gentle Question</td><td>Something is still open — asked quietly, held patiently. The best answers come to people who wait this way.</td></tr>
+
+    <!-- CAT 4: W+G+G -->
+    <tr class="cat-hd cat4h"><td colspan="6">CATEGORY 4 — W + G + G · One Warm + Both Growing tiles · "Hopeful Opening" zone · 5 combinations</td></tr>
+    <tr class="data-row cat4"><td class="n-cell">61</td><td>☕ Comfort</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td class="title-cell">Cosy New Beginnings</td><td>Warm and new and blooming all at once. Something is starting — from the most comfortable foundation.</td></tr>
+    <tr class="data-row cat4"><td class="n-cell">62</td><td>🎧 Our world</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td class="title-cell">Blooming Together</td><td>Your world, a new chapter, and something blossoming inside it. This relationship is in full season.</td></tr>
+    <tr class="data-row cat4"><td class="n-cell">63</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td class="title-cell">Tender Growth</td><td>Close and expanding at the same time. You're growing without losing the intimacy. That's rare.</td></tr>
+    <tr class="data-row cat4"><td class="n-cell">64</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td class="title-cell">The Gentle Expansion</td><td>Calm, new, and flourishing. Growth doesn't always feel like change — sometimes it just feels like this.</td></tr>
+    <tr class="data-row cat4"><td class="n-cell">65</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td class="title-cell">Rooted Growth</td><td>You're blooming — and the roots go all the way down. This is growth with nowhere to fall.</td></tr>
+
+    <!-- CAT 5: W+G+N -->
+    <tr class="cat-hd cat5h"><td colspan="6">CATEGORY 5 — W + G + N · One Warm + One Growing + One Navigating · "Moving Through" zone · 30 combinations</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">66</td><td>☕ Comfort</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td class="title-cell">New Start, Real Weather</td><td>Something is beginning — and it's doing so honestly. No pretending the cloud isn't there. That's a good start.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">67</td><td>🎧 Our world</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td class="title-cell">Growing Through the Clouds</td><td>New chapter, difficult weather. You're starting something in the middle of something hard. That takes courage.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">68</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td class="title-cell">Tender and Testing</td><td>Close, beginning something new, and carrying weight. The tender things often get tested the hardest.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">69</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td class="title-cell">Quietly Beginning Again</td><td>Something hard, something new, and a quiet determination underneath it all. That's a powerful combination.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">70</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td class="title-cell">Shelter for a New Chapter</td><td>The home you have is protecting the new thing you're building. That's what foundations are for.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">71</td><td>☕ Comfort</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td class="title-cell">New Chapter, Uneven Road</td><td>The new thing is happening — but the road there isn't smooth. Most of the best destinations aren't.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">72</td><td>🎧 Our world</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td class="title-cell">Moving Through Together</td><td>New, unsteady, and going through it as a team. The motion is the journey — you're both in it.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">73</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td class="title-cell">Close Through the Turning</td><td>Change and closeness at the same time. The turning is easier because you're holding on to each other through it.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">74</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td class="title-cell">Finding Stillness in Motion</td><td>You're moving — and somehow finding calm in the middle of it. That's a rare and important skill.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">75</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td class="title-cell">Grounded While Changing</td><td>Everything is in motion — and you still have ground beneath you. The anchor is working.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">76</td><td>☕ Comfort</td><td>🌅 Fresh start</td><td>🧩 Figuring out</td><td class="title-cell">Warmly Uncertain</td><td>Not sure yet — but held warmly in the not-knowing. New and uncertain can coexist with comfort.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">77</td><td>🎧 Our world</td><td>🌅 Fresh start</td><td>🧩 Figuring out</td><td class="title-cell">Our Open Question</td><td>A new chapter where the ending isn't written yet. You're asking it together — that's the most important part.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">78</td><td>🕯️ Intimate</td><td>🌅 Fresh start</td><td>🧩 Figuring out</td><td class="title-cell">Tender Uncertainty</td><td>Something new, something unresolved, and a closeness holding it all. Uncertainty is easier when it's shared.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">79</td><td>🌿 Peaceful</td><td>🌅 Fresh start</td><td>🧩 Figuring out</td><td class="title-cell">Quietly Searching</td><td>You're looking for something — unhurriedly, in the direction of growth. That's the right pace for the right question.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">80</td><td>🏡 Safe home</td><td>🌅 Fresh start</td><td>🧩 Figuring out</td><td class="title-cell">Safe to Not Have Answers</td><td>You have somewhere safe to not know yet. That's what real security in a relationship makes possible.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">81</td><td>☕ Comfort</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">Growing Despite the Rain</td><td>Hard week — but something is blooming through it anyway. The most resilient flowers grow in exactly this weather.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">82</td><td>🎧 Our world</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">Blooming in Hard Weather</td><td>The cloud is real — and the bloom is real. You're holding both at once. That's complicated and impressive.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">83</td><td>🕯️ Intimate</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">Tender Through the Hard</td><td>Something is pressing — and something is opening. You didn't let the weight stop the growth.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">84</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">Calm Growth in Stormy Times</td><td>A storm in the distance — and a bloom in the foreground. You found the calm place to grow from.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">85</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">The Sheltered Bloom</td><td>You're growing — protected, even when it's hard outside. The home you have is doing the most important job.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">86</td><td>☕ Comfort</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">Blooming on Uneven Ground</td><td>An up-and-down week — and something is flowering through it anyway. The uneven ground doesn't stop the bloom.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">87</td><td>🎧 Our world</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">Growing Through the Motion</td><td>Everything is in motion — and something is blooming in the middle of it. That's what growing together actually looks like.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">88</td><td>🕯️ Intimate</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">Close and Unsteady</td><td>Turbulent week — held close throughout. The unsteady part didn't shake the closeness.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">89</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">The Grounded Bloom</td><td>Moving, growing, and somehow finding peace in the middle of it. You've found a way to bloom while the world moves.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">90</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">Rooted Through the Waves</td><td>The waves came — and you bloomed anyway. The roots are what made that possible.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">91</td><td>☕ Comfort</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">Blooming Through Uncertainty</td><td>Not sure what's next — and growing anyway. Some of the most important blooms happen before the answers arrive.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">92</td><td>🎧 Our world</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">Growing Into the Answer</td><td>The question is still open — and something is expanding inside it. You'll find the answer by growing, not by waiting.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">93</td><td>🕯️ Intimate</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">Tender Questions, Real Growth</td><td>Uncertain — but close, and blossoming anyway. The best growth often happens while the questions are still open.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">94</td><td>🌿 Peaceful</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">The Quiet Emergence</td><td>Something is becoming — slowly, peacefully, without force. You've created the conditions for emergence.</td></tr>
+    <tr class="data-row cat5"><td class="n-cell">95</td><td>🏡 Safe home</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">Slowly Blooming Home</td><td>You're figuring it out — and blooming while you do. The home you have means you can take your time.</td></tr>
+
+    <!-- CAT 6: W+N+N -->
+    <tr class="cat-hd cat6h"><td colspan="6">CATEGORY 6 — W + N + N · One Warm + Two Navigating tiles · "Held Through Difficulty" zone · 15 combinations</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">96</td><td>☕ Comfort</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Comfort in the Chaos</td><td>A genuinely hard week — and you still found warmth in it. That's what makes this relationship worth protecting.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">97</td><td>🎧 Our world</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Ours in the Storm</td><td>It was hard and unsteady — and it was still yours. The ownership of the hard weeks is what makes them survivable.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">98</td><td>🕯️ Intimate</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Close in the Rough</td><td>The week was rough — and you stayed close through it. That closeness in the hard moments is the whole thing.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">99</td><td>🌿 Peaceful</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">The Calm Amid the Chaos</td><td>There's a storm — and somehow you've found a still place inside it. That stillness is you. Hold it.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">100</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Held Through It All</td><td>Hard, unsteady, and still held. The home you've built is doing exactly what it was built for.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">101</td><td>☕ Comfort</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">Warm While Lost</td><td>Not sure where you are — but warm while you figure it out. That's the best condition for finding the way.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">102</td><td>🎧 Our world</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">In the Rain, Together</td><td>Hard week, open questions, and still together in it. The "together" is doing all the heavy lifting right now.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">103</td><td>🕯️ Intimate</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">Together in the Fog</td><td>You can't see clearly yet — but you're not navigating alone. That's the one thing that matters right now.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">104</td><td>🌿 Peaceful</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">Still in the Uncertainty</td><td>Questions and clouds — and somehow, a kind of peace underneath it all. That's earned stillness. Real stillness.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">105</td><td>🏡 Safe home</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">The Fog Doesn't Touch Home</td><td>Hard week, open questions — but the home is still intact. Something here is protected even when everything else isn't.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">106</td><td>☕ Comfort</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Bumpy but Held</td><td>Unsteady and uncertain — and still warm. The comfort is what made the bumpy parts survivable.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">107</td><td>🎧 Our world</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Moving Through the Questions</td><td>An unsteady week of open questions — navigated as a team. Movement and uncertainty are fine when you're together.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">108</td><td>🕯️ Intimate</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Unsteady but Together</td><td>You don't have firm ground or clear answers — but you have each other. Right now, that's the only answer that counts.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">109</td><td>🌿 Peaceful</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">The Quiet Midst</td><td>Moving, questioning, and somehow finding a still centre. You've found your way to peace in the middle of the complexity.</td></tr>
+    <tr class="data-row cat6"><td class="n-cell">110</td><td>🏡 Safe home</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Seeking Solid Ground</td><td>Things are shifting and questions are open — but the home base is still there. You have somewhere to return to while you search.</td></tr>
+
+    <!-- CAT 7: Growth + Navigating mixes -->
+    <tr class="cat-hd cat7h"><td colspan="6">CATEGORY 7 — G+G+N and G+N+N · Growth + Navigating combinations (no Warm tile) · "Finding the Way" zone · 9 combinations</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">111</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td class="title-cell">Blooming Through Difficult Seasons</td><td>New beginnings, real growth, and hard weather all at once. The most extraordinary blooms come from exactly these conditions.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">112</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td class="title-cell">New Growth in Motion</td><td>Everything is moving — and something beautiful is growing in the middle of it. That's what a turning point looks like.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">113</td><td>🌅 Fresh start</td><td>🌻 Blossoming</td><td>🧩 Figuring out</td><td class="title-cell">Blooming Into the Unknown</td><td>You're growing forward without knowing what you're growing toward. That's the bravest kind of growth there is.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">114</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Trying to Begin Again</td><td>Something new, something hard, something uneven. Beginning again is always complicated. The fact that you're trying is the whole story.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">115</td><td>🌅 Fresh start</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">Searching in the Rain</td><td>Looking for something new while carrying something heavy. The search continues — that's the most important thing.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">116</td><td>🌅 Fresh start</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Unsteady New Ground</td><td>The ground is new, the path is uneven, and the questions are still open. You're at the beginning of something real.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">117</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td class="title-cell">Growing Through the Hard Parts</td><td>An honest and complicated week. Blooming in spite of difficulty takes something most people don't have. You do.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">118</td><td>🌻 Blossoming</td><td>🌧️ Under cloud</td><td>🧩 Figuring out</td><td class="title-cell">Emerging from Difficulty</td><td>Something hard, something unresolved — and something blooming anyway. Emergence doesn't always look graceful. It's still emergence.</td></tr>
+    <tr class="data-row cat7"><td class="n-cell">119</td><td>🌻 Blossoming</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Reaching While Unsteady</td><td>Uncertain, unsteady, and still reaching toward growth. That's a complicated and honest week — and a genuine one.</td></tr>
+
+    <!-- CAT 8: N+N+N -->
+    <tr class="cat-hd cat8h"><td colspan="6">CATEGORY 8 — N + N + N · All three Navigating tiles · "Navigating Together" zone · 1 combination</td></tr>
+    <tr class="data-row cat8"><td class="n-cell">120</td><td>🌧️ Under cloud</td><td>🎢 Up & down</td><td>🧩 Figuring out</td><td class="title-cell">Navigating Together</td><td>It was a genuinely hard week. But on Day 3, you chose "navigating together." Exhausted people who still choose together — that's not small. That's the whole thing.</td></tr>
+
+    <!-- SUMMARY -->
+    <tr class="summary-row"><td colspan="6">Total: 120 unique combinations · 120 unique titles · 8 emotional categories · Each title and insight line is ready to use in the Day 5 Emotional Weather section of the report.</td></tr>
+
+  </tbody>
+</table>
+</div>
+
+</div>
+</body>
+</html>

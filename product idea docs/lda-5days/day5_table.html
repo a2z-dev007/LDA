@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Calibri, Arial, sans-serif; background: #fff; padding: 24px; font-size: 13px; color: #1A1A1A; }
+
+.sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sheet-sub { font-size: 12px; color: #666; margin-bottom: 16px; }
+.btn-row { margin-bottom: 14px; }
+.btn { background: #217346; color: white; padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #1a5c38; }
+
+table { width: 100%; border-collapse: collapse; border: 1.5px solid #B0B0B0; }
+
+thead tr th {
+  background: #1F6B3A; color: white; padding: 9px 11px;
+  font-size: 12px; font-weight: 700; text-align: left;
+  border: 1px solid #166030; vertical-align: middle; white-space: nowrap;
+}
+
+.bridge-row td { background: #E2E2E2; font-weight: 700; font-size: 12px; color: #444; padding: 7px 11px; border: 1px solid #B0B0B0; }
+.group-row td { background: #D6E4F0; font-weight: 700; font-size: 12.5px; color: #1A1A1A; padding: 8px 11px; border: 1px solid #B0B0B0; }
+.report-row td { background: #EAF4E8; font-weight: 700; font-size: 12px; color: #1A1A1A; padding: 7px 11px; border: 1px solid #B0B0B0; }
+
+.data-row td { padding: 7px 11px; border: 1px solid #D0D0D0; vertical-align: top; line-height: 1.55; font-size: 12px; }
+.data-row:nth-child(odd) td { background: #FFFFFF; }
+.data-row:nth-child(even) td { background: #F5F9F6; }
+.data-row:hover td { background: #EBF5FF; }
+
+.type-score   { color: #1F6B3A; font-weight: 700; }
+.type-display { color: #1F4E79; font-weight: 700; }
+.type-exp     { color: #7B2D8B; font-weight: 700; }
+.type-calc    { color: #B8860B; font-weight: 700; }
+
+.pts  { font-weight: 700; color: #1F6B3A; }
+.none { color: #999; font-style: italic; }
+.a   { color: #1F6B3A; font-weight: 700; }
+.b   { color: #1F4E79; font-weight: 700; }
+.c   { color: #833C00; font-weight: 700; }
+.ded { color: #6B3291; font-weight: 700; }
+
+@media print { .btn-row { display: none; } body { padding: 8px; } }
+</style>
+</head>
+<body>
+
+<div class="sheet-title">LDA — Day 5: The Reveal</div>
+<div class="sheet-sub">Bridge 4→5 + Day 5 Activities · What each screen generates · How all 5 days of data come together · Plain explanation · Note: Day 5 is the OUTPUT day — columns shift from "what it feeds" to "what it produces."</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:14%">Activity</th>
+      <th style="width:9%">Activity Type</th>
+      <th style="width:15%">What It Generates / Shows</th>
+      <th style="width:13%">Report Section</th>
+      <th style="width:11%">Score / Output</th>
+      <th style="width:15%">How It Calculates</th>
+      <th style="width:19%">What This Means (Plain English)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- ── BRIDGE 4→5 ── -->
+    <tr class="bridge-row">
+      <td colspan="8">BRIDGE 4→5 — The most ceremonial bridge in the app. Streak ring shows 5. Memory card from Day 4. Jar preview at 80% with compliment word glowing inside. NEW: Top Need card from Priority Shuffle. Significance Line. No intention word selector — the Promise on Day 5 replaces it.</td>
+    </tr>
+
+    <tr class="group-row">
+      <td>B1</td>
+      <td colspan="7">Ceremonial Bridge + Top Need Card — Zone 1: Streak 5 ring. Zone 2: Day 4 memory card (first 60 characters) + Jar at 80% with compliment word glowing + NEW Top Need card. Zone 3: Bridge quote + Significance Line. Zone 4: CTA to Day 5.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Ceremonial Bridge</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Shows stored data from Days 1–4. Nothing new collected.</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>Reads and displays stored content. No calculation.</td>
+      <td>The first time the user sees the compliment word glowing inside the jar is on this bridge — a small emotional surprise before Day 5 begins. The Top Need card creates a specific anticipation: "Day 5 shows you if they felt the same." This is the only open loop going into the final day.</td>
+    </tr>
+
+
+    <!-- ── DAY 5 MAIN ── -->
+    <tr class="bridge-row">
+      <td colspan="8">DAY 5 MAIN ACTIVITIES — The Reveal. Theme: Bold &amp; Emotional. Purpose: Celebration · All 5 days made visible · Partner invite earned · Forward commitment made.</td>
+    </tr>
+
+
+    <!-- Activity 1 — Celebration + Badge Calculation -->
+    <tr class="group-row">
+      <td>1</td>
+      <td colspan="7">Celebration + Badge Calculation — 5 pip fill animation left to right (600ms). Multi-colour confetti for 2 seconds. "That's not nothing." "Most people quit at Day 2." Full badge and score calculation runs silently as this screen loads. Badge displayed. This is the moment all 5 days converge.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Connection Score</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>Composite score from all 5 days. Capped at 100.</td>
+      <td>Section 1 — Mood Journey (displayed below chart)</td>
+      <td><span class="pts">0 to 100 pts total</span></td>
+      <td>Sum of 7 components: (1) Slider score × 2 = up to 20 pts. (2) Vibe Check: Positive=10, Tender=7, Heavy=3. (3) Day 2 mood score ÷ 9 × 10 = up to 10 pts. (4) Mood Board warm tiles ÷ 3 × 10 = up to 10 pts. (5) Mirror Game TRUE count = up to 10 pts. (6) Dedication Score ÷ 7 × 30 = up to 30 pts. (7) Trend Bonus: ended warmer=+10, same=+5, lower=0. Total capped at 100.</td>
+      <td>The Connection Score is built entirely from choices made across Days 1 to 4. No single day dominates — the Dedication component (30 pts) rewards consistent daily engagement, the Slider (20 pts) rewards an honest starting point, and the Trend Bonus (10 pts) rewards emotional growth across the week.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Dedication Score</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>Drives 30 pts of Connection Score AND determines badge tier.</td>
+      <td>Section 7 — Your Badge (tier: Gold / Standard / Emerging)</td>
+      <td><span class="pts">0 to 7 pts (capped at 7)</span></td>
+      <td>D1 fully complete = +1. D2 complete = +1. D3 complete (T/F + Mood Board + FMS) = +1 (each sub-activity = +0.5). D4 memory dropped = +1. D4 Priority Shuffle = +0.5. D4 Love Drop = +0.5. D4 Daily 2 both answered = +0.5. D4 Drop Box used = +0.5. D5 Promise = +1. Skip never used all week = +1. Max possible before cap = 9 → capped at 7. Badge tiers: 6–7 = Gold ring. 4–5 = Standard. 2–3 = Emerging.</td>
+      <td>Dedication measures consistency and effort across the whole week. It has two jobs: (1) it drives 30 of the 100 Connection Score points — the highest single component, and (2) it decides whether the badge has a gold ring, a standard ring, or an emerging treatment. A user who does everything earns 9 possible points, capped at 7.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Partner Knowledge Score</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>Shown as a standalone score alongside Connection Score.</td>
+      <td>Section 7 — Your Badge (sub-score)</td>
+      <td><span class="pts">0 to 10</span></td>
+      <td>Equals the Day 3 Mirror Game TRUE count directly. No new calculation needed. When partner joins later: recalibrated to show what % of predictions matched the partner's actual self-reported answers.</td>
+      <td>This is the only score that can change after Day 5. Solo, it shows how many TRUE answers the user gave in the Mirror Game. Once the partner joins and completes Day 3, the score updates to show actual prediction accuracy — "You got 7 right." This makes it a living score, not a locked one.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Badge Axis A Result</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>One of two outcomes: Expressive or Active.</td>
+      <td>Section 7 — Your Badge (first axis of 3)</td>
+      <td><span class="none">Binary outcome</span></td>
+      <td>All Expressive signals vs all Active signals totalled from Days 1–4. Highest total wins. Tie-break: Day 1 Quiz Question 1 decides. A = Expressive. B = Active.</td>
+      <td>Axis A answers: does this person love through words, depth, and emotional expression (Expressive) — or through action, energy, and doing (Active)? Signals come from 10 different activities across all 4 days. The answer to Quiz Q1 on Day 1 breaks any tie.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Badge Axis B Result</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>One of two outcomes: Deep or Present.</td>
+      <td>Section 7 — Your Badge (second axis of 3)</td>
+      <td><span class="none">Binary outcome</span></td>
+      <td>All Deep signals vs all Present signals totalled from Days 1–4. Highest total wins. Tie-break: Day 1 Quiz Question 7 decides. B = Deep. A = Present.</td>
+      <td>Axis B answers: is this person focused on accumulated depth and meaning (Deep) — or on what is happening right now, the present moment (Present)? The Mirror Game TRUE count is the strongest single Axis B signal (+2) coming from Day 3. Day 1 Quiz Q7 breaks any tie.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Badge Axis C Result</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>One of two outcomes: Protecting or Building.</td>
+      <td>Section 7 — Your Badge (third axis of 3)</td>
+      <td><span class="none">Binary outcome</span></td>
+      <td>All Protecting signals vs all Building signals totalled from Days 1–4. Highest total wins. Tie-break: Day 1 slider score decides. Score ≥6 = Protecting. Score ≤5 = Building.</td>
+      <td>Axis C answers: does this person want to protect a good relationship (Protecting) — or build toward something better (Building)? The Day 1 slider score is both the strongest signal (+2) AND the tie-breaker, making it the most powerful single input for this axis.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Final Badge Assigned</td>
+      <td><span class="type-calc">Calculated Here</span></td>
+      <td>One of 8 named badges, each with a description and 3 trait pills.</td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="none">Named result</span></td>
+      <td>Axis A + Axis B + Axis C combination determines badge. 8 possible combinations = 8 badges. If all 3 axes tie after all tie-breakers: The Intentional Partner is assigned by default.</td>
+      <td>
+        <strong>Expressive + Deep + Protecting</strong> = The Warm Keeper.<br>
+        <strong>Expressive + Deep + Building</strong> = The Honest Architect.<br>
+        <strong>Expressive + Present + Protecting</strong> = The Joyful Anchor.<br>
+        <strong>Expressive + Present + Building</strong> = The Curious Lover.<br>
+        <strong>Active + Deep + Protecting</strong> = The Quiet Strength.<br>
+        <strong>Active + Deep + Building</strong> = The Steady Climber.<br>
+        <strong>Active + Present + Protecting</strong> = The Spark Keeper.<br>
+        <strong>Active + Present + Building</strong> = The Intentional Partner.
+      </td>
+    </tr>
+
+
+    <!-- Activity 2 — Report Card 8 Sections -->
+    <tr class="group-row">
+      <td>2</td>
+      <td colspan="7">The Report Card — 8 Sections — A full scrollable report generated entirely from all 5 days of data. Nothing new is calculated here. The report is already assembled by the time this screen loads. Each section below is one row.</td>
+    </tr>
+
+    <tr class="report-row">
+      <td colspan="8">REPORT CARD — Section by Section · What feeds it · What the user sees</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 1 — Mood Journey</td>
+      <td><span class="type-display">Display</span></td>
+      <td>5-bar chart of emotional arc across the week. One pre-written insight line below it based on the pattern.</td>
+      <td>Section 1 — Mood Journey</td>
+      <td><span class="none">No new score</span></td>
+      <td>D1 bar = Slider score. D2 bar = Mood score normalised. D3 bar = average of D1+D2. D4 bar = Daily 2 Card 1 tone score. D5 bar = running average of all 4. Insight line chosen by pattern: upward / downward / dip-then-recovery / flat.</td>
+      <td>The only chart in the app. Gives the user a visual sense of their emotional arc across 5 days. The Connection Score total is shown below the chart. Four pre-written insight lines respond to the pattern: "You moved from 6 to 7.4. That's not an accident. That's what showing up looks like."</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 2 — Emotional Weather</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Three emotional snapshots side by side: Day 1 vibe tile + Day 2 mood icon + Day 3 Mood Board theme name. One pattern-read line below.</td>
+      <td>Section 2 — Emotional Weather</td>
+      <td><span class="none">No new score</span></td>
+      <td>Three inputs pulled: Day 1 vibe tile (from Vibe Check G05). Day 2 mood icon (from Candle screen). Day 3 Mood Board theme (computed from tile selections G07). Pattern read chosen from 12 mapped combinations + 4 fallback reads.</td>
+      <td>NEW section. The only section that combines data from three different days into one visual moment. The pattern-read line is the most personalised sentence in the report — "You started reaching, arrived feeling loved, and found safety. A week that moved and landed exactly right." — determined by the specific combination of all three inputs.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 3 — Personality Type Deep Dive</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Full type name + description + 3 strengths + 1 growth area (framed as an invitation, not criticism).</td>
+      <td>Section 3 — Personality Type</td>
+      <td><span class="none">No new score</span></td>
+      <td>Reads Day 1 personality type and pulls pre-written content. No calculation.</td>
+      <td>Entirely sourced from Day 1. The type the user received on Day 1 gets a full deep-dive here — not a repeat of the same card, but a richer, more considered version of what that type means in a relationship context. 3 strengths + 1 growth area per type.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 4 — Relationship Needs This Week</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Top need shown prominently with icon + 1-line description. All 3 picks ranked. Partner's picks shown as sealed cards.</td>
+      <td>Section 4 — Relationship Needs</td>
+      <td><span class="none">No new score</span></td>
+      <td>Reads Day 4 Priority Shuffle top pick and all 3 picks. Pre-written description per need. No calculation.</td>
+      <td>NEW section. The only section fed entirely by a single Day 4 activity. This is also the only section with a sealed partner component — "3 frosted cards — reveal when they join." When partner joins, Needs Alignment % is calculated: how many of their top 3 picks matched. Creates the most direct "do we want the same things?" moment in the report.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 5 — Week in Moments</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Vertical journal timeline. One card per day in that day's accent colour. Exact words — never edited, never paraphrased.</td>
+      <td>Section 5 — Week in Moments</td>
+      <td><span class="none">No new score</span></td>
+      <td>D1 card: Vibe tile + type name + "You came in at N/10" + vibe emoji. D2 card: intention word pill + One Good Thing exact text + mood icon. D3 card: Appreciation Snap + FMS sentence in Playfair + One Certainty. D4 card: memory first 60 chars + compliment word glowing + Daily 2 Card 2.</td>
+      <td>The most personal section in the report. Every word shown is the user's own — nothing is paraphrased or summarised. If any activity was skipped, the card for that day shows a placeholder rather than nothing. The user reads back their own week in their own voice — often the most emotionally affecting moment of Day 5.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 6 — Memory Jar Full Reveal</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Jar fills to 100% with 1.2-second animation and a golden glow pulse. All 5 notes visible and tappable. Compliment word glows inside. Special notes if Drop Box or Love Drop were used.</td>
+      <td>Section 6 — Memory Jar</td>
+      <td><span class="none">No new score</span></td>
+      <td>Reads all jar memory entries, compliment word, and special note flags. No calculation. If Love Drop used: gold note "Something waiting for them." If Drop Box used: rose note "Something you found the words for."</td>
+      <td>The visual centrepiece of the Day 5 report. The jar goes from 80% (Bridge 4→5) to 100% on arrival — completing the visual metaphor that has been building since Day 1. Each note is tappable to reveal its content. The gold and rose notes are shown even if not tapped — their presence alone carries meaning.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Badge name + tier ring (Gold / Standard / Emerging) + full description + 3 trait pills. Shareable card export available.</td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="none">No new score — calculated in Activity 1</span></td>
+      <td>Reads calculated badge name, tier, and Dedication Score. Pulls pre-written badge description and 3 traits. No new calculation.</td>
+      <td>The badge is the identity result of the whole week. Gold ring (6–7 Dedication pts) + full confetti. Standard (4–5 pts) is the most common outcome. Emerging (2–3 pts) is framed warmly — "You came. That already says something." The shareable card exports only the badge name, type name, and compliment word — never any private journal content.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Section 8 — Couple Mode Unlock</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Shows the status of all 4 sealed games from Days 1–4. Each shown with the user's side visible and partner's side locked. Primary CTA: Invite your partner.</td>
+      <td>Section 8 — Couple Mode</td>
+      <td><span class="none">No new score</span></td>
+      <td>Reads sealed game statuses. No calculation. Four items: G02 Finish My Sentence (1 of 2 sides complete). G06 This or That (3 of 6 answers in). G01 Prediction Game (locked preview — needs partner). G03 Us vs The Question (locked preview — needs partner).</td>
+      <td>NEW section. This is the earned partner invite — 5 days of open loops made visible in one place. The user sees exactly what is waiting to be unlocked. Every sealed game was created during the solo journey. The section exists to answer: "What happens when they join?" with four specific, concrete answers rather than a vague promise.</td>
+    </tr>
+
+
+    <!-- Activity 3 — The Promise -->
+    <tr class="group-row">
+      <td>3</td>
+      <td colspan="7">The Promise — "Five days in. One thing you want to do differently for your relationship from tomorrow. Not a resolution. Just one honest intention." Open text. Placeholder: "Starting tomorrow, I want to…" Optional.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Promise</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Dedication Score boost — last chance to raise badge tier before it locks.</td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+1 Dedication pt</span></td>
+      <td>Promise completed = +1 Dedication point added before final badge tier is assigned. This is the last scoring action available in the entire 5-day app.</td>
+      <td>This is the final scoring opportunity. A user sitting at 5 Dedication points (Standard badge tier) who completes the Promise earns 6 points — pushing them into Gold tier. Completing the Promise is the single action most likely to change a user's badge tier on Day 5.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Promise</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Closes the report card + appears on shareable card (toggle).</td>
+      <td>Section 7 — Badge (closing statement)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words shown as the closing statement of the report card in Playfair italic. No calculation.</td>
+      <td>Their own words close the entire report — the last thing they read in the report is their own promise to themselves. On the shareable card, the user can choose to include or exclude it before sharing. If skipped, the report closes with "A new week begins tomorrow."</td>
+    </tr>
+
+
+    <!-- Activity 4 — The Letter -->
+    <tr class="group-row">
+      <td>4</td>
+      <td colspan="7">The Letter — A personalised letter generated from a template using data collected across 5 days. Displayed full screen. No buttons for 6 seconds. Then "Save this" and "Share this" appear. Follows the Jar reveal.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Letter</td>
+      <td><span class="type-display">Display</span></td>
+      <td>A personalised, template-generated letter — the emotional peak of Day 5.</td>
+      <td>Standalone screen — not part of the 8 report sections</td>
+      <td><span class="none">No score</span></td>
+      <td>Template uses 4 inputs: (1) User's first name (from intro). (2) Day 1 slider score. (3) Day 1 personality type. (4) First 8 words of Day 4 memory content. Fallback chain: if Day 4 memory was skipped → uses Day 3 One Certainty. If both skipped → uses "You came back, five days in a row. That's the memory worth keeping."</td>
+      <td>The Letter reads: "[Name]. You started this week at a [6]. You didn't know what you'd find — but you showed up anyway. The [Steady Flame] in you knew something worth protecting was here. '[The day we got caught in the rain…]' That's the memory you chose to keep. That's enough. That's everything." Four data points from across 5 days create a paragraph that feels entirely personal. No new score is generated. This is a pure output — the app giving back everything it collected.</td>
+    </tr>
+
+
+    <!-- Activity 5 — Partner Invite -->
+    <tr class="group-row">
+      <td>5</td>
+      <td colspan="7">The Partner Invite — "You've been doing this alone for 5 days. Imagine what it feels like when both of you show up." Primary CTA: Invite your partner. Ghost CTA: Continue solo for now. Pre-written WhatsApp message generated with a unique link.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Partner Invite</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No score. Records whether user invited partner or chose to continue solo.</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>No calculation. If Invite tapped: partner invite recorded + unique link generated. If Continue solo tapped: solo continuation recorded. Day 6+ begins either path.</td>
+      <td>No score contribution. This is the earned moment after 5 days of investment. Every sealed game (G02, G06, G01, G03), sealed Love Drop, and locked Mirror Game result created across the solo journey makes this invite feel like a natural resolution — not a sales ask. If solo: Day 6+ Daily 2 becomes the ongoing habit, jar resets for Week 2, badge is preserved.</td>
+    </tr>
+
+
+    <!-- ── SUMMARY ── -->
+    <tr>
+      <td colspan="8" style="background:#E2EFDA; padding:10px 11px; border:1px solid #B0B0B0; font-size:12px;">
+        <strong>Day 5 Summary:</strong> &nbsp;
+        All 5 days of data converge here &nbsp;|&nbsp;
+        3 scores calculated: Connection Score (0–100) · Dedication Score (0–7) · Partner Knowledge Score (0–10) &nbsp;|&nbsp;
+        1 badge assigned from 8 possible outcomes &nbsp;|&nbsp;
+        8 report sections generated — each fed by a different day's activities &nbsp;|&nbsp;
+        <strong style="color:#1F6B3A">The Promise is the last scoring action in the entire app — completing it can change badge tier</strong> &nbsp;|&nbsp;
+        The Letter pulls data from Day 1 (name + score + type) and Day 4 (memory) — the longest-range single output in the app &nbsp;|&nbsp;
+        Partner Knowledge Score is the only score that updates after Day 5 (when partner joins)
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

@@ -4,8 +4,9 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { intentionWords } from '../../data/quizData';
-import { useAppColors } from '../../theme';
+import { useAppColors, fonts, typography } from '../../theme';
 import { haptics } from '../../utils/haptics';
+import { Plus } from 'lucide-react-native';
 
 interface Props {
   accentColor: string;
@@ -36,52 +37,55 @@ export const IntentionWordSelector: React.FC<Props> = ({ accentColor, onSelect }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Set your intention for today</Text>
+      <Text style={styles.label}>Set your intention for today 🌿</Text>
       <View style={styles.pills}>
-        {intentionWords.map(({ word }) => {
+        {intentionWords.map(({ word, emoji }) => {
           const isSelected = selected === word;
-          return isSelected ? (
-            <TouchableOpacity key={word} activeOpacity={0.85} onPress={() => handleSelect(word)} style={styles.pillTouch}>
-              <LinearGradient
-                colors={[accentColor, `${accentColor}BB`]}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-                style={styles.pillSelected}
-              >
-                <Text style={styles.pillTextSelected}>{word}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          ) : (
+          
+          return (
             <TouchableOpacity
               key={word}
-              style={styles.pill}
+              style={[
+                styles.pill,
+                isSelected && { 
+                  backgroundColor: `${accentColor}10`, 
+                  borderColor: accentColor,
+                  borderWidth: 1.5,
+                  shadowColor: accentColor,
+                  shadowOpacity: 0.15
+                }
+              ]}
               onPress={() => handleSelect(word)}
               activeOpacity={0.75}
             >
-              <Text style={styles.pillText}>{word}</Text>
+              <Text style={styles.chipEmoji}>{emoji}</Text>
+              <Text style={[
+                styles.pillText, 
+                isSelected && { color: colors.text, fontFamily: fonts.dmSansBold }
+              ]}>{word}</Text>
             </TouchableOpacity>
           );
         })}
 
         {/* Custom button */}
-        {showCustom ? (
-          <TouchableOpacity activeOpacity={0.85} style={styles.pillTouch} onPress={() => {}}>
-            <LinearGradient
-              colors={[accentColor, `${accentColor}BB`]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-              style={styles.pillSelected}
-            >
-              <Text style={styles.pillTextSelected}>+ Custom</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.pill}
-            onPress={() => setShowCustom(true)}
-            activeOpacity={0.75}
-          >
-            <Text style={styles.pillText}>+ Custom</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={[
+            styles.pill,
+            showCustom && { 
+              backgroundColor: `${accentColor}10`, 
+              borderColor: accentColor,
+              borderWidth: 1.5
+            }
+          ]}
+          onPress={() => setShowCustom(true)}
+          activeOpacity={0.75}
+        >
+          <Plus size={14} color={showCustom ? accentColor : colors.textHint} style={{marginRight: 4}} />
+          <Text style={[
+            styles.pillText, 
+            showCustom && { color: colors.text, fontFamily: fonts.dmSansBold }
+          ]}>Custom</Text>
+        </TouchableOpacity>
       </View>
 
       {showCustom && (
@@ -124,15 +128,19 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textHint, fontSize: 12, fontFamily: 'Inter-SemiBold',
     letterSpacing: 1.5, textTransform: 'uppercase',
   },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'space-between' },
 
   // Unselected pill — solid white card with theme border
   pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '31.5%',
     borderWidth: 1.5,
     borderColor: c.surfaceBorder,
     borderRadius: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 9,
+    paddingHorizontal: 8,
+    justifyContent:'center',
+    paddingVertical: 10,
     backgroundColor: c.white,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -142,28 +150,13 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   pillText: {
     color: c.text,
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Inter-SemiBold',
+    flexShrink: 1,
   },
-
-  // Selected pill — gradient fill
-  pillTouch: {
-    borderRadius: 100,
-    shadowColor: c.glowPrimary,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  pillSelected: {
-    borderRadius: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-  },
-  pillTextSelected: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontFamily: 'Inter-SemiBold',
+  chipEmoji: {
+    fontSize: 16,
+    marginRight: 6,
   },
 
   // Custom input row

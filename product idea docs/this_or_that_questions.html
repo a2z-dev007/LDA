@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#F0F7F4;color:#1A2E2A;padding:28px 20px 60px;font-size:13px;line-height:1.6}
+.wrap{max-width:1020px;margin:0 auto}
+
+.doc-hd{background:#1A2E2A;border-radius:14px;padding:26px 32px 22px;margin-bottom:22px;color:white}
+.doc-hd h1{font-size:18px;font-weight:700;margin-bottom:7px}
+.doc-hd p{font-size:12.5px;color:#7DBEAA;line-height:1.7}
+
+/* flow strip */
+.flow{display:flex;align-items:center;gap:0;background:white;border-radius:12px;padding:16px 20px;border:.5px solid #D8EDE6;margin-bottom:26px;flex-wrap:wrap;row-gap:10px}
+.fs{flex:1;min-width:130px;background:#F2F8F6;border-radius:9px;padding:10px 13px;text-align:center}
+.fs .fl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#8AADA6;margin-bottom:3px}
+.fs .fv{font-size:12.5px;font-weight:700;color:#1A2E2A}
+.farr{font-size:18px;color:#C8DED8;padding:0 8px;flex-shrink:0}
+
+/* word nav */
+.wnav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.wtab{padding:8px 16px;border-radius:100px;border:.5px solid #D8EDE6;font-size:12.5px;font-weight:600;cursor:pointer;background:white;color:#4A7067;transition:all .15s;display:flex;align-items:center;gap:6px}
+.wtab:hover{background:#F2F8F6}
+.wtab.on{color:white;border-color:transparent}
+
+/* set card */
+.set{border-radius:16px;border:.5px solid #D8EDE6;overflow:hidden;margin-bottom:28px}
+.set-hd{padding:18px 22px 16px;display:flex;align-items:flex-start;gap:14px}
+.word-badge{padding:6px 18px;border-radius:100px;font-size:15px;font-weight:800;color:white;flex-shrink:0;letter-spacing:.04em}
+.set-title{font-size:15px;font-weight:700;color:white;margin-bottom:4px}
+.set-why{font-size:12px;color:rgba(255,255,255,.65);line-height:1.55}
+
+/* context strip */
+.ctx{padding:12px 22px;font-size:12px;font-style:italic;border-bottom:1px solid #EEF3F1;line-height:1.6}
+
+/* rounds */
+.rounds{padding:18px 22px;display:flex;flex-direction:column;gap:18px;background:white}
+.round{background:#F8FAF9;border-radius:12px;padding:15px 16px;border:.5px solid #E8EDEB}
+.rl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#8AADA6;margin-bottom:8px}
+.prompt{font-size:13.5px;font-weight:600;color:#1A2E2A;margin-bottom:14px;line-height:1.5}
+
+.cards{display:grid;grid-template-columns:1fr 36px 1fr;gap:8px;align-items:center;margin-bottom:13px}
+.vs{text-align:center;font-size:10px;font-weight:800;color:#8AADA6}
+.card{border-radius:11px;padding:13px 12px;text-align:center;border:1.5px solid #D8EDE6;background:white}
+.ci{font-size:24px;margin-bottom:6px}
+.cl{font-size:12.5px;font-weight:700;color:#1A2E2A;line-height:1.35;margin-bottom:3px}
+.cs{font-size:10.5px;color:#8AADA6;line-height:1.4}
+
+.scoring{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sc{background:white;border-radius:8px;padding:9px 11px;border:.5px solid #E8EDEB}
+.sc h5{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px}
+.sc p{font-size:11.5px;line-height:1.5}
+.tag{display:inline-block;font-size:9px;font-weight:700;padding:1px 7px;border-radius:100px;margin:0 2px}
+.ta{background:#E8F7F2;color:#1D6B4A}
+.te{background:#FBEAF0;color:#9A2050}
+
+/* couple card */
+.cc{background:linear-gradient(135deg,#F0FAF6,#EEF0FF);border-radius:10px;padding:11px 14px;margin-top:10px;border:.5px solid #D8EDE6}
+.cc p{font-size:12px;color:#4A7067;line-height:1.55}
+
+/* footer */
+.sf{background:#F8FAF9;border-top:1px solid #EEF3F1;padding:12px 22px;display:flex;gap:8px;flex-wrap:wrap}
+.spill{font-size:10.5px;padding:4px 11px;border-radius:100px;font-weight:600}
+
+.note{background:#FFFBEA;border:1px solid #E8C840;border-radius:8px;padding:10px 14px;font-size:12px;color:#705C00;line-height:1.55;margin-top:14px}
+.insight{background:#F0F7F4;border-left:3px solid #1D9E75;border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:#2A5040;line-height:1.55;margin-top:10px}
+
+/* colour vars per word */
+.w-patient .set-hd{background:#4A8FD4}
+.w-patient .word-badge{background:rgba(255,255,255,.2)}
+.w-present .set-hd{background:#1D9E75}
+.w-present .word-badge{background:rgba(255,255,255,.2)}
+.w-honest .set-hd{background:#B07010}
+.w-honest .word-badge{background:rgba(255,255,255,.2)}
+.w-warm .set-hd{background:#D4537E}
+.w-warm .word-badge{background:rgba(255,255,255,.2)}
+.w-playful .set-hd{background:#E67E22}
+.w-playful .word-badge{background:rgba(255,255,255,.2)}
+.w-open .set-hd{background:#6053C0}
+.w-open .word-badge{background:rgba(255,255,255,.2)}
+.w-gentle .set-hd{background:#5A8A70}
+.w-gentle .word-badge{background:rgba(255,255,255,.2)}
+.w-brave .set-hd{background:#C0392B}
+.w-brave .word-badge{background:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="doc-hd">
+  <h1>This or That: Us Edition — Intention-Word Adaptive Questions</h1>
+  <p>When a user selects their intention word in Bridge 1→2, the This or That game that immediately follows serves questions <strong>directly rooted in that word's emotional territory.</strong> The user chose "Patient" because something in their relationship needs patience right now — so every question they get lives in that space. The game feels like it's listening, not just playing.</p>
+</div>
+
+<!-- FLOW -->
+<div class="flow">
+  <div class="fs"><div class="fl">Step 1</div><div class="fv">User arrives at Bridge 1→2</div></div>
+  <div class="farr">→</div>
+  <div class="fs"><div class="fl">Step 2</div><div class="fv">Selects one intention word from 8 options</div></div>
+  <div class="farr">→</div>
+  <div class="fs"><div class="fl">Step 3</div><div class="fv">This or That game loads immediately after</div></div>
+  <div class="farr">→</div>
+  <div class="fs"><div class="fl">Step 4</div><div class="fv">3 rounds served — all themed to their chosen word</div></div>
+  <div class="farr">→</div>
+  <div class="fs"><div class="fl">Step 5</div><div class="fv">Partner's side sealed · Revealed when they join</div></div>
+</div>
+
+<!-- WORD NAV -->
+<div class="wnav">
+  <div class="wtab on" style="background:#4A8FD4;border-color:#4A8FD4">🕰 Patient</div>
+  <div class="wtab" style="">🌿 Present</div>
+  <div class="wtab" style="">🔦 Honest</div>
+  <div class="wtab" style="">🧡 Warm</div>
+  <div class="wtab" style="">🎈 Playful</div>
+  <div class="wtab" style="">🚪 Open</div>
+  <div class="wtab" style="">🌸 Gentle</div>
+  <div class="wtab" style="">🦁 Brave</div>
+</div>
+
+<!-- ══ PATIENT ══ -->
+<div class="set w-patient">
+  <div class="set-hd">
+    <span class="word-badge">🕰 Patient</span>
+    <div>
+      <div class="set-title">Intention: Patient</div>
+      <div class="set-why">They chose this word because something in the relationship needs more time, space, or tolerance today. Questions live in the territory of waiting, processing, and giving each other room.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#F0F6FD;color:#2A5FA0">
+    <em>"You chose patience today. These 3 rounds are about how you and your partner give each other space — and whether they'd say the same."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"When I'm waiting for my partner to come around on something important to me…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🌊</div><div class="cl">I give it time without saying more</div><div class="cs">If it matters, they'll get there</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🗣️</div><div class="cl">I say it one more time, clearly, then let it sit</div><div class="cs">I need to know they heard me before I let go</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🌊 Silent wait = <span class="tag te">Expressive</span> (feels inward) · 🗣️ One more say = <span class="tag ta">Active</span> (needs to express)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You wait in silence. They wait by speaking. Both of you are being patient — just differently."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"When my partner is taking longer to process something emotionally…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🤫</div><div class="cl">I give them space and wait for them to come to me</div><div class="cs">Hovering makes it worse</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🫂</div><div class="cl">I check in gently, even if they haven't asked</div><div class="cs">I'd rather interrupt than leave them alone in it</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🤫 Space = <span class="tag te">Expressive</span> · 🫂 Check in = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You give space. They come closer. Between you — no one is ever really alone."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"When things between us are going through a slow, quiet patch…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🌱</div><div class="cl">I trust it — every relationship has seasons</div><div class="cs">Quiet doesn't mean something is wrong</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">💬</div><div class="cl">I name it — "are we okay?" even if it's awkward</div><div class="cs">Silence that isn't named starts to feel like distance</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🌱 Trust it = <span class="tag te">Expressive</span> · 💬 Name it = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You trust the quiet. They can't rest until it's named. You've been okay all along — you just needed different proof."</p></div>
+      </div>
+    </div>
+    <div class="insight">Why these 3: Someone who chose "Patient" is either practising patience with their partner right now, or craving it from them. These questions surface whether they hold space quietly or actively — and whether they expect the same from their partner.</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#E6F1FB;color:#2A5FA0">Axis A: Inward patience = Expressive · Outward checking = Active</span>
+    <span class="spill" style="background:#FAEEDA;color:#7A4E00">Axis C: Same-pick prediction = they see their partner as a mirror → Protecting</span>
+  </div>
+</div>
+
+
+<!-- ══ PRESENT ══ -->
+<div class="set w-present">
+  <div class="set-hd">
+    <span class="word-badge">🌿 Present</span>
+    <div>
+      <div class="set-title">Intention: Present</div>
+      <div class="set-why">They chose Present because something — work, phone, mental noise — is pulling them away from the relationship today. Questions live in the territory of attention, distraction, and what being truly there looks like for each person.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#E8F7F2;color:#1D6B4A">
+    <em>"You chose presence today. These 3 rounds are about what 'being there' actually means to you — and whether your partner would say the same thing."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"On a weeknight at home together, phones should be…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">📵</div><div class="cl">In another room — this time belongs to us</div><div class="cs">Out of sight, out of reach, actually gone</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">📲</div><div class="cl">Around, but I'm with you — I can do both</div><div class="cs">Trust, not rules</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>📵 No phone = <span class="tag te">Expressive</span> (deep, protective of space) · 📲 Trust = <span class="tag ta">Active</span> (relaxed, fluid)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You need the phone gone. They just need you looking at them. You want the same thing — you just set different rules for it."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"The kind of time together that makes me feel genuinely close…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🛋️</div><div class="cl">Doing nothing together — same room, no agenda, just us</div><div class="cs">Parallel presence. No plan needed.</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🚶</div><div class="cl">Doing something together — a walk, a meal, shared focus</div><div class="cs">I feel closest when we're moving in the same direction</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🛋️ Still together = <span class="tag te">Expressive</span> · 🚶 Moving together = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You feel close by being still together. They feel close by doing something together. Both of you are saying — I just want us."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"When I'm physically with my partner but mentally somewhere else…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🙏</div><div class="cl">Don't call it out — let me find my way back</div><div class="cs">I know. I'm trying. I just need a minute.</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">👋</div><div class="cl">Gently bring me back — "hey, you're somewhere else"</div><div class="cs">I'd rather be caught than drift further away</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🙏 Self-return = <span class="tag te">Expressive</span> · 👋 Called back = <span class="tag ta">Active</span> (wants engagement)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You want space to come back on your own. They want a gentle pull. Either way — you both want to be together."</p></div>
+      </div>
+    </div>
+    <div class="insight">Why these 3: "Present" is one of the most common intention words chosen — usually on days when screens, work, or life noise is winning. These questions surface what presence actually means to each person, which is rarely the same thing.</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#E8F7F2;color:#1D6B4A">Axis A: Still/inward presence = Expressive · Active/doing presence = Active</span>
+    <span class="spill" style="background:#EEEDFE;color:#4A3AAA">High mismatch expected on Round 3 — productive reveal</span>
+  </div>
+</div>
+
+
+<!-- ══ HONEST ══ -->
+<div class="set w-honest">
+  <div class="set-hd">
+    <span class="word-badge">🔦 Honest</span>
+    <div>
+      <div class="set-title">Intention: Honest</div>
+      <div class="set-why">They chose Honest because something unsaid is sitting between them and their partner today. Questions live in the territory of timing, courage, and how each person navigates the truth when it's uncomfortable.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#FEF9EE;color:#7A4E00">
+    <em>"You chose honesty today. These 3 rounds are about how you and your partner tell the hard truth — and whether you'd do it the same way."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"When something my partner did genuinely hurt me and I haven't said it yet…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">⏳</div><div class="cl">I'll bring it up when the moment feels right</div><div class="cs">Timing is part of honesty</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">💬</div><div class="cl">I say it the same day — uncomfortable or not</div><div class="cs">Sitting on it makes it heavier for me</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>⏳ Wait = <span class="tag te">Expressive</span> (processes internally) · 💬 Same day = <span class="tag ta">Active</span> (processes outward)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You wait for the right moment. They'd have already started the conversation. You're both trying to protect the same thing."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"When my partner asks 'are you okay?' and I genuinely am not…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🙂</div><div class="cl">I say I'm fine — until I know what I actually feel</div><div class="cs">I can't be honest about something I haven't figured out yet</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🤍</div><div class="cl">"Not really" — even if I can't explain it yet</div><div class="cs">They deserve to know, even if I don't have the words</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🙂 Wait to process = <span class="tag te">Expressive</span> · 🤍 Say it now = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You protect them from the messy version. They trust them with the messy version. Both of you love carefully."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"The thing I find genuinely hardest to be honest with my partner about…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🫀</div><div class="cl">What I actually need from this relationship right now</div><div class="cs">My needs feel like a burden sometimes</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">😶</div><div class="cl">The things that bother me that I keep letting go</div><div class="cs">I keep choosing peace over truth — and I'm not sure that's right</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🫀 Unspoken needs = <span class="tag te">Expressive</span> (vulnerability) · 😶 Unspoken friction = <span class="tag ta">Active</span> (avoided action)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You're both holding something back. The fact that you both answered the same thing? That's where to start."</p></div>
+      </div>
+    </div>
+    <div class="note">⚠️ Round 3 is intentionally vulnerable. If both partners choose the same option, the couple card should feel like a breakthrough — "you've both been holding the same thing." Serve with care — best in Week 2 onwards.</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#FAEEDA;color:#7A4E00">Highest emotional depth of all 8 sets · Round 3 frequently opens conversations that weren't happening</span>
+  </div>
+</div>
+
+
+<!-- ══ WARM ══ -->
+<div class="set w-warm">
+  <div class="set-hd">
+    <span class="word-badge">🧡 Warm</span>
+    <div>
+      <div class="set-title">Intention: Warm</div>
+      <div class="set-why">They chose Warm because they want to give or receive more tenderness today. Questions live in the territory of daily affection — how it's given, how it's received, and what it means to each person when it's absent.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#FEF5F8;color:#9A2050">
+    <em>"You chose warmth today. These 3 rounds are about how love shows up in the small moments — and whether your partner would recognise themselves in your answers."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"The way I naturally show warmth to my partner on a regular day…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🤏</div><div class="cl">Small touches — a hand on the back, a forehead kiss, without saying anything</div><div class="cs">My hands say it before my mouth does</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🗣️</div><div class="cl">Words — "I'm proud of you," "you looked really good today" — out loud</div><div class="cs">If I feel it, I want them to hear it</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🤏 Touch = <span class="tag ta">Active</span> (physical expression) · 🗣️ Words = <span class="tag te">Expressive</span> (verbal depth)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You reach. They say. Both of you are giving love — the other person just has to notice which language it comes in."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"When my partner is having a hard day, the warmth they need from me is probably…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">☕</div><div class="cl">Just be near — make tea, sit with them, no fixing, no talking needed</div><div class="cs">Presence is the warmth</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🛠️</div><div class="cl">Help them do the thing they're dreading — take something off the list</div><div class="cs">Love is showing up and actually doing something</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>☕ Sit near = <span class="tag te">Expressive</span> (still warmth) · 🛠️ Do something = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You offer presence. They offer action. What you both want is to feel less alone — and you give that to each other in completely different ways."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"I feel most loved when my partner…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🧠</div><div class="cl">Remembers something small I said weeks ago — and brings it up</div><div class="cs">"You mentioned this once…" That. That's it for me.</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🤗</div><div class="cl">Reaches for my hand in public — not when it's romantic, just automatically</div><div class="cs">The "you're mine and I'm not hiding it" kind</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🧠 Memory = <span class="tag te">Expressive</span> (values emotional attentiveness) · 🤗 Touch = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You want to be remembered. They want to be held. You've been giving each other exactly what you need — even if you didn't know the other one needed it too."</p></div>
+      </div>
+    </div>
+    <div class="insight">Why these 3: Warmth is about love languages without naming them. When the couple card reveals here, even a mismatch reads beautifully — "you love differently, not less."</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#FBEAF0;color:#9A2050">Highest match-rate set after Set 1 · Strong Protecting signal when predictions align</span>
+  </div>
+</div>
+
+
+<!-- ══ PLAYFUL ══ -->
+<div class="set w-playful">
+  <div class="set-hd">
+    <span class="word-badge">🎈 Playful</span>
+    <div>
+      <div class="set-title">Intention: Playful</div>
+      <div class="set-why">They chose Playful because life has felt a bit serious lately and they want to bring lightness back. Questions live in the territory of fun, laughter, spontaneity — and whether their idea of play matches their partner's.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#FEF0E6;color:#9A4E00">
+    <em>"You chose playful today. These 3 rounds are about how you two have fun — and whether your partner's version of fun looks like yours."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"The version of us I miss most is…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">😂</div><div class="cl">When we laughed at absolutely nothing — just each other</div><div class="cs">That phase where everything was funnier when we were together</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🗺️</div><div class="cl">When everything felt like an adventure — new places, new energy</div><div class="cs">When we were still surprising each other</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>😂 Laughter/stillness = <span class="tag te">Expressive</span> · 🗺️ Adventure = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You miss the laughs. They miss the adventures. What you both miss is the version of yourselves when you weren't so busy."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"The best way to break a tense moment between us is…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🤡</div><div class="cl">One of us does something ridiculous — makes the other laugh first</div><div class="cs">Humour has saved us more times than honesty has</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🕊️</div><div class="cl">One of us calls it out — "this is silly, let's just reset"</div><div class="cs">Name the tension, then let it go</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🤡 Humour = <span class="tag ta">Active</span> (physical, expressive energy) · 🕊️ Words = <span class="tag te">Expressive</span> (verbal resolution)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You use laughter as repair. They use words. Somehow — it always works."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"Keeping a long relationship fun means…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🧩</div><div class="cl">Protecting our in-jokes, our private language, our weird little rituals</div><div class="cs">We have a whole world that belongs to only us</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🎢</div><div class="cl">Not letting comfort become invisible — still trying things, still surprising each other</div><div class="cs">Fun has to be chosen, not assumed</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🧩 Private world = <span class="tag te">Expressive</span> (depth and intimacy) · 🎢 New experiences = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You protect what's already ours. They keep adding to it. That's how the inside jokes survive the years."</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#FEF0E6;color:#9A4E00">Lightest emotional set · Highest engagement · Best for early days when the habit is forming</span>
+  </div>
+</div>
+
+
+<!-- ══ OPEN ══ -->
+<div class="set w-open">
+  <div class="set-hd">
+    <span class="word-badge">🚪 Open</span>
+    <div>
+      <div class="set-title">Intention: Open</div>
+      <div class="set-why">They chose Open because some part of them is guarded today — or wants to be more vulnerable but doesn't know how to start. Questions live in the territory of what each person finds hardest to share and how they receive openness from their partner.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#F4F3FF;color:#4A3AAA">
+    <em>"You chose openness today. These 3 rounds are about the walls we keep up — and whether our partners see the same ones."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"The part of me I find hardest to show my partner…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">😨</div><div class="cl">My real fears — not the surface ones, the deep ones</div><div class="cs">I don't want to feel small in front of them</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🙋</div><div class="cl">What I actually need — my real needs, not the edited version</div><div class="cs">My needs feel like a burden sometimes</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>😨 Fears = <span class="tag te">Expressive</span> (emotional depth) · 🙋 Needs = <span class="tag ta">Active</span> (relational action)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You hide your fears. They hide their needs. You've both been protecting each other from exactly what you both need to hear."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"When my partner opens up about something vulnerable, I…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">👂</div><div class="cl">Hold the space — I listen, I don't rush to respond</div><div class="cs">The most important thing I can give is quiet attention</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🔄</div><div class="cl">Share something back — it feels like a door, not a one-way street</div><div class="cs">Vulnerability should go both ways</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>👂 Listen and hold = <span class="tag te">Expressive</span> · 🔄 Share back = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You hold the space. They fill it with more. Together you've built a place where both of you are safe."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"Being truly open in our relationship means letting them see me…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">😔</div><div class="cl">On the days I'm not okay — the unflattering, unpolished version</div><div class="cs">Not performing okayness when I'm falling apart</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🗝️</div><div class="cl">Telling them things I've never said out loud to anyone</div><div class="cs">The deeper version of my story — not just the highlights</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>😔 Show the low days = <span class="tag te">Expressive</span> · 🗝️ Share history = mixed (leans Expressive)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You want them to see you at your worst. They want them to know their whole story. You're both asking for the same thing: to be known completely."</p></div>
+      </div>
+    </div>
+    <div class="note">⚠️ Open questions produce the most emotionally meaningful couple card reveals but also the highest chance of one partner feeling exposed. Use warm, affirming couple card copy — every reveal should feel like safety, not judgement.</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#EEEDFE;color:#4A3AAA">Deepest vulnerability set · Best introduced after Week 2 when emotional safety is established</span>
+  </div>
+</div>
+
+
+<!-- ══ GENTLE ══ -->
+<div class="set w-gentle">
+  <div class="set-hd">
+    <span class="word-badge">🌸 Gentle</span>
+    <div>
+      <div class="set-title">Intention: Gentle</div>
+      <div class="set-why">They chose Gentle because something recently felt too sharp — a conversation, a tone, a reaction. Questions live in the territory of softness during hard moments: how each person gives and needs care when things are rough.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#EEF6F2;color:#2A5040">
+    <em>"You chose gentleness today. These 3 rounds are about care under pressure — how you and your partner are soft with each other when it matters most."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"When I'm frustrated with my partner, gentle looks like…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🔇</div><div class="cl">Saying nothing until the frustration passes</div><div class="cs">I don't want to say something I'll regret</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🌱</div><div class="cl">Saying it softly — "I need to tell you something and I want to get the words right"</div><div class="cs">Naming it is gentler than holding it</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🔇 Wait = <span class="tag te">Expressive</span> · 🌱 Soft naming = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You go quiet to protect them. They speak softly to protect you. You're both being careful with the same thing."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"When my partner is struggling, the gentlest thing I can do is…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🫧</div><div class="cl">Ask "what do you need from me right now?" — not assume</div><div class="cs">My help might not be the help they need</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">👀</div><div class="cl">Notice the small things without being asked — the skipped meal, the broken sleep</div><div class="cs">Gentleness is paying attention before they have to say it</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🫧 Ask first = <span class="tag ta">Active</span> (checking in) · 👀 Notice quietly = <span class="tag te">Expressive</span> (attentive stillness)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You ask what they need. They already noticed. Both of you are paying attention — just in different ways."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"The most underrated gentle act in our relationship is…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🚫</div><div class="cl">Not bringing up old fights when a new one starts</div><div class="cs">Every fight deserves its own conversation, not a history lesson</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">👂</div><div class="cl">Saying "I hear you" before saying "but here's my side"</div><div class="cs">Being heard first changes everything that comes after</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🚫 Restrain history = <span class="tag te">Expressive</span> (emotional control) · 👂 Acknowledge first = <span class="tag ta">Active</span> (relational action)</p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You protect them from the past. They protect them from feeling unheard. You've both figured out the same thing from different directions."</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#EEF6F2;color:#2A5040">Emotional theme: Tenderness under pressure · High match rate on Round 3 — strong connection signal</span>
+  </div>
+</div>
+
+
+<!-- ══ BRAVE ══ -->
+<div class="set w-brave">
+  <div class="set-hd">
+    <span class="word-badge">🦁 Brave</span>
+    <div>
+      <div class="set-title">Intention: Brave</div>
+      <div class="set-why">They chose Brave because something in their relationship — a conversation, a decision, a change — requires more courage than they currently have. Questions live in the territory of facing hard things together and what courage looks like in love.</div>
+    </div>
+  </div>
+  <div class="ctx" style="background:#FEF3F3;color:#8B0000">
+    <em>"You chose brave today. These 3 rounds are about courage in a relationship — the quiet kind, the loud kind, and the kind neither of you has tried yet."</em>
+  </div>
+  <div class="rounds">
+    <div class="round">
+      <div class="rl">Round 1</div>
+      <div class="prompt">"The conversation we keep almost having but haven't fully had yet…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">⏳</div><div class="cl">I'll bring it up when I feel ready — brave doesn't mean reckless</div><div class="cs">The right moment matters</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🚀</div><div class="cl">I'll bring it up before I feel ready — waiting for perfect means never</div><div class="cs">Brave means going first even when it's scary</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>⏳ Wait for ready = <span class="tag te">Expressive</span> · 🚀 Go before ready = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You need to feel ready. They just go. Between you — the conversation always happens eventually. The question is who starts it."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 2</div>
+      <div class="prompt">"The brave thing I want more of from us as a couple…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🫀</div><div class="cl">More honesty about what we each need — even when it might disappoint the other</div><div class="cs">I'd rather know than be comfortable</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🌍</div><div class="cl">More willingness to take real chances together — new city, big change, real risk</div><div class="cs">We play it safe a lot. I want us to bet on us.</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🫀 Emotional honesty = <span class="tag te">Expressive</span> · 🌍 Real-world risk = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"Your brave is emotional. Theirs is physical. Together you've covered both kinds of risk."</p></div>
+      </div>
+    </div>
+    <div class="round">
+      <div class="rl">Round 3</div>
+      <div class="prompt">"In our relationship, brave ultimately means…"</div>
+      <div class="cards">
+        <div class="card"><div class="ci">🏠</div><div class="cl">Choosing to stay and work on the hard thing instead of shutting down</div><div class="cs">Staying when it's easier to go silent is the bravest thing I know</div></div>
+        <div class="vs">VS</div>
+        <div class="card"><div class="ci">🔊</div><div class="cl">Saying the thing that might change everything — even if I don't know how it lands</div><div class="cs">Brave means not editing yourself to keep the peace</div></div>
+      </div>
+      <div class="scoring">
+        <div class="sc"><h5 style="color:#1D9E75">Axis A</h5><p>🏠 Stay and work = <span class="tag te">Expressive</span> (deep commitment) · 🔊 Speak out = <span class="tag ta">Active</span></p></div>
+        <div class="sc"><h5 style="color:#B07010">Couple Card</h5><p>"You stay. They speak. The relationship needs both kinds of brave — and you each brought one."</p></div>
+      </div>
+    </div>
+    <div class="insight">Why these 3: "Brave" is almost always chosen on a day when something specific is sitting with the user. Round 3 tends to produce the most emotionally significant couple card — particularly when both partners pick the same option. That match is powerful.</div>
+  </div>
+  <div class="sf">
+    <span class="spill" style="background:#FEF3F3;color:#8B0000">Highest Axis C Building signal when predictions differ — they see their partner as differently courageous from themselves</span>
+    <span class="spill" style="background:#EEEDFE;color:#4A3AAA">Best served Week 2+ · Do not open with Brave</span>
+  </div>
+</div>
+
+<!-- SERVING LOGIC -->
+<div style="background:#1A2E2A;border-radius:14px;padding:24px 28px;color:white;margin-top:8px">
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#7DBEAA;margin-bottom:14px">In-App Serving Logic</div>
+  <table style="width:100%;border-collapse:collapse">
+    <tr>
+      <th style="background:rgba(255,255,255,.07);color:#8AADA6;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left">Word Selected</th>
+      <th style="background:rgba(255,255,255,.07);color:#8AADA6;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left">What it tells you</th>
+      <th style="background:rgba(255,255,255,.07);color:#8AADA6;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left">Expected Match Rate</th>
+      <th style="background:rgba(255,255,255,.07);color:#8AADA6;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left">Serve From</th>
+    </tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🌿 Present</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Something is distracting them from the relationship today</td><td style="padding:9px 12px;color:#3FB886">High · 60–65%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Day 1 onwards</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🧡 Warm</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">They want more tenderness — to give or receive</td><td style="padding:9px 12px;color:#3FB886">High · 60%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Day 1 onwards</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🎈 Playful</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Life has felt too serious — they want lightness back</td><td style="padding:9px 12px;color:#3FB886">High · 58%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Day 1 onwards</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🕰 Patient</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Something needs more time or space in the relationship</td><td style="padding:9px 12px;color:#E8C860">Medium · 50%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Day 1 onwards</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🌸 Gentle</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Something recent felt too sharp or harsh</td><td style="padding:9px 12px;color:#E8C860">Medium · 50%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Week 1 Day 3+</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🔦 Honest</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Something unsaid is sitting between them and their partner</td><td style="padding:9px 12px;color:#E8C860">Medium · 45%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Week 2+</td></tr>
+    <tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🚪 Open</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">They feel guarded and want to let more in</td><td style="padding:9px 12px;color:#D4537E">Low-med · 40%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Week 2+</td></tr>
+    <tr><td style="padding:9px 12px;color:rgba(255,255,255,.8)">🦁 Brave</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">A specific hard thing is requiring courage today</td><td style="padding:9px 12px;color:#D4537E">Low · 38%</td><td style="padding:9px 12px;color:rgba(255,255,255,.55)">Week 2+ only</td></tr>
+  </table>
+  <div style="background:rgba(255,255,255,.05);border-radius:9px;padding:12px 15px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.65">
+    <strong style="color:#7DBEAA">Key design principle:</strong> Lower match rates are not failures — they are conversation starters. The couple card copy for every mismatch is written to make the difference feel <em>complementary</em>, not conflicting. A couple who sees they process patience completely differently has just learned something about each other that could take months to surface naturally.
+  </div>
+</div>
+
+</div>
+</body>
+</html>

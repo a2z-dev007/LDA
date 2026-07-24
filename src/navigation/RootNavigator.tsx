@@ -11,41 +11,53 @@ import { NameKeeperScreen } from '../screens/NameKeeperScreen';
 import { IntroSliderScreen } from '../screens/IntroSliderScreen';
 
 // Day 1
-import { Day1ConnectionSlider } from '../screens/Day1ConnectionSlider';
-import { Day1HonestMoment } from '../screens/Day1HonestMoment';
-import { Day1SparkQuiz } from '../screens/Day1SparkQuiz';
-import { Day1ResultScreen } from '../screens/Day1ResultScreen';
+import { Day1ConnectionSlider } from '../screens/day1/Day1ConnectionSlider';
+import { Day1HonestMoment } from '../screens/day1/Day1HonestMoment';
+import { Day1VibeCheck } from '../screens/day1/Day1VibeCheck';
+import { Day1SparkQuiz } from '../screens/day1/Day1SparkQuiz';
+import { Day1ResultScreen } from '../screens/day1/Day1ResultScreen';
 
 // Bridges
-import { Bridge1to2 } from '../screens/Bridge1to2';
-import { Bridge2to3 } from '../screens/Bridge2to3';
-import { Bridge3to4 } from '../screens/Bridge3to4';
-import { Bridge4to5 } from '../screens/Bridge4to5';
+import { Bridge1to2 } from '../screens/bridges/Bridge1to2';
+import { Bridge2to3 } from '../screens/bridges/Bridge2to3';
+import { Bridge3to4 } from '../screens/bridges/Bridge3to4';
+import { Bridge4to5 } from '../screens/bridges/Bridge4to5';
+import { SetYourIntention } from '../screens/SetYourIntention';
+import { ThisOrThatScreen } from '../screens/ThisOrThatScreen';
 
 // Day 2
-import { Day2MoodPicker } from '../screens/Day2MoodPicker';
-import { Day2MoodFollowUp } from '../screens/Day2MoodFollowUp';
+import { Day2MoodPicker } from '../screens/day2/Day2MoodPicker';
+import { Day2OneGoodThing } from '../screens/day2/Day2OneGoodThing';
+import { Day2MoodFollowUp } from '../screens/day2/Day2MoodFollowUp';
+import { Day2ResultScreen } from '../screens/day2/Day2ResultScreen';
 
 // Day 3
-import { Day3AppreciationSnap } from '../screens/Day3AppreciationSnap';
-import { Day3AssumptionsTest } from '../screens/Day3AssumptionsTest';
-import { Day3OneCertainty } from '../screens/Day3OneCertainty';
-import { Day3MirrorResults } from '../screens/Day3MirrorResults';
+import { Day3AppreciationSnap } from '../screens/day3/Day3AppreciationSnap';
+import { Day3FinishMySentence } from '../screens/day3/Day3FinishMySentence';
+import { Day3AssumptionsTest } from '../screens/day3/Day3AssumptionsTest';
+import { Day3MirrorResults } from '../screens/day3/Day3MirrorResults';
+import { Day3MoodBoard } from '../screens/day3/Day3MoodBoard';
+import { Day3MoodBoardResult } from '../screens/day3/Day3MoodBoardResult';
+import { Day3OneCertainty } from '../screens/day3/Day3OneCertainty';
+import { Day3Complete } from '../screens/day3/Day3Complete';
 
 // Day 4
-import { Day4MemoryJar } from '../screens/Day4MemoryJar';
-import { Day4TinyCompliment } from '../screens/Day4TinyCompliment';
-import { Day4DailyTwo } from '../screens/Day4DailyTwo';
-import { Day4TriviaFact } from '../screens/Day4TriviaFact';
-import { Day4DropBox } from '../screens/Day4DropBox';
+import { Day4MemoryJar } from '../screens/day4/Day4MemoryJar';
+import { Day4TinyCompliment } from '../screens/day4/Day4TinyCompliment';
+import { Day4PriorityShuffle } from '../screens/day4/Day4PriorityShuffle';
+import { Day4DailyTwo } from '../screens/day4/Day4DailyTwo';
+import { Day4TriviaFact } from '../screens/day4/Day4TriviaFact';
+import { Day4DropBox } from '../screens/day4/Day4DropBox';
+import { Day4Complete } from '../screens/day4/Day4Complete'
 
 // Day 5
-import { Day5Celebration } from '../screens/Day5Celebration';
-import { Day5ReportCard } from '../screens/Day5ReportCard';
-import { Day5ThePromise } from '../screens/Day5ThePromise';
-import { Day5JarReveal } from '../screens/Day5JarReveal';
-import { Day5TheLetter } from '../screens/Day5TheLetter';
-import { Day5PartnerInvite } from '../screens/Day5PartnerInvite';
+import { Day5Celebration } from '../screens/day5/Day5Celebration';
+import { Day5ReportCard } from '../screens/day5/Day5ReportCard';
+import { Day5ThePromise } from '../screens/day5/Day5ThePromise';
+import { Day5JarReveal } from '../screens/day5/Day5JarReveal';
+import { Day5TheLetter } from '../screens/day5/Day5TheLetter';
+import { Day5PartnerInvite } from '../screens/day5/Day5PartnerInvite';
+import { InvitePartner } from '../screens/day5/InvitePartner';
 
 // Hub
 import { HomeScreen } from '../screens/HomeScreen';
@@ -63,10 +75,6 @@ export const RootNavigator = () => {
     }
   }, []);
 
-  // Route priority:
-  //  1. Never seen intro → show Intro slider
-  //  2. Seen intro, onboarding done → Home
-  //  3. Seen intro, onboarding not done → Splash
   const initialRoute: keyof RootStackParamList = !introSeen
     ? 'Intro'
     : onboardingComplete
@@ -92,29 +100,40 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day1HonestMoment" component={Day1HonestMoment} />
       <Stack.Screen name="Day1Quiz" component={Day1SparkQuiz} />
       <Stack.Screen name="Day1Result" component={Day1ResultScreen} />
+      <Stack.Screen name="Day1VibeCheck" component={Day1VibeCheck} />
 
       {/* Bridges */}
       <Stack.Screen name="Bridge1to2" component={Bridge1to2} />
+      <Stack.Screen name="SetYourIntention" component={SetYourIntention} />
+      <Stack.Screen name="ThisOrThat" component={ThisOrThatScreen} />
       <Stack.Screen name="Bridge2to3" component={Bridge2to3} />
       <Stack.Screen name="Bridge3to4" component={Bridge3to4} />
       <Stack.Screen name="Bridge4to5" component={Bridge4to5} />
 
       {/* Day 2 */}
       <Stack.Screen name="Day2MoodPicker" component={Day2MoodPicker} />
+      <Stack.Screen name="Day2OneGoodThing" component={Day2OneGoodThing} />
       <Stack.Screen name="Day2MoodFollowUp" component={Day2MoodFollowUp} />
+      <Stack.Screen name="Day2Result" component={Day2ResultScreen} />
 
       {/* Day 3 */}
       <Stack.Screen name="Day3AppreciationSnap" component={Day3AppreciationSnap} />
+      <Stack.Screen name="Day3FinishMySentence" component={Day3FinishMySentence} />
       <Stack.Screen name="Day3AssumptionsTest" component={Day3AssumptionsTest} />
-      <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
       <Stack.Screen name="Day3MirrorResults" component={Day3MirrorResults} />
+      <Stack.Screen name="Day3MoodBoard" component={Day3MoodBoard} />
+      <Stack.Screen name="Day3MoodBoardResult" component={Day3MoodBoardResult} />
+      <Stack.Screen name="Day3OneCertainty" component={Day3OneCertainty} />
+      <Stack.Screen name="Day3Complete" component={Day3Complete} />
 
       {/* Day 4 */}
       <Stack.Screen name="Day4MemoryJar" component={Day4MemoryJar} />
       <Stack.Screen name="Day4TinyCompliment" component={Day4TinyCompliment} />
+      <Stack.Screen name="Day4PriorityShuffle" component={Day4PriorityShuffle} />
       <Stack.Screen name="Day4DailyTwo" component={Day4DailyTwo} />
       <Stack.Screen name="Day4TriviaFact" component={Day4TriviaFact} />
       <Stack.Screen name="Day4DropBox" component={Day4DropBox} />
+      <Stack.Screen name="Day4Complete" component={Day4Complete} />
 
       {/* Day 5 */}
       <Stack.Screen name="Day5Celebration" component={Day5Celebration} />
@@ -123,6 +142,7 @@ export const RootNavigator = () => {
       <Stack.Screen name="Day5JarReveal" component={Day5JarReveal} />
       <Stack.Screen name="Day5TheLetter" component={Day5TheLetter} />
       <Stack.Screen name="Day5PartnerInvite" component={Day5PartnerInvite} />
+      <Stack.Screen name="InvitePartner" component={InvitePartner} />
     </Stack.Navigator>
   );
 };

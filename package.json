@@ -9,7 +9,10 @@
     "start": "react-native start",
     "test": "jest",
     "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "apk:debug": "cd android && gradlew assembleDebug"
+    "apk:platform:android:debug": "cd android && gradlew assembleDebug",
+    "apk:platform:ios:debug": "cd android && ./gradlew assembleDebug",
+    "apk:platform:android:release": "cd android && gradlew assembleRelease",
+    "apk:platform:ios:release": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^3.0.2",
@@ -54,12 +57,14 @@
     "@react-native/metro-config": "0.85.2",
     "@react-native/typescript-config": "0.85.2",
     "@types/jest": "^29.5.13",
+    "@types/node": "^25.9.2",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "patch-package": "^8.0.1",
     "prettier": "2.8.8",
+    "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "19.2.3",
     "typescript": "^5.8.3"
   },

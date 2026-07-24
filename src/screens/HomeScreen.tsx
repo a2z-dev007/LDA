@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ScrollView,
+  View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -17,7 +17,8 @@ import { useUserStore } from '../store/useUserStore';
 import { useStreakStore } from '../store/useStreakStore';
 import { resolveRoute } from '../services/dayRouter';
 import { haptics } from '../utils/haptics';
-import { Heart, Sparkles, Lock } from 'lucide-react-native';
+import { Heart, Sparkles, Lock, CheckCheckIcon, BadgeCheckIcon } from 'lucide-react-native';
+import { GradientButton } from '../components/common/GradientButton';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -27,7 +28,7 @@ const DAY_DATA = [
     title: 'The Spark Check',
     subtitle: 'Reignite connection and curiosity',
     route: 'Day1Slider' as keyof RootStackParamList,
-    iconColors: ['#6EE87A', '#2DD4BF'] as [string, string],
+    iconColors: ['#4ECDC4', '#3B82F6'] as [string, string],
     iconEmoji: '✦',
   },
   {
@@ -35,7 +36,7 @@ const DAY_DATA = [
     title: 'The Mood Room',
     subtitle: 'Explore feelings and set the vibe',
     route: 'Bridge1to2' as keyof RootStackParamList,
-    iconColors: ['#7EC8E3', '#4A90D9'] as [string, string],
+    iconColors: ['#4ECDC4', '#2DD4BF'] as [string, string],
     iconEmoji: '☁',
   },
   {
@@ -68,11 +69,29 @@ export const HomeScreen = () => {
   const colors = useAppColors();
   const styles = makeStyles(colors);
   const navigation = useNavigation<Nav>();
-  const userName    = useUserStore((s) => s.name);
-  const nextDay     = useDayStore((s) => s.nextDay());
-  const completed   = useDayStore((s) => s.completedDayCount());
+  const userName = useUserStore((s) => s.name);
+  const nextDay = useDayStore((s) => s.nextDay());
+  const completed = useDayStore((s) => s.completedDayCount());
   const streakCount = useStreakStore((s) => s.streakCount);
-  const insets      = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
+  const pulseAnim = React.useRef(new Animated.Value(1)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.18,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1.0,
+          duration: 1200,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
 
   const handleContinue = () => {
     haptics.medium();
@@ -88,10 +107,9 @@ export const HomeScreen = () => {
   };
 
   const activeDay = DAY_DATA[nextDay - 1];
-  const ctaBottomPadding = insets.bottom + metrics.spacing.sm;
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper blurValue={4}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -130,22 +148,21 @@ export const HomeScreen = () => {
         <View style={styles.cards}>
           {DAY_DATA.map((day) => {
             const isCompleted = day.number < nextDay;
-            const isActive    = day.number === nextDay;
-            const isLocked    = day.number > nextDay;
+            const isActive = day.number === nextDay;
+            const isLocked = day.number > nextDay;
 
             return (
               <TouchableOpacity
                 key={day.number}
-                activeOpacity={isLocked ? 1 : 0.8}
+                activeOpacity={0.8} // DEV MODE: originally isLocked ? 1 : 0.8
                 onPress={() => {
-                  if (!isLocked) {
-                    haptics.light();
-                    navigation.navigate(day.route as any);
-                  }
+                  // DEV MODE: Allow visiting any day (locked or completed)
+                  haptics.light();
+                  navigation.navigate(day.route as any);
                 }}
                 style={[
                   styles.card,
-                  isActive && styles.cardActive,
+                  isActive && [styles.cardActive, { borderColor: day.iconColors[0] }],
                   isLocked && styles.cardLocked,
                 ]}
               >
@@ -156,7 +173,13 @@ export const HomeScreen = () => {
                   end={{ x: 1, y: 1 }}
                   style={styles.iconCircle}
                 >
-                  <Text style={styles.iconEmoji}>{day.iconEmoji}</Text>
+                  {isActive ? (
+                    <Animated.Text style={[styles.iconEmoji, { transform: [{ scale: pulseAnim }] }]}>
+                      {day.iconEmoji}
+                    </Animated.Text>
+                  ) : (
+                    <Text style={styles.iconEmoji}>{day.iconEmoji}</Text>
+                  )}
                 </LinearGradient>
 
                 {/* Card content */}
@@ -184,13 +207,11 @@ export const HomeScreen = () => {
                 {/* Right status */}
                 <View style={styles.cardRight}>
                   {isCompleted && (
-                    <View style={[styles.checkCircle, { backgroundColor: '#2DD4BF' }]}>
-                      <Text style={styles.checkIcon}>✓</Text>
-                    </View>
+                      <BadgeCheckIcon size={metrics.iconSize.sm} strokeWidth={2} color="#2DD4BF" />
                   )}
                   {isActive && (
-                    <View style={[styles.activeDotOuter, { borderColor: '#2DD4BF' }]}>
-                      <View style={[styles.activeDotInner, { backgroundColor: '#2DD4BF' }]} />
+                    <View style={[styles.activeDotOuter, { borderColor: day.iconColors[0] }]}>
+                      <View style={[styles.activeDotInner, { backgroundColor: day.iconColors[0] }]} />
                     </View>
                   )}
                   {isLocked && (
@@ -202,55 +223,29 @@ export const HomeScreen = () => {
           })}
         </View>
 
-        <View style={styles.bottomSpacer} />
+        {/* Removed bottomSpacer because CTA is now in flex layout */}
       </ScrollView>
 
       {/* ── Fixed bottom CTA ───────────────────────────── */}
-      <View style={[styles.ctaContainer, { paddingBottom: ctaBottomPadding }]}>
+      <View style={[styles.ctaContainer]}>
         {completed < 5 ? (
-          <TouchableOpacity
-            activeOpacity={0.88}
+          <GradientButton
+            text={`Day ${nextDay} · ${activeDay?.title ?? 'The Reveal'}`}
+            subtitle="CONTINUE"
+            icon={<Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />}
             onPress={handleContinue}
-            style={styles.continueBtnTouch}
-          >
-            <LinearGradient
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.continueBtn}
-            >
-              <View style={styles.continueBtnLeft}>
-                <View style={styles.sparkleCircle}>
-                  <Sparkles size={metrics.iconSize.sm} color="#FFFFFF" strokeWidth={2} />
-                </View>
-              </View>
-              <View style={styles.continueBtnCenter}>
-                <Text style={styles.continueBtnSub}>CONTINUE</Text>
-                <Text style={styles.continueBtnTitle}>
-                  Day {nextDay} · {activeDay?.title ?? 'The Reveal'}
-                </Text>
-              </View>
-              <View style={styles.continueBtnRight}>
-                <Text style={styles.continueBtnArrow}>→</Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={colors.gradientBtn}
+          />
         ) : (
-          <TouchableOpacity
-            activeOpacity={0.88}
-            onPress={() => navigation.navigate('Day5PartnerInvite')}
-            style={styles.continueBtnTouch}
-          >
-            <LinearGradient
-              colors={['#6EE87A', '#2DD4BF', '#1E90FF']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.continueBtn}
-            >
-              <Text style={styles.continueBtnTitle}>Invite your partner</Text>
-              <Text style={styles.continueBtnArrow}>→</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          <GradientButton
+            text="Invite your partner"
+            onPress={() => navigation.navigate('InvitePartner')}
+            showArrow={true}
+            fullWidth={true}
+            gradientColors={colors.gradientBtn2}
+          />
         )}
       </View>
     </ScreenWrapper>
@@ -313,12 +308,12 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     gap: metrics.spacing.sm,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    backgroundColor: c.glassCardBg,
     paddingVertical: metrics.spacing.smMd,
     paddingHorizontal: metrics.spacing.smMd,
     borderRadius: metrics.radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: c.glassBorder,
     flexDirection: 'row',
     alignItems: 'center',
     gap: metrics.spacing.smMd,
@@ -373,10 +368,10 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
     color: c.textSecondary,
   },
   cardSubtitle: {
-     fontSize:responsiveFontSize(1.5 ),
-        fontFamily: 'DMSans-Regular',
-        fontWeight: '400' as const,
-        lineHeight: fontSize.body * 1.5,
+    fontSize: responsiveFontSize(1.5),
+    fontFamily: 'DMSans-Regular',
+    fontWeight: '400' as const,
+    lineHeight: fontSize.body * 1.5,
     color: c.textSecondary,
   },
   cardSubtitleLocked: {
@@ -429,12 +424,9 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
 
   // ── Fixed CTA ───────────────────────────────────────────
   ctaContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: metrics.layout.screenPaddingHz,
     paddingTop: metrics.spacing.sm,
+    paddingBottom: metrics.spacing.md,
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
   continueBtnTouch: {
@@ -458,37 +450,5 @@ const makeStyles = (c: ReturnType<typeof useAppColors>) => StyleSheet.create({
   },
   btnShadowLayer: {
     display: 'none' as any,
-  },
-  continueBtnLeft: {
-    marginRight: metrics.spacing.smMd,
-  },
-  sparkleCircle: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(4.5),
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  continueBtnCenter: {
-    flex: 1,
-    gap: metrics.spacing.xxs,
-  },
-  continueBtnSub: {
-    ...typography.captionSmall,
-    color: 'rgba(255,255,255,0.8)',
-    letterSpacing: 2,
-  },
-  continueBtnTitle: {
-    ...typography.displaySmall,
-    color: '#FFFFFF',
-    fontFamily: 'PlayfairDisplay-Bold',
-  },
-  continueBtnRight: {
-    marginLeft: metrics.spacing.sm,
-  },
-  continueBtnArrow: {
-    ...typography.buttonLarge,
-    color: '#FFFFFF',
   },
 });

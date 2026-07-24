@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Calibri, Arial, sans-serif; background: #fff; padding: 24px; font-size: 13px; color: #1A1A1A; }
+
+.sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sheet-sub { font-size: 12px; color: #666; margin-bottom: 16px; }
+.btn-row { margin-bottom: 14px; }
+.btn { background: #217346; color: white; padding: 7px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #1a5c38; }
+
+table { width: 100%; border-collapse: collapse; border: 1.5px solid #B0B0B0; }
+
+thead tr th {
+  background: #1F6B3A;
+  color: white;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  border: 1px solid #166030;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.bridge-row td {
+  background: #E2E2E2;
+  font-weight: 700;
+  font-size: 12px;
+  color: #444;
+  padding: 7px 11px;
+  border: 1px solid #B0B0B0;
+}
+
+.group-row td {
+  background: #D6E4F0;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #1A1A1A;
+  padding: 8px 11px;
+  border: 1px solid #B0B0B0;
+}
+
+.data-row td {
+  padding: 7px 11px;
+  border: 1px solid #D0D0D0;
+  vertical-align: top;
+  line-height: 1.55;
+  font-size: 12px;
+}
+.data-row:nth-child(odd) td { background: #FFFFFF; }
+.data-row:nth-child(even) td { background: #F5F9F6; }
+.data-row:hover td { background: #EBF5FF; }
+
+.type-score   { color: #1F6B3A; font-weight: 700; }
+.type-display { color: #1F4E79; font-weight: 700; }
+.type-exp     { color: #7B2D8B; font-weight: 700; }
+.type-route   { color: #833C00; font-weight: 700; }
+
+.pts { font-weight: 700; color: #1F6B3A; }
+.none { color: #999; font-style: italic; }
+
+.a { color: #1F6B3A; font-weight: 700; }
+.b { color: #1F4E79; font-weight: 700; }
+.c { color: #833C00; font-weight: 700; }
+.ded { color: #6B3291; font-weight: 700; }
+
+@media print {
+  .btn-row { display: none; }
+  body { padding: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sheet-title">LDA — Day 4: The Memory Jar</div>
+<div class="sheet-sub">Bridge 3→4 + Day 4 Activities · What scores · What it feeds on Day 5 · How it calculates · Plain explanation</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="window.print()">⬇ Download / Print as PDF</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:4%">#</th>
+      <th style="width:14%">Activity</th>
+      <th style="width:9%">Activity Type</th>
+      <th style="width:13%">Linked to Day 5</th>
+      <th style="width:13%">Day 5 Section Name</th>
+      <th style="width:10%">Score / Points</th>
+      <th style="width:16%">How the Score Works</th>
+      <th style="width:21%">What This Means (Plain English)</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- ── BRIDGE 3→4 ── -->
+    <tr class="bridge-row">
+      <td colspan="8">BRIDGE 3→4 — Re-entry screen before Day 4 begins. Shows Day 3 Mirror Game count, One Certainty quote, mini 5-dot timeline, and a jar preview. Different in feel from previous bridges — intentionally more ceremonial.</td>
+    </tr>
+
+    <tr class="group-row">
+      <td>B1</td>
+      <td colspan="7">Return + Mirror Recap + Jar Preview — Streak ring shows 4. Mirror Game count card ("You were 7 for 10"). One Certainty exact words card. Mini 5-dot visual timeline with Day 4 dot pulsing in amber. Day 4 intention word selector. Bridge quote.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Return + Mirror Recap</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 link</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>Displays stored data. No new calculation.</td>
+      <td>Shows the Mirror Game result and the One Certainty in exact words — creating continuity from Day 3. The pulsing amber dot on the mini timeline creates a specific completion impulse before the jar activity. If the user already invited their partner on Day 3, the bridge adds: "You invited them. Now let's give you one more day."</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Day 4 Intention Word</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 4 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Word stored and shown. No calculation.</td>
+      <td>The intention word chosen here appears as a pill on the Day 4 card in the Day 5 Week in Moments timeline. No score — emotional intention-setting only, same mechanic as Days 2 and 3.</td>
+    </tr>
+
+
+    <!-- ── DAY 4 MAIN ── -->
+    <tr class="bridge-row">
+      <td colspan="8">DAY 4 MAIN ACTIVITIES — The Memory Jar. Theme: Warm &amp; Emotional. Purpose: Preservation · Surface unspoken needs · Build journaling habit quietly.</td>
+    </tr>
+
+    <!-- Activity 1 — Memory Jar -->
+    <tr class="group-row">
+      <td>1</td>
+      <td colspan="7">The Memory Jar — Jar shown at 60% fill with 3 notes already inside (from Days 1–3). "Drop one memory here. A moment with your partner you never want to forget." Three input type options: Text · Photo · Emoji + date. Drop arc animation plays on save. Optional.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Memory Jar</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+1 Dedication pt</span></td>
+      <td>Dropping any memory (Text, Photo, or Emoji) = +1 Dedication point. Skipping = 0.</td>
+      <td>This is the single largest Dedication point available in Day 4. Dedication drives up to 30 of 100 Connection Score points and determines badge tier. Skipping the jar costs significantly — it is the one Day 4 activity worth a full point on its own.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Memory Jar</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 or +2 pts</span></td>
+      <td>Text memory = Expressive +2 (highest single Expressive signal in the whole app). Photo = Active +2. Emoji + date = Active +1.</td>
+      <td>How the user chooses to capture a memory reveals how they express love. Writing it out in words (Text) is the strongest Expressive signal in the entire 5-day flow. Dropping a photo or emoji suggests they express love through doing and capturing moments (Active).</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Memory Jar</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Jar Reveal + Week Timeline + The Letter + Bridge 4→5</td>
+      <td>Section 6 — Memory Jar · Section 5 — Week in Moments · The Letter</td>
+      <td><span class="none">No score</span></td>
+      <td>Memory content shown in 4 places. No calculation.</td>
+      <td>The memory appears in: (1) Section 6 Jar Full Reveal as a tappable note inside the jar, (2) the Day 4 card in Week in Moments (first 60 characters), (3) the personalised Letter — first 8 words used in the template, (4) the Bridge 4→5 ceremonial recap. If skipped, the jar stays at 60% on Day 5.</td>
+    </tr>
+
+
+    <!-- Activity 2 — Tiny Compliment -->
+    <tr class="group-row">
+      <td>2</td>
+      <td colspan="7">The Tiny Compliment — "One word that describes how your partner makes you feel. Just one." Eight word pills: Seen · Safe · Lighter · Lucky · Proud · Loved · Calm · Home. Or free-type up to 10 characters. Sparkle animation on tap. Appears immediately after the memory drop animation.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Tiny Compliment</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Tapping any word = +0.5 Dedication points.</td>
+      <td>A quick but meaningful action. Counts toward the Day 4 Dedication total. Takes under 5 seconds — one of the fastest scoring moments in the app.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Tiny Compliment</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Jar Reveal + Week Timeline + Shareable Card</td>
+      <td>Section 6 — Memory Jar · Section 5 — Week in Moments · Shareable Card</td>
+      <td><span class="none">No score</span></td>
+      <td>Word shown in 3 places. No calculation.</td>
+      <td>The word glows as a floating label inside the jar on the Day 5 full reveal — a small visual surprise the user experiences for the first time in Bridge 4→5. It also appears on the Day 4 card in Week in Moments and on the shareable card export. No badge axis contribution — purely emotional and display-driven.</td>
+    </tr>
+
+
+    <!-- Activity 3 — Priority Shuffle -->
+    <tr class="group-row">
+      <td>3</td>
+      <td colspan="7">Priority Shuffle — Game 08 (NEW) — "5 cards. Tap your top 3 in order of what you need most right now." Cards: More warmth &amp; affection · Dedicated time together · More calm, less stress · Laughter &amp; lightness · Deeper conversations. No typing at all. Numbered badges (1, 2, 3) appear on selected cards. Partner side sealed.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Priority Shuffle (G08)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 or +2 pts</span></td>
+      <td>"Deeper conversations" anywhere in top 3 = Deep +2. "Laughter &amp; lightness" as top pick = Present +2. "More calm, less stress" anywhere in top 3 = Deep +1.</td>
+      <td>Picking "Deeper conversations" signals the user craves depth and reflection — a Deep trait. Picking "Laughter &amp; lightness" as their number one need signals they want to live in the present and feel light — a Present trait.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Priority Shuffle (G08)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts to one side</span></td>
+      <td>Top pick = "Warmth" or "Calm" = Protecting +2. Top pick = "Laughter", "Time together", or "Deeper conversations" = Building +2.</td>
+      <td>A top need of warmth or calm suggests the user wants to restore safety — a Protecting signal. A top need of laughter, quality time, or deeper conversation suggests they want to create something new or grow — a Building signal. The top pick (rank 1) carries the most weight.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Priority Shuffle (G08)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Completing the shuffle (tapping 3 cards) = +0.5 Dedication points.</td>
+      <td>Fast to complete — under 40 seconds — but earns half a Dedication point. Every 0.5 point matters in reaching the Gold badge tier (requires 6 or more out of 7).</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Priority Shuffle (G08)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Relationship Needs + Bridge 4→5</td>
+      <td>Section 4 — Your Relationship Needs This Week</td>
+      <td><span class="none">No score</span></td>
+      <td>Top pick and all 3 picks shown in ranked order. No calculation.</td>
+      <td>This is the only activity in the app that gets its own dedicated report section. The top need is shown prominently with a one-line description. All 3 picks are listed in rank order. Partner's picks are shown as sealed cards until they join. Also appears on Bridge 4→5 as a teaser card: "Your top need this week: [Warmth &amp; affection]. Day 5 shows you if they felt the same."</td>
+    </tr>
+
+
+    <!-- Activity 4 — Daily 2 -->
+    <tr class="group-row">
+      <td>4</td>
+      <td colspan="7">The Daily 2 — Two journal cards shown together. Card 1: "What emotion are you carrying into today?" Card 2: "What's something your relationship taught you this week?" Both open text. Both optional. CTA: Save to journal.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Daily 2</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 pts (both) · +0.25 pts (one)</span></td>
+      <td>Both cards answered = +0.5 Dedication points. Only one answered = +0.25. Neither answered = 0.</td>
+      <td>Answering both cards earns the full 0.5 Dedication points. Answering just one earns half of that. Skipping entirely earns nothing. The split scoring encourages at least partial engagement rather than all-or-nothing.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Daily 2 (Card 1)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt</span></td>
+      <td>Both Card 1 and Card 2 answered with 40 or more characters each = Expressive +1.</td>
+      <td>A user who writes substantial responses to both cards is demonstrating verbal expressiveness — a hallmark of the Expressive love type. Both cards must be substantial for this signal to activate.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Daily 2 (Card 1)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Connection Score — Mood Chart D4 bar + Trend Bonus</td>
+      <td>Section 1 — Mood Journey Chart</td>
+      <td><span class="pts">Up to +10 bonus pts</span></td>
+      <td>Card 1 text is scanned for emotional tone. Warmth words (grateful, happy, calm, loved, good) = score 7. Heavy words (tired, frustrated, anxious, distant) = score 4. Neutral = score 5. This tone score sets the Day 4 bar height AND is compared to the Day 1 slider to calculate the Trend Bonus (Day 1 table, Signal 4).</td>
+      <td>The words the user chooses to describe their emotion on Day 4 quietly determine the Day 4 mood bar on the chart and whether they earn the Trend Bonus. A user who started at a 5 on Day 1 and uses warm words on Day 4 earns up to +10 bonus points. They never see this calculation — they just write honestly.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>The Daily 2 (Card 2)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Week Timeline</td>
+      <td>Section 5 — Week in Moments (Day 4 card)</td>
+      <td><span class="none">No score</span></td>
+      <td>Exact words from Card 2 shown. No calculation.</td>
+      <td>Card 2 ("What did your relationship teach you this week?") appears in exact words on the Day 4 card in the Week in Moments timeline. Card 1 is never shown in the report — its only job is the Mood Chart and Trend Bonus calculation.</td>
+    </tr>
+
+
+    <!-- Activity 5 — Love Drop + Drop Box -->
+    <tr class="group-row">
+      <td>5</td>
+      <td colspan="7">Love Drop + Drop Box — Game 04 (Updated) — Two tabs on one screen. Tab A — Love Drop (NEW): Leave a sealed message for your partner. Choose from 4 types: A compliment · A memory only you two share · A challenge for them · Something I've been meaning to say. Zero-typing presets available for each. Tab B — Drop Box (Existing): Write something hard — AI reframes it into better words. Original text deleted after reframe. Both are optional.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Love Drop (Tab A)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="a">Axis A</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt</span></td>
+      <td>Love Drop type = Compliment = Expressive +1.</td>
+      <td>Leaving a compliment for the partner suggests someone who expresses love warmly through words — a clear Expressive signal.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Love Drop (Tab A)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt</span></td>
+      <td>Love Drop used at all (any type) = Deep +1.</td>
+      <td>Taking the time to leave something sealed for a partner — a compliment, memory, or challenge — signals emotional investment and depth. Simply using the feature contributes to the Deep side of Axis B.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Love Drop (Tab A)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt to one side</span></td>
+      <td>Type = Compliment or Memory = Protecting +1. Type = Challenge = Building +1.</td>
+      <td>A compliment or memory left for the partner reflects a desire to protect and nurture the relationship. A challenge left for the partner reflects a desire to push the relationship forward — a Building signal.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Love Drop (Tab A)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Love Drop used = +0.5 Dedication points.</td>
+      <td>Using the Love Drop earns half a Dedication point on top of all badge axis signals. Combined with the Drop Box (+0.5), this screen can contribute up to 1 full Dedication point.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Love Drop (Tab A)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Jar Reveal + Couple Mode Unlock</td>
+      <td>Section 6 — Memory Jar · Section 8 — Couple Mode</td>
+      <td><span class="none">No score</span></td>
+      <td>Gold sealed note shown in jar. Content sealed until partner joins. No calculation.</td>
+      <td>If the Love Drop was used, a gold sealed note appears inside the Day 5 jar labelled "Something waiting for them." In Section 8 Couple Mode, the status is noted as sealed. The content only unseals when the partner joins — this is the most intimate Couple Mode moment in the app.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Drop Box (Tab B)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="b">Axis B</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+2 pts</span></td>
+      <td>Drop Box used = Deep +2. This is the highest single Deep signal available across all 5 days.</td>
+      <td>Writing something hard and asking for help with the words signals deep emotional investment and willingness to do the difficult work of communication. This is a stronger Axis B signal than anything else in the app.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Drop Box (Tab B)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td>Badge — <span class="c">Axis C</span></td>
+      <td>Section 7 — Your Badge</td>
+      <td><span class="pts">+1 pt</span></td>
+      <td>Drop Box used = Building +1.</td>
+      <td>Using the Drop Box shows the user is working to improve communication — not just protect what is already there. A clear Building signal.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Drop Box (Tab B)</td>
+      <td><span class="type-score">Scoring</span></td>
+      <td><span class="ded">Dedication Score</span></td>
+      <td>Section 7 — Badge Tier</td>
+      <td><span class="pts">+0.5 Dedication pts</span></td>
+      <td>Drop Box used = +0.5 Dedication points.</td>
+      <td>Using the Drop Box earns half a Dedication point. Combined with the Love Drop (+0.5), using both tabs earns 1 full Dedication point from this one screen.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Drop Box (Tab B)</td>
+      <td><span class="type-display">Display</span></td>
+      <td>Jar Reveal</td>
+      <td>Section 6 — Memory Jar</td>
+      <td><span class="none">No score</span></td>
+      <td>Rose note shown inside jar. No calculation. Original text is deleted — only the reframed version is stored.</td>
+      <td>If the Drop Box was used, a rose note appears inside the Day 5 jar labelled "Something you found the words for." The content is never shown — the act is honoured, the privacy is preserved. The original words are permanently deleted after reframing.</td>
+    </tr>
+
+
+    <!-- Activity 6 — Trivia Fact -->
+    <tr class="group-row">
+      <td>6</td>
+      <td colspan="7">Personalised Trivia Fact — Full screen for 5 seconds after the Daily 2 is saved. A relationship psychology fact tailored specifically to the user's personality type from Day 1. Swipe up to dismiss. No CTA. Not skippable.</td>
+    </tr>
+
+    <tr class="data-row">
+      <td></td>
+      <td>Trivia Fact</td>
+      <td><span class="type-exp">Experience Only</span></td>
+      <td>No Day 5 link</td>
+      <td>Does not appear in report</td>
+      <td><span class="none">No score</span></td>
+      <td>Nothing stored. No calculation.</td>
+      <td>No data stored, no score contribution. The fact is personalised entirely by the Day 1 personality type — a connection the user never consciously sees. Steady Flame gets a fact about consistent care. Electric Spark gets one about novelty. Deep Current gets one about depth of conversation. Shifting Tide gets one about early honest disclosure. Its only purpose is to make the user feel known.</td>
+    </tr>
+
+
+    <!-- ── SUMMARY ── -->
+    <tr>
+      <td colspan="8" style="background:#E2EFDA; padding:10px 11px; border:1px solid #B0B0B0; font-size:12px;">
+        <strong>Day 4 Summary:</strong> &nbsp;
+        7 Scoring activities &nbsp;|&nbsp;
+        1 Experience-only activity &nbsp;|&nbsp;
+        <strong style="color:#1F6B3A">Up to 30+ Connection Score inputs set across Day 4</strong> &nbsp;|&nbsp;
+        Drop Box = highest single Deep signal in the entire 5-day flow (+2) &nbsp;|&nbsp;
+        Text memory = highest single Expressive signal in the entire flow (+2) &nbsp;|&nbsp;
+        Card 1 of Daily 2 sets the Day 4 mood bar AND the Trend Bonus comparison &nbsp;|&nbsp;
+        Priority Shuffle is the only activity with its own dedicated Day 5 report section (Section 4) &nbsp;|&nbsp;
+        Love Drop content sealed — unseals only when partner joins &nbsp;|&nbsp;
+        Trivia Fact is personalised by Day 1 personality type — the Day 1 → Day 4 silent connection
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

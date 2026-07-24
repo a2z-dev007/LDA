@@ -125,7 +125,7 @@ export const SlideToBeginButton: React.FC<SlideToBeginButtonProps> = ({
         <View style={styles.trackContainer}>
           {/* Gradient background */}
           <LinearGradient
-            colors={['#6EE87A', '#2DD4BF', '#00BCD4']}
+            colors={colors.gradientBtn}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.gradient}
